@@ -1,0 +1,60 @@
+{
+"llamacpp": {
+    "default": {
+    },
+      
+    "llama2": {
+        "name": "llama-2-7b-chat.Q4_K_M.gguf",
+        "format": "llama2"
+    },
+    "mistral": {
+        "name": "mistral-7b-instruct-v0.2.Q5_K_M.gguf",
+        "format": "mistral"
+    },
+    "nous-hermes-solar": {
+        "name": "nous-hermes-2-solar-10.7b.Q4_K_M.gguf",
+        "format": "chatml"
+    },
+    "openchat": {
+        "name": "openchat-3.5-1210.Q4_K_M.gguf",
+        "format": "openchat"
+    },
+    "phi2": {
+        "name": "phi-2.Q5_K_M.gguf",
+        "format": "phi2"
+    },
+    "starling": {
+        "name": "starling-lm-7b-alpha.Q5_K_M.gguf",
+        "format": "starling"
+    },
+    "zephyr": {
+        "name": "zephyr-7b-beta.Q4_K_M.gguf",
+        "format": "zephyr"
+    },
+    "zephyrlink": "zephyr"
+},
+
+"openai": {
+    "default": {
+    },
+    
+    "gpt-3.5": {
+        "name": "gpt-3.5-turbo-1106"
+    },
+    "gpt-4": {
+        "name": "gpt-4-1106-preview"
+    },
+    "llamacpp-server": {
+        "name": "gpt-3.5-turbo-1106",
+        "base_url": "http://localhost:8000/v1",
+        "api_key": "sk-xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx"
+    }
+
+},
+
+"alias": {
+    "develop": "llamacpp:openchat",
+    "production": "openai:gpt-3.5"
+}
+   
+}

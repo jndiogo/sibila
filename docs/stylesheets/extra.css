@@ -1,0 +1,15 @@
+div.doc.doc-object.doc-class
+{
+    margin-bottom: 80px;
+}
+
+div.doc.doc-object.doc-function
+{
+    margin-top: 60px;
+    margin-bottom: 60px;
+}
+
+div.doc.doc-object.doc-attribute
+{
+    margin-bottom: 40px;
+}

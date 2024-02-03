@@ -1,0 +1,75 @@
+site_name: Sibila
+
+nav:
+  - index.md
+  - getting-started.md
+  # - examples.md
+  # - how-to.md
+  - api-reference.md
+
+
+
+theme:
+  name: "material"
+  palette:
+    # Palette toggle for light mode
+    - scheme: default
+      primary: indigo
+      toggle:
+        icon: material/brightness-7 
+        name: Switch to dark mode
+
+    # Palette toggle for dark mode
+    - scheme: slate
+      primary: indigo
+      toggle:
+        icon: material/brightness-4
+        name: Switch to light mode  
+
+extra_css:
+  - stylesheets/extra.css
+
+plugins:
+  - mkdocstrings:
+      handlers:
+        python:
+          options:
+            # general: https://mkdocstrings.github.io/python/usage/configuration/general/
+            show_bases: false
+            show_source: true
+            preload_modules:
+              - typing
+
+            # headings: https://mkdocstrings.github.io/python/usage/
+            heading_level: 3
+            show_root_heading: true
+            show_root_toc_entry: true
+            show_root_full_path: false
+            show_root_members_full_path: false
+
+            # members: https://mkdocstrings.github.io/python/usage/configuration/members/
+            inherited_members: true            
+            members_order: source
+            group_by_category: false
+
+            # docstrings: https://mkdocstrings.github.io/python/usage/configuration/docstrings/
+            docstring_style: "google"
+            docstring_section_style: table
+            merge_init_into_class: true
+            show_docstring_attributes: false
+            show_if_no_docstring: true
+
+            # signature: https://mkdocstrings.github.io/python/usage/configuration/signatures/
+            line_length: 60
+            separate_signature: True
+            show_signature: true
+            show_signature_annotations: false
+            signature_crossrefs: true
+
+
+          import:
+            - https://docs.python.org/3/objects.inv
+            
+
+
+

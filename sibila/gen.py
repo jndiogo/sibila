@@ -1,0 +1,248 @@
+"""Model generation configurations and results.
+
+- GenConf: Model generation configuration, used in Model.gen() and variants.
+- GenRes: Generaion result enum.
+- GenError: Generation exception.
+- GenOut: Results of model generation.
+"""
+
+from typing import Any, Optional, Union, Callable
+from typing_extensions import Self
+from dataclasses import dataclass, field, asdict
+from enum import IntEnum
+
+from copy import copy
+from pprint import pformat
+
+import logging
+logger = logging.getLogger(__name__)
+
+
+
+
+@dataclass
+class GenConf:
+    """Model generation configuration, used in Model.gen() and variants."""
+    
+    max_tokens: int = 0 
+    """Max generated token length. 0 means all available up to output context size (which equals: model.ctx_len - in_prompt_len)"""
+    
+    stop: Union[str, list[str]] = field(default_factory=list)
+    """List of generation stop text sequences"""
+    
+    temperature: float = 0.
+    """Generation temperature. Use 0 to always pick the most probable output, without random sampling. Other positive values will produce random outputs."""
+
+    top_p: float = 0.9
+    """Nucleus sampling top_p value. Only applies if temperature > 0."""
+
+    format: str = "text"
+    """Output format: "text" or "json". For JSON output, text is validaded as in json.loads().
+    Thread msgs must explicitely request JSON output or a warning will be emited if string json not present
+    (this is automatically done in Model.json() and related calls).
+    """
+
+    json_schema: Union[str,dict] = None
+    """A JSON schema to validate the JSON output.
+    Thread msgs must list the JSON schema and request its use; must also set the format to "json".
+    """
+    
+    
+    def asdict(self):
+        """Return GenConf as a dict."""
+        return asdict(self)
+
+    def clone(self):
+        """Return a copy of this configuration."""
+        return copy(self)
+        
+    def __call__(self,
+                 **kwargs: Any) -> Self:
+        """Return a copy of the current GenConf updated with values in kwargs. Doesn't modify object.
+
+        Args:
+            **kwargs: update settings of the same names in the returned copy.
+
+        Raises:
+            KeyError: If key does not exist.
+
+        Returns:
+            A copy of the current object with kwargs values updated. Doesn't modify object.
+        """
+
+        ret = copy(self)
+
+        for k,v in kwargs.items():
+            if not hasattr(ret, k):
+                raise KeyError(f"No such key '{k}'")
+            setattr(ret, k,v)
+
+        return ret
+
+    def __str__(self) -> str:
+        return pformat(self)
+
+
+
+class GenRes(IntEnum):
+    """Model generation result."""
+
+    OK_STOP = 1 
+    """Generation complete without errors."""
+
+    OK_LENGTH = 0
+    """Generation stopped due to reaching max_tokens."""
+
+    ERROR_JSON = -1 
+    """Invalid JSON: this is often due to the model returning OK_LENGTH (finished due to max_tokens reached), which cuts off the JSON text."""
+
+    ERROR_JSON_SCHEMA_VAL = -2
+    """Failed JSON schema validation."""
+
+    ERROR_JSON_SCHEMA_ERROR = -2
+    """JSON schema itself is not valid."""
+
+    ERROR_MODEL = -3
+    """Other model internal error."""
+
+
+    @staticmethod
+    def from_finish_reason(finish: str) -> Self:
+        """Convert a ChatCompletion finish result into a GenRes.
+
+        Args:
+            finish: ChatCompletion finish result.
+
+        Returns:
+            A GenRes result.
+        """
+        if finish == 'stop':
+            return GenRes.OK_STOP
+        elif finish == 'length':
+            return GenRes.OK_LENGTH
+        elif finish == '!json':
+            return GenRes.ERROR_JSON
+        elif finish == '!json_schema_val':
+            return GenRes.ERROR_JSON_SCHEMA_VAL
+        elif finish == '!json_schema_error':
+            return GenRes.ERROR_JSON_SCHEMA_ERROR
+        else:
+            return GenRes.ERROR_MODEL
+           
+    @staticmethod
+    def as_text(res: Self) -> str:
+        """Returns a friendlier description of the result.
+
+        Args:
+            res: Model output result.
+
+        Raises:
+            ValueError: If unknown GenRes.
+
+        Returns:
+            A friendlier description of the GenRes.
+        """
+
+        if res == GenRes.OK_STOP:
+            return "Stop"
+        elif res == GenRes.OK_LENGTH:
+            return "Length (output cut)"
+        elif res == GenRes.ERROR_JSON:
+            return "JSON decoding error"
+            
+        elif res == GenRes.ERROR_JSON_SCHEMA_VAL:
+            return "JSON SCHEMA validation error"
+        elif res == GenRes.ERROR_JSON_SCHEMA_ERROR:
+            return "Error in JSON SCHEMA"
+            
+        elif res == GenRes.ERROR_MODEL:
+            return "Model internal error"
+        else:
+            raise ValueError("Bad/unknow GenRes")
+
+
+
+@dataclass
+class GenOut:
+    """Model output, returned by gen_(), json_() and other Model calls that don't raise exceptions."""
+    
+    res: GenRes
+    """Result of model generation."""
+    
+    text: str
+    """Text generated by model."""
+    
+    dic: Union[dict,None] = None
+    """Python dictionary output by the structured calls like json_() or dictype_()."""
+
+    obj: Union[Any, None] = None # Any = Pydantic BaseModel
+    """Pydantic BaseModel object initialized from class definition in pydantic_()."""
+    
+    
+    def asdict(self):
+        """Return GenOut as a dict."""
+        return asdict(self)
+
+    def __str__(self):
+        out = f"Error={self.res.as_text(self.res)} text=█{self.text}█"
+        if self.dic is not None:
+            out += f" dic={self.dic}"
+        if self.obj is not None:
+            out += f" obj={self.obj}"
+        return out
+
+
+
+
+class GenError(RuntimeError, GenOut):
+    """Model generation exception."""
+
+    def __init__(self, 
+                 out: GenOut):
+        """An error has happened during model generation.
+
+        Args:
+            out: Model output
+        """
+
+        assert out.res != GenRes.OK_STOP, "OK_STOP is not an error"      
+
+        super().__init__()
+
+        self.res = out.res
+        self.text = out.text
+        self.dic = out.dic
+        self.obj = out.obj
+
+
+    @staticmethod
+    def raise_if_error(out: GenOut,
+                       ok_length_is_error: bool):
+        """Raise an exception if the model returned an error
+
+        Args:
+            out: Model returned info.
+            ok_length_is_error: Should a result of GenRes.OK_LENGTH be considered an error?
+
+        Raises:
+            GenError: If an error was returned by model.
+        """
+        
+        if out.res != GenRes.OK_STOP:
+            if out.res == GenRes.OK_LENGTH and not ok_length_is_error:
+                return # OK_LENGTH to not be considered an error
+
+            raise GenError(out)
+            
+        
+    def __str__(self):
+        out = f"Error={self.res.as_text(self.res)} text=█{self.text}█"
+        if self.dic is not None:
+            out += f" dic={self.dic}"
+        if self.obj is not None:
+            out += f" obj={self.obj}"
+        return out
+
+
+
+

@@ -1,0 +1,15 @@
+__pycache__/
+.ipynb_checkpoints
+.pylintrc
+
+*.egg-info
+*.swp
+
+_*
+.env*
+
+# model files
+models/*.gguf
+
+# mkdocs documentation
+/site
