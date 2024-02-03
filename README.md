@@ -25,8 +25,8 @@ class Info(BaseModel):
 openchat = LlamaCppModel("models/openchat-3.5-1210.Q5_K_M.gguf")
 
 openchat.query_pydantic(Info,
-                       "Just be helpful.",
-                       "Who was the first man in the moon?")
+                        "Just be helpful.", # system message
+                        "Who was the first man in the moon?")
 ```
 
 Outputs an object of class Info, initialized with the model's output:
@@ -64,10 +64,10 @@ Installation, accessing OpenAI, getting local models: [How to get started](docs/
 
 ## Examples
 
-Check the [Examples](examples/readme.md).
+Check the [Examples](examples/readme.md). More are coming.
 
 
-# Documentation
+## Documentation
 
 The API reference and more info is [available here](https://jndiogo.github.io/sibila/).
 
