@@ -1,4 +1,4 @@
-# Sibila Documentation
+# Documentation
 
 Extract structured information from LLM models, using a common API to access remote models like GPT-4 or local GGUF quantized models with llama.cpp.
 
@@ -9,7 +9,7 @@ Extract structured information from LLM models, using a common API to access rem
 - Model management directory: manage models and their configurations and quickly switch between models.
 - Automatic chat templates: identifies and uses the right templates for each model.
 
-With Sibila you can extract structured data from a local model like OpenChat-3.5 with 7B params:
+With Sibila you can extract structured data from a small local model like OpenChat-3.5:
 
 ```python
 from sibila import (LlamaCppModel, OpenAIModel)
