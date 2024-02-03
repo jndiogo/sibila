@@ -32,7 +32,11 @@ openchat.query_pydantic(Info,
 Outputs an object of class Info, initialized with the model's output:
 
 ```python
-Info(event_year=1969, first_name='Neil', last_name='Armstrong', age_at_the_time=38, nationality='American')
+Info(event_year=1969,
+     first_name='Neil',
+     last_name='Armstrong',
+     age_at_the_time=38,
+     nationality='American')
 ```
 
 
