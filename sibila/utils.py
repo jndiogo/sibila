@@ -1,3 +1,5 @@
+"""A bag of assorted utilities."""
+
 from .model import Tokenizer
 
 
@@ -45,6 +47,25 @@ def clear_mem(var_names: list[str]):
 
     except Exception:
         ...
+
+
+
+
+
+class mute_stdout_stderr():
+    '''
+    Based on: https://github.com/abetlen/llama-cpp-python/issues/478
+    '''
+    def __enter__(self):
+        self.old_stdout = sys.stdout
+        self.old_stderr = sys.stderr
+
+        sys.stdout = open(os.devnull, 'w')
+        sys.stderr = open(os.devnull, 'w')
+
+    def __exit__(self, exc_type, exc_value, traceback):
+        sys.stdout = self.old_stdout
+        sys.stderr = self.old_stderr
 
 
 

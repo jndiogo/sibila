@@ -11,8 +11,8 @@ Extract structured information from LLM models, using a common API to access rem
 
 With Sibila you can extract structured data from a small local model like OpenChat-3.5:
 
-```python
-from sibila import (LlamaCppModel, OpenAIModel)
+``` py
+from sibila import LlamaCppModel, OpenAIModel
 from pydantic import BaseModel, Field
 
 class Info(BaseModel):

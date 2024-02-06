@@ -26,7 +26,7 @@ class FormatDir:
 
     An example of a format directory JSON config file:
 
-    ```
+    ``` json
     {
         "chatml": {
             # template is a Jinja2 template for this model

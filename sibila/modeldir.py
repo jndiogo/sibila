@@ -38,7 +38,7 @@ class ModelDir:
 
     An example of a model directory JSON config file:
 
-    ```
+    ``` json
     {
         # "llamacpp" is a provider, you can then create models with names 
         # like "provider:model_name", for ex: "llamacpp:openchat"
@@ -261,14 +261,20 @@ class ModelDir:
     @classmethod
     def create(cls,
                res_name: str,
+
+               # common to all providers
                genconf: Optional[GenConf] = None,
-               over_args: Optional[dict] = {}) -> Model:
+               ctx_len: Optional[int] = None,
+
+               # model-specific overriding:
+               **over_args: Union[Any]) -> Model:
         """Create a model after an entry in the model directory.
 
         Args:
             res_name: Resource name in the format: provider:model_name, for example "llamacpp:openchat".
-            genconf: Optional model generation configuration, if not given, configuration given by a previous call to set_genconf() is used.  Defaults to None.
-            over_args: Model-specific creation args that will override default args set in directory. Defaults to {}.
+            genconf: Optional model generation configuration. Overrides set_genconf() value and any directory defaults. Defaults to None.
+            ctx_len: Maximum context length to be used. Overrides directory defaults. Defaults to None.
+            over_args: Model-specific creation args, which will override default args set in model directory.
 
         Returns:
             Model: the initialized model.
@@ -305,12 +311,17 @@ class ModelDir:
             args.update(model_args)
             args.update(over_args)
 
-        
-        logger.debug(f"Creating model '{provider}:{name}' with resolved args: {args}")
-        
+        # override genconf, ctx_len
         if genconf is None:
             genconf = cls.genconf
-        
+        if genconf is not None:
+            args["genconf"] = genconf
+
+        if ctx_len is not None:
+            args["ctx_len"] = ctx_len
+
+        logger.debug(f"Creating model '{provider}:{name}' with resolved args: {args}")
+
         if provider == "llamacpp":
 
             # resolve filename -> path
@@ -325,23 +336,20 @@ class ModelDir:
                         
             from .llamacpp import LlamaCppModel
 
-            model = LlamaCppModel(genconf=genconf,
-                                  **args)
+            model = LlamaCppModel(**args)
 
         
         elif provider == "openai":
 
             from .openai import OpenAIModel
                     
-            model = OpenAIModel(genconf=genconf,
-                                **args)
+            model = OpenAIModel(**args)
             
         """            
         elif provider == "hf":
             from .hf import HFModel
             
-            model = HFModel(genconf=genconf,
-                            **args)
+            model = HFModel(**args)
         """
            
         return model

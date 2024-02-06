@@ -68,7 +68,7 @@ class LlamaCppModel(FormattedTextModel):
                  *,
 
                  # common base model args
-                 genconf: Optional[GenConf] = GenConf(),
+                 genconf: Optional[GenConf] = None,
                  tokenizer: Optional[Tokenizer] = None,
                  ctx_len: int = 2048,
 
@@ -87,7 +87,7 @@ class LlamaCppModel(FormattedTextModel):
             path: File path to the GGUF file.
             format: Chat template format to use with model. Leave as None for auto-detection.
             format_search_order: Search order for auto-detecting format, "name" searches in the filename, "meta_template" looks in the model's metadata. Defaults to ["name","meta_template"].
-            genconf: Default generation configuration, which can be used in gen() and related. Defaults to GenConf().
+            genconf: Default generation configuration, which can be used in gen() and related. Defaults to None.
             tokenizer: An external initialized tokenizer to use instead of the created from the GGUF file. Defaults to None.
             ctx_len: Maximum context length to be used (shared for input and output). Defaults to 2048.
             n_gpu_layers: Number of model layers to run in a GPU. Defaults to -1 for all.
@@ -124,6 +124,8 @@ class LlamaCppModel(FormattedTextModel):
                                verbose=verbose
                                )
         
+        logger.debug(f"Creating Llama with model_path='{path}', llamacpp_kwargs={llamacpp_kwargs}")
+
         with normalize_notebook_stdout_stderr(not verbose):
             self._llama = Llama(model_path=path, **llamacpp_kwargs)
 
@@ -195,21 +197,21 @@ class LlamaCppModel(FormattedTextModel):
         format = genconf_kwargs.pop("format")
         if format == "json":
             if genconf_kwargs["json_schema"] is None:
-                with mute_stdout_stderr():
-                    grammar = llama_grammar.LlamaGrammar.from_string(JSON_GBNF)
+                grammar = llama_grammar.LlamaGrammar.from_string(JSON_GBNF, 
+                                                                 logger.getEffectiveLevel() == logging.DEBUG)
                     
             else: # translate json_schema to a llama grammar
                 jsg = gbnf_from_json_schema(genconf_kwargs["json_schema"])
                 logger.debug(f"JSON schema GBNF grammar:\n{jsg}")
                 
-                with mute_stdout_stderr():
-                    grammar = llama_grammar.LlamaGrammar.from_string(jsg)
+                grammar = llama_grammar.LlamaGrammar.from_string(jsg, 
+                                                                 logger.getEffectiveLevel() == logging.DEBUG)
 
             genconf_kwargs["grammar"] = grammar
             
         genconf_kwargs.pop("json_schema")
 
-        logger.debug(f"LlamaCpp json args: {genconf_kwargs}")
+        logger.debug(f"LlamaCpp args: {genconf_kwargs}")
         
         # Llamacpp.create_completion() never returns special tokens because it uses its own detokenize()
         response = self._llama.create_completion(token_ids,
@@ -425,22 +427,4 @@ class normalize_notebook_stdout_stderr():
                 sys.stderr._original_stdstream_copy = self.restore_stdout
             if self.restore_stderr is not None:
                 sys.stderr._original_stdstream_copy = self.restore_stderr
-
-
-
-class mute_stdout_stderr():
-    '''
-    Based on: https://github.com/abetlen/llama-cpp-python/issues/478
-    '''
-    def __enter__(self):
-        self.old_stdout = sys.stdout
-        self.old_stderr = sys.stderr
-
-        sys.stdout = open(os.devnull, 'w')
-        sys.stderr = open(os.devnull, 'w')
-
-    def __exit__(self, exc_type, exc_value, traceback):
-        sys.stdout = self.old_stdout
-        sys.stderr = self.old_stderr
-
 

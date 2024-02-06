@@ -584,9 +584,10 @@ def gbnf_from_json_schema(schema: Union[str,dict],
 """
 JSON_GBNF from llama.cpp:
 https://github.com/ggerganov/llama.cpp/tree/master/grammars
+string rule altered to disallow raw \n inside ""
 """
 
-JSON_GBNF = r"""\
+JSON_GBNF = r"""
 root   ::= object
 value  ::= object | array | string | number | ("true" | "false" | "null") ws
 

@@ -1,16 +1,21 @@
 site_name: Sibila
 
+repo_url: https://github.com/jndiogo/sibila
+
 nav:
   - index.md
   - getting-started.md
-  # - examples.md
-  # - how-to.md
+  - Examples: 'https://github.com/jndiogo/sibila/tree/main/examples'
   - api-reference.md
 
 
 
 theme:
   name: "material"
+  features:
+    - content.code.copy
+    # - content.code.select
+
   palette:
     # Palette toggle for light mode
     - scheme: default
@@ -26,10 +31,15 @@ theme:
         icon: material/brightness-4
         name: Switch to light mode  
 
+
 extra_css:
   - stylesheets/extra.css
 
 plugins:
+  - search
+
+  #- mkdocs-jupyter:
+
   - mkdocstrings:
       handlers:
         python:
@@ -72,4 +82,15 @@ plugins:
             
 
 
+markdown_extensions:
+  - toc:
+      permalink: "#"
+      
+  - pymdownx.highlight:
+      anchor_linenums: true
+      line_spans: __span
+      pygments_lang_class: true
+  - pymdownx.inlinehilite
+  - pymdownx.snippets
+  - pymdownx.superfences
 

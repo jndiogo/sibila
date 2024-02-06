@@ -187,13 +187,13 @@ class Model(ABC):
     
     def __init__(self,
                  is_local_model: bool,
-                 genconf: GenConf,
+                 genconf: Union[GenConf, None],
                  tokenizer: Tokenizer):
         """_summary_
 
         Args:
             is_local_model: Is the model running locally?
-            genconf: Generation configuration: options used during gen().
+            genconf: Generation configuration options used in gen().
             tokenizer: Tokenizer used to encode text (even for message-based models).
         """
         
@@ -202,7 +202,12 @@ class Model(ABC):
         self._ctx_len = 0
 
         self.tokenizer = tokenizer
-        self.genconf = genconf.clone()
+
+        if genconf is None:
+            self.genconf = GenConf()
+        else:
+            self.genconf = genconf.clone()
+        
 
         # set either "json" or "json_schema" key values to None to skip.
         self.json_format_instructors = {
@@ -561,7 +566,7 @@ class Model(ABC):
                    schemaconf: Optional[JSchemaConf] = None,
                    ) -> dict:
 
-        thread = Thread.make_inst_in(inst_text, in_text)
+        thread = Thread.make_INST_IN(inst_text, in_text)
         
         out = self.json(thread,
                         genconf,

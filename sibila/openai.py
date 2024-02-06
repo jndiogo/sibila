@@ -45,7 +45,7 @@ except ImportError:
 
 """
 Locate model and token counting data.
-More recent models inside each family (GPT-4, GPT3) first
+More recent models inside each family (GPT-4, GPT-3.5) first
 Str values are links to a versioned model.
 https://platform.openai.com/docs/models
 """
@@ -154,7 +154,7 @@ class OpenAIModel(MessagesModel):
                  *,
                  
                  # common base model args
-                 genconf: Optional[GenConf] = GenConf(),
+                 genconf: Optional[GenConf] = None,
                  tokenizer: Optional[Tokenizer] = None,
                  ctx_len: int = 0,
                 
@@ -201,6 +201,8 @@ class OpenAIModel(MessagesModel):
         # only check for "json" text presence as json schema is requested with the tools facility.
         self.json_format_instructors["json_schema"] = self.json_format_instructors["json"]
         
+        logger.debug(f"Creating OpenAI with base_url={base_url}, openai_init_kwargs={openai_init_kwargs}")
+
         self._client = openai.OpenAI(api_key=api_key,
                                      base_url=base_url,
                         

@@ -64,7 +64,9 @@ Installation, accessing OpenAI, getting local models: [How to get started](docs/
 
 ## Examples
 
-Check the [Examples](examples/readme.md). More are coming.
+The examples are meant do show what you can do with Sibila: structured data extraction, classification, summarization, etc. 
+
+[Check them here](examples/readme.md). More are coming.
 
 
 ## Documentation
@@ -79,9 +81,9 @@ This project is licensed under the MIT License - see the [LICENSE](LICENSE) file
 
 ## Sibila?
 
-Sibila is the Portuguese word for Sibyl. [The Sibyls](https://en.wikipedia.org/wiki/Sibyl) were oracular women in ancient Greece. One has to wonder if there's something like magic, carefully hidding somewhere in all those model parameters?
+Sibila is the Portuguese word for Sibyl. [The Sibyls](https://en.wikipedia.org/wiki/Sibyl) were oracular women in ancient Greece.
 
 ![Michelangelo's Delphic Sibyl, Sistine Chapel ceiling](https://upload.wikimedia.org/wikipedia/commons/thumb/1/19/DelphicSibylByMichelangelo.jpg/471px-DelphicSibylByMichelangelo.jpg)
 
-
+Michelangelo's Delphic Sibyl, in the Sistine Chapel ceiling.
 
