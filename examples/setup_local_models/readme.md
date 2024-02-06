@@ -66,8 +66,6 @@ Ahoy there matey! How can I assist ye today on this here ship o' mine?<|im_end|>
 
 Chat templates are needed for the best results when dealing with each model. Sibila uses a singleton class named FormatDir, that tries to automatically detect these templates, either from the model name or from embedded metadata, if available. This information is stored in the sibila/base_formatdir.json file, which contains several well used templates; and you can add your own templates as needed into other JSON configuration files.
 
-[]: # (TODO: links)
-
 So, how to find the chat template for a new model you intend to use? When downloading a model file, you should look for mentions of the used chat template in its information page and then check if it's already available in FormatDir's base_formatdir.json initialization file.
 
 What if the model uses a chat new template that's not yet supported in FormatDir? It's becoming common to include the template in the model's GGUF file metadata, so you should look for a file named "tokenizer_config.json" in the main model files. This file should include an entry named "chat_template" which is what we want. For example in OpenChat's:
