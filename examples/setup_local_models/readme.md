@@ -54,7 +54,7 @@ Because these models were fine-tuned for chat or instruct interaction, they use 
 {% endfor %}
 ```
 
-When ran over a message list, the temaplte produces text like the following:
+When ran over a message list, the template produces text like the following:
 ```
 <|im_start|>system
 You speak like a pirate.<|im_end|>
@@ -66,7 +66,7 @@ Ahoy there matey! How can I assist ye today on this here ship o' mine?<|im_end|>
 
 Chat templates are needed for the best results when dealing with each model. Sibila uses a singleton class named FormatDir, that tries to automatically detect these templates, either from the model name or from embedded metadata, if available. This information is stored in the sibila/base_formatdir.json file, which contains several well used templates; and you can add your own templates as needed into other JSON configuration files.
 
-*** links
+[]: # (TODO: links)
 
 So, how to find the chat template for a new model you intend to use? When downloading a model file, you should look for mentions of the used chat template in its information page and then check if it's already available in FormatDir's base_formatdir.json initialization file.
 

@@ -108,4 +108,4 @@ text = model.query_gen(inst_text, in_text, genconf=GenConf(temperature=1))
 print(text)
 ```
 
-*** Add link to ModelDir example.
+[]: # (TODO Add link to ModelDir example)
