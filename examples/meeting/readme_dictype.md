@@ -274,7 +274,7 @@ for part in out["participants"]:
     Commissioner Garland
 
 
-And now "Commissioner Carmical" is repeating again! Let's move on, this could be dealt with by post-processing the received list.
+And now "Commissioner Carmical" is repeating again! Let's move on, as this model shortcoming could be dealt with by post-processing the received list.
     
 Let's now also request a list of action items mentioned in the transcript:
 

@@ -193,4 +193,4 @@ This allows much simpler handling of the model outputs.
 
 Please see other examples for more interesting objects. In particular, we did not add descriptions to the fields, which are important to help the model understand what we want.
 
-Sibila also includes a way to define the types and structure of Python dicts, called dictype, a lighter and easier alternative to using Pydantic.
+Sibila also includes a way to define the types and structure of Python dicts, called dictype, a lighter and easier alternative to using Pydantic. Learn more about [dictype definitions here](https://jndiogo.github.io/sibila/api-reference/#dictype).
