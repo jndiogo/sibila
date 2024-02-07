@@ -1,24 +1,22 @@
 from setuptools import setup
 import sys
 
-if sys.version_info < (3,9):
-    raise ValueError("Sibila requires python 3.9 or above.")
-
-
 setup(name='Sibila',
-    version='0.2.0',
-    author='Jorge Diogo',
-    packages=['sibila'],
-    description='Use local or online large language models for structured output',
-    license='MIT',
-    install_requires=[
-        'llama-cpp-python',
-        'jinja2',
-        'jsonschema',
-        'openai',
-        'tiktoken',
-        # can be optionally installed:
-        # 'pydantic', 
-        # 'python-dotenv',
-    ],
+      version='0.2.1',
+      author='Jorge Diogo',
+      packages=['sibila'],
+      description='Structured queries from local or online LLM models',
+      license='MIT',
+      url="https://github.com/jndiogo/sibila",
+      python_requires=">=3.9",
+      install_requires=[
+          'llama-cpp-python',
+          'jinja2',
+          'jsonschema',
+          'openai',
+          'tiktoken',
+          'pydantic',
+          # can be optionally installed:
+          # 'python-dotenv',
+      ],
 )

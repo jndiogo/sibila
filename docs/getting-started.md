@@ -64,9 +64,9 @@ This will display
 
 ## Using local models in llama.cpp
 
-Sibila can use llama.cpp (via the llamacpp-python package) to load models from local GGUF format files. Since model files are quite big, they are usually quantized so that each parameter occupies less than a byte. 
+Sibila can use llama.cpp (via the llamacpp-python package) to load models from local GGUF format files. Since LLM model files are quite big, they are usually quantized so that each parameter occupies less than a byte. 
 
-See the Setup local models example to learn how where to find these models and how to use them in Sibilia, then return here to run the following script:
+See the [Setup local models example](https://github.com/jndiogo/sibila/tree/main/examples/setup_local_models) to learn how where to find these models and how to use them in Sibila, then return here to run the following script:
 
 ``` py
 from sibila import LlamaCppModel, GenConf

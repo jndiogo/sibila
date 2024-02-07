@@ -1,6 +1,6 @@
 # Sibila
 
-Extract structured information from LLM models, using a common API to access remote models like GPT-4 or local GGUF quantized models with llama.cpp.
+Extract structured information from LLM models, using a common API to access remote models like GPT-4 or local models via llama.cpp.
 
 - Query structured information into Pydantic BaseModel objects or typed Python dicts.
 - Use the same API for local and remote models.
@@ -59,14 +59,14 @@ Sibila also includes model management and tools to compare output between models
 
 ## Getting started
 
-Installation, accessing OpenAI, getting local models: [How to get started](docs/getting-started.md).
+Installation, accessing OpenAI, getting local models: [How to get started](https://github.com/jndiogo/sibila/blob/main/docs/getting-started.md).
 
 
 ## Examples
 
 The examples show what you can do with local or remote GPT models in Sibila: structured data extraction, classification, summarization, etc. 
 
-[Check them here](examples/readme.md). More are coming.
+[Check them here](https://github.com/jndiogo/sibila/tree/main/examples). More are coming.
 
 
 ## Documentation
@@ -81,7 +81,7 @@ This project is licensed under the MIT License - see the [LICENSE](LICENSE) file
 
 ## Sibila?
 
-Sibila is the Portuguese word for Sibyl. [The Sibyls](https://en.wikipedia.org/wiki/Sibyl) were oracular women in ancient Greece. They uttered mysterious words that left common people puzzled.
+Sibila is the Portuguese word for Sibyl. [The Sibyls](https://en.wikipedia.org/wiki/Sibyl) were wise oracular women in ancient Greece. Their mysterious words puzzled people, providing insight or prophetic predictions.
 
 ![Michelangelo's Delphic Sibyl, Sistine Chapel ceiling](https://upload.wikimedia.org/wikipedia/commons/thumb/1/19/DelphicSibylByMichelangelo.jpg/471px-DelphicSibylByMichelangelo.jpg)
 

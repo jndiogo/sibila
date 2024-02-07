@@ -1,6 +1,14 @@
 # Setup Local Models
 
-In this example, we'll see how to find and setup local models for use. If you only plan to use OpenAI remote models, skip it.
+In this example, we'll see how to find and setup local models for use. If you only plan to use OpenAI remote models, it's safe to skip it.
+
+This example explains some ideas related to using quantized local models, but if you just want to download the model used in the examples (a quantized OpenChat 7B), it's available from:
+
+ [https://huggingface.co/TheBloke/openchat-3.5-1210-GGUF/blob/main/openchat-3.5-1210.Q4_K_M.gguf](https://huggingface.co/TheBloke/openchat-3.5-1210-GGUF/blob/main/openchat-3.5-1210.Q4_K_M.gguf)
+
+ In this page, click "download" and save it in the Sibila models/ folder. You should now be able to run the examples.
+
+
 
 
 ## Choose the model: only chat or instruct types

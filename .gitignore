@@ -13,3 +13,7 @@ models/*.gguf
 
 # mkdocs documentation
 /site
+
+# build/distribution
+/dist
+/build
