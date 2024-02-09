@@ -25,7 +25,7 @@ class Info(BaseModel):
 openchat = LlamaCppModel("models/openchat-3.5-1210.Q5_K_M.gguf")
 
 openchat.query_pydantic(Info,
-                        "Just be helpful.", # system message
+                        "Just be helpful.", # instructions, aka system message
                         "Who was the first man in the moon?")
 ```
 
@@ -52,7 +52,7 @@ gpt4.query_pydantic(Info,
 
 Which creates an Info object initialized as the one listed above.
 
-If Pydantic BaseModel objects are too much for your project, you can also use a very simple language called dictype, which defines structure and types of output dicts.
+If Pydantic BaseModel objects are too much for your project, you can also use a very simple language called [dictype](https://jndiogo.github.io/sibila/api-reference/#dictype), which defines structure and types of output dicts.
 
 Sibila also includes model management and tools to compare output between models.
 

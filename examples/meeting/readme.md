@@ -1,6 +1,6 @@
 In this example we'll look at extracting participants and action items from a meeting transcript.
 
-Start by creating the model. Since this is a demanding task, we'll use OpenAI's GPT-4, but you can use a local model by uncommenting line above model creation. As you'll see below, the transcript is large, with complex language.
+Start by creating the model. As you'll see below, the transcript is large, with complex language, so we'll use OpenAI's GPT-4 this time. You can still use a local model by uncommenting the commented lines below.
 
 Make sure to set your OPENAI_API_KEY env variable.
 
@@ -269,7 +269,9 @@ for part in out.participants:
     Commissioner Garland
 
 
-And now "Commissioner Carmical" is repeating again! Let's move on, as this model shortcoming could be dealt with by post-processing the received list.
+And now "Commissioner Carmical" is repeating again! 
+
+Let's move on, the point is that you can also do some prompt engineering with the description field. And this model shortcoming could be dealt with by post-processing the received list.
     
 Let's now also request a list of action items mentioned in the transcript:
 

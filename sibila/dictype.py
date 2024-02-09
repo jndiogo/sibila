@@ -1,6 +1,12 @@
-"""A simple way to define typed fields in a dict. Kind of a simpler and convenient pydantic for dicts.
+"""A simple way to define typed fields in a dict. It's a convention to quickly define the structure 
+and types of a python dict directly in code. Kind of a simpler and convenient Pydantic for dicts.
 
-A dictype is defined in python dict, where each entry represents a typed data field with an optional description.
+A dictype is defined in a python dict, where each entry represents a typed data field with an optional description.
+
+Each field is specified as a dict of "type" and (optional) "description", suppose you want an age field:
+    "age": { "type": int, "desc": "Age of the cat"}
+
+Descriptions are optional, but important in helping the model understand what you want.
 
 For example:
 ```
@@ -31,23 +37,31 @@ Primitive types:
 Enums: Represented by a list of values (only primitive types).
     For example:
 
-    "kind": { "type": ["Open", "Closed"], "desc": "The kind of stuff" },
+    "kind": { "type": ["Open", "Closed"], "desc": "The kind of stuff" }
 ```
 
 ```
 Lists: A list of an allowed type.
     For example to define an str list (note the [] around str):
 
-    "names": { "type": [str], "desc": "List of stuff names" },
+    "names": { "type": [str], "desc": "List of stuff names" }
+
+    If you need to pass a separate description of the list itself and of its elements, 
+    you can either pass a list with two strings (list description first) or a string split by a '|' character:
+
+    "names": { "type": [str], "desc": ["List of stuff names", "A name but only round stuff"] }
+    --or--
+    "names": { "type": [str], "desc": "List of stuff names|A name but only round stuff" }
+
 ```
 
 ```
 Dicts: A field can also be a dict, which allows for composing hierarchies.
-    For example, person_type is first defined and then used below:
+    For example, person_type is first defined and then used in the members field:
 
     person_type = {
         "name": { "type": str, "desc": "Name of person" },
-        "occupation": { "type": str, "desc": "Person's occupation" },
+        "occupation": { "type": str, "desc": "Person's occupation" }
     }
     
     team_type = {
@@ -58,8 +72,10 @@ Dicts: A field can also be a dict, which allows for composing hierarchies.
 
 # Alternative shorter notation
 ```
-Fields can also be specified as an ordered list with the following entries:
+Fields can also be specified as an ordered list with the entries:
     type, desc, "optional"/True
+
+    Only type is necessary, "optional" or True in the third position means that the field is not required.
 
     For example:
 
@@ -69,14 +85,12 @@ Fields can also be specified as an ordered list with the following entries:
         "cost": [ float, "Cost of stuff", "optional" ],
         "kind": [ ["Open", "Closed"], "The kind of stuff" ],
         
-        # For lists, desc can be split in two:
-        "colors": [ [str], "Color list for stuff|Color names" ],
-        "colors2": [ [str], ["Color list for stuff", "Color names"] ],
+        # lists can have two descriptions, for list then for its items:
+        "colors": [ [str], ["Color list for stuff", "Color name"] ],
+        "colors2": [ [str], "Color list for stuff|Color name" ]
     }
 
-    The order in the list is: type, dec, "optional/True
 ``` 
-
 
 """
 

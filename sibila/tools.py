@@ -157,6 +157,7 @@ def interact(model: Model,
                 
             ctx.add_OUT(text)
             print(text)
+            print()
 
         
         def print_thread_info():
@@ -205,17 +206,17 @@ def interact(model: Model,
                     cmd = params[0]
                     params = params[1:]
     
-                    if cmd == "sys":
+                    if cmd == "inst":
                         ctx.clear()
                         if params:
                             text = params[0].replace("\\n", "\n")
-                            ctx.set_sys(text)
+                            ctx.inst = text
                             
-                    elif cmd == "append" or cmd == "a":
+                    elif cmd == "add" or cmd == "a":
                         if params:
                             try:
                                 path = params[0]
-                                ctx.appendx(path=path)
+                                ctx.addx(path=path)
                                 ct = ctx.last.text
                                 print(ct[:500])
                             except FileNotFoundError:
@@ -261,8 +262,8 @@ def interact(model: Model,
     
                     else:
                         print(f"Unknown command '!{cmd}' - known commands:\n"
-                              " !sys[=text] - clear messages and add sys message\n"
-                              " !append|!a=path - load file and append to last msg\n"
+                              " !inst[=text] - clear messages and add inst (system) message\n"
+                              " !add|!a=path - load file and add to last msg\n"
                               " !c - list context msgs\n"
                               " !cl=path - load context (default=ctx.json)\n"
                               " !cs=path - save context (default=ctx.json)\n"
@@ -274,6 +275,7 @@ def interact(model: Model,
                         # " !p - show formatted prompt (if model supports it)\n"
                         # " !to - prompt's tokens\n"
     
+                    print()
                     continue
     
             # we have a user prompt

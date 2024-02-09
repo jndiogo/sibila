@@ -1,6 +1,6 @@
 """Functions for comparing output across models.
 
-- thread_multigen(), query_multigen() and multigen(): Compare single output across models.
+- thread_multigen(), query_multigen() and multigen(): Compare outputs across models.
 - cycle_gen_print(): For a list of models, sequentially grow a Thread with model responses to given IN messages.
 """
 

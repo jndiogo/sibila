@@ -17,3 +17,6 @@ models/*.gguf
 # build/distribution
 /dist
 /build
+
+# pre-build
+docbuild.sh

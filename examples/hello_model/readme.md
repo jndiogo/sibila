@@ -5,10 +5,13 @@ In this example se see how to directly create the Model objects and then have Mo
 
 ## Using a local model
 
-Make sure you download a model file in GGUF format and save it into the models/ folder.
+To use a local model, make sure you download its GGUF format file and save it into the "../../models" folder.
 
-In this example, we use a [4-bit quantization of the OpenChat-3.5 7 billion parameters model](https://huggingface.co/TheBloke/openchat-3.5-1210-GPTQ), which at the current time is a good model for its size. The GGUF file is named "openchat-3.5-1210.Q4_K_M.gguf" and was downloaded from the above link.
-Make sure to save it into the ../../models folder. See here for more information about setting up your local models.***
+In this example, we use a [4-bit quantization of the OpenChat-3.5 7 billion parameters model](https://huggingface.co/TheBloke/openchat-3.5-1210-GPTQ), which at the current time is a good model for its size. 
+
+The GGUF file is named "openchat-3.5-1210.Q4_K_M.gguf" and was downloaded from the above link. Make sure to save it into the "../../models" folder.
+
+[See here for more information](../setup_local_models/readme.md#setup-local-models) about setting up your local models.
 
 
 ``` py

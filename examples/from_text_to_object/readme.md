@@ -9,9 +9,9 @@ This means that the model is giving it's best (as in most probable) answer and t
 
 We'll start by creating either a local model or a GPT-4 model.
 
-For a local model make sure you have its file in a folder like ../../models and have the right filename in the name variable.
+For a local model, make sure you have its file in the folder "../../models/". You can use any GGUF format model - [see here how to download the OpenChat model used below](../setup_local_models/readme.md#setup-local-models). If you use a different one, don't forget to set its filename in the name variable below, after the text "llamacpp:".
 
-For OpenAI models, make sure you defined the env variable OPENAI_API_KEY with a valid token.
+For an OpenAI model, make sure you defined the env variable OPENAI_API_KEY with a valid token and uncomment the line after "# to use an OpenAI model:".
 
 
 ```python

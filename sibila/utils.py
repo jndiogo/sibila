@@ -51,7 +51,7 @@ def clear_mem(var_names: list[str]):
 
 
 
-
+import sys, os
 class mute_stdout_stderr():
     '''
     Based on: https://github.com/abetlen/llama-cpp-python/issues/478
