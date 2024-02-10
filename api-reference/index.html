@@ -9,7 +9,7 @@
       
       
       
-        <link rel="prev" href="../getting-started/">
+        <link rel="prev" href="../setup-local-models/">
       
       
       
@@ -278,6 +278,26 @@
   
   <span class="md-ellipsis">
     Getting Started
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../setup-local-models/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    How to Setup Local Models
   </span>
   
 
@@ -15532,7 +15552,7 @@ When adding a JSON file, its folder is also added to the search path for model f
 </span><span id="__span-0-210"><a id="__codelineno-0-210" name="__codelineno-0-210"></a>                        <span class="n">ctx</span><span class="o">.</span><span class="n">clear</span><span class="p">()</span>
 </span><span id="__span-0-211"><a id="__codelineno-0-211" name="__codelineno-0-211"></a>                        <span class="k">if</span> <span class="n">params</span><span class="p">:</span>
 </span><span id="__span-0-212"><a id="__codelineno-0-212" name="__codelineno-0-212"></a>                            <span class="n">text</span> <span class="o">=</span> <span class="n">params</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s2">&quot;</span><span class="se">\\</span><span class="s2">n&quot;</span><span class="p">,</span> <span class="s2">&quot;</span><span class="se">\n</span><span class="s2">&quot;</span><span class="p">)</span>
-</span><span id="__span-0-213"><a id="__codelineno-0-213" name="__codelineno-0-213"></a>                            <span class="n">ctx</span><span class="o">.</span><span class="n">inst</span><span class="o">=</span><span class="n">text</span>
+</span><span id="__span-0-213"><a id="__codelineno-0-213" name="__codelineno-0-213"></a>                            <span class="n">ctx</span><span class="o">.</span><span class="n">inst</span> <span class="o">=</span> <span class="n">text</span>
 </span><span id="__span-0-214"><a id="__codelineno-0-214" name="__codelineno-0-214"></a>
 </span><span id="__span-0-215"><a id="__codelineno-0-215" name="__codelineno-0-215"></a>                    <span class="k">elif</span> <span class="n">cmd</span> <span class="o">==</span> <span class="s2">&quot;add&quot;</span> <span class="ow">or</span> <span class="n">cmd</span> <span class="o">==</span> <span class="s2">&quot;a&quot;</span><span class="p">:</span>
 </span><span id="__span-0-216"><a id="__codelineno-0-216" name="__codelineno-0-216"></a>                        <span class="k">if</span> <span class="n">params</span><span class="p">:</span>
