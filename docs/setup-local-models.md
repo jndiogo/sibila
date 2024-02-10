@@ -185,7 +185,7 @@ Note that after "llamacpp:", instead of the model name we're directly passing th
 
 ## Out of memory running local models
 
-An important thing to know if you'll be using local models is about Out of memory errors.
+An important thing to know if you'll be using local models is about "Out of memory" errors.
 
 A 7B model like OpenChat-3.5, when quantized to 4 bits will occupy about 6.8 Gb of memory, in either GPU's VRAM or common RAM. If you try to run a second model at the same time, you might get an out of memory error and/or llama.cpp may crash.
 
