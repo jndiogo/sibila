@@ -523,7 +523,7 @@
 <p>And in Windows command prompt:</p>
 <div class="language-text highlight"><pre><span></span><code><span id="__span-2-1"><a id="__codelineno-2-1" name="__codelineno-2-1" href="#__codelineno-2-1"></a>setx OPENAI_API_KEY &quot;sk-xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx&quot;
 </span></code></pre></div>
-<p>Having set this variable with your OpenAI API key, you can run an <a href="https://github.com/sibila/tree/master/examples/hellomodel/hello_openai.py">"Hello Model" example</a> :</p>
+<p>Having set this variable with your OpenAI API key, you can run an <a href="https://github.com/jndiogo/sibila/blob/main/examples/hello_model/hello_openai.py">"Hello Model" example</a> :</p>
 <div class="language-python highlight"><pre><span></span><code><span id="__span-3-1"><a id="__codelineno-3-1" name="__codelineno-3-1" href="#__codelineno-3-1"></a><span class="kn">from</span> <span class="nn">sibila</span> <span class="kn">import</span> <span class="n">OpenAIModel</span><span class="p">,</span> <span class="n">GenConf</span>
 </span><span id="__span-3-2"><a id="__codelineno-3-2" name="__codelineno-3-2" href="#__codelineno-3-2"></a>
 </span><span id="__span-3-3"><a id="__codelineno-3-3" name="__codelineno-3-3" href="#__codelineno-3-3"></a><span class="c1"># make sure you set the environment variable named OPENAI_API_KEY with your API key.</span>
@@ -542,7 +542,7 @@
 </span><span id="__span-3-16"><a id="__codelineno-3-16" name="__codelineno-3-16" href="#__codelineno-3-16"></a><span class="n">text</span> <span class="o">=</span> <span class="n">model</span><span class="o">.</span><span class="n">query_gen</span><span class="p">(</span><span class="n">inst_text</span><span class="p">,</span> <span class="n">in_text</span><span class="p">)</span>
 </span><span id="__span-3-17"><a id="__codelineno-3-17" name="__codelineno-3-17" href="#__codelineno-3-17"></a><span class="nb">print</span><span class="p">(</span><span class="n">text</span><span class="p">)</span>
 </span></code></pre></div>
-<p>This will display </p>
+<p>This will generate a pirate response as seen below.</p>
 <h2 id="using-local-models-in-llamacpp">Using local models in llama.cpp<a class="headerlink" href="#using-local-models-in-llamacpp" title="Permanent link">#</a></h2>
 <p>Sibila can use llama.cpp (via the llamacpp-python package) to load models from local GGUF format files. Since LLM model files are quite big, they are usually quantized so that each parameter occupies less than a byte. </p>
 <p>See <a href="../setup-local-models/">Setup local models</a> to learn how where to find these models and how to use them in Sibila, then return here to run the following script:</p>
@@ -566,7 +566,7 @@
 </span><span id="__span-4-18"><a id="__codelineno-4-18" name="__codelineno-4-18" href="#__codelineno-4-18"></a><span class="n">text</span> <span class="o">=</span> <span class="n">model</span><span class="o">.</span><span class="n">query_gen</span><span class="p">(</span><span class="n">inst_text</span><span class="p">,</span> <span class="n">in_text</span><span class="p">)</span>
 </span><span id="__span-4-19"><a id="__codelineno-4-19" name="__codelineno-4-19" href="#__codelineno-4-19"></a><span class="nb">print</span><span class="p">(</span><span class="n">text</span><span class="p">)</span>
 </span></code></pre></div>
-<p>The script is available here: <a href="https://github.com/sibila/tree/master/examples/hellomodel/hello_llamacpp.py">hello-llammacpp.py</a></p>
+<p>The script is available here: <a href="https://github.com/jndiogo/sibila/blob/main/examples/hello_model/hello_llamacpp.py">hello_llamacpp.py</a></p>
 <h1 id="arrr-answer">Arrr-answer<a class="headerlink" href="#arrr-answer" title="Permanent link">#</a></h1>
 <p>After running the above and/or OpenAI's script you'll receive the model's answer to your "Hello there?" - in arrr-style:</p>
 <div class="language-text highlight"><pre><span></span><code><span id="__span-5-1"><a id="__codelineno-5-1" name="__codelineno-5-1" href="#__codelineno-5-1"></a>Hello there?
