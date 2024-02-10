@@ -691,7 +691,7 @@
 </span></code></pre></div>
 <p>Note that after "llamacpp:", instead of the model name we're directly passing the filename. If you plan to use a model for a while, creating an entry in ModelDir is more flexible.</p>
 <h2 id="out-of-memory-running-local-models">Out of memory running local models<a class="headerlink" href="#out-of-memory-running-local-models" title="Permanent link">#</a></h2>
-<p>An important thing to know if you'll be using local models is about Out of memory errors.</p>
+<p>An important thing to know if you'll be using local models is about "Out of memory" errors.</p>
 <p>A 7B model like OpenChat-3.5, when quantized to 4 bits will occupy about 6.8 Gb of memory, in either GPU's VRAM or common RAM. If you try to run a second model at the same time, you might get an out of memory error and/or llama.cpp may crash.</p>
 <p>This is less of a problem when running scripts from the command line, but in environments like Jupyter where you can have multiple open notebooks, you may get python kernel errors like:</p>
 <div class="language-text highlight"><pre><span></span><code><span id="__span-10-1"><a id="__codelineno-10-1" name="__codelineno-10-1" href="#__codelineno-10-1"></a>Kernel Restarting
