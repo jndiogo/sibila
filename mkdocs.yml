@@ -4,8 +4,9 @@ repo_url: https://github.com/jndiogo/sibila
 
 nav:
   - index.md
-  - getting-started.md
   - Examples: 'https://github.com/jndiogo/sibila/tree/main/examples'
+  - getting-started.md
+  - setup-local-models.md
   - api-reference.md
 
 

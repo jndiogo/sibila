@@ -11,7 +11,7 @@ In this example, we use a [4-bit quantization of the OpenChat-3.5 7 billion para
 
 The GGUF file is named "openchat-3.5-1210.Q4_K_M.gguf" and was downloaded from the above link. Make sure to save it into the "../../models" folder.
 
-[See here for more information](../setup_local_models/readme.md#setup-local-models) about setting up your local models.
+[See here for more information](https://jndiogo.github.io/sibila/setup-local-models/#default-model-used-in-the-examples-openchat) about setting up your local models.
 
 
 ``` py

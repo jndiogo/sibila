@@ -4,6 +4,10 @@ Start by creating the model. As you'll see below, the transcript is large, with 
 
 Make sure to set your OPENAI_API_KEY env variable.
 
+Available as a [Jupyter notebook](tough_meeting.ipynb) or [Python script](tough_meeting.py).
+
+Let's create the model.
+
 
 ```python
 from sibila import ModelDir, GenConf
@@ -125,7 +129,7 @@ Commissioner Garland: Second.
 Chairman Wormsley: Without objection, the meeting will stand adjourned.
 """
 
-# this is the text with the model instructions, also known as system message.
+# model instructions text, also known as system message
 inst_text = "Extract information and output in JSON format."
 ```
 
@@ -404,3 +408,8 @@ for ai in out.action_items:
 It's not clear from the meeting transcript text if these priorities are correct, but some items related to taxes are receiving high and medium priorities, looks reasonable that taxes are a priority. : )
 
 This example is replicated with dictype definitions instead of Pydantic objects. [See it here](readme_dictype.md).
+
+
+```python
+
+```

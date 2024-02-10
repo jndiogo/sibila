@@ -7,10 +7,13 @@ In this example we'll ask the model to extract keypoints from a text:
 All the queries will be made at temperature=0, which is the default GenConf setting.
 This means that the model is giving it's best (as in most probable) answer and that it will always output the same results, given the same inputs.
 
+Available as a [Jupyter notebook](from_text_to_object.ipynb) or [Python script](from_text_to_object.py).
+
 We'll start by creating either a local model or a GPT-4 model.
 
-For a local model, make sure you have its file in the folder "../../models/". You can use any GGUF format model - [see here how to download the OpenChat model used below](../setup_local_models/readme.md#setup-local-models). If you use a different one, don't forget to set its filename in the name variable below, after the text "llamacpp:".
+To use a local model, make sure you have its file in the folder "../../models/". You can use any GGUF format model - [see here how to download the OpenChat model used below](https://jndiogo.github.io/sibila/setup-local-models/#default-model-used-in-the-examples-openchat). If you use a different one, don't forget to set its filename in the name variable below, after the text "llamacpp:".
 
+To use an OpenAI model, make sure you defined the env variable OPENAI_API_KEY with a valid token and uncomment the line after "# to use an OpenAI model:".
 For an OpenAI model, make sure you defined the env variable OPENAI_API_KEY with a valid token and uncomment the line after "# to use an OpenAI model:".
 
 
@@ -73,7 +76,7 @@ Bainimarama's FijiFirst party won 59.2% of the vote, and international observers
 deemed the election credible.[17] 
 """
 
-# this is the text with the model instructions, also known as system message.
+# model instructions text, also known as system message
 inst_text = "Be helpful and provide concise answers."
 ```
 
@@ -153,14 +156,24 @@ We'll also use query_json(), now passing the json_schema:
 out = model.query_json(inst_text,
                        in_text,
                        json_schema=json_schema)
-pp.pprint(out)
+
+print(out)
 ```
 
-    {'keypoint_list': ['Fiji is an island country in Melanesia, part of Oceania in the South Pacific Ocean.',
-                       "About 87% of Fiji's total population live on the two major islands, Viti Levu and Vanua Levu.",
-                       "The majority of Fiji's islands were formed by volcanic activity starting around 150 million years ago.",
-                       'Humans have lived in Fiji since the second millennium BC, first Austronesians and later Melanesians, with some Polynesian influences.',
-                       "In 2014, a democratic election took place, with Bainimarama's FijiFirst party winning 59.2% of the vote."]}
+    {'keypoint_list': ['Fiji is an island country in Melanesia, part of Oceania in the South Pacific Ocean.', "About 87% of Fiji's total population live on the two major islands, Viti Levu and Vanua Levu.", "The majority of Fiji's islands were formed by volcanic activity starting around 150 million years ago.", 'Humans have lived in Fiji since the second millennium BC, first Austronesians and later Melanesians, with some Polynesian influences.', "In 2014, a democratic election took place, with Bainimarama's FijiFirst party winning 59.2% of the vote."]}
+
+
+
+```python
+for kpoint in out["keypoint_list"]:
+    print(kpoint)
+```
+
+    Fiji is an island country in Melanesia, part of Oceania in the South Pacific Ocean.
+    About 87% of Fiji's total population live on the two major islands, Viti Levu and Vanua Levu.
+    The majority of Fiji's islands were formed by volcanic activity starting around 150 million years ago.
+    Humans have lived in Fiji since the second millennium BC, first Austronesians and later Melanesians, with some Polynesian influences.
+    In 2014, a democratic election took place, with Bainimarama's FijiFirst party winning 59.2% of the vote.
 
 
 It has generated a string list in the "keypoint_list" field, as we specified in the JSON schema.
@@ -181,10 +194,24 @@ class Keypoints(BaseModel):
 out = model.query_pydantic(Keypoints,
                            inst_text,
                            in_text)
-pp.pprint(out)
+
+print(out)
 ```
 
-    Keypoints(keypoint_list=['Fiji is an island country in Melanesia, part of Oceania in the South Pacific Ocean.', "About 87% of Fiji's total population live on the two major islands, Viti Levu and Vanua Levu.", "The majority of Fiji's islands were formed by volcanic activity starting around 150 million years ago.", 'Humans have lived in Fiji since the second millennium BC, first Austronesians and later Melanesians, with some Polynesian influences.', "In 2014, a democratic election took place in Fiji, with Bainimarama's FijiFirst party winning 59.2% of the vote."])
+    keypoint_list=['Fiji is an island country in Melanesia, part of Oceania in the South Pacific Ocean.', "About 87% of Fiji's total population live on the two major islands, Viti Levu and Vanua Levu.", "The majority of Fiji's islands were formed by volcanic activity starting around 150 million years ago.", 'Humans have lived in Fiji since the second millennium BC, first Austronesians and later Melanesians, with some Polynesian influences.', "In 2014, a democratic election took place in Fiji, with Bainimarama's FijiFirst party winning 59.2% of the vote."]
+
+
+
+```python
+for kpoint in out.keypoint_list:
+    print(kpoint)
+```
+
+    Fiji is an island country in Melanesia, part of Oceania in the South Pacific Ocean.
+    About 87% of Fiji's total population live on the two major islands, Viti Levu and Vanua Levu.
+    The majority of Fiji's islands were formed by volcanic activity starting around 150 million years ago.
+    Humans have lived in Fiji since the second millennium BC, first Austronesians and later Melanesians, with some Polynesian influences.
+    In 2014, a democratic election took place in Fiji, with Bainimarama's FijiFirst party winning 59.2% of the vote.
 
 
 The query_pydantic() method returns an object (of class Keypoints) instantiated with the model output.

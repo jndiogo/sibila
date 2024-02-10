@@ -50,23 +50,26 @@ gpt4.query_pydantic(Info,
                     "Who was the first man in the moon?")
 ```
 
-Which creates an Info object initialized as the one listed above.
+Which creates an initialized Info object as above.
 
-If Pydantic BaseModel objects are too much for your project, you can also use a very simple language called [dictype](https://jndiogo.github.io/sibila/api-reference/#dictype), which defines structure and types of output dicts.
+If Pydantic BaseModel objects are too much for your project, you can also use a very simple convention called [dictype](https://jndiogo.github.io/sibila/api-reference/#dictype), which defines structure and types of output dicts.
 
 Sibila also includes model management and tools to compare output between models.
+
+
+## Examples
+
+The included examples show what you can do with local or remote models in Sibila: structured data extraction, classification, summarization, etc. 
+
+Although you can use any llama.cpp or OpenAI supported model, by default most of the examples use OpenChat, a local 7B quantized model which is very capable for information extraction tasks. To use OpenAI models, just uncomment a line or two.
+
+[Check the examples here](https://github.com/jndiogo/sibila/tree/main/examples).
 
 
 ## Getting started
 
 Installation, accessing OpenAI, getting local models: [How to get started](https://github.com/jndiogo/sibila/blob/main/docs/getting-started.md).
 
-
-## Examples
-
-The examples show what you can do with local or remote GPT models in Sibila: structured data extraction, classification, summarization, etc. 
-
-[Check them here](https://github.com/jndiogo/sibila/tree/main/examples). More are coming.
 
 
 ## Documentation
@@ -81,7 +84,7 @@ This project is licensed under the MIT License - see the [LICENSE](LICENSE) file
 
 ## Sibila?
 
-Sibila is the Portuguese word for Sibyl. [The Sibyls](https://en.wikipedia.org/wiki/Sibyl) were wise oracular women in ancient Greece. Their mysterious words puzzled people, providing insight or prophetic predictions.
+Sibila is the Portuguese word for Sibyl. [The Sibyls](https://en.wikipedia.org/wiki/Sibyl) were wise oracular women in ancient Greece. Their mysterious words puzzled people throughout the centuries, providing insight or prophetic predictions.
 
 ![Michelangelo's Delphic Sibyl, Sistine Chapel ceiling](https://upload.wikimedia.org/wikipedia/commons/thumb/1/19/DelphicSibylByMichelangelo.jpg/471px-DelphicSibylByMichelangelo.jpg)
 

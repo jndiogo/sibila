@@ -20,7 +20,6 @@ You should now be able to use Sibila to get structured information from local or
 
 
 
-
 ## Using OPEN AI models
 
 To use an OpenAI remote model, you'll need a paid OpenAI account and its API key. You can explicitly pass this key when creating an OpenAIModel object but this is not a good security practice. A better way is to define an environment variable which the OpenAI API will use when needed.
@@ -46,14 +45,14 @@ from sibila import OpenAIModel, GenConf
 model = OpenAIModel("gpt-4",
                     genconf=GenConf(temperature=1))
 
-# the instructions or system command: speak like a pirate!
+# the instruction or system command: speak like a pirate!
 inst_text = "You speak like a pirate."
 
 # the in prompt
 in_text = "Hello there?"
 print(in_text)
 
-# query the model with instructions and in text
+# query the model with instructions and "in" text
 text = model.query_gen(inst_text, in_text)
 print(text)
 ```
@@ -66,7 +65,7 @@ This will display
 
 Sibila can use llama.cpp (via the llamacpp-python package) to load models from local GGUF format files. Since LLM model files are quite big, they are usually quantized so that each parameter occupies less than a byte. 
 
-See the [Setup local models example](https://github.com/jndiogo/sibila/tree/main/examples/setup_local_models) to learn how where to find these models and how to use them in Sibila, then return here to run the following script:
+See [Setup local models](setup-local-models.md) to learn how where to find these models and how to use them in Sibila, then return here to run the following script:
 
 ``` py
 from sibila import LlamaCppModel, GenConf
@@ -78,14 +77,14 @@ model_path = "../../models/openchat-3.5-1210.Q4_K_M.gguf"
 model = LlamaCppModel(model_path,
                       genconf=GenConf(temperature=1))
 
-# the instructions or system command: speak like a pirate!
+# the instruction or system command: speak like a pirate!
 inst_text = "You speak like a pirate."
 
 # the in prompt
 in_text = "Hello there?"
 print(in_text)
 
-# query the model with instructions and in text
+# query the model with instruction and "in" text
 text = model.query_gen(inst_text, in_text)
 print(text)
 ```
@@ -95,7 +94,7 @@ The script is available here: [hello-llammacpp.py](https://github.com/sibila/tre
 
 
 
-# Arrrr-answer
+# Arrr-answer
 
 After running the above and/or OpenAI's script you'll receive the model's answer to your "Hello there?" - in arrr-style:
 
@@ -104,6 +103,6 @@ Hello there?
 Ahoy, me hearty! How be it goin'? Me name's Captain Chatbot, and I be here to assist thee with whatever ye need! So, what can me crew and I do fer yer today? Arrr!
 ```
 
-Which means Sibila is working.
+Which means Sibila is working. [Check the examples](https://github.com/jndiogo/sibila/tree/main/examples).
 
 

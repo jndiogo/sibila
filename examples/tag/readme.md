@@ -1,8 +1,10 @@
 In this example we'll summarize and classify customer queries with tags.
 
-To use a local model, make sure you have its file in the folder "../../models/". You can use any GGUF format model - [see here how to download the OpenChat model used below](../setup_local_models/readme.md#setup-local-models). If you use a different one, don't forget to set its filename in the name variable below, after the text "llamacpp:".
+To use a local model, make sure you have its file in the folder "../../models/". You can use any GGUF format model - [see here how to download the OpenChat model used below](https://jndiogo.github.io/sibila/setup-local-models/#default-model-used-in-the-examples-openchat). If you use a different one, don't forget to set its filename in the name variable below, after the text "llamacpp:".
 
 To use an OpenAI model, make sure you defined the env variable OPENAI_API_KEY with a valid token and uncomment the line after "# to use an OpenAI model:".
+
+Available as a [Jupyter notebook](tag.ipynb) or [Python script](tag.py).
 
 Let's start by creating the model:
 
@@ -59,7 +61,9 @@ class Query(BaseModel):
 class QueryTags(BaseModel):
     queries: List[Query]
 
+# model instructions text, also known as system message
 inst_text = "Extract information from customer queries."
+
 in_text = "Each line is a customer query. Extract information about each query:\n\n" + queries
 
 out = model.query_pydantic(QueryTags,

@@ -4,6 +4,7 @@ Learn more about [dictype definitions here](https://jndiogo.github.io/sibila/api
 
 So let's look at extracting participants and action items from a meeting transcript.
 
+Available as a [Jupyter notebook](tough_meeting_dictype.ipynb) or [Python script](tough_meeting_dictype.py).
 
 Start by creating the model. As you'll see below, the transcript is large, with complex language, so we'll use OpenAI's GPT-4 this time. You can still use a local model by uncommenting the commented lines below.
 
@@ -128,7 +129,7 @@ Commissioner Garland: Second.
 Chairman Wormsley: Without objection, the meeting will stand adjourned.
 """
 
-# this is the text with the model instructions, also known as system message.
+# model instructions text, also known as system message
 inst_text = "Extract information and output in JSON format."
 ```
 
@@ -407,4 +408,6 @@ for ai in out["action_items"]:
 
 It's not clear from the meeting transcript text if these priorities are correct, but some items related to taxes are receiving high and medium priorities, looks reasonable that taxes are a priority. : )
 
-It's interesting that comparing with the Pydantic example, action items are the same, but not listed with equal wording, and priorities do not match in all cases. I think there's not priority information stated in the meeting, even for a human it's hard to attribute priorities after reading the transcript.
+It's interesting that comparing with the Pydantic example, returned action items are not the same. Even a strong model (for now) is struggling with this transcript.
+
+Regarding priority differences, it's fair to say that that there's no priority information stated in the meeting, even for a human it's hard to attribute priorities after reading the transcript.

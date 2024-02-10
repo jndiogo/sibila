@@ -2,7 +2,9 @@ This is the [dictype](https://jndiogo.github.io/sibila/api-reference/#dictype) v
 
 We'll extract information about all persons mentioned in a text.
 
-To use a local model, make sure you have its file in the folder "../../models/". You can use any GGUF format model - [see here how to download the OpenChat model used below](../setup_local_models/readme.md#setup-local-models). If you use a different one, don't forget to set its filename in the name variable below, after the text "llamacpp:".
+Available as a [Jupyter notebook](extract_dictype.ipynb) or [Python script](extract_dictype.py).
+
+To use a local model, make sure you have its file in the folder "../../models/". You can use any GGUF format model - [see here how to download the OpenChat model used below](https://jndiogo.github.io/sibila/setup-local-models/#default-model-used-in-the-examples-openchat). If you use a different one, don't forget to set its filename in the name variable below, after the text "llamacpp:".
 
 To use an OpenAI model, make sure you defined the env variable OPENAI_API_KEY with a valid token and uncomment the line after "# to use an OpenAI model:".
 
@@ -45,7 +47,7 @@ Joining the trio was Ahmed Khan, a married 40-year-old engineer from the bustlin
 Last but not least, leaning against the counter with an air of quiet confidence, was Isabella Santos, a 32-year-old fashion designer from the romantic streets of Paris. Her impeccable style and effortless grace reflected the timeless elegance of her beloved city.
 """
 
-# this is the text with the model instructions, also known as system message.
+# model instructions text, also known as system message
 inst_text = "Extract information."
 ```
 

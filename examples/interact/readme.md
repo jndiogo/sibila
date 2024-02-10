@@ -2,9 +2,11 @@ In this example we look at the interact() function which allows to have a back-a
 
 For a chat interaction, the model has to "remember" the previous messages exchanged. For this to work, a persistent context with the previous messages is provided to the model in each turn. This is done in the interact() function by using the Context class. A Context object can manage thread messages and delete older ones when the context maximum length is reached.
 
-To use a local model, make sure you have its file in the folder "../../models/". You can use any GGUF format model - [see here how to download the OpenChat model used below](../setup_local_models/readme.md#setup-local-models). If you use a different one, don't forget to set its filename in the name variable below, after the text "llamacpp:".
+To use a local model, make sure you have its file in the folder "../../models/". You can use any GGUF format model - [see here how to download the OpenChat model used below](https://jndiogo.github.io/sibila/setup-local-models/#default-model-used-in-the-examples-openchat). If you use a different one, don't forget to set its filename in the name variable below, after the text "llamacpp:".
 
 To use an OpenAI model, make sure you defined the env variable OPENAI_API_KEY with a valid token and uncomment the line after "# to use an OpenAI model:".
+
+Available as a [Jupyter notebook](interact.ipynb) or [Python script](interact.py).
 
 So, let's create a local model.
 
@@ -40,7 +42,7 @@ from sibila.tools import (
 )
 
 interact(model,
-         inst_text="Be helpful.",
+         inst_text="Be helpful.", # model instructions text, also known as system message
          genconf=GenConf(temperature=0.9))
 ```
 
