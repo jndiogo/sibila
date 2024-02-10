@@ -1,12 +1,12 @@
 In this example we look at the interact() function which allows to have a back-and-forth chat session. You enter messages in an input() prompt and can use some special "!" commands for more functionality.
 
-For a chat interaction, the model has to "remember" the previous messages exchanged. For this to work, a persistent context with the previous messages is provided to the model in each turn. This is done in the interact() function by using the Context class. A Context object can manage thread messages and delete older ones when the context maximum length is reached.
+In a chat interaction, the model has to "remember" the previous messages exchanged. For this to work, a persistent context with the previous messages has to be provided to the model in each turn. This is done by using a Context class object, which can manage thread messages and delete older ones when the context maximum length is reached.
+
+Available as a [Jupyter notebook](interact.ipynb) or [Python script](interact.py).
 
 To use a local model, make sure you have its file in the folder "../../models/". You can use any GGUF format model - [see here how to download the OpenChat model used below](https://jndiogo.github.io/sibila/setup-local-models/#default-model-used-in-the-examples-openchat). If you use a different one, don't forget to set its filename in the name variable below, after the text "llamacpp:".
 
 To use an OpenAI model, make sure you defined the env variable OPENAI_API_KEY with a valid token and uncomment the line after "# to use an OpenAI model:".
-
-Available as a [Jupyter notebook](interact.ipynb) or [Python script](interact.py).
 
 So, let's create a local model.
 
@@ -31,7 +31,7 @@ model = ModelDir.create(name)
 
 Import interact() from the tools module and run it. 
 
-What follows is the actual chat where the user prompts start with a ">" and the model answer right below.
+What follows is the actual chat where the user prompts start with a ">" and the model answer's immediately below.
 
 Read on, it does get funny at times... : )
 
@@ -260,4 +260,19 @@ interact(model,
 
     <sibila.context.Context at 0x7f27f2714650>
 
+
+
+These are the "!" commands that you can use in the interact() inputs:
+```
+ ! - to show this help
+ !inst[=text] - clear messages and add inst (system) message
+ !add|!a=path - load file and add to last msg
+ !c - list context msgs
+ !cl=path - load context (default=ctx.json)
+ !cs=path - save context (default=ctx.json)
+ !tl - thread's token length
+ !i - model and genconf info
+ Delimit with """ for multiline begin/end or terminate line with \ to continue into a new line
+ Empty line + enter to quit
+```
 

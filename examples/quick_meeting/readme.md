@@ -128,7 +128,7 @@ for att in out.attendees:
 
 This information was correctly extracted.
 
-Let's now request the action items mentioned in the meeting. Well create a new class ActionItem with an index and a name for the item.
+Let's now request the action items mentioned in the meeting. We'll create a new class ActionItem with an index and a name for the item.
 
 We'll also add an action_items field to the Meeting class to hold the items list.
 

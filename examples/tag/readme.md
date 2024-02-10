@@ -45,7 +45,7 @@ queries = """\
 """
 ```
 
-We'll start by summarizing each query. No need adding field descriptions, the field names should be enough to tell the model about what we want done.
+We'll start by summarizing each query. No need adding field descriptions, the field names should be enough to tell the model about what we want.
 
 
 ```python
@@ -85,7 +85,7 @@ for query in out.queries:
     id=10 query_summary='Customer support hours' query_text='What are your customer support hours and how can I reach your team in case of emergencies?'
 
 
-Summaries appear to be quite good.
+The summaries appear to be quite good.
 
 Let's now define tags and ask the model to classify each query into a tag. In the Tag class, we set its docstring to the rules we want for the classification. This is done in the docstring because the class is not derived from BaseModel, so we cannot set a Field(description="...") for each item.
 

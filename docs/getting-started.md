@@ -3,7 +3,7 @@
 
 ## Installation
 
-Sibilia requires Python 3.9+ and uses the llama-cpp-python package for local models and OpenAI's API to access remote models like GPT-4.
+Sibila requires Python 3.9+ and uses the llama-cpp-python package for local models and OpenAI's API to access remote models like GPT-4.
 
 You can run it in a plain CPU, CUDA GPU or other accelerator supported by llama.cpp.
 

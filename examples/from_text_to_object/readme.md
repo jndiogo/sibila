@@ -178,7 +178,7 @@ for kpoint in out["keypoint_list"]:
 
 It has generated a string list in the "keypoint_list" field, as we specified in the JSON schema.
 
-This is better, but the problem with JSON schemas being that they're very unintuitive...
+This is better, but the problem with JSON schemas is that they're so unintuitive...
 
 Let's use an easier way to specify the fields we want returned: Pydantic classes derived from BaseModel. This is much simpler to use than than JSON schemas.
 

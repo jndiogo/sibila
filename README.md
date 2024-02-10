@@ -63,7 +63,7 @@ The included examples show what you can do with local or remote models in Sibila
 
 Although you can use any llama.cpp or OpenAI supported model, by default most of the examples use OpenChat, a local 7B quantized model which is very capable for information extraction tasks. To use OpenAI models, just uncomment a line or two.
 
-[Check the examples here](https://github.com/jndiogo/sibila/tree/main/examples).
+[Check the examples here](examples/readme.md).
 
 
 ## Getting started
