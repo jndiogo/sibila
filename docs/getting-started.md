@@ -5,18 +5,23 @@
 
 Sibila requires Python 3.9+ and uses the llama-cpp-python package for local models and OpenAI's API to access remote models like GPT-4.
 
-You can run it in a plain CPU, CUDA GPU or other accelerator supported by llama.cpp.
+You can run local models in a plain CPU, CUDA GPU or other accelerator supported by llama.cpp.
 
-For accelerated inference with local models, to take advantage of CUDA, Metal, etc, make sure you install llamacpp-python with the right settings - [see more info here](https://github.com/abetlen/llama-cpp-python?tab=readme-ov-file#installation).
+For local hardware accelerated inference, to take advantage of CUDA, Metal, etc, make sure you install llamacpp-python with the right settings - [see more info here](https://github.com/abetlen/llama-cpp-python?tab=readme-ov-file#installation).
 
-To use Sibila, download the repository and from the base directory (which has a setup.py script) do:
+Install Sibila from PyPI by running:
+
+```
+pip install sibila
+```
+
+Alternatively you can install Sibila in edit mode by downloading the GitHub repository and running the following in the base folder of the repository:
 
 ```
 pip install -e .
 ```
 
-You should now be able to use Sibila to get structured information from local or remote models.
-
+Either way you should now be able to use Sibila.
 
 
 

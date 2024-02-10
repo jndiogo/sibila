@@ -63,12 +63,19 @@ The included examples show what you can do with local or remote models in Sibila
 
 Although you can use any llama.cpp or OpenAI supported model, by default most of the examples use OpenChat, a local 7B quantized model which is very capable for information extraction tasks. To use OpenAI models, just uncomment a line or two.
 
-[Check the examples here](examples/readme.md).
+[Check the examples here](https://github.com/jndiogo/sibila/blob/main/examples/readme.md).
 
 
-## Getting started
 
-Installation, accessing OpenAI, getting local models: [How to get started](https://github.com/jndiogo/sibila/blob/main/docs/getting-started.md).
+## Installation and getting started
+
+Sibila can be installed from PyPI by doing:
+
+```
+pip install sibila
+```
+
+For running local models with hardware acceleration, accessing OpenAI and general "getting started" help, see [How to get started](https://github.com/jndiogo/sibila/blob/main/docs/getting-started.md).
 
 
 
@@ -79,7 +86,7 @@ The API reference and more info is [available here](https://jndiogo.github.io/si
 
 ## License
 
-This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
+This project is licensed under the MIT License - see the [LICENSE](https://github.com/jndiogo/sibila/blob/main/LICENSE) file for details.
 
 
 ## Sibila?
