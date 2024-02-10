@@ -35,7 +35,7 @@ And in Windows command prompt:
 setx OPENAI_API_KEY "sk-xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx"
 ```
 
-Having set this variable with your OpenAI API key, you can run an ["Hello Model" example](https://github.com/sibila/tree/master/examples/hellomodel/hello_openai.py) :
+Having set this variable with your OpenAI API key, you can run an ["Hello Model" example](https://github.com/jndiogo/sibila/blob/main/examples/hello_model/hello_openai.py) :
 
 ```python
 from sibila import OpenAIModel, GenConf
@@ -57,7 +57,8 @@ text = model.query_gen(inst_text, in_text)
 print(text)
 ```
 
-This will display 
+This will generate a pirate response as seen below.
+
 
 
 
@@ -89,7 +90,7 @@ text = model.query_gen(inst_text, in_text)
 print(text)
 ```
 
-The script is available here: [hello-llammacpp.py](https://github.com/sibila/tree/master/examples/hellomodel/hello_llamacpp.py)
+The script is available here: [hello_llamacpp.py](https://github.com/jndiogo/sibila/blob/main/examples/hello_model/hello_llamacpp.py)
 
 
 
