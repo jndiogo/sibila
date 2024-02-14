@@ -1,8 +1,8 @@
 # Documentation
 
-Extract structured information from LLM models, using a common API to access remote models like GPT-4 or local GGUF quantized models with llama.cpp.
+Extract structured data from LLM models, using a common API to access remote models like GPT-4 or local GGUF quantized models with llama.cpp.
 
-- Query structured information into Pydantic BaseModel objects or typed Python dicts.
+- Query structured data into Pydantic BaseModel objects or typed Python dicts.
 - Use the same API for local and remote models.
 - Thread-based interaction with chat/instruct fine-tuned models.
 - Compare output across local/remote models with included utilities, text or CSV output.

@@ -1,8 +1,8 @@
 # Sibila
 
-Extract structured information from LLM models, using a common API to access remote models like GPT-4 or local models via llama.cpp.
+Extract structured data from LLM models, using a common API to access remote models like GPT-4 or local models via llama.cpp.
 
-- Query structured information into Pydantic BaseModel objects or typed Python dicts.
+- Query structured data into Pydantic BaseModel objects or typed Python dicts.
 - Use the same API for local and remote models.
 - Thread-based interaction with chat/instruct fine-tuned models.
 - Compare output across local/remote models with included utilities, text or CSV output.
@@ -75,7 +75,7 @@ Sibila can be installed from PyPI by doing:
 pip install sibila
 ```
 
-For running local models with hardware acceleration, accessing OpenAI and general "getting started" help, see [How to get started](https://github.com/jndiogo/sibila/blob/main/docs/getting-started.md).
+For running local models with hardware acceleration, accessing OpenAI and general "getting started" help, see [How to get started](https://jndiogo.github.io/sibila/getting-started/).
 
 
 

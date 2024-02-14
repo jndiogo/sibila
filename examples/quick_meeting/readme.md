@@ -1,4 +1,4 @@
-Let's extract structured information from a meeting transcript, like attendees, action items and their priorities.
+Let's extract structured data from a meeting transcript, like attendees, action items and their priorities.
 
 This is a quick meeting whose transcript is not very large, so a small local model should work well. See the [Tough meeting example](../tough_meeting/readme.md) for a larger and more complex transcription text.
 
