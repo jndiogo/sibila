@@ -144,7 +144,7 @@ But most of the time, Sibila should automatically detect the used format from th
 
 ## Use the model with ModelDir
 
-Instead of manually creating a LlamaCppModel object, it's a better idea for continued use to create a model entry in ModelDir.
+For continued use, it's a better idea for to create an entry for the model in ModelDir, instead of manually creating a LlamaCppModel object that loads a model file - this allows future model changing to be much easier.
 
 In the "models" folder you'll find the file "modeldir.json". The idea is that you can use this file to configure all files in its folder and the file can be added to ModelDir's configuration by including this line in your scripts:
 

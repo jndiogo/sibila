@@ -167,13 +167,13 @@ class LlamaCppModel(FormattedTextModel):
     
     
     
-    def _text_gen(self,
+    def _gen_text(self,
                   text: str,
                   genconf: GenConf) -> tuple[str,str]:
         """Generate from formatted text.
 
         Args:
-            text: Formated text (from input Thread).
+            text: Formatted text (from input Thread).
             genconf: Model generation configuration.
 
         Returns:
@@ -224,6 +224,19 @@ class LlamaCppModel(FormattedTextModel):
         return choice["text"], choice["finish_reason"]
 
 
+        
+    @classmethod
+    def provider_version(_) -> str:
+        """Provider library version: provider x.y.z
+        Ex. llama-cpp-python 0.2.44
+        """
+        try:        
+            import llama_cpp
+            ver = llama_cpp.__version__
+        except:
+            raise ImportError("Please install llama-cpp-python by running: pip install llama-cpp-python")
+            
+        return f"llama-cpp-python {ver}"
 
     
     @property

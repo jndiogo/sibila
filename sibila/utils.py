@@ -1,9 +1,5 @@
 """A bag of assorted utilities."""
 
-from .model import Tokenizer
-
-
-
 def dict_merge(dest: dict, 
                src: dict):
     """
@@ -19,113 +15,22 @@ def dict_merge(dest: dict,
             dest[key] = src[key]
 
 
+def is_subclass_of(cls, base_cls):
+    """Safe issubclass what also works for instances"""
+    return isinstance(cls,type) and issubclass(cls, base_cls)
 
 
-    
-
-
-def clear_mem(var_names: list[str]):
-
+def synth_desc(flags: int,
+               name: str) -> str:
+    """Create a description from a key or variable name.
+    For example:
+        class_label -> "Class label"
+    flags:
+        0: just copy
+        1: replace _ with space and capitalize()
     """
-    clear_mem(["tokenizer", "model"])
-    """
-    
-    for name in var_names:
-        try:
-            del globals()[name]
-            print("Deleted", name)
-        except IndexError:
-            ...
-            
-    try:
-        import gc
-        gc.collect()
-        
-        # Empty VRAM cache
-        import torch
-        torch.cuda.empty_cache()
+    if flags & 1:
+        name = name.replace("_", " ").capitalize()
 
-    except Exception:
-        ...
-
-
-
-
-import sys, os
-class mute_stdout_stderr():
-    '''
-    Based on: https://github.com/abetlen/llama-cpp-python/issues/478
-    '''
-    def __enter__(self):
-        self.old_stdout = sys.stdout
-        self.old_stderr = sys.stderr
-
-        sys.stdout = open(os.devnull, 'w')
-        sys.stderr = open(os.devnull, 'w')
-
-    def __exit__(self, exc_type, exc_value, traceback):
-        sys.stdout = self.old_stdout
-        sys.stderr = self.old_stderr
-
-
-
-
-# =========================================================================== Tokenization
-
-
-def detok(tokenizer: Tokenizer, 
-          text=None, ids=None, add_special=False):
-    
-    assert (text is not None) ^ (ids is not None), "Only one of text or ids"
-    
-    if text is not None:
-        ids = tokenizer.encode(text, add_special=add_special)
-        
-    print("Tokens:", ids)
-    
-    s = tokenizer.decode(ids)
-
-    print("Decode: █" + s + "█")
-    
-    for o in ids:
-        ot = tokenizer.decode([o])
-        print(" ", o, "= █" + ot + "█")
-
-    if text is not None and add_special:
-        print("Equal:", text == s)
-
-
-
-
-
-def token_comp(hf_model, llamacpp_model,
-               text):
-    """
-    Compare tokenization between HuggingFace and LlamaCpp
-    """
-    
-    import transformers
-    from llama_cpp import (
-        Llama,
-        LlamaTokenizer,
-    )
-    
-    hf_tokenizer = transformers.AutoTokenizer.from_pretrained(hf_model)
-    
-    lc_model = Llama(model_path=llamacpp_model, verbose=False)
-    lc_tokenizer = LlamaTokenizer(lc_model)
-
-
-    hf = hf_tokenizer(text, add_special_tokens=False).input_ids    
-
-    print(f"HF={hf_model} - LlamaCpp={llamacpp_model}")
-    lc = lc_tokenizer.encode(text, add_bos=False)
-    if hf == lc:
-        print("LlamaCpp matches HF")
-    else:
-        print("LlamaCpp doesn't match HF:")
-        for h,l in zip(hf,lc):
-            print(h == l, h, l)
-
-
+    return name
 

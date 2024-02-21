@@ -32,6 +32,7 @@ classifiers = [
 dependencies = [
     "llama-cpp-python",
     "jinja2",
+    "typing_extensions",
     "jsonschema",
     "openai",
     "tiktoken",

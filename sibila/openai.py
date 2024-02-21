@@ -221,10 +221,10 @@ class OpenAIModel(MessagesModel):
         
 
     
-    def gen_(self, 
-             thread: Thread,
-             genconf: Optional[GenConf] = None,
-             ) -> GenOut:
+    def gen(self, 
+            thread: Thread,
+            genconf: Optional[GenConf] = None,
+            ) -> GenOut:
         """Text generation from a Thread, used by the other model generation methods.
         Doesn't raise an exception if an error occurs, always returns GenOut.
 
@@ -388,6 +388,20 @@ class OpenAIModel(MessagesModel):
         """Model description."""
         return f"OpenAIModel: {self._model_name}"
 
+
+    @classmethod
+    def provider_version(_) -> str:
+        """Provider library version: provider x.y.z
+        Ex. openai 1.3.6
+        """
+        try:        
+            import openai
+            ver = openai.__version__
+        except:
+            raise ImportError("Please install openai by running: pip install openai")
+            
+        return f"openai {ver}"
+    
 
 
 

@@ -1,13 +1,20 @@
-from typing import Any, Optional, Union
+from typing import Any, Optional, Union, Literal, Annotated, get_origin, get_args
 from dataclasses import dataclass, field
+from enum import Enum
 
 import json
 
 import logging
 logger = logging.getLogger(__name__)
 
+from pydantic import BaseModel, TypeAdapter, ValidationError
+
 from .dictype import json_schema_from_dictype
 
+from .utils import (
+    is_subclass_of,
+    synth_desc
+)
 
 
 
@@ -24,8 +31,12 @@ class JSchemaConf:
     collapse_single_combines: bool = True
     """Any single-valued "oneOf"/"anyOf" is replaced with the actual value."""
     
-    description_from_title: bool = False
-    """If a value doesn't have a description entry, make one from its title or name."""
+    description_from_title: int = 0
+    """If a value doesn't have a description entry, make one from its title or name.
+        0: don't
+        1: copy title or name to description
+        2: 1: + capitalize first letter and convert _ to space: class_label -> "class label".        
+    """
     
     force_all_required: bool = False
     """Force all entries in an object to be required (except removed defaults if remove_with_default=True)."""
@@ -46,7 +57,6 @@ class JSchemaConf:
     # pydantic_obj_from_json() configuration:
     pydantic_strict_validation: Optional[bool] = None
     """Validate JSON values in a strict manner or not. None means validate individually per each value in the obj. (for example in pydantic with: Field(strict=True))."""
-
 
 
 
@@ -105,7 +115,6 @@ def json_schema_massage(sch: dict,
     Massages JSON schema object to simplify as much as possible and remove all non-essential keys. 
     Resolves $refs and eliminates definitions.
 
-    @TODO: description_from_title could be an int, that when = 2 would transform title="ClassLabels" or "class_labels" into description="Class labels"
     """
 
    
@@ -134,22 +143,24 @@ def json_schema_massage(sch: dict,
     def recurse_object_or_items(dic: dict):
         if "title" in dic:
             if schemaconf.description_from_title and "description" not in dic:
-                dic["description"] = dic["title"]
+                dic["description"] = synth_desc(schemaconf.description_from_title - 1, 
+                                                dic["title"])
 
             del dic["title"]
 
         clean(dic)
+
         
     def recurse_combine(lis: list):
         for dic in lis:
             if "title" in dic:
                 if schemaconf.description_from_title and "description" not in dic:
-                    dic["description"] = dic["title"]
+                    dic["description"] = synth_desc(schemaconf.description_from_title - 1, 
+                                                    dic["title"])
     
                 del dic["title"]
 
             clean(dic)
-
 
     
     def clean(root: dict):
@@ -226,136 +237,330 @@ def json_schema_massage(sch: dict,
 
 
 
-
-
-
 # ============================================================================ Pydantic - JSON schema
-try:
-    from pydantic import BaseModel, TypeAdapter, ValidationError
-    has_pydantic = True
-except ImportError:
-    has_pydantic = False
-                                   
-def pydantic_get_class_info(p: Any, # BaseModel
-                          
-                            default_name: Any = None,
-                            default_description: Any = None,
-                          
-                            schemaconf: Optional[JSchemaConf] = JSchemaConf(),
-                            DEB: Optional[bool] = False
-                            ) -> tuple[str,str,dict]:
 
-    """ Accepts a BaseModel object or a JSON schema dict.
-    Returns name, description, json schema parameters from a pydantic BaseModel object """
-   
-    if not has_pydantic:
-        raise Exception("Please install pydantic by running: pip install pydantic")
-
-    if has_pydantic and issubclass(p, BaseModel):
-        dic = p.model_json_schema()
-    else:
-        raise ValueError("Only pydantic BaseModel allowed for param p")
-
-    if "title" in dic:
-        name = dic["title"]
-    else:
-        name = default_name
-
-    if "description" in dic:
-        description = dic["description"]
-    else:
-        description = default_description
-
-    parameters = json_schema_massage(dic,
-                                     schemaconf,
-                                     DEB)
-    
-    return name, description, parameters    
+def json_schema_from_pydantic(cls: BaseModel) -> dict:
+    return cls.model_json_schema()
 
 
-
-def pydantic_get_class_parameters(p: Any, # BaseModel
-                                      
-                                  schemaconf: Optional[JSchemaConf] = JSchemaConf(),
-                                     
-                                  DEB: Optional[bool] = False                         
-                                  ) -> tuple[str,str,dict]:
-
-    _,_, parameters = pydantic_get_class_info(p,
-                                              None, None,
-                                             
-                                              schemaconf,
-                                              DEB
-                                              )
-
-    return parameters
-
-
-def pydantic_obj_from_json(cls, 
+def pydantic_obj_from_json(cls: BaseModel, 
                            obj_init: dict,
                            schemaconf: Optional[JSchemaConf] = JSchemaConf()
-                           ) -> object:
+                           ) -> BaseModel:
 
-    if has_pydantic:
-        """
-        For info on strict_validation see:
-        https://docs.pydantic.dev/latest/concepts/strict_mode/
+    """
+    For info on strict_validation see:
+    https://docs.pydantic.dev/latest/concepts/strict_mode/
 
-        strict_validation can be applied per class:
-            class MyModel(BaseModel):
-                model_config = ConfigDict(strict=False)
-                
-        or per Field:
-            class Model(BaseModel):
-                x: int = Field(strict=True)
-                y: int = Field(strict=False)                
+    strict_validation can be applied per class:
+        class MyModel(BaseModel):
+            model_config = ConfigDict(strict=False)
+            
+    or per Field:
+        class Model(BaseModel):
+            x: int = Field(strict=True)
+            y: int = Field(strict=False)                
 
-        https://docs.pydantic.dev/latest/api/type_adapter/
-        """
+    https://docs.pydantic.dev/latest/api/type_adapter/
+    """
+    
+    adapter = TypeAdapter(cls)
+    try:
+        obj = adapter.validate_python(obj_init, 
+                                        strict=schemaconf.pydantic_strict_validation)
+        return obj
         
-        adapter = TypeAdapter(cls)
-        try:
-            obj = adapter.validate_python(obj_init, 
-                                          strict=schemaconf.pydantic_strict_validation)
-            return obj
+    except ValidationError as e:
+        raise TypeError(str(e))
             
-        except ValidationError as e:
-            raise TypeError(str(e))
-            
-    else:
-        raise Exception("Please install pydantic by running: pip install pydantic")
-
-
 
 
 
     
-# ============================================================================ Dictype - JSON schema
 
-def dictype_get_json_schema(dictype: dict,
-                                      
-                            schemaconf: Optional[JSchemaConf] = JSchemaConf(),
-                                     
-                            DEB: Optional[bool] = False                         
-                            ) -> dict:
 
-    out = json_schema_from_dictype(dictype, 
-                                   desc_from_title=2 if schemaconf.description_from_title else 0)
+# ============================================================================ JSON schema from types
 
-    # is this needed at all on the extremelly clean output of json_schema_from_dictype()?
-    schema = json_schema_massage(out,
-                                 schemaconf,
-                                 DEB)
-
-    return schema
+def is_prim_type(type_: Any,
+                 allow_bool: bool):
+    if not isinstance(type_, type):
+        return False
+    
+    # cannot use issubclass which would accept IntEnum as int
+    if type_ is str or type_ is float or type_ is int:
+        return True
+    else:
+        return allow_bool and type_ is bool
 
 
 
+def get_type(type_: Any,
+             allow_enums: bool,
+             allow_BaseModel: bool,
+             allow_dictype: bool) -> tuple:
+    """
+    type_ can be any non-list type
+    prim_type
+    enum (if allow_enums)
+    BaseModel (if allow_BaseModel)
+    dict -> dictype definition (if allow_dictype)
+
+    prim_type: can be Annotated[T, "Desc"]
+        bool
+        int
+        float
+        str
+        
+    if allow_enums:
+        enums: can be Annotated[T, "Desc"]
+            [1, 2, 3] or ["a","b"] - all items of the same prim_type
+            Literal['year', 'name'] - all items of the same prim_type
+            Enum, EnumInt, EnumStr, (Enum, int),... - all items of the same prim_type
+
+    Returns (type_, anno_desc, enum_list) or (None,,) if not a supported simple type.    
+    """
+
+    enum_list = None
+    anno_desc = None
+
+    if get_origin(type_) is Annotated:
+        args = list(get_args(type_))
+        type_ = args[0]
+        if len(args) > 1:
+            anno_desc = args[1]
+
+    if is_prim_type(type_, allow_bool=True):
+        ...
+
+    elif allow_enums:
+
+        if get_origin(type_) is Literal:
+            enum_list = list(get_args(type_))
+            type_ = type(enum_list[0])
+
+        elif is_subclass_of(type_, Enum):
+            enum_list = [e.value for e in type_]
+            type_ = type(enum_list[0])
+
+        elif isinstance(type_, list): # enum as value list
+            enum_list = type_[:]
+            type_ = type(type_[0])
+
+        else:
+            type_ = None
+
+        if type_ is not None: # enum consistency checks
+            if not is_prim_type(type_, allow_bool=True):
+                raise TypeError(f"Base type is not one of bool, int, float, str: '{type_}'")
+
+            if enum_list is not None:
+                if not all([type_ is type(e) for e in enum_list]):
+                    raise TypeError(f"All enum values must have the same type in '{enum_list}'")
+
+    elif allow_BaseModel and is_subclass_of(type_, BaseModel):
+        ...
+
+    elif allow_dictype and isinstance(type_, dict):
+        ...
+
+    else:
+        type_ = None
+
+    return type_, anno_desc, enum_list
+    
 
 
 
 
 
+
+def get_type_list(type_: Any) -> tuple:
+    """
+    list of values of a prim_type, BaseModel, dictype: 
+        list[prim_type] - for example list[int]
+
+    can be Annotated[list[T], "List desc"] and/or list[Annotated[T, "Item desc"]]
+
+    Returns: type_, list_anno_desc, item_anno_desc
+    """
+
+    list_anno_desc = None
+    item_anno_desc = None
+
+    if get_origin(type_) is Annotated:
+        args = list(get_args(type_))
+        type_ = args[0]
+        if len(args) > 1:
+            list_anno_desc = args[1]
+
+    if get_origin(type_) is list: # list[type]
+        args = list(get_args(type_))
+        type_ = args[0]
+
+    else:
+        type_ = None
+
+    if type_ is not None:
+        type_, item_anno_desc, _ = get_type(type_, 
+                                            allow_enums=False,
+                                            allow_BaseModel=True,
+                                            allow_dictype=True)
+
+        if type_ is None: # list type consistency
+            raise TypeError(f"List item type is not bool, int, float, str, BaseModel or a dictype definition: '{type_}'")
+
+    return type_, list_anno_desc, item_anno_desc
+
+    
+
+
+def build_type_json_schema(type_: Any, 
+                           desc: Optional[str] = None,
+                           # for prim_type or enum
+                           enum_list: Optional[list] = None,                                  
+                           default: Optional[Any] = None,
+                           format: Optional[str] = None) -> dict:
+    """Render a valid JSON SChema specification for an accepted type.
+    type_ can be any non-list type
+    prim_type
+    enum
+    BaseModel
+    dict -> dictype definition
+
+    @TODO: update to accepted and args
+
+    Args:
+        type_: Above supported types.
+        desc: Optional description for field. If given, will override any Annotated type's description.
+        default: _description_. Defaults to None.
+        format: _description_. Defaults to None.
+
+    Returns:
+        A dict whose json.dumps() serialization is a valid JSON Schema specification for type.
+    """
+
+    out_type, anno_desc, enum_list2 = get_type(type_, 
+                                               allow_enums=True,
+                                               allow_BaseModel=True,
+                                               allow_dictype=True)
+    if out_type is None:
+        raise TypeError(f"Unsupported type: '{type(type_)}'")
+    
+    if desc is None:
+        desc = anno_desc
+
+    if is_subclass_of(out_type, BaseModel):
+        out = out_type.model_json_schema()
+
+        if desc is not None:
+            out["description"] = desc
+
+    elif isinstance(out_type, dict): # dictype
+        out = json_schema_from_dictype(out_type, desc)
+
+    else: # prim_type or enum
+
+        out = {}
+
+        if desc:
+            out["description"] = desc
+
+        if enum_list is None:
+            enum_list = enum_list2
+        if enum_list is not None:
+            out["enum"] = enum_list
+
+        if format is not None:
+            if out_type is not str:
+                raise TypeError("Arg format is only valid for str type.")
+
+            out["format"] = format
+
+        if default is not None:
+            if not isinstance(default, out_type):
+                raise TypeError(f"Arg default is not of type {out_type}.")
+
+            out["default"] = default
+
+        out["type"] = get_json_type(out_type)
+
+    return out
+
+
+
+def build_array_type_json_schema(items_repr: dict,
+                                 desc: Optional[str] = None) -> dict:
+    """_summary_
+
+    Args:
+        items_repr: _description_
+        desc: _description_. Defaults to None.
+
+    Returns:
+        _description_
+    """
+
+    out = {}
+
+    if desc:
+        out["description"] = desc
+
+    out["items"] = items_repr
+
+    out["type"] = "array"
+
+    return out
+
+
+
+def build_object_type_json_schema(properties_repr: dict,
+                                  desc: Optional[str] = None,
+                                  required_keys: Optional[list[str]] = None) -> dict:
+    """_summary_
+
+    Args:
+        properties_repr: A dict with "name": repr.
+        desc: _description_. Defaults to None.
+        required_keys: _description_. Defaults to None meaning all keys are required.
+
+    Returns:
+        _description_
+    """
+
+
+    out = {}
+
+    if desc:
+        out["description"] = desc
+
+    out["properties"] = properties_repr
+
+    all_keys = list(properties_repr.keys())
+    if required_keys is None:
+        required_keys = all_keys
+    else:
+        if not all([k in all_keys for k in required_keys]):
+            raise ValueError("Arg required_keys has unknown properties keys")
+
+    out["required"] = required_keys        
+
+    out["type"] = "object"
+
+    return out
+
+
+
+def get_json_type(t: Any) -> str:
+    JSON_TYPE_FROM_PY_TYPE = {
+        str: "string",
+        float: "number",            
+        int: "integer",            
+        bool: "boolean"
+    }
+    if t not in JSON_TYPE_FROM_PY_TYPE:
+        raise TypeError(f"Unknown type '{t}'")
+    
+    return JSON_TYPE_FROM_PY_TYPE[t]
 
 
 

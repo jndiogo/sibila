@@ -374,6 +374,17 @@ class Thread(Sequence):
         return thread
 
     @staticmethod
+    def make_IN(in_text: str) -> Self:
+        """Return an initialized Thread with an IN message.
+
+        Args:
+            in_text: Text for IN message.
+        """
+
+        thread = Thread([(MsgKind.IN, in_text)])        
+        return thread
+
+    @staticmethod
     def make_OUT_IN(out_text: str,
                     in_text: str) -> Self:
         """Return an initialized Thread with an OUT message followed by an IN message.
@@ -386,6 +397,34 @@ class Thread(Sequence):
                          (MsgKind.IN, in_text)]
                         )
         return thread
+
+    @staticmethod
+    def ensure(query: Union[str,Self],
+               inst: Optional[str] = None) -> Self:
+        """Utility to return a Thread from either a passed Thread or an str used as an IN message.
+
+        Args:
+            query: Thread or an str with the text of a single IN message to use as model input.
+            inst: Instruction message for model. Will override Thread's inst. Defaults to None.
+
+        Raises:
+            TypeError: Arg query must be of type Thread or str.
+
+        Returns:
+            Initialized Thread object.
+        """
+        
+        if isinstance(query, str):
+            if inst is None:
+                return Thread.make_IN(query)
+            else:
+                return Thread.make_INST_IN(inst, query)
+        elif isinstance(query, Thread):
+            if inst is not None:
+                query = Thread(query, inst) # a clone
+            return query
+        else:
+            raise TypeError("Arg query must be of type Thread or str")
 
 
 
@@ -513,11 +552,12 @@ class Thread(Sequence):
 
     def join_text(self,
                   a: str,
-                  b: str) -> str:        
+                  b: str,
+                  sep_count: Optional[int] = 1) -> str:        
         if b:
             if a:
-                if a[-1] != self.join_sep:
-                    a = a + self.join_sep + b
+                if a[-sep_count] != self.join_sep:
+                    a = a + (self.join_sep * sep_count) + b
                 else:
                     a += b
             else:

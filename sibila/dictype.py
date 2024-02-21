@@ -96,6 +96,9 @@ Fields can also be specified as an ordered list with the entries:
 
 from typing import Any, Optional, Union
 
+from .utils import synth_desc
+
+
 
 def get_json_type(t: Any) -> str:
     JSON_TYPE_FROM_PY_TYPE = {
@@ -131,10 +134,7 @@ def make_prop(prop_name: str,
         pd["description"] = safe_string(desc)
         
     elif desc_from_title: # synth desc from prop name
-        desc = prop_name
-        if desc_from_title == 2:
-            desc = desc.replace("_", " ").capitalize()
-        pd["description"] = desc
+        pd["description"] = synth_desc(desc_from_title-1, prop_name)
 
     if items is not None:
         assert enum is None, "Only one of items or enum"
