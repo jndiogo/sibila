@@ -36,7 +36,7 @@ from .model import (
     Model
 )
 
-from .json_utils import JSchemaConf
+from .json_schema import JSchemaConf
 
 from .modeldir import ModelDir
 

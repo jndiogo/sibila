@@ -265,7 +265,7 @@ class OpenAIModel(MessagesModel):
                 json_kwargs["response_format"] = {"type": "json_object"}
 
             else:
-                # use json_schema in OpenAi's tool api
+                # use json_schema in OpenAi's tool API
                 json_kwargs["tool_choice"] = {
                     "type": "function",
                     "function": {"name": fn_name},

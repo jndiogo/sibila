@@ -51,17 +51,17 @@ from .thread import (
     MsgKind
 )
 
-from .json_utils import (
+from .json_schema import (
     JSchemaConf,
     json_schema_massage,
     json_schema_from_pydantic,
     pydantic_obj_from_json,
-    get_type,
-    get_type_list,
-    build_type_json_schema,
-    build_array_type_json_schema,
-    build_object_type_json_schema
+    build_any_json_schema,
+    get_final_type,
+    create_final_instance
 )
+
+
 
 from .dictype import json_schema_from_dictype
 
@@ -300,6 +300,9 @@ class Model(ABC):
             if schemaconf is None:
                 schemaconf = JSchemaConf()
             json_schema = json_schema_massage(json_schema, schemaconf)
+
+        logger.debug("JSON schema conf:\n" + pformat(schemaconf))
+        logger.debug("Massaged JSON schema:\n" + pformat(json_schema))
 
         out = self.gen(thread, 
                        genconf(format="json", 
@@ -612,48 +615,33 @@ class Model(ABC):
             
         """
 
-        OUTPUT_KEY = "output"
+        OUTPUT_KEY_NAME = "output"
+
+        schema, created_output_key = build_any_json_schema(target, OUTPUT_KEY_NAME)
+        
+        final_type, is_list = get_final_type(target)
 
         thread = Thread.ensure(query, inst)
 
+        if schemaconf is None:
+            schemaconf = JSchemaConf()
 
-        # type list
-        type_, list_desc, item_desc = get_type_list(target)
-        if type_ is not None:
-            
-            # build json schema for list of type_
-            items_repr = build_simple_type_json_schema(type_, item_desc)
-
-            array_repr = build_array_type_json_schema(items_repr, list_desc)
-
-            json_schema = build_object_type_json_schema({OUTPUT_KEY: array_repr})
-
-        else:
-
-            type_, item_desc, enum_list = get_type(target, 
-                                                   allow_enums=True,
-                                                   allow_BaseModel=True,
-                                                   allow_dictype=True)
-            if type_ is not None:
-                item_repr = build_type_json_schema(type_, 
-                                                   item_desc,
-                                                   enum_list)
-
-                json_schema = build_object_type_json_schema({OUTPUT_KEY: item_repr})
-
-            else:
-                raise TypeError(f"Unknown target type '{target}'")
-
-
-        # arriving here, json_schema was built: gen with it
-        out = self.json(json_schema,
+        out = self.json(schema,
                         query,
                         inst=inst,
                         genconf=genconf,
                         massage_schema=True,
                         schemaconf=schemaconf)
         
-        value = out[OUTPUT_KEY]
+        if created_output_key:
+            val = out[OUTPUT_KEY_NAME]
+        else:
+            val = out
+
+        value = create_final_instance(final_type, 
+                                      is_list, 
+                                      val,
+                                      schemaconf=schemaconf)
 
         return value
 

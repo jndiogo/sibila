@@ -7,6 +7,8 @@ import json
 import logging
 logger = logging.getLogger(__name__)
 
+from datetime import date, time, datetime
+
 from pydantic import BaseModel, TypeAdapter, ValidationError
 
 from .dictype import json_schema_from_dictype
@@ -35,8 +37,7 @@ class JSchemaConf:
     """If a value doesn't have a description entry, make one from its title or name.
         0: don't
         1: copy title or name to description
-        2: 1: + capitalize first letter and convert _ to space: class_label -> "class label".        
-    """
+        2: 1: + capitalize first letter and convert _ to space: class_label -> "class label". """
     
     force_all_required: bool = False
     """Force all entries in an object to be required (except removed defaults if remove_with_default=True)."""
@@ -48,7 +49,9 @@ class JSchemaConf:
     """Move any default value entry into the last position of properties dict."""
 
     additional_allowed_root_keys: list = field(default_factory=list)
-    """By default only "properties", "type", "required", "additionalProperties", "allOf", "anyOf", "oneOf", "not" are allowed in root - add to this setting for aditional ones."""
+    """By default only the following properties are allowed in schema's root:
+         description, properties, type, required, additionalProperties, allOf, anyOf, oneOf, not
+       Add to this list to allow additional root properties."""
 
     # ideas for more simplification:
     #   force_no_additional_properties: sets "additionalProperties": false on all type=object
@@ -116,7 +119,6 @@ def json_schema_massage(sch: dict,
     Resolves $refs and eliminates definitions.
 
     """
-
    
     # resolve $refs -> defs
     if schemaconf.resolve_refs:
@@ -128,7 +130,8 @@ def json_schema_massage(sch: dict,
             
    
     # root: clean all other than:
-    allowed_in_root = ["properties", 
+    allowed_in_root = ["description",
+                       "properties", 
                        "type", 
                        "required",
                        "additionalProperties",
@@ -294,6 +297,7 @@ def is_prim_type(type_: Any,
 
 
 
+
 def get_type(type_: Any,
              allow_enums: bool,
              allow_BaseModel: bool,
@@ -317,6 +321,8 @@ def get_type(type_: Any,
             Literal['year', 'name'] - all items of the same prim_type
             Enum, EnumInt, EnumStr, (Enum, int),... - all items of the same prim_type
 
+    datetime.datetime
+
     Returns (type_, anno_desc, enum_list) or (None,,) if not a supported simple type.    
     """
 
@@ -330,6 +336,12 @@ def get_type(type_: Any,
             anno_desc = args[1]
 
     if is_prim_type(type_, allow_bool=True):
+        ...
+
+    elif allow_BaseModel and is_subclass_of(type_, BaseModel):
+        ...
+
+    elif allow_dictype and isinstance(type_, dict):
         ...
 
     elif allow_enums:
@@ -357,12 +369,6 @@ def get_type(type_: Any,
                 if not all([type_ is type(e) for e in enum_list]):
                     raise TypeError(f"All enum values must have the same type in '{enum_list}'")
 
-    elif allow_BaseModel and is_subclass_of(type_, BaseModel):
-        ...
-
-    elif allow_dictype and isinstance(type_, dict):
-        ...
-
     else:
         type_ = None
 
@@ -381,11 +387,12 @@ def get_type_list(type_: Any) -> tuple:
 
     can be Annotated[list[T], "List desc"] and/or list[Annotated[T, "Item desc"]]
 
-    Returns: type_, list_anno_desc, item_anno_desc
+    Returns: item_type, item_anno_desc, item_enum_list, list_anno_desc
     """
 
-    list_anno_desc = None
     item_anno_desc = None
+    item_enum_list = None
+    list_anno_desc = None
 
     if get_origin(type_) is Annotated:
         args = list(get_args(type_))
@@ -401,17 +408,20 @@ def get_type_list(type_: Any) -> tuple:
         type_ = None
 
     if type_ is not None:
-        type_, item_anno_desc, _ = get_type(type_, 
-                                            allow_enums=False,
-                                            allow_BaseModel=True,
-                                            allow_dictype=True)
+        type_, item_anno_desc, item_enum_list = get_type(type_, 
+                                                         allow_enums=True,
+                                                         allow_BaseModel=True,
+                                                         allow_dictype=True)
 
         if type_ is None: # list type consistency
-            raise TypeError(f"List item type is not bool, int, float, str, BaseModel or a dictype definition: '{type_}'")
+            raise TypeError(f"List item type is not bool, int, float, str, enum, BaseModel or a dictype definition: '{type_}'")
 
-    return type_, list_anno_desc, item_anno_desc
+    return type_, item_anno_desc, item_enum_list, list_anno_desc
 
     
+
+
+
 
 
 def build_type_json_schema(type_: Any, 
@@ -420,7 +430,7 @@ def build_type_json_schema(type_: Any,
                            enum_list: Optional[list] = None,                                  
                            default: Optional[Any] = None,
                            format: Optional[str] = None) -> dict:
-    """Render a valid JSON SChema specification for an accepted type.
+    """Render a valid JSON Schema specification for an accepted type.
     type_ can be any non-list type
     prim_type
     enum
@@ -488,22 +498,27 @@ def build_type_json_schema(type_: Any,
 
 
 
-def build_array_type_json_schema(items_repr: dict,
-                                 desc: Optional[str] = None) -> dict:
+def build_array_type_json_schema(item_type: Any,
+                                 item_desc: Optional[str] = None,
+                                 item_enum_list: Optional[list] = None,
+                                 list_desc: Optional[str] = None) -> dict:
     """_summary_
 
     Args:
-        items_repr: _description_
-        desc: _description_. Defaults to None.
+        item_type: The raw item type without annotations
 
     Returns:
         _description_
     """
 
+    items_repr = build_type_json_schema(item_type, 
+                                        item_desc,
+                                        item_enum_list)
+
     out = {}
 
-    if desc:
-        out["description"] = desc
+    if list_desc:
+        out["description"] = list_desc
 
     out["items"] = items_repr
 
@@ -550,6 +565,158 @@ def build_object_type_json_schema(properties_repr: dict,
 
 
 
+
+def build_any_json_schema(type_: Any, 
+                          output_key_name: str) -> tuple[dict,bool]:
+    """_summary_
+
+    Args:
+        type_: _description_
+        output_key_name: _description_
+
+    Raises:
+        TypeError: _description_
+
+    Returns:
+        JSON schema dict, create_output_key
+    """
+
+    # type list
+    item_type, item_desc, item_enum_list, list_desc = get_type_list(type_)    
+    if item_type is not None:            
+        # build json schema for list of type_
+        array_repr = build_array_type_json_schema(item_type, 
+                                                  item_desc, 
+                                                  item_enum_list,
+                                                  list_desc)
+
+        schema = build_object_type_json_schema({output_key_name: array_repr})
+
+        create_output_key = True
+
+    else: # prim, enum, BaseModel
+        type_, desc, enum_list = get_type(type_, 
+                                          allow_enums=True,
+                                          allow_BaseModel=True,
+                                          allow_dictype=True)
+        if type_ is not None:
+            schema = build_type_json_schema(type_, 
+                                            desc,
+                                            enum_list)
+            create_output_key = schema.get("type") != "object"
+            
+            if create_output_key:
+                schema = build_object_type_json_schema({output_key_name: schema})
+
+        else:
+            raise TypeError(f"Unknown target type '{type_}'")
+
+
+    return schema, create_output_key
+
+
+def get_final_type(type_: Any) -> Any:
+
+    """ Final type can be:
+    BaseModel derived
+    Enum derived    
+    prim_type (simple type or type of items in Literal or list["a","b"])
+    """
+
+    # dig through list and annotations until a valid type is found
+
+    is_list = False
+
+    while True:
+        orig = get_origin(type_)
+        if orig in (Annotated, list): # get rid of annotations and list[]
+            is_list = is_list or orig == list
+
+            args = list(get_args(type_))
+            type_ = args[0]
+            continue
+
+        if is_subclass_of(type_, BaseModel):
+            break
+        
+        elif is_subclass_of(type_, Enum):
+            enum_list = [e.value for e in type_]
+            type_ = type(enum_list[0])
+            break
+
+        elif get_origin(type_) is Literal:
+            enum_list = list(get_args(type_))
+            type_ = type(enum_list[0])
+            break
+
+        elif isinstance(type_, list): # enum list: ["a", "b"]
+            type_ = type(type_[0])
+            break
+        
+        elif (type_ is str or 
+              type_ is float or 
+              type_ is int or 
+              type_ is bool):
+            break
+        
+        else:
+            raise TypeError(f"Unknown final type: '{type_}'")
+
+    return type_, is_list
+
+
+
+
+
+def create_final_instance(type_: Any,
+                          is_list: bool,
+                          val: Any,
+                          schemaconf: JSchemaConf) -> Any:
+    
+
+    def create_item(type_: Any,
+                    val: Any) -> Any:
+        
+        if is_subclass_of(type_, BaseModel):
+            obj = pydantic_obj_from_json(type_, 
+                                         val,
+                                         schemaconf=schemaconf)
+            return obj
+        
+        elif (type_ is str or 
+              type_ is float or 
+              type_ is int or 
+              type_ is bool):
+            value = type_(val) 
+            return value
+        
+        else:
+            raise TypeError(f"Unexpected value of type '{type_}' for value '{val}'")
+
+
+    if is_list:
+        if type(val) is not list: # check, just in case
+            raise TypeError(f"Value is not a list: '{val}'")
+        
+        out = []
+        for item_val in val:
+            out.append(create_item(type_, item_val))
+
+        return out
+
+    else:
+        return create_item(type_, val)
+
+
+
+
+
+
+
+
+
+
+
 def get_json_type(t: Any) -> str:
     JSON_TYPE_FROM_PY_TYPE = {
         str: "string",
@@ -561,263 +728,6 @@ def get_json_type(t: Any) -> str:
         raise TypeError(f"Unknown type '{t}'")
     
     return JSON_TYPE_FROM_PY_TYPE[t]
-
-
-
-
-
-
-
-
-
-# ============================================================================ Grammars
-
-"""
-llama.cpp json-schema to grammar converter adapted from llama_cpp_python:
-https://github.com/abetlen/llama-cpp-python
-
-Originally from llama.cpp:
-https://github.com/ggerganov/llama.cpp/blob/master/examples/json-schema-to-grammar.py
-https://github.com/ggerganov/llama.cpp/tree/master/grammars
-"""
-
-import re
-
-# whitespace is constrained to a single space char to prevent model "running away" in
-# whitespace. Also maybe improves generation quality?
-SPACE_RULE = '" "?'
-
-PRIMITIVE_RULES = {
-    "boolean": '("true" | "false") space',
-    "number": '("-"? ([0-9] | [1-9] [0-9]*)) ("." [0-9]+)? ([eE] [-+]? [0-9]+)? space',
-    "integer": '("-"? ([0-9] | [1-9] [0-9]*)) space',
-    "string": r""" "\"" (
-        [^"\\\n] |
-        "\\" (["\\/bfnrt] | "u" [0-9a-fA-F] [0-9a-fA-F] [0-9a-fA-F] [0-9a-fA-F])
-      )* "\"" space """,
-    "null": '"null" space',
-}
-
-INVALID_RULE_CHARS_RE = re.compile(r"[^a-zA-Z0-9-]+")
-GRAMMAR_LITERAL_ESCAPE_RE = re.compile(r'[\r\n"]')
-GRAMMAR_LITERAL_ESCAPES = {"\r": "\\r", "\n": "\\n", '"': '\\"'}
-
-
-class SchemaConverter:
-    def __init__(self, 
-                 prop_order):
-        self._prop_order = prop_order
-        self._rules = {"space": SPACE_RULE}
-        self._defs: dict[str, Any] = {}
-
-    def _format_literal(self, 
-                        literal: str):
-        escaped: str = GRAMMAR_LITERAL_ESCAPE_RE.sub(
-            lambda m: GRAMMAR_LITERAL_ESCAPES.get(m.group(0)), json.dumps(literal)
-        )
-        return f'"{escaped}"'
-
-    def _add_rule(self, 
-                  name: str, 
-                  rule: str):
-        esc_name = INVALID_RULE_CHARS_RE.sub("-", name)
-        if esc_name not in self._rules or self._rules[esc_name] == rule:
-            key = esc_name
-        else:
-            i = 0
-            while f"{esc_name}{i}" in self._rules:
-                i += 1
-            key = f"{esc_name}{i}"
-        self._rules[key] = rule
-        return key
-
-    def visit(self, 
-              schema: dict[str, Any], 
-              name: str) -> str:
-        
-        rule_name = name or "root"
-
-        if "$defs" in schema:
-            # add defs to self._defs for later inlining
-            for def_name, def_schema in schema["$defs"].items():
-                self._defs[def_name] = def_schema
-
-        if "oneOf" in schema or "anyOf" in schema:
-            rule = " | ".join(
-                (
-                    self.visit(alt_schema, f'{name}{"-" if name else ""}{i}')
-                    for i, alt_schema in enumerate(
-                        schema.get("oneOf") or schema["anyOf"]
-                    )
-                )
-            )
-            return self._add_rule(rule_name, rule)
-
-        elif "const" in schema:
-            return self._add_rule(rule_name, self._format_literal(schema["const"]))
-
-        elif "enum" in schema:
-            rule = " | ".join((self._format_literal(v) for v in schema["enum"]))
-            return self._add_rule(rule_name, rule)
-
-        elif "$ref" in schema:
-            ref = schema["$ref"]
-            assert ref.startswith("#/$defs/"), f"Unrecognized schema: {schema}"
-            # inline $defs
-            def_name = ref[len("#/$defs/"):]
-            def_schema = self._defs[def_name]
-            return self.visit(def_schema, f'{name}{"-" if name else ""}{def_name}')
-
-
-        schema_type: Optional[str] = schema.get("type") # type: ignore
-        assert isinstance(schema_type, str), f"Unrecognized schema: {schema}"
-
-        if schema_type == "object" and "properties" in schema:
-            
-            if len(self._prop_order):
-                prop_pairs = dict(sorted(
-                    schema["properties"].items(),
-                    # sort by position in prop_order (if specified) then by key
-                    key=lambda kv: (self._prop_order.get(kv[0], len(self._prop_order)), kv[0]),
-                ))
-            else:
-                prop_pairs = schema["properties"]
-
-            
-            # split names into required, not_required
-            required: str = schema.get("required") or []
-            not_required = [n for n in prop_pairs if n not in required]
-            
-            if len(required) == 0: # force all to be required: or the leading comma for not_required may cause broken JSON
-                logger.debug(f"Rule '{rule_name}': GBNF grammar cannot parse rule with only optional items: making all items required")
-                required = not_required
-                not_required = []
-
-            
-            def emit_prop(prop_name: str, 
-                          prop_schema: str,
-                          is_required: bool,
-                          index: int
-                          ) -> str:
-                
-                prop_rule_name = self.visit(
-                    prop_schema,
-                    f'{name}{"-" if name else ""}{prop_name}'
-                )
-
-                out = ''                
-                
-                if not is_required:
-                    out += ' ('
-                    
-                if index > 0:
-                    out += ' "," space'
-
-                out += rf' {self._format_literal(prop_name)} space ":" space {prop_rule_name}'
-
-                if not is_required:
-                    out += ' )?'
-
-                return out
-                
-
-            rule = '"{" space'
-
-            index = 0 # used to add separating "," - only 
-
-            # requireds first
-            for prop_name in required:
-                prop_schema = prop_pairs[prop_name]
-                
-                rule += emit_prop(prop_name, prop_schema, 
-                                  True, index)
-                index += 1
-
-            # non-requireds then
-            for prop_name in not_required:
-                prop_schema = prop_pairs[prop_name]
-                
-                rule += emit_prop(prop_name, prop_schema, 
-                                  False, index)
-                index += 1            
-            
-            rule += ' "}" space'
-
-            return self._add_rule(rule_name, rule)
-            
-
-        elif schema_type == "array" and "items" in schema:
-            # TODO `prefixItems` keyword
-            item_rule_name = self.visit(
-                schema["items"], f'{name}{"-" if name else ""}item'
-            )
-            rule = (
-                f'"[" space ({item_rule_name} ("," space {item_rule_name})*)? "]" space'
-            )
-            return self._add_rule(rule_name, rule)
-
-        else:
-            assert schema_type in PRIMITIVE_RULES, f"Unrecognized schema: {schema}"
-            return self._add_rule(
-                "root" if rule_name == "root" else schema_type,
-                PRIMITIVE_RULES[schema_type],
-            )
-
-    def format_grammar(self):
-        return "\n".join((f"{name} ::= {rule}" for name, rule in self._rules.items()))
-
-
-def gbnf_from_json_schema(schema: Union[str,dict],
-                          prop_order: Optional[list[str]] = []):
-    
-    """
-    prop_order sorting is probably a bad idea, because it makes output order different from the schema example order, which may unnecessarily confuse the model
-    """
-
-    if isinstance(schema, str):
-        schema = json.loads(schema)
-        
-    prop_order = {name: idx for idx, name in enumerate(prop_order)}
-    
-    converter = SchemaConverter(prop_order)
-    converter.visit(schema, "")
-    
-    return converter.format_grammar()
-
-
-
-"""
-JSON_GBNF from llama.cpp:
-https://github.com/ggerganov/llama.cpp/tree/master/grammars
-string rule altered to disallow raw \n inside ""
-"""
-
-JSON_GBNF = r"""
-root   ::= object
-value  ::= object | array | string | number | ("true" | "false" | "null") ws
-
-object ::=
-  "{" ws (
-            string ":" ws value
-    ("," ws string ":" ws value)*
-  )? "}" ws
-
-array  ::=
-  "[" ws (
-            value
-    ("," ws value)*
-  )? "]" ws
-
-string ::=
-  "\"" (
-    [^"\\\n] |
-    "\\" (["\\/bfnrt] | "u" [0-9a-fA-F] [0-9a-fA-F] [0-9a-fA-F] [0-9a-fA-F]) # escapes
-  )* "\"" ws
-
-number ::= ("-"? ([0-9] | [1-9] [0-9]*)) ("." [0-9]+)? ([eE] [-+]? [0-9]+)? ws
-
-ws ::= ([ \t\n] ws)?
-"""
 
 
 

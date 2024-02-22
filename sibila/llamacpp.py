@@ -28,7 +28,7 @@ from .model import (
 )
 
 
-from .json_utils import (
+from .json_grammar import (
     gbnf_from_json_schema,
     JSON_GBNF
 )
