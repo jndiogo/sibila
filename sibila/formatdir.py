@@ -1,6 +1,7 @@
-from typing import Optional, Union, Callable
+from typing import Optional, Union, Callable, Any
 
 import os, json, re
+from copy import copy
 
 from pprint import pformat
 
@@ -55,8 +56,8 @@ class FormatDir:
     - The add_generation_prompt template variable is always set as True.
     """
     
-    dir: Union[dict,None] = None # model directory configuration
-
+    dir: Any = None # model directory configuration => Union[dict[str,Any],None]
+    """Format directory dict."""
     
     BASE_CONF_FILENAME = "base_formatdir.json"
     
@@ -123,7 +124,7 @@ class FormatDir:
         if conf is not None:
             cls.dir.update(conf)
         else:
-            update_dir_json(cls.dir, conf_path)
+            update_dir_json(cls.dir, conf_path) # type: ignore[arg-type]
 
         cls._sanity_check()
         
@@ -212,14 +213,14 @@ class FormatDir:
     def _prepare_entry(cls,
                        name: str,
                        val: Union[dict,str]):
-        val = val.copy()
+        val = copy(val)
         
-        if "{{" not in val["template"]: # a link to another template entry
-            linked_name = val["template"]
+        if "{{" not in val["template"]: # type: ignore[index] # a link to another template entry
+            linked_name = val["template"] # type: ignore[index]
             if linked_name not in cls.dir:
                 raise ValueError(f"Broken template link at '{name}': '{linked_name}' does not exist")
             val2 = cls.dir[linked_name]
-            val["template"] = val2["template"]
+            val["template"] = val2["template"] # type: ignore[index]
             
         return val
 

@@ -19,7 +19,7 @@ models/*.gguf
 /build
 
 # pre-build
-docbuild.sh
+build_docs.sh
 
 # examples
 examples/compare/sentiment.csv

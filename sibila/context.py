@@ -50,15 +50,11 @@ class Context(Thread):
     Also supports a persistent instructions text."""
 
     
-    def __init__(self,
-                 
-                 t: Optional[Union[Thread,list,str,dict]] = None,
- 
-                 max_token_len: Optional[int] = None,
-        
-                 pinned_inst_text: Optional[str] = "",
-
-                 join_sep: Optional[str] = "\n"):
+    def __init__(self,                 
+                 t: Optional[Union[Thread,list,str,dict,tuple]] = None, 
+                 max_token_len: Optional[int] = None,        
+                 pinned_inst_text: str = "",
+                 join_sep: str = "\n"):
         """
         Args:
             t: Can initialize from a Thread, from a list (containing messages in any format accepted in _parse_msg()) or a single message as an str, an (MsgKind,text) tuple or a dict. Defaults to None.
@@ -132,7 +128,7 @@ class Context(Thread):
         
         while True:
 
-            curr_len = model.token_len(thread, genconf)
+            curr_len = model.token_len(thread)
 
             if curr_len <= max_token_len:
                 break

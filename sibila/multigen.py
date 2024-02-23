@@ -44,25 +44,25 @@ from .modeldir import ModelDir
 
 def _default_gencall_text(model: Model,
                           thread: Thread,
-                          genconf: GenConf) -> GenOut:
-    out = model.gen_(thread, genconf)
+                          genconf: Optional[GenConf] = None) -> GenOut:
+    out = model.gen(thread, genconf)
     return out
 
 
 
-def make_dictype_gencall(dictype: dict,
-                         schemaconf: Optional[JSchemaConf] = None) -> Callable:
+def make_dataclass_gencall(cls: Any, # dataclass definition
+                           schemaconf: Optional[JSchemaConf] = None) -> Callable:
 
-    def dict_gencall(model: Model,
-                     thread: Thread,
-                     genconf: GenConf) -> GenOut:    
-        out = model.dictype_(dictype, 
-                             thread,
-                             genconf,
-                             schemaconf)
+    def dataclass_gencall(model: Model,
+                          thread: Thread,
+                          genconf: Optional[GenConf] = None) -> GenOut:    
+        out = model.gen_dataclass(cls, 
+                                  thread,
+                                  genconf,
+                                  schemaconf)
         return out
-    
-    return dict_gencall
+
+    return dataclass_gencall
 
 
 
@@ -71,14 +71,18 @@ def make_pydantic_gencall(cls: Any, # Pydantic BaseModel class
 
     def pydantic_gencall(model: Model,
                          thread: Thread,
-                         genconf: GenConf) -> GenOut:    
-        out = model.pydantic_(cls, 
-                              thread,
-                              genconf,
-                              schemaconf)
+                         genconf: Optional[GenConf] = None) -> GenOut:    
+        out = model.gen_pydantic(cls, 
+                                 thread,
+                                 genconf,
+                                 schemaconf)
         return out
 
     return pydantic_gencall
+
+
+
+
 
 
 
@@ -88,7 +92,7 @@ def multigen(threads: list[Thread],
              models: Optional[list[Model]] = None, # existing models
                 
              model_names: Optional[list[str]] = None,
-             model_names_del_after: Optional[bool] = True,
+             model_names_del_after: bool = True,
     
              gencall: Optional[Callable] = None,
              genconf: Optional[GenConf] = None
@@ -121,7 +125,7 @@ def multigen(threads: list[Thread],
     if gencall is None:
         gencall = _default_gencall_text
     
-    mod_count = len(models) if models is not None else len(model_names)
+    mod_count = len(models) if models is not None else len(model_names) # type: ignore[arg-type]
 
     all_out = []
     
@@ -130,7 +134,7 @@ def multigen(threads: list[Thread],
             model = models[i]
             logger.debug(f"Model: {model.desc}")
         else:
-            name = model_names[i]
+            name = model_names[i] # type: ignore[index]
             model = ModelDir.create(name)
             logger.info(f"Model: {name} -> {model.desc}")
 
@@ -182,17 +186,17 @@ def nice_print(type: str,
 
 
 def format_text(f: StringIO,
-                table: list[list[dict]], # [ins, model_outs_for_in]
+                table: list[list[GenOut]], # [ins, model_outs_for_in]
                
                 title_list: list[str],
                 model_names: list[str],
                    
-                out_keys: Optional[list[str]] = ["text","dic","obj"],
+                out_keys: list[str] = ["text","dic","obj"],
         
-                json_kwargs: Optional[dict] = {"indent": 2,
-                                               "sort_keys": False,
-                                               "ensure_ascii": False
-                                               }):
+                json_kwargs: dict = {"indent": 2,
+                                     "sort_keys": False,
+                                     "ensure_ascii": False
+                                     }):
 
     def lprint(outs_for_in, model_names):
         
@@ -237,17 +241,17 @@ def format_text(f: StringIO,
 
 
 def format_csv(f: StringIO,
-               table: list[list[dict]], # [ins, model_outs_for_in]
+               table: list[list[GenOut]], # [ins, model_outs_for_in]
                
                title_list: list[str],
                model_names: list[str],
                    
-               out_keys: Optional[list[str]] = ["text","dic","obj"],
+               out_keys: list[str] = ["text","dic","obj"],
         
-               json_kwargs: Optional[dict] = {"indent": 2,
-                                              "sort_keys": False,
-                                              "ensure_ascii": False
-                                              }):
+               json_kwargs: dict = {"indent": 2,
+                                    "sort_keys": False,
+                                    "ensure_ascii": False
+                                    }):
     fieldnames = ["Threads"] + model_names
     
     writer = csv.writer(f, 
@@ -298,10 +302,10 @@ def thread_multigen(threads: list[Thread],
                     gencall: Optional[Callable] = None,                   
                     genconf: Optional[GenConf] = None,
     
-                    out_keys: Optional[list[str]] = ["text","dic", "obj"],
+                    out_keys: list[str] = ["text","dic", "obj"],
                    
-                    thread_titles: list[str] = None                   
-                    ) -> list[list[str]]:
+                    thread_titles: Optional[list[str]] = None                   
+                    ) -> list[list[GenOut]]:
     """Generate a single thread on a list of models, returning/saving results in text/CSV.
 
     Actual generation for each model is implemented by an optional Callable with this signature:
@@ -378,9 +382,9 @@ def query_multigen(in_list: list[str],
                    gencall: Optional[Callable] = None,                   
                    genconf: Optional[GenConf] = None,
     
-                   out_keys: Optional[list[str]] = ["text","dic", "obj"],
-                   in_titles: list[str] = None
-                   ) -> list[list[str]]:
+                   out_keys: list[str] = ["text","dic", "obj"],
+                   in_titles: Optional[list[str]] = None
+                   ) -> list[list[GenOut]]:
     """Generate an INST+IN thread on a list of models, returning/saving results in text/CSV.
 
     Actual generation for each model is implemented by an optional Callable with this signature:
@@ -435,12 +439,12 @@ def cycle_gen_print(in_list: list[str],
                     gencall: Optional[Callable] = None,                   
                     genconf: Optional[GenConf] = None,
     
-                    out_keys: Optional[list[str]] = ["text","dic", "obj"],
+                    out_keys: list[str] = ["text","dic", "obj"],
 
-                    json_kwargs: Optional[dict] = {"indent": 2,
-                                                   "sort_keys": False,
-                                                   "ensure_ascii": False
-                                                   }
+                    json_kwargs: dict = {"indent": 2,
+                                         "sort_keys": False,
+                                         "ensure_ascii": False
+                                        }
                     ):
     """For a list of models, sequentially grow a Thread with model responses to given IN messages and print the results.
 

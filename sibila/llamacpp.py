@@ -27,6 +27,7 @@ from .model import (
     Tokenizer
 )
 
+from .json_schema import JSchemaConf
 
 from .json_grammar import (
     gbnf_from_json_schema,
@@ -59,16 +60,20 @@ class LlamaCppModel(FormattedTextModel):
         desc: Model information.
     """
 
+    _llama: Llama
+    """LlamaCpp instance"""
+
     def __init__(self,
                  path: str,
 
-                 format: Union[str,dict,None] = None,                 
-                 format_search_order: Optional[list[str]] = ["name","meta_template"],
+                 format: Optional[Union[str,dict]] = None,                 
+                 format_search_order: list[str] = ["name","meta_template"],
 
                  *,
 
                  # common base model args
                  genconf: Optional[GenConf] = None,
+                 schemaconf: Optional[JSchemaConf] = None,
                  tokenizer: Optional[Tokenizer] = None,
                  ctx_len: int = 2048,
 
@@ -101,9 +106,6 @@ class LlamaCppModel(FormattedTextModel):
             ValueError: If ctx_len is 0 or larger than the values supported by model.
         """
         
-        self._llama = None
-        self.tokenizer = None
-        
         if not has_llama_cpp:
             raise ImportError("Please install llama-cpp-python by running: pip install llama-cpp-python")
 
@@ -112,6 +114,7 @@ class LlamaCppModel(FormattedTextModel):
         
         super().__init__(True,
                          genconf,
+                         schemaconf,
                          tokenizer
                          )
 
@@ -151,7 +154,7 @@ class LlamaCppModel(FormattedTextModel):
         except Exception as e:
             del self.tokenizer
             del self._llama
-            self._llama = self.tokenizer = None
+            self._llama = self.tokenizer = None # type: ignore[assignment]
             raise e
             
         
@@ -220,8 +223,8 @@ class LlamaCppModel(FormattedTextModel):
                                                  **genconf_kwargs)
         logger.debug(f"LlamaCpp response: {response}")
 
-        choice = response["choices"][0]
-        return choice["text"], choice["finish_reason"]
+        choice = response["choices"][0] # type: ignore[index]
+        return choice["text"], choice["finish_reason"] # type: ignore[return-value]
 
 
         
@@ -336,9 +339,9 @@ class LlamaCppTokenizer(Tokenizer):
             # print(text)
         
         # str -> bytes
-        text = text.encode("utf-8", errors="ignore")
+        btext = text.encode("utf-8", errors="ignore")
 
-        return self._llama.tokenize(text, add_bos=False, special=True)
+        return self._llama.tokenize(btext, add_bos=False, special=True)
 
 
 
@@ -365,8 +368,8 @@ class LlamaCppTokenizer(Tokenizer):
         buffer = (ctypes.c_char * size)()
 
         if not skip_special:
-            special_toks = {self.bos_token_id: self.bos_token.encode("utf-8"), 
-                            self.eos_token_id: self.eos_token.encode("utf-8")}
+            special_toks = {self.bos_token_id: self.bos_token.encode("utf-8"), # type: ignore[union-attr]
+                            self.eos_token_id: self.eos_token.encode("utf-8")} # type: ignore[union-attr]
 
             for token in token_ids:
                 if token == self.bos_token_id:
@@ -377,7 +380,7 @@ class LlamaCppTokenizer(Tokenizer):
                     n = llama_cpp.llama_token_to_piece(
                         self._llama.model, llama_cpp.llama_token(token), buffer, size
                     )
-                    output += bytes(buffer[:n])
+                    output += bytes(buffer[:n]) # type: ignore[arg-type]
 
         else: # skip special
             for token in token_ids:
@@ -385,7 +388,7 @@ class LlamaCppTokenizer(Tokenizer):
                     n = llama_cpp.llama_token_to_piece(
                         self._llama.model, llama_cpp.llama_token(token), buffer, size
                     )
-                    output += bytes(buffer[:n])
+                    output += bytes(buffer[:n]) # type: ignore[arg-type]
             
 
         # "User code is responsible for removing the leading whitespace of the first non-BOS token when decoding multiple tokens."

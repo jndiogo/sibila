@@ -28,6 +28,7 @@ from .model import (
     Tokenizer
 )
 
+from .json_schema import JSchemaConf
 
 try:
     import openai
@@ -49,7 +50,7 @@ More recent models inside each family (GPT-4, GPT-3.5) first
 Str values are links to a versioned model.
 https://platform.openai.com/docs/models
 """
-KNOWN_MODELS = { # name: link | (ctx_len, n_msg_tokens, n_name_tokens)
+KNOWN_MODELS: dict = { # name: link | (ctx_len, n_msg_tokens, n_name_tokens)
 
     # ------------------------------ GPT 4
     "gpt-4-0613":     (8192, 3, 1),
@@ -76,7 +77,7 @@ KNOWN_MODELS = { # name: link | (ctx_len, n_msg_tokens, n_name_tokens)
 
 }
 
-def resolve_model(name, 
+def resolve_model(name: str, 
                   unknown_name_mask: int) -> tuple[str, int, int, int]:
     """Resolve a name string into an existing model from KNOWN_MODELS.
 
@@ -150,11 +151,12 @@ class OpenAIModel(MessagesModel):
 
     def __init__(self,
                  name: str,
-                 unknown_name_mask: bool = 0,
+                 unknown_name_mask: int = 0,
                  *,
                  
                  # common base model args
                  genconf: Optional[GenConf] = None,
+                 schemaconf: Optional[JSchemaConf] = None,
                  tokenizer: Optional[Tokenizer] = None,
                  ctx_len: int = 0,
                 
@@ -163,7 +165,7 @@ class OpenAIModel(MessagesModel):
                  base_url: Optional[str] = None,
                  
                  # OpenAI-specific args
-                 openai_init_kwargs: Optional[dict] = {},
+                 openai_init_kwargs: dict = {},
                  ):
         """
         Args:
@@ -195,6 +197,7 @@ class OpenAIModel(MessagesModel):
            
         super().__init__(False,
                          genconf,
+                         schemaconf,
                          tokenizer
                          )
 
@@ -257,7 +260,7 @@ class OpenAIModel(MessagesModel):
         
         fn_name = "json_out"
 
-        json_kwargs = {}
+        json_kwargs: dict = {}
         format = genconf.format
         if format == "json":
             
@@ -292,7 +295,7 @@ class OpenAIModel(MessagesModel):
 
         # https://platform.openai.com/docs/api-reference/chat/create
         response = self._client.chat.completions.create(model=self._model_name,
-                                                        messages=msgs,
+                                                        messages=msgs, # type: ignore[arg-type]
                                                         
                                                         max_tokens=genconf.max_tokens,
                                                         stop=genconf.stop,
@@ -319,11 +322,11 @@ class OpenAIModel(MessagesModel):
 
                 text = fn.arguments
             else: # use content instead
-                text = message.content
+                text = message.content # type: ignore[assignment]
         
         else:
             # text or simple json format
-            text = message.content
+            text = message.content # type: ignore[assignment]
 
         out = self._prepare_gen_out(text, finish, genconf)
 

@@ -50,11 +50,11 @@ def loop(callback: Callable[[Union[GenOut,None], Context, Model, GenConf], bool]
          inst_text: Optional[str] = None,
          in_text: Optional[str] = None,
 
-         trim_flags: Optional[Trim] = TRIM_DEFAULT,
+         trim_flags: Trim = TRIM_DEFAULT,
          ctx: Optional[Context] = None,
 
          genconf: Optional[GenConf] = None,
-         ):
+         ) -> Context:
     """Iteratively append inputs and generate model outputs.
     
     Callback should call ctx.add_OUT(), ctx.add_IN() and return a bool to continue looping or not.
@@ -101,14 +101,14 @@ def loop(callback: Callable[[Union[GenOut,None], Context, Model, GenConf], bool]
                      genconf=genconf
                      )
        
-            out = model.gen_(ctx, genconf)
+            out = model.gen(ctx, genconf)
         else:
             out = None # first call
         
         res = callback(out, 
-                       ctx=ctx, 
-                       model=model,
-                       genconf=genconf)
+                       ctx, 
+                       model,
+                       genconf)
 
         if not res:
             break
@@ -122,7 +122,7 @@ def interact(model: Model,
              *,
              ctx: Optional[Context] = None,
              inst_text: Optional[str] = None,
-             trim_flags: Optional[Trim] = TRIM_DEFAULT,
+             trim_flags: Trim = TRIM_DEFAULT,
              
              genconf: Optional[GenConf] = None,
              ) -> Context:
@@ -217,7 +217,7 @@ def interact(model: Model,
                             try:
                                 path = params[0]
                                 ctx.addx(path=path)
-                                ct = ctx.last.text
+                                ct = ctx.last_text
                                 print(ct[:500])
                             except FileNotFoundError:
                                 print(f"Could not load '{path}'")
@@ -346,7 +346,7 @@ def recursive_summarize(model: Model,
     logger.debug(f"Max ctx token len {max_token_len}")
     
     token_len_fn = model.tokenizer.token_len_lambda
-    logger.debug(f"Initial text token_len {token_len_fn(text)}")
+    logger.debug(f"Initial text token_len {token_len_fn(text)}") # type: ignore[arg-type]
     
     spl = RecursiveTextSplitter(max_token_len, overlap_size, len_fn=token_len_fn)
 
@@ -368,7 +368,7 @@ def recursive_summarize(model: Model,
             ctx.add_IN(in_text)
             ctx.add_IN(t)
     
-            out = model.gen_(ctx)        
+            out = model.gen(ctx)        
             logger.debug(out)
     
             out_list.append(out.text)

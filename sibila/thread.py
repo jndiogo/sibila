@@ -31,8 +31,8 @@ class MsgKind(IntEnum):
     """Initial instructions for model."""
 
     @staticmethod
-    def kind_from_chatml_role(role: str) -> Self:
-        KIND_FROM_CHATML = {"user": MsgKind.IN, "assistant": MsgKind.OUT, "system": MsgKind.INST}
+    def kind_from_chatml_role(role: str) -> Any: # Any=MsgKind
+        KIND_FROM_CHATML: dict = {"user": MsgKind.IN, "assistant": MsgKind.OUT, "system": MsgKind.INST}
         kind = KIND_FROM_CHATML.get(role)
         if kind is None:
             raise ValueError(f"Unknown ChatML role '{role}'.")
@@ -40,11 +40,9 @@ class MsgKind(IntEnum):
             return kind
 
     @staticmethod
-    def chatml_role_from_kind(kind: Self) -> str:
-        CHATML_FROM_KIND = {MsgKind.IN: "user", MsgKind.OUT: "assistant", MsgKind.INST: "system"}
-        return CHATML_FROM_KIND.get(kind)
-
-
+    def chatml_role_from_kind(kind: Any) -> str: # Any=MsgKind
+        CHATML_FROM_KIND: dict = {MsgKind.IN: "user", MsgKind.OUT: "assistant", MsgKind.INST: "system"}
+        return CHATML_FROM_KIND.get(kind) # type: ignore[return-value]
 
 
 
@@ -60,11 +58,21 @@ class Thread(Sequence):
     Attributes:
         inst: Text for system instructions.
     """
+
+    inst: str
+    """Text for system instructions, defaults to ''"""
+
+    join_sep: str
+    """Separator used when message text needs to be joined. Defaults to '\\n'"""
+
+    _msgs: list[str]
+    """List of thread messages"""
     
+
     def __init__(self,
-                 t: Optional[Union[Self,list,str,dict,tuple]] = None,
-                 inst: Optional[str] = '',
-                 join_sep: Optional[str] = "\n"):
+                 t: Optional[Union[Any,list,str,dict,tuple]] = None, # Any=Thread
+                 inst: str = '',
+                 join_sep: str = "\n"):
         """
         Examples:
             Creation with message list
@@ -149,9 +157,25 @@ class Thread(Sequence):
             return Thread._kind_from_pos(length - 1)
 
 
+    @property
+    def last_text(self) -> str:
+        """Get text of last message in thread .
+
+        Returns:
+            Last message text.
+
+        Raises:
+            IndexError: If thread is empty.
+        """
+        length = len(self._msgs)
+        if not length: # empty
+            raise IndexError("Thread is empty")
+        else:
+            return self._msgs[-1]
+
 
     def add(self, 
-            t: Optional[Union[str,list,dict]],
+            t: Union[str,tuple,dict,MsgKind],
             text: Optional[str] = None):
         """Add a message to Thread by parsing a mix of types.
 
@@ -360,7 +384,7 @@ class Thread(Sequence):
 
     @staticmethod
     def make_INST_IN(inst_text: str,
-                     in_text: str) -> Self:
+                     in_text: str) -> Any: # Any=Thread
         """Return an initialized Thread with instructions and an IN message.
 
         Args:
@@ -374,7 +398,7 @@ class Thread(Sequence):
         return thread
 
     @staticmethod
-    def make_IN(in_text: str) -> Self:
+    def make_IN(in_text: str) -> Any: # Any=Thread
         """Return an initialized Thread with an IN message.
 
         Args:
@@ -386,7 +410,7 @@ class Thread(Sequence):
 
     @staticmethod
     def make_OUT_IN(out_text: str,
-                    in_text: str) -> Self:
+                    in_text: str) -> Any: # Any=Thread
         """Return an initialized Thread with an OUT message followed by an IN message.
 
         Args:
@@ -399,8 +423,8 @@ class Thread(Sequence):
         return thread
 
     @staticmethod
-    def ensure(query: Union[str,Self],
-               inst: Optional[str] = None) -> Self:
+    def ensure(query: Union[str,Any],
+               inst: Optional[str] = None) -> Any: # Any=Thread
         """Utility to return a Thread from either a passed Thread or an str used as an IN message.
 
         Args:
@@ -490,7 +514,7 @@ class Thread(Sequence):
 
     # = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = lower level
     def _parse_msg(self,
-                   t: Union[str,tuple,dict],
+                   t: Union[str,tuple,dict,MsgKind],
                    text: Optional[str] = None) -> tuple[MsgKind,str]:
         
         """Parses a mix of types into (MsgKind, text).
@@ -512,7 +536,7 @@ class Thread(Sequence):
             if not isinstance(text, str):
                 raise TypeError("If arg text is given, it must be an str.")
             if not isinstance(t, MsgKind):
-                raise TypeError("If arg text is given, ark k must be of type MsgKind.")
+                raise TypeError("If arg text is given, arg k must be of type MsgKind.")
             return t,text
 
         elif isinstance(t, str):
@@ -553,7 +577,7 @@ class Thread(Sequence):
     def join_text(self,
                   a: str,
                   b: str,
-                  sep_count: Optional[int] = 1) -> str:        
+                  sep_count: int = 1) -> str:        
         if b:
             if a:
                 if a[-sep_count] != self.join_sep:
@@ -569,7 +593,7 @@ class Thread(Sequence):
         return len(self._msgs)
 
 
-    def __getitem__(self, 
+    def __getitem__(self, # type: ignore[override]
                     index: int) -> tuple[MsgKind,str]:
         return Thread._kind_from_pos(index), self._msgs[index]
 

@@ -40,8 +40,12 @@ GRAMMAR_LITERAL_ESCAPES = {"\r": "\\r", "\n": "\\n", '"': '\\"'}
 
 
 class SchemaConverter:
+    _prop_order: dict
+    _rules: dict
+    _defs: dict
+
     def __init__(self, 
-                 prop_order):
+                 prop_order: dict):
         self._prop_order = prop_order
         self._rules = {"space": SPACE_RULE}
         self._defs: dict[str, Any] = {}
@@ -49,7 +53,7 @@ class SchemaConverter:
     def _format_literal(self, 
                         literal: str):
         escaped: str = GRAMMAR_LITERAL_ESCAPE_RE.sub(
-            lambda m: GRAMMAR_LITERAL_ESCAPES.get(m.group(0)), json.dumps(literal)
+            lambda m: GRAMMAR_LITERAL_ESCAPES.get(m.group(0)), json.dumps(literal) # type: ignore[arg-type,return-value]
         )
         return f'"{escaped}"'
 
@@ -121,7 +125,7 @@ class SchemaConverter:
 
             
             # split names into required, not_required
-            required: str = schema.get("required") or []
+            required: list = schema.get("required") or []
             not_required = [n for n in prop_pairs if n not in required]
             
             if len(required) == 0: # force all to be required: or the leading comma for not_required may cause broken JSON
@@ -131,7 +135,7 @@ class SchemaConverter:
 
             
             def emit_prop(prop_name: str, 
-                          prop_schema: str,
+                          prop_schema: dict[str, Any],
                           is_required: bool,
                           index: int
                           ) -> str:
@@ -204,19 +208,21 @@ class SchemaConverter:
 
 
 def gbnf_from_json_schema(schema: Union[str,dict],
-                          prop_order: Optional[list[str]] = []):
+                          prop_order: list[str] = []):
     
     """
     prop_order sorting is probably a bad idea, because it makes output order different from the schema example order, which may unnecessarily confuse the model
     """
-
+    out_schema: dict[str, Any]
     if isinstance(schema, str):
-        schema = json.loads(schema)
+        out_schema = json.loads(schema)
+    else:
+        out_schema = schema
         
-    prop_order = {name: idx for idx, name in enumerate(prop_order)}
+    prop_order_inv: dict[str,int] = {name: idx for idx, name in enumerate(prop_order)}
     
-    converter = SchemaConverter(prop_order)
-    converter.visit(schema, "")
+    converter = SchemaConverter(prop_order_inv)
+    converter.visit(out_schema, "")
     
     return converter.format_grammar()
 

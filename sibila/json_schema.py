@@ -2,6 +2,8 @@ from typing import Any, Optional, Union, Literal, Annotated, get_origin, get_arg
 from dataclasses import dataclass, field
 from enum import Enum
 
+from copy import copy
+
 import json
 
 import logging
@@ -9,9 +11,9 @@ logger = logging.getLogger(__name__)
 
 from datetime import date, time, datetime
 
-from pydantic import BaseModel, TypeAdapter, ValidationError
+from dataclasses import dataclass, is_dataclass, fields, MISSING
 
-from .dictype import json_schema_from_dictype
+from pydantic import BaseModel, TypeAdapter, ValidationError
 
 from .utils import (
     is_subclass_of,
@@ -60,6 +62,13 @@ class JSchemaConf:
     # pydantic_obj_from_json() configuration:
     pydantic_strict_validation: Optional[bool] = None
     """Validate JSON values in a strict manner or not. None means validate individually per each value in the obj. (for example in pydantic with: Field(strict=True))."""
+
+    
+    def clone(self):
+        """Return a copy of this configuration."""
+        return copy(self)
+
+
 
 
 
@@ -111,8 +120,8 @@ def json_schema_resolve_refs(schema: dict,
 
 
 def json_schema_massage(sch: dict,
-                        schemaconf: Optional[JSchemaConf] = JSchemaConf(),
-                        DEB: Optional[bool] = False) -> dict:
+                        schemaconf: JSchemaConf = JSchemaConf(),
+                        DEB: bool = False) -> dict:
 
     """
     Massages JSON schema object to simplify as much as possible and remove all non-essential keys. 
@@ -239,8 +248,7 @@ def json_schema_massage(sch: dict,
 
 
 
-
-# ============================================================================ Pydantic - JSON schema
+# ============================================================================ Pydantic BaseModel
 
 def json_schema_from_pydantic(cls: BaseModel) -> dict:
     return cls.model_json_schema()
@@ -248,7 +256,7 @@ def json_schema_from_pydantic(cls: BaseModel) -> dict:
 
 def pydantic_obj_from_json(cls: BaseModel, 
                            obj_init: dict,
-                           schemaconf: Optional[JSchemaConf] = JSchemaConf()
+                           schemaconf: Optional[JSchemaConf] = None
                            ) -> BaseModel:
 
     """
@@ -267,6 +275,9 @@ def pydantic_obj_from_json(cls: BaseModel,
     https://docs.pydantic.dev/latest/api/type_adapter/
     """
     
+    if schemaconf is None:
+        schemaconf = JSchemaConf()
+
     adapter = TypeAdapter(cls)
     try:
         obj = adapter.validate_python(obj_init, 
@@ -282,52 +293,52 @@ def pydantic_obj_from_json(cls: BaseModel,
     
 
 
-# ============================================================================ JSON schema from types
+# ============================================================================ JSON Schema construction from types
 
-def is_prim_type(type_: Any,
-                 allow_bool: bool):
-    if not isinstance(type_, type):
-        return False
+def is_prim_type(type_: Any):
     
     # cannot use issubclass which would accept IntEnum as int
-    if type_ is str or type_ is float or type_ is int:
-        return True
-    else:
-        return allow_bool and type_ is bool
+    return (type_ is str or 
+            type_ is float or 
+            type_ is int or 
+            type_ is bool)
 
 
 
 
-def get_type(type_: Any,
-             allow_enums: bool,
-             allow_BaseModel: bool,
-             allow_dictype: bool) -> tuple:
+
+def get_type(type_: Any) -> tuple:
     """
-    type_ can be any non-list type
-    prim_type
-    enum (if allow_enums)
-    BaseModel (if allow_BaseModel)
-    dict -> dictype definition (if allow_dictype)
+    type_ can be any non-list type:
 
-    prim_type: can be Annotated[T, "Desc"]
-        bool
-        int
-        float
-        str
-        
-    if allow_enums:
-        enums: can be Annotated[T, "Desc"]
+        All types can be Annotated[T, "Desc"]
+
+        prim_type:
+            bool
+            int
+            float
+            str
+            
+        enums:
             [1, 2, 3] or ["a","b"] - all items of the same prim_type
             Literal['year', 'name'] - all items of the same prim_type
             Enum, EnumInt, EnumStr, (Enum, int),... - all items of the same prim_type
 
-    datetime.datetime
+        datetime/date/time
 
-    Returns (type_, anno_desc, enum_list) or (None,,) if not a supported simple type.    
+        dataclass
+
+        Pydantic BaseModel
+
+    
+    Returns (type_, anno_desc, options) or (None,,) if not a supported simple type.    
+        options: optional keys
+        "str_format": str
+        "enum_list": []
     """
 
-    enum_list = None
     anno_desc = None
+    options = {}
 
     if get_origin(type_) is Annotated:
         args = list(get_args(type_))
@@ -335,63 +346,87 @@ def get_type(type_: Any,
         if len(args) > 1:
             anno_desc = args[1]
 
-    if is_prim_type(type_, allow_bool=True):
+
+    if (is_prim_type(type_) or
+        is_dataclass(type_) or
+        is_subclass_of(type_, BaseModel)
+        ):
         ...
 
-    elif allow_BaseModel and is_subclass_of(type_, BaseModel):
-        ...
+    elif is_subclass_of(type_, datetime):
+        type_ = str
+        options["str_format"] = "date-time"
 
-    elif allow_dictype and isinstance(type_, dict):
-        ...
+    elif is_subclass_of(type_, date):
+        type_ = str
+        options["str_format"] = "date"
 
-    elif allow_enums:
+    elif is_subclass_of(type_, time):
+        type_ = str
+        options["str_format"] = "time"
 
-        if get_origin(type_) is Literal:
-            enum_list = list(get_args(type_))
-            type_ = type(enum_list[0])
+    else: # enums
+        type_, enum_list = get_enum_type(type_)
 
-        elif is_subclass_of(type_, Enum):
-            enum_list = [e.value for e in type_]
-            type_ = type(enum_list[0])
+        if type_ is not None:
+            options["enum_list"] = enum_list
 
-        elif isinstance(type_, list): # enum as value list
-            enum_list = type_[:]
-            type_ = type(type_[0])
+    return type_, anno_desc, options
+    
 
-        else:
-            type_ = None
 
-        if type_ is not None: # enum consistency checks
-            if not is_prim_type(type_, allow_bool=True):
-                raise TypeError(f"Base type is not one of bool, int, float, str: '{type_}'")
 
-            if enum_list is not None:
-                if not all([type_ is type(e) for e in enum_list]):
-                    raise TypeError(f"All enum values must have the same type in '{enum_list}'")
+def get_enum_type(type_: Any):
+    """
+    enums:
+        [1, 2, 3] or ["a","b"] - all items of the same prim_type
+        Literal['year', 'name'] - all items of the same prim_type
+        Enum, EnumInt, EnumStr, (Enum, int),... - all items of the same prim_type
+    """
+
+    enum_list = None
+
+    if get_origin(type_) is Literal:
+        enum_list = list(get_args(type_))
+        type_ = type(enum_list[0])
+
+    elif is_subclass_of(type_, Enum):
+        enum_list = [e.value for e in type_]
+        type_ = type(enum_list[0])
+
+    elif isinstance(type_, list): # enum as value list: ["a","b"]
+        enum_list = type_[:]
+        type_ = type(type_[0])
 
     else:
         type_ = None
 
-    return type_, anno_desc, enum_list
-    
+    if type_ is not None: # enum consistency checks
+        if not is_prim_type(type_):
+            raise TypeError(f"Base type is not one of bool, int, float, str: '{type_}'")
 
+        if not enum_list:
+            raise TypeError("Enum must have at least one value")
 
+        if not all([type_ is type(e) for e in enum_list]):
+            raise TypeError(f"All enum values must have the same type in '{enum_list}'")
+        
+    return type_, enum_list
 
 
 
 
 def get_type_list(type_: Any) -> tuple:
     """
-    list of values of a prim_type, BaseModel, dictype: 
-        list[prim_type] - for example list[int]
-
+    list of values of a get_type() accepted types: 
+        list[type] - for example list[int]
     can be Annotated[list[T], "List desc"] and/or list[Annotated[T, "Item desc"]]
 
-    Returns: item_type, item_anno_desc, item_enum_list, list_anno_desc
+    Returns: item_type, item_anno_desc, item_options, list_anno_desc
     """
 
     item_anno_desc = None
-    item_enum_list = None
+    item_options = {}
     list_anno_desc = None
 
     if get_origin(type_) is Annotated:
@@ -408,15 +443,12 @@ def get_type_list(type_: Any) -> tuple:
         type_ = None
 
     if type_ is not None:
-        type_, item_anno_desc, item_enum_list = get_type(type_, 
-                                                         allow_enums=True,
-                                                         allow_BaseModel=True,
-                                                         allow_dictype=True)
+        type_, item_anno_desc, item_options = get_type(type_)
 
         if type_ is None: # list type consistency
-            raise TypeError(f"List item type is not bool, int, float, str, enum, BaseModel or a dictype definition: '{type_}'")
+            raise TypeError(f"List item type is not a supported type like bool, int, float, str, enum, dataclass, datetime, BaseModel: '{type_}'")
 
-    return type_, item_anno_desc, item_enum_list, list_anno_desc
+    return type_, item_anno_desc, item_options, list_anno_desc
 
     
 
@@ -426,16 +458,9 @@ def get_type_list(type_: Any) -> tuple:
 
 def build_type_json_schema(type_: Any, 
                            desc: Optional[str] = None,
-                           # for prim_type or enum
-                           enum_list: Optional[list] = None,                                  
-                           default: Optional[Any] = None,
-                           format: Optional[str] = None) -> dict:
+                           options: dict = {},
+                           default: Optional[Any] = None) -> dict:
     """Render a valid JSON Schema specification for an accepted type.
-    type_ can be any non-list type
-    prim_type
-    enum
-    BaseModel
-    dict -> dictype definition
 
     @TODO: update to accepted and args
 
@@ -449,42 +474,47 @@ def build_type_json_schema(type_: Any,
         A dict whose json.dumps() serialization is a valid JSON Schema specification for type.
     """
 
-    out_type, anno_desc, enum_list2 = get_type(type_, 
-                                               allow_enums=True,
-                                               allow_BaseModel=True,
-                                               allow_dictype=True)
+    out_type, anno_desc, options2 = get_type(type_)
     if out_type is None:
         raise TypeError(f"Unsupported type: '{type(type_)}'")
     
     if desc is None:
         desc = anno_desc
 
-    if is_subclass_of(out_type, BaseModel):
+    if is_dataclass(out_type):
+        out = build_dataclass_object_json_schema(out_type)
+
+        if desc is not None:
+            out["description"] = desc
+
+    elif is_subclass_of(out_type, BaseModel):
         out = out_type.model_json_schema()
 
         if desc is not None:
             out["description"] = desc
 
-    elif isinstance(out_type, dict): # dictype
-        out = json_schema_from_dictype(out_type, desc)
-
     else: # prim_type or enum
-
         out = {}
 
         if desc:
             out["description"] = desc
 
+        enum_list = options.get("enum_list")
         if enum_list is None:
-            enum_list = enum_list2
+            enum_list = options2.get("enum_list")
         if enum_list is not None:
             out["enum"] = enum_list
 
-        if format is not None:
+        str_format = options.get("str_format")
+        if str_format is None:
+            str_format = options2.get("str_format")
+        if str_format is not None:
             if out_type is not str:
-                raise TypeError("Arg format is only valid for str type.")
+                raise TypeError("Arg str_format is only valid for str type.")
 
-            out["format"] = format
+            out["format"] = str_format
+
+        out["type"] = get_json_type(out_type)
 
         if default is not None:
             if not isinstance(default, out_type):
@@ -492,16 +522,14 @@ def build_type_json_schema(type_: Any,
 
             out["default"] = default
 
-        out["type"] = get_json_type(out_type)
-
     return out
 
 
 
-def build_array_type_json_schema(item_type: Any,
-                                 item_desc: Optional[str] = None,
-                                 item_enum_list: Optional[list] = None,
-                                 list_desc: Optional[str] = None) -> dict:
+def build_array_json_schema(item_type: Any,
+                            item_desc: Optional[str] = None,
+                            item_options: dict = {},
+                            list_desc: Optional[str] = None) -> dict:
     """_summary_
 
     Args:
@@ -513,9 +541,9 @@ def build_array_type_json_schema(item_type: Any,
 
     items_repr = build_type_json_schema(item_type, 
                                         item_desc,
-                                        item_enum_list)
+                                        options=item_options)
 
-    out = {}
+    out: dict[str,Any] = {}
 
     if list_desc:
         out["description"] = list_desc
@@ -528,9 +556,62 @@ def build_array_type_json_schema(item_type: Any,
 
 
 
-def build_object_type_json_schema(properties_repr: dict,
-                                  desc: Optional[str] = None,
-                                  required_keys: Optional[list[str]] = None) -> dict:
+
+
+
+
+
+def build_type_or_array_json_schema(type_: Any,
+                                    default: Optional[Any] = None) -> tuple[dict,bool]:
+    """_summary_
+
+    Args:
+        type_: _description_
+        output_key_name: _description_
+
+    Raises:
+        TypeError: _description_
+
+    Returns:
+        JSON schema dict, is_object
+    """
+
+    # type list
+    item_type, item_desc, item_options, list_desc = get_type_list(type_)    
+    if item_type is not None:            
+        # build json schema for list of type_
+        schema = build_array_json_schema(item_type, 
+                                         item_desc, 
+                                         item_options,
+                                         list_desc)
+        is_object = False
+
+    else: # prim, enum, datetime, dataclass, BaseModel
+        out_type, desc, options = get_type(type_)
+        if out_type is None:
+            raise TypeError(f"Unknown target type '{type_}'")
+
+        schema = build_type_json_schema(out_type, 
+                                        desc,
+                                        options=options,
+                                        default=default)
+        
+        is_object = schema.get("type") == "object"
+
+    return schema, is_object
+
+
+
+
+
+
+
+
+
+
+def build_object_json_schema(properties_repr: dict,
+                             desc: Optional[str] = None,
+                             required_keys: Optional[list[str]] = None) -> dict:
     """_summary_
 
     Args:
@@ -542,8 +623,7 @@ def build_object_type_json_schema(properties_repr: dict,
         _description_
     """
 
-
-    out = {}
+    out: dict[str,Any] = {}
 
     if desc:
         out["description"] = desc
@@ -566,8 +646,47 @@ def build_object_type_json_schema(properties_repr: dict,
 
 
 
-def build_any_json_schema(type_: Any, 
-                          output_key_name: str) -> tuple[dict,bool]:
+
+def build_dataclass_object_json_schema(type_: Any) -> dict:
+    """
+    """
+
+    desc = type_.__doc__
+
+    props = {}
+    required = []
+
+    flds = fields(type_)
+    for fl in flds:
+        name = fl.name
+        prop_type = fl.type # can be Annotated[] -> desc
+        if fl.default is MISSING:
+            default = None
+            required.append(name)
+        else:
+            default = fl.default
+
+        prop_schema, _ = build_type_or_array_json_schema(prop_type,
+                                                         default=default)
+
+        props[name] = prop_schema
+
+    if not required: # we can't have an empty dataclass: make all required
+        required = list(props.keys())
+
+    out = build_object_json_schema(props,
+                                   desc,
+                                   required)
+
+    return out
+
+
+
+
+
+
+def build_root_json_schema(type_: Any, 
+                           output_key_name: str) -> tuple[dict,bool]:
     """_summary_
 
     Args:
@@ -578,49 +697,31 @@ def build_any_json_schema(type_: Any,
         TypeError: _description_
 
     Returns:
-        JSON schema dict, create_output_key
+        JSON schema dict, created_output_key
     """
 
-    # type list
-    item_type, item_desc, item_enum_list, list_desc = get_type_list(type_)    
-    if item_type is not None:            
-        # build json schema for list of type_
-        array_repr = build_array_type_json_schema(item_type, 
-                                                  item_desc, 
-                                                  item_enum_list,
-                                                  list_desc)
+    schema, is_object = build_type_or_array_json_schema(type_)
 
-        schema = build_object_type_json_schema({output_key_name: array_repr})
+    if not is_object: # need to create an object in root
+        schema = build_object_json_schema({output_key_name: schema})
 
-        create_output_key = True
-
-    else: # prim, enum, BaseModel
-        type_, desc, enum_list = get_type(type_, 
-                                          allow_enums=True,
-                                          allow_BaseModel=True,
-                                          allow_dictype=True)
-        if type_ is not None:
-            schema = build_type_json_schema(type_, 
-                                            desc,
-                                            enum_list)
-            create_output_key = schema.get("type") != "object"
-            
-            if create_output_key:
-                schema = build_object_type_json_schema({output_key_name: schema})
-
-        else:
-            raise TypeError(f"Unknown target type '{type_}'")
+    return schema, not is_object
 
 
-    return schema, create_output_key
+
+
+
+
 
 
 def get_final_type(type_: Any) -> Any:
 
     """ Final type can be:
-    BaseModel derived
-    Enum derived    
     prim_type (simple type or type of items in Literal or list["a","b"])
+    enums' type
+    datetime/date/time
+    dataclass
+    BaseModel derived
     """
 
     # dig through list and annotations until a valid type is found
@@ -636,7 +737,12 @@ def get_final_type(type_: Any) -> Any:
             type_ = args[0]
             continue
 
-        if is_subclass_of(type_, BaseModel):
+
+        if (is_dataclass(type_) or
+            is_subclass_of(type_, BaseModel) or
+            is_subclass_of(type_, datetime) or
+            is_subclass_of(type_, date) or
+            is_subclass_of(type_, time)):
             break
         
         elif is_subclass_of(type_, Enum):
@@ -671,18 +777,43 @@ def get_final_type(type_: Any) -> Any:
 def create_final_instance(type_: Any,
                           is_list: bool,
                           val: Any,
-                          schemaconf: JSchemaConf) -> Any:
+                          schemaconf: Optional[JSchemaConf] = None) -> Any:
     
+    if schemaconf is None:
+        schemaconf = JSchemaConf()
 
     def create_item(type_: Any,
                     val: Any) -> Any:
-        
-        if is_subclass_of(type_, BaseModel):
+
+        if is_dataclass(type_):
+            if not isinstance(val, dict):
+                raise TypeError(f"Expecting dict to initialize dataclass but got: '{val}'")
+            obj = type_(**val)
+            return obj
+
+        elif is_subclass_of(type_, BaseModel):
+            if not isinstance(val, dict):
+                raise TypeError(f"Expecting dict to initialize BaseModel but got: '{val}'")
             obj = pydantic_obj_from_json(type_, 
                                          val,
                                          schemaconf=schemaconf)
             return obj
         
+        elif is_subclass_of(type_, datetime):
+            if not isinstance(val, str):
+                raise TypeError(f"Expecting str to initialize datetime but got: '{val}'")
+            return datetime.fromisoformat(val)
+
+        elif is_subclass_of(type_, date):
+            if not isinstance(val, str):
+                raise TypeError(f"Expecting str to initialize date but got: '{val}'")
+            return date.fromisoformat(val)
+
+        elif is_subclass_of(type_, time):
+            if not isinstance(val, str):
+                raise TypeError(f"Expecting str to initialize time but got: '{val}'")
+            return time.fromisoformat(val)
+
         elif (type_ is str or 
               type_ is float or 
               type_ is int or 
@@ -695,7 +826,7 @@ def create_final_instance(type_: Any,
 
 
     if is_list:
-        if type(val) is not list: # check, just in case
+        if type(val) is not list: # check, just in case...
             raise TypeError(f"Value is not a list: '{val}'")
         
         out = []
@@ -732,5 +863,6 @@ def get_json_type(t: Any) -> str:
 
 
 # Useful:
+# string formats: https://json-schema.org/understanding-json-schema/reference/string#built-in-formats
 # Online JSON schema validator: https://www.jsonschemavalidator.net/
 # JSON pretty formatter: https://jsonformatter.org/json-pretty-print

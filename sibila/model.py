@@ -19,8 +19,9 @@ from pprint import pformat
 import logging
 logger = logging.getLogger(__name__)
 
+from dataclasses import dataclass, is_dataclass
 
-from jsonschema import (
+from jsonschema import ( # type: ignore[import-untyped]
     validate as json_schema_validate, 
     ValidationError as json_schema_ValidationError,
     SchemaError as json_schema_SchemaError
@@ -56,14 +57,12 @@ from .json_schema import (
     json_schema_massage,
     json_schema_from_pydantic,
     pydantic_obj_from_json,
-    build_any_json_schema,
+    build_dataclass_object_json_schema,
+    build_root_json_schema,
+    get_enum_type,
     get_final_type,
     create_final_instance
 )
-
-
-
-from .dictype import json_schema_from_dictype
 
 from .utils import is_subclass_of
 
@@ -76,17 +75,17 @@ from .utils import is_subclass_of
 class Tokenizer(ABC):
     """Base tokenizer class to encode and decode tokens, measure text length in tokens, track special tokens."""
 
-    bos_token_id: int # beginning of sentence
-    bos_token: str
+    bos_token_id: Union[int, None] # beginning of sentence
+    bos_token: Union[str, None]
 
-    eos_token_id: int # end of sentence
-    eos_token: str
+    eos_token_id: Union[int, None] # end of sentence
+    eos_token: Union[str, None]
 
-    pad_token_id: int # padding
-    pad_token: str
+    pad_token_id: Union[int, None] # padding
+    pad_token: Union[str, None]
 
-    unk_token_id: int # unknown token
-    unk_token: str
+    unk_token_id: Union[int, None] # unknown token
+    unk_token: Union[str, None]
 
     
     def special_tokens(self) -> list[Any]:
@@ -129,7 +128,7 @@ class Tokenizer(ABC):
         """
 
     def token_len(self, 
-                  text: str) -> list[int]:
+                  text: str) -> int:
         """Returns token length for given text.
 
         Args:
@@ -194,7 +193,8 @@ class Model(ABC):
     def __init__(self,
                  is_local_model: bool,
                  genconf: Union[GenConf, None],
-                 tokenizer: Tokenizer):
+                 schemaconf: Union[JSchemaConf, None],
+                 tokenizer: Union[Tokenizer, None]):
         """_summary_
 
         Args:
@@ -207,13 +207,19 @@ class Model(ABC):
         
         self._ctx_len = 0
 
-        self.tokenizer = tokenizer
+        self.tokenizer = tokenizer # type: ignore[assignment]
 
         if genconf is None:
             self.genconf = GenConf()
         else:
             self.genconf = genconf.clone()
         
+        if schemaconf is None:
+            self.schemaconf = JSchemaConf()
+        else:
+            self.schemaconf = schemaconf.clone()
+
+
 
         # set either "json" or "json_schema" key values to None to skip.
         self.json_format_instructors = {
@@ -249,7 +255,7 @@ class Model(ABC):
 
         Args:
             thread: The Thread to use as model input.
-            genconf: Model generation configuration. Defaults to None.
+            genconf: Model generation configuration. Defaults to None, which uses model's default.
 
         Raises:
             NotImplementedError: If method was not defined by a derived class.
@@ -273,7 +279,7 @@ class Model(ABC):
                  thread: Thread,
                  genconf: Optional[GenConf] = None,
 
-                 massage_schema: Optional[bool] = True,
+                 massage_schema: bool = True,
                  schemaconf: Optional[JSchemaConf] = None,
                  ) -> GenOut:
         """JSON/JSON-schema grammar-constrained generation, returning a Python dict of values, constrained or not by a JSON schema.
@@ -282,9 +288,9 @@ class Model(ABC):
         Args:
             json_schema: A JSON schema describing the dict fields that will be output. None means no schema (free JSON output).
             thread: The Thread to use as model input.
-            genconf: Model generation configuration. Defaults to None.
+            genconf: Model generation configuration. Defaults to None, which uses model's default.
             massage_schema: Simplify schema. Defaults to True.
-            schemaconf: JSchemaConf object that controls schema simplification. Defaults to None.
+            schemaconf: JSchemaConf object that controls schema simplification. Defaults to Defaults to None, which uses model's default.
 
         Returns:
             A GenOut object with result, generated text, etc. The output dict is in GenOut.dic.
@@ -294,15 +300,20 @@ class Model(ABC):
             genconf = self.genconf
 
         if genconf.json_schema is not None and json_schema is not None:
-            logger.warn("Both json_schema and genconf.json_schema are set: using json_schema")
+            logger.warn("Both arg json_schema and genconf.json_schema are set: using json_schema arg")
 
-        if json_schema is not None and massage_schema:
+        if json_schema is not None:
             if schemaconf is None:
-                schemaconf = JSchemaConf()
-            json_schema = json_schema_massage(json_schema, schemaconf)
+                schemaconf = self.schemaconf
 
-        logger.debug("JSON schema conf:\n" + pformat(schemaconf))
-        logger.debug("Massaged JSON schema:\n" + pformat(json_schema))
+            logger.debug("JSON schema conf:\n" + pformat(schemaconf))
+
+            if massage_schema:
+                if not isinstance(json_schema, dict):
+                    json_schema = json.loads(json_schema)
+
+                json_schema = json_schema_massage(json_schema, schemaconf) # type: ignore[arg-type]
+                logger.debug("Massaged JSON schema:\n" + pformat(json_schema))
 
         out = self.gen(thread, 
                        genconf(format="json", 
@@ -314,44 +325,56 @@ class Model(ABC):
 
     
     
-    def gen_dictype(self,
-                    dictype: dict,
-                    thread: Thread,
-                    genconf: Optional[GenConf] = None,
-                    schemaconf: Optional[JSchemaConf] = None
-                    ) -> GenOut:
-        """Grammar-constrained generation after a dictype definition (see dictype.py), returning a Python dict of values, 
-        Doesn't raise an exception if an error occurs, always returns GenOut.
+    def gen_dataclass(self,
+                      cls: Any, # a dataclass
+                      thread: Thread,
+                      genconf: Optional[GenConf] = None,
+                      schemaconf: Optional[JSchemaConf] = None
+                      ) -> GenOut:
+        """Grammar-constrained generation after a dataclass definition.
+        An initialized dataclass object is returned in the "obj" field of the returned dict.
+        Doesn't raise an exception if an error occurs, always returns GenOut containing the created object.
 
         Args:
-            dictype: A dictype defining the layout of the returned dict.
+            cls: A dataclass definition.
             thread: The Thread to use as model input.
-            genconf: Model generation configuration. Defaults to None.
-            schemaconf: JSchemaConf object that controls schema simplification. Defaults to None.
+            genconf: Model generation configuration. Defaults to None, which uses model's default.
+            schemaconf: JSchemaConf object that controls schema simplification. Defaults to None, which uses model's default.
 
         Returns:
-            A GenOut object with result, generated text, etc, with the output dict in GenOut.dic.
+            A GenOut object with result, generated text, etc. The initialized dataclass object is in GenOut.obj.
         """
 
-        if isinstance(dictype, dict):
-            params_schema = json_schema_from_dictype(dictype)
+        if is_dataclass(cls):
+            schema = build_dataclass_object_json_schema(cls)
         else:
-            raise TypeError("Arg dictype must be of dict type")
+            raise TypeError("Only dataclass allowed for argument cls")
 
-        if genconf is None:
-            genconf = self.genconf
-
-        out = self.gen_json(params_schema,
+        out = self.gen_json(schema,
                             thread,
                             genconf,
                             massage_schema=True,
-                            schemaconf=schemaconf) 
+                            schemaconf=schemaconf)
+    
+        if out.dic is not None:
+            try:
+                obj = create_final_instance(cls, 
+                                            is_list=False,
+                                            val=out.dic,
+                                            schemaconf=schemaconf)
+                out.obj = obj
+                
+            except TypeError as e:
+                out.res = GenRes.ERROR_JSON_SCHEMA_VAL # error initializing object from JSON
+                out.text += f"\nJSON Schema error: {e}"
+        else:
+            # out.res already holds the right error
+            ...
+        
         return out
 
 
-    
-    
-    
+
     def gen_pydantic(self,
                      cls: Any, # a Pydantic BaseModel class
                      thread: Thread,
@@ -359,14 +382,14 @@ class Model(ABC):
                      schemaconf: Optional[JSchemaConf] = None
                      ) -> GenOut:
         """Grammar-constrained generation after a Pydantic BaseModel-derived class definition.
-        An initialized Pydantic BaseModel object is returned in the "obj" field of return dict.
+        An initialized Pydantic BaseModel object is returned in the "obj" field of the returned dict.
         Doesn't raise an exception if an error occurs, always returns GenOut containing the created object.
 
         Args:
             cls: A class derived from a Pydantic BaseModel class.
             thread: The Thread to use as model input.
-            genconf: Model generation configuration. Defaults to None.
-            schemaconf: JSchemaConf object that controls schema simplification. Defaults to None.
+            genconf: Model generation configuration. Defaults to None, which uses model's default.
+            schemaconf: JSchemaConf object that controls schema simplification. Defaults to None, which uses model's default.
 
         Returns:
             A GenOut object with result, generated text, etc. The initialized Pydantic BaseModel-derived object is in GenOut.obj.
@@ -376,10 +399,6 @@ class Model(ABC):
             schema = json_schema_from_pydantic(cls)
         else:
             raise TypeError("Only pydantic BaseModel allowed for argument cls")
-
-
-        if genconf is None:
-            genconf = self.genconf
 
         out = self.gen_json(schema,
                             thread,
@@ -418,14 +437,14 @@ class Model(ABC):
                  inst: Optional[str] = None,
 
                  genconf: Optional[GenConf] = None,
-                 ok_length_is_error: Optional[bool] = False
+                 ok_length_is_error: bool = False
                  ) -> str:
         """Text generation from a Thread, used by the other model generation methods.
 
         Args:
             query: Thread or an str with the text of a single IN message to use as model input.
             inst: Instruction message for model. Will override Thread's inst, if set. Defaults to None.
-            genconf: Model generation configuration. Defaults to None.
+            genconf: Model generation configuration. Defaults to None, which uses model's default.
             ok_length_is_error: Should a result of GenRes.OK_LENGTH be considered an error and raise?
 
         Raises:
@@ -456,7 +475,7 @@ class Model(ABC):
              inst: Optional[str] = None,
 
              genconf: Optional[GenConf] = None,
-             massage_schema: Optional[bool] = True,
+             massage_schema: bool = True,
              schemaconf: Optional[JSchemaConf] = None,
              ) -> dict:
         """JSON/JSON-schema grammar-constrained generation, returning a Python dict of values, constrained or not by a JSON schema.
@@ -466,9 +485,9 @@ class Model(ABC):
             json_schema: A JSON schema describing the dict fields that will be output. None means no schema (free JSON output).
             query: Thread or an str with the text of a single IN message to use as model input.
             inst: Instruction message for model. Will override Thread's inst, if set. Defaults to None.
-            genconf: Model generation configuration. Defaults to None.
+            genconf: Model generation configuration. Defaults to None, which uses model's default.
             massage_schema: Simplify schema. Defaults to True.
-            schemaconf: JSchemaConf object that controls schema simplification. Defaults to None.
+            schemaconf: JSchemaConf object that controls schema simplification. Defaults to None, which uses model's default.
 
         Raises:
             GenError: If an error occurred, for example an invalid JSON schema output error. See GenError.
@@ -488,50 +507,50 @@ class Model(ABC):
         GenError.raise_if_error(out,
                                 ok_length_is_error=False) # as valid JSON can still be produced
 
-        return out.dic
+        return out.dic # type: ignore[return-value]
 
 
 
 
+    def dataclass(self,
+                  cls: Any, # a dataclass definition
 
-    def dictype(self,
-                dictype: dict,
+                  query: Union[str,Thread],
+                  *,
+                  inst: Optional[str] = None,
 
-                query: Union[str,Thread],
-                *,
-                inst: Optional[str] = None,
-
-                genconf: Optional[GenConf] = None,
-                schemaconf: Optional[JSchemaConf] = None
-                ) -> dict:
-        """Grammar-constrained generation after a dictype definition (see dictype.py), returning a Python dict of values, 
-        Raises GenError if unable to get a valid dict that follows the dictype definition.
+                  genconf: Optional[GenConf] = None,
+                  schemaconf: Optional[JSchemaConf] = None
+                  ) -> Any: # a dataclass object
+        """Grammar-constrained generation after a dataclass definition resulting in an object initialized with the model response.
+        Raises GenError if unable to get a valid response that follows the dataclass definition.
 
         Args:
-            dictype: A dictype definition stating the types of the generated dict fields.
+            cls: A dataclass definition.
             query: Thread or an str with the text of a single IN message to use as model input.
             inst: Instruction message for model. Will override Thread's inst, if set. Defaults to None.
-            genconf: Model generation configuration. Defaults to None.
-            schemaconf: JSchemaConf object that controls schema simplification. Defaults to None.
+            genconf: Model generation configuration. Defaults to None, which uses model's default.
+            schemaconf: JSchemaConf object that controls schema simplification. Defaults to None, which uses model's default.
 
         Raises:
-            GenError: If an error occurred, for example an invalid JSON schema output error. See GenError.
+            GenError: If an error occurred, for example returning invalid object initialization. See GenError.
 
         Returns:
-            A dict following the dictype definition.
+            An object of class cls (derived from dataclass) initialized from the constrained JSON output.
         """
 
         thread = Thread.ensure(query, inst)
 
-        out = self.gen_dictype(dictype,
-                               thread,
-                               genconf,
-                               schemaconf)
-        
+        out = self.gen_dataclass(cls,
+                                 thread,
+                                 genconf,
+                                 schemaconf)
+
         GenError.raise_if_error(out,
                                 ok_length_is_error=False) # as valid JSON can still be produced
 
-        return out.dic
+        return out.obj
+
 
 
 
@@ -548,15 +567,15 @@ class Model(ABC):
                  schemaconf: Optional[JSchemaConf] = None
                  ) -> Any: # a Pydantic BaseModel object
         """Grammar-constrained generation after a Pydantic BaseModel-derived class definition.
-        An initialized Pydantic BaseModel object is returned in the "obj" field of return dict.
+        Results in an object initialized with the model response.
         Raises GenError if unable to get a valid dict that follows the BaseModel class definition.
 
         Args:
             cls: A class derived from a Pydantic BaseModel class.
             query: Thread or an str with the text of a single IN message to use as model input.
             inst: Instruction message for model. Will override Thread's inst, if set. Defaults to None.
-            genconf: Model generation configuration. Defaults to None.
-            schemaconf: JSchemaConf object that controls schema simplification. Defaults to None.
+            genconf: Model generation configuration. Defaults to None, which uses model's default.
+            schemaconf: JSchemaConf object that controls schema simplification. Defaults to None, which uses model's default.
 
         Raises:
             GenError: If an error occurred, for example an invalid BaseModel object. See GenError.
@@ -592,32 +611,38 @@ class Model(ABC):
                 ) -> Any:
         
         """
-        prim_type: can be Annotated[T, "Desc"]
+        @TODO
+        All types can be Annotated[T, "Desc"]
+
+        prim_type:
             bool
             int
             float
             str
             
-        enums: can be Annotated[T, "Desc"]
-            Literal['year', 'name'] - all items of the same type:  int, float, str
-            Enum, EnumInt, EnumStr - int, float, str
-            [1, 2, 3] or ["a","b"] - all items of the same type:  int, float, str
+        enums:
+            [1, 2, 3] or ["a","b"] - all items of the same prim_type
+            Literal['year', 'name'] - all items of the same prim_type
+            Enum, EnumInt, EnumStr, (Enum, int),... - all items of the same prim_type
 
-        Datetime        
+        datetime/date/time
 
-        list of values of a prim_type, BaseModel, dictype: 
-            list[prim_type] - for example list[int]
-            can be Annotated[list[T], "List desc"] and/or list[Annotated[T, "Item desc"]]
+        dataclass
 
-        dict -> dictype
+        Pydantic BaseModel
 
-        Pydantic -> BaseModel obj
-            
+        list of values of a get_type() accepted types: 
+            list[type] - for example list[int]
+            can be as list:
+                Annotated[list[T], "List desc"] 
+            and/or as list item:
+                list[Annotated[T, "Item desc"]]
+
         """
 
         OUTPUT_KEY_NAME = "output"
 
-        schema, created_output_key = build_any_json_schema(target, OUTPUT_KEY_NAME)
+        schema, created_output_key = build_root_json_schema(target, OUTPUT_KEY_NAME)
         
         final_type, is_list = get_final_type(target)
 
@@ -644,6 +669,41 @@ class Model(ABC):
                                       schemaconf=schemaconf)
 
         return value
+
+
+
+
+
+    def classify(self,
+                 labels: Any,
+
+                 query: Union[str,Thread],
+                 *,
+                 inst: Optional[str] = None,
+
+                 genconf: Optional[GenConf] = None,
+                 schemaconf: Optional[JSchemaConf] = None
+                 ) -> Any:
+
+
+        # verify it's a valid enum "type"
+        type_,_ = get_enum_type(labels)
+        if type_ is None:
+            raise TypeError(f"Arg labels must be one of Literal, Enum class or a list of str, float or int items")
+        
+        return self.extract(labels,
+                            query,
+                            inst=inst,
+                            genconf=genconf,
+                            schemaconf=schemaconf)
+
+
+
+
+
+
+
+
 
 
 
@@ -679,7 +739,7 @@ class Model(ABC):
         """Sibila version + provider version
         Ex: sibila='0.2.3' provider='llama-cpp-python 0.2.44'        
         """        
-        from .__init__ import __version__
+        from .__init__ import __version__  # type: ignore[import-not-found]
         return f"sibila='{__version__}' provider='{cls.provider_version()}'"
         
     @classmethod
@@ -853,11 +913,13 @@ class TextModel(Model, ABC):
 
     def __init__(self,
                  is_local_model: bool,
-                 genconf: GenConf,
-                 tokenizer: Tokenizer):
+                 genconf: Union[GenConf, None],
+                 schemaconf: Union[JSchemaConf, None],
+                 tokenizer: Union[Tokenizer, None]):
 
         super().__init__(is_local_model,
                          genconf,
+                         schemaconf,
                          tokenizer)
         
         self.is_message_model = False
@@ -899,13 +961,18 @@ from .formatdir import (
 class FormattedTextModel(TextModel, ABC):
     """Model that uses formatted text (chat templates) for input/output."""
     
+    format: Union[dict,None]
+    _jinja_compiled_template: Union[Any,None]
+
     def __init__(self,
                  is_local_model: bool,
-                 genconf: GenConf,
-                 tokenizer: Tokenizer):
+                 genconf: Union[GenConf, None],
+                 schemaconf: Union[JSchemaConf, None],
+                 tokenizer: Union[Tokenizer, None]):
 
         super().__init__(is_local_model,
                          genconf,
+                         schemaconf,
                          tokenizer)
 
         self.format = None
@@ -988,7 +1055,7 @@ class FormattedTextModel(TextModel, ABC):
 
         Args:
             thread: The Thread object to use as model input.
-            genconf: Model generation configuration. Defaults to None.
+            genconf: Model generation configuration. Defaults to None, which uses model's default.
 
         Returns:
             A GenOut object with result, generated text, etc. 
@@ -1033,7 +1100,7 @@ class FormattedTextModel(TextModel, ABC):
                          thread: Thread) -> str:
 
         messages = thread.as_chatml()
-        text = self._jinja_compiled_template.render(messages=messages, 
+        text = self._jinja_compiled_template.render(messages=messages, # type: ignore[union-attr]
                                                     add_generation_prompt=True,
                                                     **self.tokenizer.special_tokens_map())
         return text
@@ -1057,11 +1124,13 @@ class MessagesModel(Model, ABC):
 
     def __init__(self,
                  is_local_model: bool,
-                 genconf: GenConf,
-                 tokenizer: Tokenizer):
+                 genconf: Union[GenConf,None],
+                 schemaconf: Union[JSchemaConf,None],
+                 tokenizer: Union[Tokenizer, None]):
 
         super().__init__(is_local_model,
                          genconf,
+                         schemaconf,
                          tokenizer)
         
         self.is_message_model = True

@@ -5,14 +5,14 @@ import re
 
 class RecursiveTextSplitter:
     """
-    When using a token_len len_fn, returned chunks might be slighly smaller than chunk size, if one of the separators is space, because tokens may already assume space as a prefix.
+    When using a token_len len_fn, returned chunks might be sightly smaller than chunk size, if one of the separators is space, because tokens may already assume space as a prefix.
     """
 
     def __init__(self,
                  chunk_size: int,
                  chunk_overlap: int = 0,
                  seps: Optional[list[str]] = None,
-                 len_fn: Callable[[Union[str, bytes]], int] = None
+                 len_fn: Optional[Callable[[str], int]] = None
                  ):
         """
         chunk_size and chunk_overlap are in whatever units len_fn returns (chars or tokens for example).
@@ -30,7 +30,7 @@ class RecursiveTextSplitter:
         
         self.seps = seps or ["\n\n", "\n", " ", ""]
         if self.seps[-1] != "":
-            self.seps.append[""]
+            self.seps.append("")
         
 
 
@@ -38,7 +38,7 @@ class RecursiveTextSplitter:
               text: Optional[Union[str,list[str]]] = None,
               path: Optional[Union[str,list[str]]] = None,
               seps: Optional[list[str]] = None,
-              len_fn: Callable[[Union[str, bytes]], int] = None,
+              len_fn: Optional[Callable[[str], int]] = None
               ) -> list[str]:
 
         if (text is not None) + (path is not None) != 1:
@@ -56,7 +56,7 @@ class RecursiveTextSplitter:
                 
         out = []
 
-        for t in text:
+        for t in text:  # type: ignore[union-attr]
             out += self._split(t, seps, len_fn)
     
         return out
@@ -68,7 +68,7 @@ class RecursiveTextSplitter:
     def _split(self,
                text: str,
                seps: Optional[list[str]] = None,
-               len_fn: Callable[[Union[str, bytes]], int] = None,
+               len_fn: Optional[Callable[[str], int]] = None
                ) -> list[str]:
         # print(text, out)
         

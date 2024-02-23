@@ -91,7 +91,7 @@ class ModelDir:
 
     """
     
-    dir: Union[dict,None] = None 
+    dir: Any = None # model directory configuration => Union[dict[str,Any],None]
     """Model directory dict."""
 
     search_path: list[str] = [] 
@@ -190,7 +190,7 @@ class ModelDir:
         if conf is not None:
             cls.dir.update(conf)
         else:
-            merge_dir_json(conf_path, cls.dir, cls.search_path)
+            merge_dir_json(conf_path, cls.dir, cls.search_path) # type: ignore[arg-type]
 
         cls._sanity_check()
 
@@ -322,6 +322,7 @@ class ModelDir:
 
         logger.debug(f"Creating model '{provider}:{name}' with resolved args: {args}")
 
+        model: Model
         if provider == "llamacpp":
 
             # resolve filename -> path
@@ -369,7 +370,7 @@ class ModelDir:
 
     @classmethod
     def resolve_urn(cls,
-                    res_name: str) -> str:
+                    res_name: str) -> tuple[str,str]:
         """
         Checks format and if provider exists, follows string links until a dict or non-existent name key.
         res_name must be in format provider:model_name
@@ -400,7 +401,7 @@ class ModelDir:
 
     @classmethod
     def _locate_file(cls,
-                     path: str) -> str:
+                     path: str) -> Union[str,None]:
         
         if os.path.isabs(path): # absolute?
             if os.path.isfile(path):
@@ -475,9 +476,9 @@ def expand_path(path: str) -> str:
 
 
 def merge_dir_json(path: str,
-                   dir: str,
+                   dir: dict,
                    search_path: list[str],
-                   add_to_search_path: Optional[bool] = True):
+                   add_to_search_path: bool = True):
     
     path = os.path.abspath(path)
     
@@ -531,13 +532,13 @@ def prepend_path(base_list: list[str],
         base_list.insert(0,p)
 
 
-def provider_name_from_urn(res_name: str) -> tuple:
+def provider_name_from_urn(res_name: str) -> tuple[str,str]:
     if ":" in res_name:
-        provider_name = res_name.split(":")
+        provider_name = tuple(res_name.split(":"))
         if len(provider_name) > 2:
             raise ValueError("Model resource name must be in the format provider:model_name")    
     else:
-        provider_name = "alias", res_name
+        provider_name = "alias", res_name # type: ignore[assignment]
         
-    return provider_name
+    return provider_name # type: ignore[return-value]
 
