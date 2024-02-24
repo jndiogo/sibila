@@ -1,5 +1,7 @@
 """A bag of assorted utilities."""
 
+import os
+
 def dict_merge(dest: dict, 
                src: dict):
     """
@@ -34,3 +36,12 @@ def synth_desc(flags: int,
 
     return name
 
+
+
+def expand_path(path: str) -> str:
+    if '~' in path:
+        path = os.path.expanduser(path)
+
+    path = os.path.abspath(path)
+    path = os.path.normpath(path) # normalize absolute path
+    return path

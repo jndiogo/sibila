@@ -11,28 +11,31 @@ Available as a [Jupyter notebook](from_text_to_object.ipynb) or [Python script](
 
 We'll start by creating either a local model or a GPT-4 model.
 
-To use a local model, make sure you have its file in the folder "../../models/". You can use any GGUF format model - [see here how to download the OpenChat model used below](https://jndiogo.github.io/sibila/setup-local-models/#default-model-used-in-the-examples-openchat). If you use a different one, don't forget to set its filename in the name variable below, after the text "llamacpp:".
+To use a local model, make sure you have its file in the folder "../../models". You can use any GGUF format model - [see here how to download the OpenChat model used below](https://jndiogo.github.io/sibila/setup-local-models/#default-model-used-in-the-examples-openchat). If you use a different one, don't forget to set its filename in the name variable below, after the text "llamacpp:".
 
 To use an OpenAI model, make sure you defined the env variable OPENAI_API_KEY with a valid token and uncomment the line after "# to use an OpenAI model:".
 For an OpenAI model, make sure you defined the env variable OPENAI_API_KEY with a valid token and uncomment the line after "# to use an OpenAI model:".
 
 
 ```python
-from sibila import ModelDir
+# load env variables like OPENAI_API_KEY from a .env file (if available)
+try: from dotenv import load_dotenv; load_dotenv()
+except: ...
+
+from sibila import Models
 
 # delete any previous model
 try: del model
 except: ...
 
-# to use a local model, assuming it's in ../../models/:
-# add models folder config which also adds to ModelDir path
-ModelDir.add("../../models/modeldir.json")
+# to use a local model, assuming it's in ../../models:
+# setup models folder:
+Models.setup("../../models")
 # set the model's filename - change to your own model
-name = "llamacpp:openchat-3.5-1210.Q4_K_M.gguf"
-model = ModelDir.create(name)
+model = Models.create("llamacpp:openchat-3.5-1210.Q4_K_M.gguf")
 
 # to use an OpenAI model:
-# model = ModelDir.create("openai:gpt-4")
+# model = Models.create("openai:gpt-4")
 ```
 
 Let's use this fragment from Wikipedia's entry on the Fiji islands: https://en.wikipedia.org/wiki/
@@ -80,28 +83,29 @@ deemed the election credible.[17]
 inst_text = "Be helpful and provide concise answers."
 ```
 
-Let's start with a free text query with query_gen().
+Let's start with a free text query by calling model().
 
 
 ```python
 in_text = "Extract 5 keypoints of the following text:\n" + doc
 
-out = model.query_gen(inst_text, in_text)
+out = model(in_text, inst=inst_text)
 print(out)
 ```
 
-    1. Fiji is an island country in Melanesia, part of Oceania in the South Pacific Ocean.
-    2. It consists of more than 330 islands with a total land area of about 18,300 square kilometres (7,100 sq mi).
-    3. About 87% of Fiji's population of 924,610 live on the two major islands, Viti Levu and Vanua Levu.
-    4. The majority of Fiji's islands were formed by volcanic activity starting around 150 million years ago.
-    5. Fiji gained independence from the British in 1970 and became a republic in 1987 after a series of coups d'état.
+    1. Fiji is an island country located in Melanesia, part of Oceania in the South Pacific Ocean. It lies approximately 1,100 nautical miles north-northeast of New Zealand.
+    2. The country consists of more than 330 islands with about 110 permanently inhabited islands and over 500 islets, totaling a land area of about 18,300 square kilometers.
+    3. Approximately 87% of Fiji's total population of 924,610 live on the two major islands, Viti Levu and Vanua Levu, with a majority living on Viti Levu's coasts.
+    4. The majority of Fiji's islands were formed by volcanic activity starting around 150 million years ago, with some geothermal activity still occurring on certain islands.
+    5. Fiji has a complex history, transitioning from an independent kingdom to a British colony, then a Dominion, and finally a republic after a series of coups and constitutional changes. In 2014, a democratic election took place, marking a significant milestone in the country's political history.
 
 
 These are quite reasonable keypoints!
 
 Let's now ask for JSON output, taking care to explicitly request it in the query (in_text variable).
 
-Instead of query_gen() we now use query_json() which returns a Python dict. 
+Instead of model() we now use json() which returns a Python dict.
+We'll pass None as the first parameter because we're not using a JSON schema.
 
 
 ```python
@@ -110,18 +114,20 @@ pp = pprint.PrettyPrinter(width=300, sort_dicts=False)
 
 in_text = "Extract 5 keypoints of the following text in JSON format:\n\n" + doc
 
-out = model.query_json(inst_text, in_text)
+out = model.json(None,
+                 in_text,
+                 inst=inst_text)
 pp.pprint(out)
 ```
 
-    {'keypoints': [{'Fiji_island_country': 'Fiji is an island country in Melanesia, part of Oceania in the South Pacific Ocean.'},
-                   {'geography': 'It lies about 1,100 nautical miles north-northeast of New Zealand and consists of more than 330 islands with a total land area of about 18,300 square kilometres.'},
-                   {'population_distribution': 'About 87% of the total population of 924,610 live on the two major islands, Viti Levu and Vanua Levu.'},
-                   {'island_formation': "The majority of Fiji's islands were formed by volcanic activity starting around 150 million years ago."},
-                   {'history_political_changes': 'Fiji operated as a Crown colony until 1970, became the Dominion of Fiji, and in 2014 held a democratic election after years of political turmoil.'}]}
+    {'keypoints': [{'title': 'Location', 'description': 'Fiji is an island country in Melanesia, part of Oceania in the South Pacific Ocean.'},
+                   {'title': 'Geography', 'description': 'Consists of more than 330 islands with about 110 permanently inhabited islands.'},
+                   {'title': 'Population', 'description': 'Total population of 924,610 live on the two major islands, Viti Levu and Vanua Levu.'},
+                   {'title': 'History', 'description': 'Humans have lived in Fiji since the second millennium BC with Austronesians, Melanesians, and Polynesian influences.'},
+                   {'title': 'Political Status', 'description': 'Officially known as the Republic of Fiji, gained independence from British rule in 1970.'}]}
 
 
-Note how the model chose to return different fields like "Fiji_island_country" or "population_distribution".
+Note how the model chose to return different fields like "title" or "description".
 
 Because we didn't specify which fields we want, each model will generate different ones.
 
@@ -149,18 +155,18 @@ json_schema = {
 
 This JSON schema requests that the generated dict constains a "keypoint_list" with a list of strings.
 
-We'll also use query_json(), now passing the json_schema:
+We'll also use json(), now passing the json_schema as first argument:
 
 
 ```python
-out = model.query_json(inst_text,
-                       in_text,
-                       json_schema=json_schema)
+out = model.json(json_schema,
+                 in_text,
+                 inst=inst_text)
 
 print(out)
 ```
 
-    {'keypoint_list': ['Fiji is an island country in Melanesia, part of Oceania in the South Pacific Ocean.', "About 87% of Fiji's total population live on the two major islands, Viti Levu and Vanua Levu.", "The majority of Fiji's islands were formed by volcanic activity starting around 150 million years ago.", 'Humans have lived in Fiji since the second millennium BC, first Austronesians and later Melanesians, with some Polynesian influences.', "In 2014, a democratic election took place, with Bainimarama's FijiFirst party winning 59.2% of the vote."]}
+    {'keypoint_list': ['Fiji is an island country in Melanesia, part of Oceania in the South Pacific Ocean.', 'About 87% of the total population of 924,610 live on the two major islands, Viti Levu and Vanua Levu.', "The majority of Fiji's islands were formed by volcanic activity starting around 150 million years ago.", 'Humans have lived in Fiji since the second millennium BC—first Austronesians and later Melanesians, with some Polynesian influences.', "In 2014, a democratic election took place, with Bainimarama's FijiFirst party winning 59.2% of the vote."]}
 
 
 
@@ -170,35 +176,33 @@ for kpoint in out["keypoint_list"]:
 ```
 
     Fiji is an island country in Melanesia, part of Oceania in the South Pacific Ocean.
-    About 87% of Fiji's total population live on the two major islands, Viti Levu and Vanua Levu.
+    About 87% of the total population of 924,610 live on the two major islands, Viti Levu and Vanua Levu.
     The majority of Fiji's islands were formed by volcanic activity starting around 150 million years ago.
-    Humans have lived in Fiji since the second millennium BC, first Austronesians and later Melanesians, with some Polynesian influences.
+    Humans have lived in Fiji since the second millennium BC—first Austronesians and later Melanesians, with some Polynesian influences.
     In 2014, a democratic election took place, with Bainimarama's FijiFirst party winning 59.2% of the vote.
 
 
 It has generated a string list in the "keypoint_list" field, as we specified in the JSON schema.
 
-This is better, but the problem with JSON schemas is that they're so unintuitive...
+This is better, but the problem with JSON schemas is that they can be quite hard to work with.
 
-Let's use an easier way to specify the fields we want returned: Pydantic classes derived from BaseModel. This is much simpler to use than than JSON schemas.
+Let's use an easier way to specify the fields we want returned: Pydantic classes derived from BaseModel. This is way simpler to use than JSON schemas.
 
 
 ```python
 from pydantic import BaseModel, Field
-from typing import List
 
 # this class definition will be used to constrain the model output and initialize an instance object
 class Keypoints(BaseModel):
-    keypoint_list: List[str]
+    keypoint_list: list[str]
 
-out = model.query_pydantic(Keypoints,
-                           inst_text,
-                           in_text)
-
+out = model.pydantic(Keypoints,
+                     in_text,
+                     inst=inst_text)
 print(out)
 ```
 
-    keypoint_list=['Fiji is an island country in Melanesia, part of Oceania in the South Pacific Ocean.', "About 87% of Fiji's total population live on the two major islands, Viti Levu and Vanua Levu.", "The majority of Fiji's islands were formed by volcanic activity starting around 150 million years ago.", 'Humans have lived in Fiji since the second millennium BC, first Austronesians and later Melanesians, with some Polynesian influences.', "In 2014, a democratic election took place in Fiji, with Bainimarama's FijiFirst party winning 59.2% of the vote."]
+    keypoint_list=['Fiji is an island country in Melanesia, part of Oceania in the South Pacific Ocean.', 'About 87% of the total population of 924,610 live on the two major islands, Viti Levu and Vanua Levu.', "The majority of Fiji's islands were formed by volcanic activity starting around 150 million years ago.", 'Humans have lived in Fiji since the second millennium BC—first Austronesians and later Melanesians, with some Polynesian influences.', "In 2014, a democratic election took place, with Bainimarama's FijiFirst party winning 59.2% of the vote."]
 
 
 
@@ -208,16 +212,17 @@ for kpoint in out.keypoint_list:
 ```
 
     Fiji is an island country in Melanesia, part of Oceania in the South Pacific Ocean.
-    About 87% of Fiji's total population live on the two major islands, Viti Levu and Vanua Levu.
+    About 87% of the total population of 924,610 live on the two major islands, Viti Levu and Vanua Levu.
     The majority of Fiji's islands were formed by volcanic activity starting around 150 million years ago.
-    Humans have lived in Fiji since the second millennium BC, first Austronesians and later Melanesians, with some Polynesian influences.
-    In 2014, a democratic election took place in Fiji, with Bainimarama's FijiFirst party winning 59.2% of the vote.
+    Humans have lived in Fiji since the second millennium BC—first Austronesians and later Melanesians, with some Polynesian influences.
+    In 2014, a democratic election took place, with Bainimarama's FijiFirst party winning 59.2% of the vote.
 
 
-The query_pydantic() method returns an object (of class Keypoints) instantiated with the model output.
+The pydantic() method returns an object of class Keypoints, instantiated with the model output.
 
-This allows much simpler handling of the model outputs.
+This is a much simpler way to extract structured data from model.
 
-Please see other examples for more interesting objects. In particular, we did not add descriptions to the fields, which are important to help the model understand what we want.
+Please see other examples for more interesting objects. In particular, we did not add descriptions to the fields, which are important clues to help the model understand what we want.
 
-Sibila also includes a way to define the types and structure of Python dicts, called dictype, a lighter and easier alternative to using Pydantic. Learn more about [dictype definitions here](https://jndiogo.github.io/sibila/api-reference/#dictype).
+Besides Pydantic classes, Sibila can also use Python's dataclass to extract structured data. This is a lighter and easier alternative to using Pydantic.
+<!-- TODO: link to dataclass in concepts -->

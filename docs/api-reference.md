@@ -7,14 +7,16 @@ title: API Reference
     options:
         members:
             - __init__
+            - extract
+            - classify
             - gen
             - json
-            - dictype
+            - dataclass
             - pydantic
-            - gen_
-            - json_
-            - dictype_
-            - pydantic_
+            - __call__
+            - gen_json
+            - gen_dataclass
+            - gen_pydantic
             - token_len
             - tokenizer
             - ctx_len
@@ -28,14 +30,16 @@ title: API Reference
     options:
         members:
             - __init__
+            - extract
+            - classify
             - gen
             - json
-            - dictype
+            - dataclass
             - pydantic
-            - gen_
-            - json_
-            - dictype_
-            - pydantic_
+            - __call__
+            - gen_json
+            - gen_dataclass
+            - gen_pydantic
             - token_len
             - tokenizer
             - ctx_len
@@ -60,6 +64,7 @@ title: API Reference
             - __init__
             - clear
             - last_kind
+            - last_text
             - inst
             - add
             - addx
@@ -111,25 +116,23 @@ title: API Reference
 
 
 
-## Directories
-::: sibila.ModelDir
+## Models directory
+::: sibila.Models
     options:
         members:
-            - add
-            - add_model
+            - setup
+            - clear
+            - info
+            - create
             - add_search_path
             - set_genconf
-            - create
-            - clear
+            - add_model
+            - get_format
+            - search_format
+            - is_format_supported
+            - add_format
 
-::: sibila.FormatDir
-    options:
-        members:
-            - add
-            - get
-            - search
-            - info
-            - clear
+
 
 
 ## Multigen
@@ -149,14 +152,6 @@ title: API Reference
             - interact
             - loop
             - recursive_summarize
-
-
-## Dictype
-::: sibila.dictype
-    options:
-        members:
-            - json_schema_from_dictype
-
 
 
 

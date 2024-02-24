@@ -1,34 +1,26 @@
-# load env variables from a .env if available:
-env_path = "../../.env"
-import os
-if os.path.isfile(env_path):
-    from dotenv import load_dotenv
-    assert load_dotenv(env_path, override=True, verbose=True)
-
-
-from pydantic import BaseModel, Field
-from typing import List
-from enum import Enum
-
-from sibila import ModelDir
-
-
-# delete any previous model
-try: del model
+# load env variables like OPENAI_API_KEY from a .env file (if available)
+try: from dotenv import load_dotenv; load_dotenv()
 except: ...
 
-# to use a local model, assuming it's in ../../models/:
-# add models folder config which also adds to ModelDir path
-ModelDir.add("../../models/modeldir.json")
-# set the model's filename - change to your own model
-name = "llamacpp:openchat-3.5-1210.Q4_K_M.gguf"
-model = ModelDir.create(name)
+if __name__ == "__main__":
 
-# to use an OpenAI model:
-# model = ModelDir.create("openai:gpt-4")
+    from sibila import Models
+
+    # delete any previous model
+    try: del model
+    except: ...
+
+    # to use a local model, assuming it's in ../../models:
+    # setup models folder:
+    Models.setup("../../models")
+    # set the model's filename - change to your own model
+    model = Models.create("llamacpp:openchat-3.5-1210.Q4_K_M.gguf")
+
+    # to use an OpenAI model:
+    # model = ModelDir.create("openai:gpt-4")
 
 
-queries = """\
+    queries = """\
 1. Do you offer a trial period for your software before purchasing?
 2. I'm experiencing a glitch with your app, it keeps freezing after the latest update.
 3. What are the different pricing plans available for your subscription service?"
@@ -42,36 +34,37 @@ queries = """\
 """
 
 
-# model instructions text, also known as system message
-inst_text = "Extract information from customer queries."
+    from enum import Enum
+    from dataclasses import dataclass
 
-in_text = "Each line is a customer query. Extract information about each query:\n\n" + queries
-
-
-class Tag(str, Enum):
-    """Queries can be classified into the following tags:
+    class Tag(str, Enum):
+        """Queries can be classified into the following tags:
 tech_support: queries related with technical problems.
 billing: post-sale queries about billing cycle, or subscription termination.
 account: queries about user account problems.
 pre_sales: queries from prospective customers (who have not yet purchased).
-other: all other query topics."""
-    
-    TECH_SUPPORT = "tech_support"
-    BILLING = "billing"
-    PRE_SALES = "pre_sales"
-    ACCOUNT = "account"
-    OTHER = "other"
-    
-class Query(BaseModel):
-    id: int
-    query_summary: str
-    query_tag: Tag
-    
-class QueryTags(BaseModel):
-    queries: List[Query]
+other: all other query topics."""        
+        TECH_SUPPORT = "tech_support"
+        BILLING = "billing"
+        PRE_SALES = "pre_sales"
+        ACCOUNT = "account"
+        OTHER = "other"
 
-out = model.query_pydantic(QueryTags,
-                           inst_text,
-                           in_text)
-for query in out.queries:
-    print(query)
+    @dataclass        
+    class Query():
+        id: int
+        query_summary: str
+        query_tag: Tag
+
+    # model instructions text, also known as system message
+    inst_text = "Extract information from customer queries."
+
+    # the input query, including the above text
+    in_text = "Each line is a customer query. Extract information about each query:\n\n" + queries
+
+    out = model.extract(list[Query],
+                        in_text,
+                        inst=inst_text)
+    
+    for query in out:
+        print(query)

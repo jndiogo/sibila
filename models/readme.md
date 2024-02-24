@@ -1,6 +1,6 @@
 # Models folder
 
-This folder can be used to store your local model files. You can also store them elsewhere, as long as you call ModelDir.add() with the location.
+This folder can be used to store your local model files. You can also store them elsewhere, as long as you call Models.setup() with the location.
 
 Many examples use an OpenChat 7B quantized model that you can download and copy to this folder as explained here:
 

@@ -105,7 +105,10 @@ class LlamaCppModel(FormattedTextModel):
             ImportError: If llama-cpp-python is not installed.
             ValueError: If ctx_len is 0 or larger than the values supported by model.
         """
-        
+
+        self._llama = None
+        self.tokenizer = None
+
         if not has_llama_cpp:
             raise ImportError("Please install llama-cpp-python by running: pip install llama-cpp-python")
 
@@ -154,7 +157,6 @@ class LlamaCppModel(FormattedTextModel):
         except Exception as e:
             del self.tokenizer
             del self._llama
-            self._llama = self.tokenizer = None # type: ignore[assignment]
             raise e
             
         

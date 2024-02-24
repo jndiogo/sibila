@@ -1,19 +1,22 @@
-from sibila import LlamaCppModel, GenConf
+if __name__ == "__main__":
 
-# model file from the models folder
-model_path = "../../models/openchat-3.5-1210.Q4_K_M.gguf"
+    from sibila import LlamaCppModel, GenConf
 
-# create an OpenAI model with generation temperature=1
-model = LlamaCppModel(model_path,
-                      genconf=GenConf(temperature=1))
+    # model file from the models folder
+    model_path = "../../models/openchat-3.5-1210.Q4_K_M.gguf"
 
-# the instructions or system command: speak like a pirate!
-inst_text = "You speak like a pirate."
+    # create a LlamaCpp model
+    model = LlamaCppModel(model_path,
+                          genconf=GenConf(temperature=1))
 
-# the in prompt
-in_text = "Hello there?"
-print(in_text)
+    # the instructions or system command: speak like a pirate!
+    inst_text = "You speak like a pirate."
 
-# query the model with instructions and in text
-text = model.query_gen(inst_text, in_text)
-print(text)
+    # the in prompt
+    in_text = "Hello there?"
+    print("User:", in_text)
+
+    # query the model with instructions and input text
+    text = model(in_text,
+                 inst=inst_text)
+    print("Model:", text)

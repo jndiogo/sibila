@@ -1,34 +1,26 @@
-# load env variables from a .env if available:
-env_path = "../../.env"
-import os
-if os.path.isfile(env_path):
-    from dotenv import load_dotenv
-    assert load_dotenv(env_path, override=True, verbose=True)
-
-
-from pydantic import BaseModel, Field
-from typing import List
-from enum import Enum
-
-from sibila import ModelDir
-
-
-# delete any previous model
-try: del model
+# load env variables like OPENAI_API_KEY from a .env file (if available)
+try: from dotenv import load_dotenv; load_dotenv()
 except: ...
 
-# to use a local model, assuming it's in ../../models/:
-# add models folder config which also adds to ModelDir path
-ModelDir.add("../../models/modeldir.json")
-# set the model's filename - change to your own model
-name = "llamacpp:openchat-3.5-1210.Q4_K_M.gguf"
-model = ModelDir.create(name)
+if __name__ == "__main__":
 
-# to use an OpenAI model:
-# model = ModelDir.create("openai:gpt-4")
+    from sibila import Models
+
+    # delete any previous model
+    try: del model
+    except: ...
+
+    # to use a local model, assuming it's in ../../models:
+    # setup models folder:
+    Models.setup("../../models")
+    # set the model's filename - change to your own model
+    model = Models.create("llamacpp:openchat-3.5-1210.Q4_K_M.gguf")
+
+    # to use an OpenAI model:
+    # model = ModelDir.create("openai:gpt-4")
 
 
-transcript = """\
+    transcript = """\
 Date: 10th April 2024
 Time: 10:30 AM
 Location: Conference Room A
@@ -67,42 +59,47 @@ Bianca: Absolutely, Arthur.
 Chris: Will do.
 """
 
-# model instructions text, also known as system message
-inst_text = "Extract information."
 
-in_text = "Extract information from this meeting transcript:\n\n" + transcript
+    from pydantic import BaseModel, Field
+    from enum import Enum
+
+    class Attendee(BaseModel):
+        name: str
+        occupation: str
+
+    class Priority(str, Enum):
+        HIGH = "high"
+        MEDIUM = "medium"
+        LOW = "low"
+        
+    class ActionItem(BaseModel):
+        index: int = Field(description="Sequential index for the action item")
+        name: str = Field(description="Action item name")
+        priority: Priority = Field(description="Action item priority")
+        due_by: str = Field(description="When should the item be complete")
+        assigned_attendee: str = Field(description="Name of the attendee to which action item was assigned")
+
+    class Meeting(BaseModel):
+        meeting_date: str
+        meeting_location: str
+        attendees: list[Attendee]
+        action_items: list[ActionItem]
 
 
-class Attendee(BaseModel):
-    name: str
-    occupation: str
+    # model instructions text, also known as system message
+    inst_text = "Extract information."
 
-class Priority(str, Enum):
-    HIGH = "high"
-    MEDIUM = "medium"
-    LOW = "low"
-    
-class ActionItem(BaseModel):
-    index: int = Field(description="Sequential index for the action item")
-    name: str = Field(description="Action item name")
-    priority: Priority = Field(description="Action item priority")
-    due_by: str = Field(description="When should the item be complete")
-    assigned_attendee: str = Field(description="Name of the attendee to which action item was assigned")
+    # the input query, including the above transcript
+    in_text = "Extract information from this meeting transcript:\n\n" + transcript
 
-class Meeting(BaseModel):
-    meeting_date: str
-    meeting_location: str
-    attendees: List[Attendee]
-    action_items: List[ActionItem]
+    out = model.extract(Meeting,
+                        in_text,
+                        inst=inst_text)
 
-out = model.query_pydantic(Meeting,
-                           inst_text,
-                           in_text)
-
-print("Meeting:", out.meeting_date, "in", out.meeting_location)
-print("Attendees:")
-for att in out.attendees:
-    print(att)
-print("Action items:")    
-for items in out.action_items:
-    print(items)
+    print("Meeting:", out.meeting_date, "in", out.meeting_location)
+    print("Attendees:")
+    for att in out.attendees:
+        print(att)
+    print("Action items:")    
+    for items in out.action_items:
+        print(items)

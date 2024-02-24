@@ -1001,7 +1001,7 @@ class FormattedTextModel(TextModel, ABC):
 
                 if order == "name":
                     name = info["name"]
-                    fmt = Models.search_formats(name)
+                    fmt = Models.search_format(name)
                     if fmt is not None:
                         return fmt
                         

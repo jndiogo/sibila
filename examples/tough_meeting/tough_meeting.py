@@ -1,37 +1,26 @@
-# load env variables from a .env if available:
-env_path = "../../.env"
-import os
-if os.path.isfile(env_path):
-    from dotenv import load_dotenv
-    assert load_dotenv(env_path, override=True, verbose=True)
-
-
-from pydantic import BaseModel, Field
-from typing import List
-from enum import Enum
-
-from sibila import ModelDir, GenConf
-
-
-
-# delete any previous model
-try: del model
+# load env variables like OPENAI_API_KEY from a .env file (if available)
+try: from dotenv import load_dotenv; load_dotenv()
 except: ...
 
-# to use a local model, assuming it's in ../../models/:
-# add models folder config which also adds to ModelDir path
-# ModelDir.add("../../models/modeldir.json")
-# set the model's filename - change to your own model
-# name = "llamacpp:openchat-3.5-1210.Q4_K_M.gguf"
+if __name__ == "__main__":
 
-# the transcript is large, so we'll create the model with a context length of 3072, which should be enough.
-#model = ModelDir.create(name, ctx_len=3072)
+    from sibila import Models, GenConf
 
-# to use an OpenAI model:
-model = ModelDir.create("openai:gpt-4", ctx_len=3072)
+    # delete any previous model
+    try: del model
+    except: ...
+
+    # to use a local model, assuming it's in ../../models:
+    # add models folder config which also adds to ModelDir path
+    # Models.setup("../../models")
+    # the transcript is large, so we'll create the model with a context length of 3072, which should be enough.
+    # model = Models.create("llamacpp:openchat-3.5-1210.Q4_K_M.gguf", ctx_len=3072)
+
+    # to use an OpenAI model:
+    model = Models.create("openai:gpt-4", ctx_len=3072)
 
 
-transcript = """\
+    transcript = """\
 Chairman Wormsley (at the proper time and place, after taking the chair and striking the gavel on the table): This meeting of the CTAS County Commission will come to order. Clerk please call the role. (Ensure that a majority of the members are present.)
 
 Chairman Wormsley: Each of you has received the agenda. I will entertain a motion that the agenda be approved.
@@ -127,33 +116,40 @@ Commissioner Garland: Second.
 Chairman Wormsley: Without objection, the meeting will stand adjourned.
 """
 
-# model instructions text, also known as system message
-inst_text = "Extract information and output in JSON format."
 
-in_text = "Extract information from this meeting transcript:\n\n" + transcript
+    from pydantic import BaseModel, Field
+    from enum import Enum
+
+    class ActionPriority(str, Enum):
+        HIGH = "high"
+        MEDIUM = "medium"
+        LOW = "low"
+        
+    class ActionItem(BaseModel):
+        index: int = Field(description="Sequential index for the action item")
+        name: str = Field(description="Action item name")
+        priority: ActionPriority = Field(description="Action item priority")
+
+    class Meeting(BaseModel):
+        participants: list[str] = Field(description="List of complete names of meeting participants")
+        action_items: list[ActionItem] = Field(description="List of action items in the meeting")
 
 
-class ActionPriority(str, Enum):
-    HIGH = "high"
-    MEDIUM = "medium"
-    LOW = "low"
-    
-class ActionItem(BaseModel):
-    index: int = Field(description="Sequential index for the action item")
-    name: str = Field(description="Action item name")
-    priority: ActionPriority = Field(description="Action item priority")
+    # model instructions text, also known as system message
+    inst_text = "Extract information and output in JSON format."
 
-class Meeting(BaseModel):
-    participants: List[str] = Field(description="List of complete names of meeting participants")
-    action_items: List[ActionItem] = Field(description="List of action items in the meeting")
+    # the input query, with the transcript
+    in_text = "Extract information from this meeting transcript:\n\n" + transcript
 
-out = model.query_pydantic(Meeting,
-                           inst_text,
-                           in_text)
 
-print("Participants", "-" * 16)
-for part in out.participants:
-    print(part)
-print("Action items", "-" * 16)
-for ai in out.action_items:
-    print(ai)
+    out = model.extract(Meeting,
+                        in_text,
+                        inst=inst_text)
+
+
+    print("Participants", "-" * 16)
+    for part in out.participants:
+        print(part)
+    print("Action items", "-" * 16)
+    for ai in out.action_items:
+        print(ai)

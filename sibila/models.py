@@ -13,7 +13,10 @@ from .model import (
     Model
 )
 
-from .utils import dict_merge
+from .utils import (
+    dict_merge,
+    expand_path
+)
 
 
 
@@ -236,14 +239,27 @@ class Models:
 
     
     @classmethod
-    def info(cls):
-        cls._ensure()
+    def info(cls,
+             verbose: bool = False):
         
-        out =  f"Models directory:\n{pformat(cls.model_dir, sort_dicts=False)}\n"
-        out += f"Model search path: {cls.search_path}\n"
-        out += f"Model Genconf: {cls.genconf}"
+        cls._ensure()
 
-        out += f"Formats directory:\n{pformat(cls.format_dir)}"
+        out = ""
+        
+        out += f"Model search path: {cls.search_path}\n"
+        out +=  f"Models directory:\n{pformat(cls.model_dir, sort_dicts=False)}\n"
+        out += f"Model Genconf:\n{cls.genconf}\n"
+
+        if not verbose:
+            fordir = {}
+            for key in cls.format_dir:
+                fordir[key] = copy(cls.format_dir[key])
+                if isinstance(fordir[key], dict) and "template" in fordir[key]:
+                    fordir[key]["template"] = fordir[key]["template"][:14] + "..."
+        else:
+            fordir = cls.format_dir
+
+        out += f"Formats directory:\n{pformat(fordir)}"
 
         return out
     
@@ -399,6 +415,8 @@ class Models:
 
         prepend_path(cls.search_path, path)
 
+        logger.debug(f"Adding '{path}' to search_path")
+
          
     @classmethod
     def set_genconf(cls,
@@ -470,11 +488,12 @@ class Models:
 
         return None
 
+
     
     
     @classmethod
-    def search_formats(cls,
-                       model_id: str) -> Union[dict,None]:
+    def search_format(cls,
+                      model_id: str) -> Union[dict,None]:
         """Search for model name or filename in the registry.
 
         Args:
@@ -504,6 +523,23 @@ class Models:
                     return cls._prepare_format_entry(name, val)
                                 
         return None
+
+
+
+    @classmethod
+    def is_format_supported(cls,
+                            model_id: str) -> bool:
+        """Checks if there's template support for a model with this name.
+
+        Args:
+            name: Model filename or general name.
+
+        Returns:
+            True if Models knows the format.
+        """
+        return cls.search_format(model_id) is not None
+
+
 
 
     @classmethod
@@ -649,6 +685,8 @@ class Models:
             path_list = path
         
         for path in path_list:
+            path = expand_path(path)
+
             if os.path.isdir(path):
                 cls._read_folder(path)
 
@@ -734,15 +772,6 @@ class Models:
 
 
 # = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = utils
-
-def expand_path(path: str) -> str:
-    if '~' in path:
-        path = os.path.expanduser(path)
-
-    path = os.path.abspath(path)
-    path = os.path.normpath(path) # normalize absolute path
-    return path
-
 
 
 def prepend_path(base_list: list[str],

@@ -4,15 +4,17 @@ except: ...
 
 if __name__ == "__main__":
 
-    from sibila import OpenAIModel, GenConf
+    from sibila import Models, GenConf
 
-    # model file from the models folder
-    model_path = "../../models/openchat-3.5-1210.Q4_K_M.gguf"
+    # Using a local llama.cpp model: we first setup the ../../models directory:
+    # Models.setup("../../models")
+    # model_name = "llamacpp:openchat"
 
-    # make sure you set the environment variable named OPENAI_API_KEY with your API key.
-    # create an OpenAI model with generation temperature=1
-    model = OpenAIModel("gpt-4",
-                        genconf=GenConf(temperature=1))
+    # OpenAI: make sure you set the environment variable named OPENAI_API_KEY with your API key.
+    model_name = "openai:gpt-4"
+
+    model = Models.create(model_name,
+                          genconf=GenConf(temperature=1))
 
     # the instructions or system command: speak like a pirate!
     inst_text = "You speak like a pirate."
