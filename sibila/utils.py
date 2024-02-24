@@ -9,7 +9,7 @@ def dict_merge(dest: dict,
         if key in dest:
             if isinstance(dest[key], dict) and isinstance(src[key], dict):
                 dict_merge(dest[key], src[key])
-            else: # not both dictionaries: overwrite dest's entry with src's
+            else: # not both are dicts: overwrite dest's entry with src's
                 dest[key] = src[key]
         else: # copy new entry to dest
             dest[key] = src[key]

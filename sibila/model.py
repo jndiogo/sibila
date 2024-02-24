@@ -954,9 +954,8 @@ class TextModel(Model, ABC):
 
 
 
-from .formatdir import (
-    FormatDir
-)
+from .models import Models
+
 
 class FormattedTextModel(TextModel, ABC):
     """Model that uses formatted text (chat templates) for input/output."""
@@ -1002,7 +1001,7 @@ class FormattedTextModel(TextModel, ABC):
 
                 if order == "name":
                     name = info["name"]
-                    fmt = FormatDir.search(name)
+                    fmt = Models.search_formats(name)
                     if fmt is not None:
                         return fmt
                         
@@ -1025,7 +1024,7 @@ class FormattedTextModel(TextModel, ABC):
                     self.format = {"template": format}
                     
                 else: # a format name
-                    self.format = FormatDir.get(format)
+                    self.format = Models.get_format(format)
 
             elif (isinstance(format, dict) and
                   "template" in format and 
