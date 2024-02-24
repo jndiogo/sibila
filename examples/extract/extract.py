@@ -17,7 +17,7 @@ if __name__ == "__main__":
     model = Models.create("llamacpp:openchat-3.5-1210.Q4_K_M.gguf")
 
     # to use an OpenAI model:
-    # model = ModelDir.create("openai:gpt-4")
+    # model = Models.create("openai:gpt-4")
 
     text = """\
 It was a breezy afternoon in a bustling café nestled in the heart of a vibrant city. Five strangers found themselves drawn together by the aromatic allure of freshly brewed coffee and the promise of engaging conversation.

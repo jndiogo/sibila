@@ -142,17 +142,17 @@ But most of the time, Sibila should automatically detect the used format from th
 
 
 
-## Use the model with ModelDir
+## Use the model with the Models class
 
-For continued use, it's a better idea for to create an entry for the model in ModelDir, instead of manually creating a LlamaCppModel object that loads a model file - this allows future model changing to be much easier.
+For continued use, it's a better idea for to create an entry for the model in the Models singleton, instead of manually creating a LlamaCppModel object that loads a model file - this allows future model changing to be much easier.
 
-In the "models" folder you'll find the file "modeldir.json". The idea is that you can use this file to configure all files in its folder and the file can be added to ModelDir's configuration by including this line in your scripts:
+Inside the "models" folder you'll find the file "models.json". The idea is that you can use this file to configure all files in its folder and the file can be added to Models' configuration by including this line in your scripts:
 
 ``` py
-ModelDir.add("../../models/modeldir.json")
+Models.setup("../../models")
 ```
 
-This will register all the defined entries in ModelDir. For the "nous-hermes-2-solar" model above that uses "chatml" we could add this line into "modeldir.json":
+This will register all the defined entries in Models. For the "nous-hermes-2-solar" model above that uses "chatml" we could add this line to "models.json":
 
 ``` json
 "nous-hermes-solar": {
@@ -166,18 +166,18 @@ The "name" key specify the filename, "format" the FormatDir entry that it should
 And we can use then use the model by simply doing:
 
 ``` py
-model = ModelDir.create("llamacpp:nous-hermes-solar")
+model = Models.create("llamacpp:nous-hermes-solar")
 ```
 
-Note the "provider:model_name" format above, where llamacpp is the provider "and nous-hermes-solar" is the name we created above in ModelDir.
+Note the "provider:model_name" format above, where llamacpp is the provider and "nous-hermes-solar" is the entry name we created above in Models.
 
-To be more flexible, Sibila also allows you to use the model filename directly, without setting up an entry in ModelDir, like this:
+To be more flexible, Sibila also allows you to use the model filename directly, without setting up an entry in Models, like this:
 
 ``` py
-model = ModelDir.create("llamacpp:nous-hermes-2-solar-10.7b.Q4_K_M.gguf")
+model = Models.create("llamacpp:nous-hermes-2-solar-10.7b.Q4_K_M.gguf")
 ```
 
-Note that after "llamacpp:", instead of the model name we're directly passing the filename. If you plan to use a model for a while, creating an entry in ModelDir is more flexible.
+Note that after "llamacpp:", instead of the model name we're directly passing the filename. If you plan to use a model for a while, creating an entry in Models is more flexible.
 
 
 

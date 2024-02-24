@@ -2,7 +2,7 @@ Let's extract structured data from a meeting transcript, like attendees, action 
 
 This is a quick meeting whose transcript is not very large, so a small local model should work well. See the [Tough meeting example](../tough_meeting/readme.md) for a larger and more complex transcription text.
 
-To use a local model, make sure you have its file in the folder "../../models/". You can use any GGUF format model - [see here how to download the OpenChat model used below](https://jndiogo.github.io/sibila/setup-local-models/#default-model-used-in-the-examples-openchat). If you use a different one, don't forget to set its filename in the name variable below, after the text "llamacpp:".
+To use a local model, make sure you have its file in the folder "../../models". You can use any GGUF format model - [see here how to download the OpenChat model used below](https://jndiogo.github.io/sibila/setup-local-models/#default-model-used-in-the-examples-openchat). If you use a different one, don't forget to set its filename in the name variable below, after the text "llamacpp:".
 
 If you prefer to use an OpenAI model, make sure you defined the env variable OPENAI_API_KEY with a valid token and uncomment the line after "# to use an OpenAI model:".
 
@@ -12,24 +12,23 @@ Let's create the model:
 
 
 ```python
-from sibila import ModelDir
+from sibila import Models
 
 # delete any previous model
 try: del model
 except: ...
 
-# to use a local model, assuming it's in ../../models/:
-# add models folder config which also adds to ModelDir path
-ModelDir.add("../../models/modeldir.json")
+# to use a local model, assuming it's in ../../models:
+# setup models folder:
+Models.setup("../../models")
 # set the model's filename - change to your own model
-name = "llamacpp:openchat-3.5-1210.Q4_K_M.gguf"
-model = ModelDir.create(name)
+model = Models.create("llamacpp:openchat-3.5-1210.Q4_K_M.gguf")
 
 # to use an OpenAI model:
-# model = ModelDir.create("openai:gpt-4")
+# model = Models.create("openai:gpt-4")
 ```
 
-Here's the transcript:
+Here's the transcript we'll be using as source:
 
 
 ```python
@@ -76,7 +75,7 @@ Chris: Will do.
 inst_text = "Extract information."
 ```
 
-Let's define two classes whose instances will receive the extracted information:
+Let's define two Pydantic BaseModel classes whose instances will receive the extracted information:
 - Attendee: to store information about each meeting attendee
 - Meeting: to keep meeting's date and location, list of participants and other info we'll see below
 
@@ -85,8 +84,6 @@ And let's ask the model to create objects that are instances of these classes:
 
 ```python
 from pydantic import BaseModel, Field
-from typing import List
-from enum import Enum
 
 # class definitions will be used to constrain the model output and initialize an instance object
 class Attendee(BaseModel):
@@ -96,13 +93,13 @@ class Attendee(BaseModel):
 class Meeting(BaseModel):
     meeting_date: str
     meeting_location: str
-    attendees: List[Attendee]
+    attendees: list[Attendee]
 
 in_text = "Extract information from this meeting transcript:\n\n" + transcript
 
-out = model.query_pydantic(Meeting,
-                           inst_text,
-                           in_text)
+out = model.extract(Meeting,
+                    in_text,
+                    inst=inst_text)
 print(out)
 ```
 
@@ -128,7 +125,7 @@ for att in out.attendees:
 
 This information was correctly extracted.
 
-Let's now request the action items mentioned in the meeting. We'll create a new class ActionItem with an index and a name for the item.
+Let's now request the action items mentioned in the meeting. We'll create a new class ActionItem with an index and a name for the item. Note that we're annotating each field with a Field(description=...) information to help the model understand what we're looking extract.
 
 We'll also add an action_items field to the Meeting class to hold the items list.
 
@@ -145,12 +142,12 @@ class ActionItem(BaseModel):
 class Meeting(BaseModel):
     meeting_date: str
     meeting_location: str
-    attendees: List[Attendee]
-    action_items: List[ActionItem]
+    attendees: list[Attendee]
+    action_items: list[ActionItem]
 
-out = model.query_pydantic(Meeting,
-                           inst_text,
-                           in_text)
+out = model.extract(Meeting,
+                    in_text,
+                    inst=inst_text)
 
 print("Meeting:", out.meeting_date, "in", out.meeting_location)
 print("Attendees:")
@@ -167,8 +164,8 @@ for items in out.action_items:
     name='Bianca' occupation='Operations Manager'
     name='Chris' occupation='Fleet Coordinator'
     Action items:
-    index=1 name='Investigate and report on late deliveries by end of day'
-    index=2 name='Update driver training manual by Friday'
+    index=1 name='Investigate and report on late deliveries'
+    index=2 name='Update driver training manual'
     index=3 name='Schedule a meeting with software vendor to discuss tracking system updates'
 
 
@@ -185,6 +182,8 @@ We also add three fields to the ActionItem class, to hold the new information: p
 
 
 ```python
+from enum import Enum
+
 class Attendee(BaseModel):
     name: str
     occupation: str
@@ -204,12 +203,12 @@ class ActionItem(BaseModel):
 class Meeting(BaseModel):
     meeting_date: str
     meeting_location: str
-    attendees: List[Attendee]
-    action_items: List[ActionItem]
+    attendees: list[Attendee]
+    action_items: list[ActionItem]
 
-out = model.query_pydantic(Meeting,
-                           inst_text,
-                           in_text)
+out = model.extract(Meeting,
+                    in_text,
+                    inst=inst_text)
 
 print("Meeting:", out.meeting_date, "in", out.meeting_location)
 print("Attendees:")

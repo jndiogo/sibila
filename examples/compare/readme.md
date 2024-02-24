@@ -4,17 +4,23 @@ This function generates a 2-D table of \[ input , model \], where each row is th
 
 Available as a [Jupyter notebook](compare.ipynb) or [Python script](compare.py).
 
-For the local model, make sure you have its file in the folder "../../models/". You can use any GGUF format model - [see here how to download the OpenChat model used below](https://jndiogo.github.io/sibila/setup-local-models/#default-model-used-in-the-examples-openchat). If you use a different one, don't forget to set its filename in the local_name variable below, after the text "llamacpp:".
+For the local model, make sure you have its file in the folder "../../models". You can use any GGUF format model - [see here how to download the OpenChat model used below](https://jndiogo.github.io/sibila/setup-local-models/#default-model-used-in-the-examples-openchat). If you use a different one, don't forget to set its filename in the local_name variable below, after the text "llamacpp:".
 
-Instead of directly creating models, we'll start by defining their names: for a local model and a remote model which we'll compare. The multigen function will create the models itself.
+Instead of directly creating models as we've seen in previous examples, multigen will create the models via the Models class directory.
+
+We'll start by choosing a local and a remote model that we'll compare.
 
 
 ```python
-from sibila import ModelDir
+# load env variables like OPENAI_API_KEY from a .env file (if available)
+try: from dotenv import load_dotenv; load_dotenv()
+except: ...
 
-# to use a local model, assuming it's in ../../models/:
-# add models folder config which also adds to ModelDir path
-ModelDir.add("../../models/modeldir.json")
+from sibila import Models
+
+# to use a local model, assuming it's in ../../models:
+# setup models folder:
+Models.setup("../../models")
 # set the model's filename - change to your own model
 local_name = "llamacpp:openchat-3.5-1210.Q4_K_M.gguf"
 
@@ -47,24 +53,23 @@ reviews = [
 inst_text = "You are a helpful assistant that analyses text sentiment."
 ```
 
-Since we just want to obtain a sentiment classification, we'll use a quick dictype definition of a "sentiment" field with three values: positive, negative or neutral.
+Since we just want to obtain a sentiment classification, we'll use a convenient enumeration: a list with three values: positive, negative or neutral.
 
 Let's try the first review on a local model:
 
 
 ```python
-sentiment_type = {
-    "sentiment": {"type": ["positive", "neutral", "negative"]}
-}
+sentiment_enum = ["positive", "neutral", "negative"]
 
 in_text = "Each line is a product review. Extract the sentiment associated with each review:\n\n" + reviews[0]
 
 print(reviews[0])
 
-local_model = ModelDir.create(local_name)
-out = local_model.query_dictype(sentiment_type,
-                                inst_text,
-                                in_text)
+local_model = Models.create(local_name)
+
+out = local_model.extract(sentiment_enum,
+                          in_text,
+                          inst=inst_text)
 # to clear memory
 del local_model
 
@@ -72,7 +77,7 @@ print(out)
 ```
 
     The user manual was confusing, but once I figured it out, the product more or less worked.
-    {'sentiment': 'neutral'}
+    neutral
 
 
 Definitely neutral is a good answer for this one. 
@@ -83,18 +88,18 @@ Let's now try the remote model:
 ```python
 print(reviews[0])
 
-remote_model = ModelDir.create(remote_name)
+remote_model = Models.create(remote_name)
 
-out = remote_model.query_dictype(sentiment_type,
-                                 inst_text,
-                                 in_text)
+out = remote_model.extract(sentiment_enum,
+                          in_text,
+                          inst=inst_text)
 del remote_model
 
 print(out)
 ```
 
     The user manual was confusing, but once I figured it out, the product more or less worked.
-    {'sentiment': 'neutral'}
+    neutral
 
 
 And the remote model (GPT-3.5) seems to agree on neutrality.
@@ -113,16 +118,18 @@ Let's run it with our two models:
 ```python
 from sibila.multigen import (
     query_multigen,
-    make_dictype_gencall
+    make_extract_gencall
 )
+
+sentiment_enum = ["positive", "neutral", "negative"]
 
 out = query_multigen(reviews,
                      inst_text,
                      model_names = [local_name, remote_name],
                      text="print",
                      csv="sentiment.csv",
-                     out_keys = ["dict"],
-                     gencall = make_dictype_gencall(sentiment_type)
+                     out_keys = ["value"],
+                     gencall = make_extract_gencall(sentiment_enum)
                      )
 ```
 
@@ -130,97 +137,97 @@ out = query_multigen(reviews,
     The user manual was confusing, but once I figured it out, the product more or less worked.
     ////////////////////////////////////////////////////////////
     ==================== llamacpp:openchat-3.5-1210.Q4_K_M.gguf -> OK_STOP
-    {"sentiment":"neutral"}
+    'neutral'
     ==================== openai:gpt-3.5 -> OK_STOP
-    {"sentiment":"neutral"}
+    'neutral'
     
     ////////////////////////////////////////////////////////////
     This widget changed my life! It's sleek, efficient, and worth every penny.
     ////////////////////////////////////////////////////////////
     ==================== llamacpp:openchat-3.5-1210.Q4_K_M.gguf -> OK_STOP
-    {"sentiment":"positive"}
+    'positive'
     ==================== openai:gpt-3.5 -> OK_STOP
-    {"sentiment":"positive"}
+    'positive'
     
     ////////////////////////////////////////////////////////////
     I'm disappointed with the product quality. It broke after just a week of use.
     ////////////////////////////////////////////////////////////
     ==================== llamacpp:openchat-3.5-1210.Q4_K_M.gguf -> OK_STOP
-    {"sentiment":"negative"}
+    'negative'
     ==================== openai:gpt-3.5 -> OK_STOP
-    {"sentiment":"negative"}
+    'negative'
     
     ////////////////////////////////////////////////////////////
     The customer service team was incredibly helpful in resolving my issue with the device.
     ////////////////////////////////////////////////////////////
     ==================== llamacpp:openchat-3.5-1210.Q4_K_M.gguf -> OK_STOP
-    {"sentiment":"positive"}
+    'positive'
     ==================== openai:gpt-3.5 -> OK_STOP
-    {"sentiment":"positive"}
+    'positive'
     
     ////////////////////////////////////////////////////////////
     I'm blown away by the functionality of this gadget. It exceeded my expectations.
     ////////////////////////////////////////////////////////////
     ==================== llamacpp:openchat-3.5-1210.Q4_K_M.gguf -> OK_STOP
-    {"sentiment":"positive"}
+    'positive'
     ==================== openai:gpt-3.5 -> OK_STOP
-    {"sentiment":"positive"}
+    'positive'
     
     ////////////////////////////////////////////////////////////
     The packaging was damaged upon arrival, but the product itself works great.
     ////////////////////////////////////////////////////////////
     ==================== llamacpp:openchat-3.5-1210.Q4_K_M.gguf -> OK_STOP
-    {"sentiment":"neutral"}
+    'neutral'
     ==================== openai:gpt-3.5 -> OK_STOP
-    {"sentiment":"positive"}
+    'neutral'
     
     ////////////////////////////////////////////////////////////
     I've been using this tool for months, and it's still as good as new. Highly recommended!
     ////////////////////////////////////////////////////////////
     ==================== llamacpp:openchat-3.5-1210.Q4_K_M.gguf -> OK_STOP
-    {"sentiment":"positive"}
+    'positive'
     ==================== openai:gpt-3.5 -> OK_STOP
-    {"sentiment":"positive"}
+    'positive'
     
     ////////////////////////////////////////////////////////////
     I regret purchasing this item. It doesn't perform as advertised.
     ////////////////////////////////////////////////////////////
     ==================== llamacpp:openchat-3.5-1210.Q4_K_M.gguf -> OK_STOP
-    {"sentiment":"negative"}
+    'negative'
     ==================== openai:gpt-3.5 -> OK_STOP
-    {"sentiment":"negative"}
+    'negative'
     
     ////////////////////////////////////////////////////////////
     I've never had so much trouble with a product before. It's been a headache from day one.
     ////////////////////////////////////////////////////////////
     ==================== llamacpp:openchat-3.5-1210.Q4_K_M.gguf -> OK_STOP
-    {"sentiment":"negative"}
+    'negative'
     ==================== openai:gpt-3.5 -> OK_STOP
-    {"sentiment":"negative"}
+    'negative'
     
     ////////////////////////////////////////////////////////////
     I bought this as a gift for my friend, and they absolutely love it!
     ////////////////////////////////////////////////////////////
     ==================== llamacpp:openchat-3.5-1210.Q4_K_M.gguf -> OK_STOP
-    {"sentiment":"positive"}
+    'positive'
     ==================== openai:gpt-3.5 -> OK_STOP
-    {"sentiment":"positive"}
+    'positive'
     
     ////////////////////////////////////////////////////////////
     The price seemed steep at first, but after using it, I understand why. Quality product.
     ////////////////////////////////////////////////////////////
     ==================== llamacpp:openchat-3.5-1210.Q4_K_M.gguf -> OK_STOP
-    {"sentiment":"positive"}
+    'positive'
     ==================== openai:gpt-3.5 -> OK_STOP
-    {"sentiment":"positive"}
+    'positive'
     
     ////////////////////////////////////////////////////////////
     This gizmo is a game-changer for my daily routine. Couldn't be happier with my purchase!
     ////////////////////////////////////////////////////////////
     ==================== llamacpp:openchat-3.5-1210.Q4_K_M.gguf -> OK_STOP
-    {"sentiment":"positive"}
+    'positive'
     ==================== openai:gpt-3.5 -> OK_STOP
-    {"sentiment":"positive"}
+    'positive'
     
     
 
@@ -232,9 +239,9 @@ The output format is - see comments nearby -----> arrows:
 This gizmo is a game-changer for my daily routine. Couldn't be happier with my purchase!
 ////////////////////////////////////////////////////////////
 ==================== llamacpp:openchat-3.5-1210.Q4_K_M.gguf -> OK_STOP  <----- Local model name and result
-{"sentiment":"positive"}  <----- What the local model output
+'positive'  <----- What the local model output
 ==================== openai:gpt-3.5 -> OK_STOP  <----- Remote model name and result
-{"sentiment":"positive"}  <----- Remote model output
+'positive'  <----- Remote model output
 ```
 
-We also requested the creation of a CSV file which is named [sentiment.csv](sentiment.csv).
+We also requested the creation of a CSV file with the results: [sentiment.csv](sentiment.csv).

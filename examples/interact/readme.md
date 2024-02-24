@@ -4,7 +4,7 @@ In a chat interaction, the model has to "remember" the previous messages exchang
 
 Available as a [Jupyter notebook](interact.ipynb) or [Python script](interact.py).
 
-To use a local model, make sure you have its file in the folder "../../models/". You can use any GGUF format model - [see here how to download the OpenChat model used below](https://jndiogo.github.io/sibila/setup-local-models/#default-model-used-in-the-examples-openchat). If you use a different one, don't forget to set its filename in the name variable below, after the text "llamacpp:".
+To use a local model, make sure you have its file in the folder "../../models". You can use any GGUF format model - [see here how to download the OpenChat model used below](https://jndiogo.github.io/sibila/setup-local-models/#default-model-used-in-the-examples-openchat). If you use a different one, don't forget to set its filename in the name variable below, after the text "llamacpp:".
 
 To use an OpenAI model, make sure you defined the env variable OPENAI_API_KEY with a valid token and uncomment the line after "# to use an OpenAI model:".
 
@@ -12,21 +12,20 @@ So, let's create a local model.
 
 
 ```python
-from sibila import ModelDir, GenConf
+from sibila import Models, GenConf
 
 # delete any previous model
 try: del model
 except: ...
 
-# to use a local model, assuming it's in ../../models/:
-# add models folder config which also adds to ModelDir path
-ModelDir.add("../../models/modeldir.json")
+# to use a local model, assuming it's in ../../models:
+# setup models folder:
+Models.setup("../../models")
 # set the model's filename - change to your own model
-name = "llamacpp:openchat-3.5-1210.Q4_K_M.gguf"
-model = ModelDir.create(name)
+model = Models.create("llamacpp:openchat-3.5-1210.Q4_K_M.gguf")
 
 # to use an OpenAI model:
-# model = ModelDir.create("openai:gpt-4")
+# model = Models.create("openai:gpt-4")
 ```
 
 Import interact() from the tools module and run it. 

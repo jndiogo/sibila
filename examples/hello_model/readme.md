@@ -137,4 +137,4 @@ model = Models.create(model_name, ...)
 
 The Models class will take care of initializing the model based on the name you provide.
 
-<!--TODO: Add link to ModelDir example -->
+<!--TODO: Add link to Models example -->

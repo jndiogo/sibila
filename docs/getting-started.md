@@ -45,21 +45,25 @@ Having set this variable with your OpenAI API key, you can run an ["Hello Model"
 ```python
 from sibila import OpenAIModel, GenConf
 
+# model file from the models folder
+model_path = "../../models/openchat-3.5-1210.Q4_K_M.gguf"
+
 # make sure you set the environment variable named OPENAI_API_KEY with your API key.
 # create an OpenAI model with generation temperature=1
 model = OpenAIModel("gpt-4",
                     genconf=GenConf(temperature=1))
 
-# the instruction or system command: speak like a pirate!
+# the instructions or system command: speak like a pirate!
 inst_text = "You speak like a pirate."
 
 # the in prompt
 in_text = "Hello there?"
-print(in_text)
+print("User:", in_text)
 
-# query the model with instructions and "in" text
-text = model.query_gen(inst_text, in_text)
-print(text)
+# query the model with instructions and input text
+text = model(in_text,
+                inst=inst_text)
+print("Model:", text)
 ```
 
 This will generate a pirate response as seen below.
@@ -79,20 +83,21 @@ from sibila import LlamaCppModel, GenConf
 # model file from the models folder
 model_path = "../../models/openchat-3.5-1210.Q4_K_M.gguf"
 
-# create an OpenAI model with generation temperature=1
+# create a LlamaCpp model
 model = LlamaCppModel(model_path,
-                      genconf=GenConf(temperature=1))
+                        genconf=GenConf(temperature=1))
 
-# the instruction or system command: speak like a pirate!
+# the instructions or system command: speak like a pirate!
 inst_text = "You speak like a pirate."
 
 # the in prompt
 in_text = "Hello there?"
-print(in_text)
+print("User:", in_text)
 
-# query the model with instruction and "in" text
-text = model.query_gen(inst_text, in_text)
-print(text)
+# query the model with instructions and input text
+text = model(in_text,
+                inst=inst_text)
+print("Model:", text)
 ```
 
 The script is available here: [hello_llamacpp.py](https://github.com/jndiogo/sibila/blob/main/examples/hello_model/hello_llamacpp.py)
@@ -105,10 +110,8 @@ The script is available here: [hello_llamacpp.py](https://github.com/jndiogo/sib
 After running the above and/or OpenAI's script you'll receive the model's answer to your "Hello there?" - in arrr-style:
 
 ```
-Hello there?
-Ahoy, me hearty! How be it goin'? Me name's Captain Chatbot, and I be here to assist thee with whatever ye need! So, what can me crew and I do fer yer today? Arrr!
+User: Hello there?
+Model: Ahoy, me hearty! How be it goin'? Me name's Captain Chatbot, and I be here to assist thee with whatever ye need! So, what can me crew and I do fer yer today? Arrr!
 ```
 
 Which means Sibila is working. [Check the examples](https://github.com/jndiogo/sibila/tree/main/examples).
-
-

@@ -22,11 +22,11 @@ class Info(BaseModel):
     age_at_the_time: int
     nationality: str
 
-openchat = LlamaCppModel("models/openchat-3.5-1210.Q5_K_M.gguf")
+openchat = LlamaCppModel("openchat-3.5-1210.Q5_K_M.gguf")
 
-openchat.query_pydantic(Info,
-                        "Just be helpful.", # instructions, aka system message
-                        "Who was the first man in the moon?")
+openchat.extract(Info,
+                 "Who was the first man in the moon?",
+                 inst="Just be helpful.") # instructions, aka system message
 ```
 
 Outputs an object of class Info, initialized with the model's output:
@@ -45,14 +45,14 @@ With the same API you can also query OpenAI models:
 ```python
 gpt4 = OpenAIModel("gpt-4-0613")
 
-gpt4.query_pydantic(Info,
-                    "Just be helpful.",
-                    "Who was the first man in the moon?")
+gpt4.extract(Info,
+             "Who was the first man in the moon?",
+             inst="Just be helpful.") # instructions, aka system message
 ```
 
 Which creates an initialized Info object as above.
 
-If Pydantic BaseModel objects are too much for your project, you can also use a very simple convention called [dictype](https://jndiogo.github.io/sibila/api-reference/#dictype), which defines structure and types of output dicts.
+If Pydantic BaseModel objects are too much for your project, you can also use a ligher Python dataclass.
 
 Sibila also includes model management and tools to compare output between models.
 

@@ -11,7 +11,7 @@ if __name__ == "__main__":
     except: ...
 
     # to use a local model, assuming it's in ../../models:
-    # add models folder config which also adds to ModelDir path
+    # setup models folder:
     # Models.setup("../../models")
     # the transcript is large, so we'll create the model with a context length of 3072, which should be enough.
     # model = Models.create("llamacpp:openchat-3.5-1210.Q4_K_M.gguf", ctx_len=3072)

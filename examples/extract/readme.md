@@ -23,7 +23,7 @@ Models.setup("../../models")
 model = Models.create("llamacpp:openchat-3.5-1210.Q4_K_M.gguf")
 
 # to use an OpenAI model:
-# model = ModelDir.create("openai:gpt-4")
+# model = Models.create("openai:gpt-4")
 ```
 
 We'll use this text written in a flamboyant style, courtesy GPT three and a half:

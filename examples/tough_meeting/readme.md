@@ -10,23 +10,24 @@ Let's create the model.
 
 
 ```python
-from sibila import ModelDir, GenConf
+# load env variables like OPENAI_API_KEY from a .env file (if available)
+try: from dotenv import load_dotenv; load_dotenv()
+except: ...
+
+from sibila import Models, GenConf
 
 # delete any previous model
 try: del model
 except: ...
 
-# to use a local model, assuming it's in ../../models/:
-# add models folder config which also adds to ModelDir path
-# ModelDir.add("../../models/modeldir.json")
-# set the model's filename - change to your own model
-# name = "llamacpp:openchat-3.5-1210.Q4_K_M.gguf"
-
+# to use a local model, assuming it's in ../../models:
+# setup models folder:
+# Models.setup("../../models")
 # the transcript is large, so we'll create the model with a context length of 3072, which should be enough.
-#model = ModelDir.create(name, ctx_len=3072)
+# model = Models.create("llamacpp:openchat-3.5-1210.Q4_K_M.gguf", ctx_len=3072)
 
 # to use an OpenAI model:
-model = ModelDir.create("openai:gpt-4", ctx_len=3072)
+model = Models.create("openai:gpt-4", ctx_len=3072)
 ```
 
 We'll use a sample meeting transcript from https://www.ctas.tennessee.edu/eli/sample-meeting-transcript
@@ -144,18 +145,16 @@ The model will take clues from the variable names as well as from the descriptio
 
 ```python
 from pydantic import BaseModel, Field
-from typing import List
-from enum import Enum
 
 # this class definition will be used to constrain the model output and initialize an instance object
 class Meeting(BaseModel):
-    participants: List[str] = Field(description="List of complete names of meeting participants")
+    participants: list[str] = Field(description="List of complete names of meeting participants")
 
 in_text = "Extract information from this meeting transcript:\n\n" + transcript
 
-out = model.query_pydantic(Meeting,
-                           inst_text,
-                           in_text)
+out = model.extract(Meeting,
+                    in_text,
+                    inst=inst_text)
 print(out)
 ```
 
@@ -201,11 +200,11 @@ Let's try asking for a list of participants "without repeated entries", in the f
 
 ```python
 class Meeting(BaseModel):
-    participants: List[str] = Field(description="List of complete names of meeting participants without repeated entries")
+    participants: list[str] = Field(description="List of complete names of meeting participants without repeated entries")
 
-out = model.query_pydantic(Meeting,
-                           inst_text,
-                           in_text)
+out = model.extract(Meeting,
+                    in_text,
+                    inst=inst_text)
 
 for part in out.participants:
     print(part)
@@ -240,11 +239,11 @@ Let's try asking for "names and titles":
 
 ```python
 class Meeting(BaseModel):
-    participants: List[str] = Field(description="List of names and titles of participants without repeated entries")
+    participants: list[str] = Field(description="List of names and titles of participants without repeated entries")
 
-out = model.query_pydantic(Meeting,
-                           inst_text,
-                           in_text)
+out = model.extract(Meeting,
+                    in_text,
+                    inst=inst_text)
 
 for part in out.participants:
     print(part)
@@ -286,12 +285,12 @@ class ActionItem(BaseModel):
     name: str = Field(description="Action item name")
 
 class Meeting(BaseModel):
-    participants: List[str] = Field(description="List of complete names of meeting participants")
-    action_items: List[ActionItem] = Field(description="List of action items in the meeting")
+    participants: list[str] = Field(description="List of complete names of meeting participants")
+    action_items: list[ActionItem] = Field(description="List of action items in the meeting")
 
-out = model.query_pydantic(Meeting,
-                           inst_text,
-                           in_text)
+out = model.extract(Meeting,
+                    in_text,
+                    inst=inst_text)
 
 print("Participants", "-" * 16)
 for part in out.participants:
@@ -325,16 +324,15 @@ for ai in out.action_items:
     Commissioner Garland
     Action items ----------------
     index=1 name='Approve the agenda'
-    index=2 name="Correct the minutes to include Commissioner McCroskey's name"
-    index=3 name='Approve the resolution to transfer funds for a laptop purchase'
+    index=2 name='Correct the minutes to include Commissioner McCroskey in the Special Committee on Indigent Care'
+    index=3 name='Approve the resolution to transfer funds from the Data Processing Reserve Account to purchase a laptop'
     index=4 name='Withdraw the motion to sell property near the airport'
     index=5 name='Adopt the resolution to increase the state match local litigation tax'
-    index=6 name="Amend the motion to allocate 25% of increased tax to the sheriff's department"
-    index=7 name='Vote on the state match local litigation taxes increase'
-    index=8 name='Adopt the resolution to increase the wheel tax'
-    index=9 name='Budget Committee meeting on solid waste funding recommendations'
-    index=10 name='Chili supper at County Elementary School announcement'
-    index=11 name='Adjourn the meeting'
+    index=6 name="Amend the motion to allocate 25 percent of the proceeds from the tax increase to fund the sheriff's department"
+    index=7 name='Vote on the state match local litigation taxes increase with the amendment'
+    index=8 name='Adopt the resolution to increase the wheel tax by $10 for education funding'
+    index=9 name='Hold a Budget Committee meeting on solid waste funding recommendations'
+    index=10 name='Announce the chili supper at County Elementary School'
 
 
 These are reasonable action items.
@@ -343,6 +341,8 @@ Let's now also request a priority for each ActionItem - we'll create a string En
 
 
 ```python
+from enum import Enum
+
 class ActionPriority(str, Enum):
     HIGH = "high"
     MEDIUM = "medium"
@@ -354,12 +354,12 @@ class ActionItem(BaseModel):
     priority: ActionPriority = Field(description="Action item priority")
 
 class Meeting(BaseModel):
-    participants: List[str] = Field(description="List of complete names of meeting participants")
-    action_items: List[ActionItem] = Field(description="List of action items in the meeting")
+    participants: list[str] = Field(description="List of complete names of meeting participants")
+    action_items: list[ActionItem] = Field(description="List of action items in the meeting")
 
-out = model.query_pydantic(Meeting,
-                           inst_text,
-                           in_text)
+out = model.extract(Meeting,
+                    in_text,
+                    inst=inst_text)
 
 print("Participants", "-" * 16)
 for part in out.participants:
@@ -398,18 +398,11 @@ for ai in out.action_items:
     index=4 name='Withdraw motion to sell property near the airport' priority=<ActionPriority.MEDIUM: 'medium'>
     index=5 name='Adopt resolution to increase state match local litigation tax' priority=<ActionPriority.HIGH: 'high'>
     index=6 name="Amend resolution to allocate funds to sheriff's department" priority=<ActionPriority.HIGH: 'high'>
-    index=7 name='Roll call vote on litigation tax increase' priority=<ActionPriority.HIGH: 'high'>
-    index=8 name='Adopt resolution to increase wheel tax for education funding' priority=<ActionPriority.HIGH: 'high'>
+    index=7 name='Vote on the amended resolution for litigation tax increase' priority=<ActionPriority.HIGH: 'high'>
+    index=8 name='Adopt resolution to increase the wheel tax' priority=<ActionPriority.HIGH: 'high'>
     index=9 name='Budget Committee meeting on solid waste funding' priority=<ActionPriority.MEDIUM: 'medium'>
     index=10 name='Announce chili supper at County Elementary School' priority=<ActionPriority.LOW: 'low'>
     index=11 name='Adjourn the meeting' priority=<ActionPriority.MEDIUM: 'medium'>
 
 
-It's not clear from the meeting transcript text if these priorities are correct, but some items related to taxes are receiving high and medium priorities, looks reasonable that taxes are a priority. : )
-
-This example is replicated with dictype definitions instead of Pydantic objects. [See it here](readme_dictype.md).
-
-
-```python
-
-```
+It's not clear from the meeting transcript text if these priorities are correct, but some items related to taxes are receiving high priorities, from the context, it looks reasonable that taxes are a priority. : )

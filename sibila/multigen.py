@@ -38,7 +38,7 @@ from .model import (
 
 from .json_schema import JSchemaConf
 
-from .modeldir import ModelDir
+from .models import Models
 
 
 
@@ -65,7 +65,6 @@ def make_dataclass_gencall(cls: Any, # dataclass definition
     return dataclass_gencall
 
 
-
 def make_pydantic_gencall(cls: Any, # Pydantic BaseModel class
                           schemaconf: Optional[JSchemaConf] = None) -> Callable:
 
@@ -80,6 +79,21 @@ def make_pydantic_gencall(cls: Any, # Pydantic BaseModel class
 
     return pydantic_gencall
 
+
+
+def make_extract_gencall(target: Any,
+                         schemaconf: Optional[JSchemaConf] = None) -> Callable:
+
+    def extract_gencall(model: Model,
+                        thread: Thread,
+                        genconf: Optional[GenConf] = None) -> GenOut:    
+        out = model.gen_extract(target, 
+                                thread,
+                                genconf,
+                                schemaconf)
+        return out
+
+    return extract_gencall
 
 
 
@@ -107,7 +121,7 @@ def multigen(threads: list[Thread],
     Args:
         threads: List of threads to input into each model.
         models: A list of initialized models. Defaults to None.
-        model_names: --Or-- A list of ModelDir names. Defaults to None.
+        model_names: --Or-- A list of Models names. Defaults to None.
         model_names_del_after: Delete model_names models after using them: important or an out-of-memory error will eventually happen. Defaults to True.
         gencall: Callable function that does the actual generation. Defaults to None, which will use a text generation default function.
         genconf: Model generation configuration to use in models. Defaults to None, meaning default values.
@@ -135,7 +149,7 @@ def multigen(threads: list[Thread],
             logger.debug(f"Model: {model.desc}")
         else:
             name = model_names[i] # type: ignore[index]
-            model = ModelDir.create(name)
+            model = Models.create(name)
             logger.info(f"Model: {name} -> {model.desc}")
 
         mod_out = []
@@ -171,7 +185,7 @@ def nice_print(type: str,
     if type == "dic":
         text = json.dumps(val, **json_kwargs)
         
-    elif type == "obj":
+    elif type == "value":
         indent_text = " " * 4
         text = re.sub(r", ([a-z0-9_]+)=", 
                       ",\n" + indent_text + "\\1=", 
@@ -191,7 +205,7 @@ def format_text(f: StringIO,
                 title_list: list[str],
                 model_names: list[str],
                    
-                out_keys: list[str] = ["text","dic","obj"],
+                out_keys: list[str] = ["text","dic","value"],
         
                 json_kwargs: dict = {"indent": 2,
                                      "sort_keys": False,
@@ -246,7 +260,7 @@ def format_csv(f: StringIO,
                title_list: list[str],
                model_names: list[str],
                    
-               out_keys: list[str] = ["text","dic","obj"],
+               out_keys: list[str] = ["text","dic","value"],
         
                json_kwargs: dict = {"indent": 2,
                                     "sort_keys": False,
@@ -302,7 +316,7 @@ def thread_multigen(threads: list[Thread],
                     gencall: Optional[Callable] = None,                   
                     genconf: Optional[GenConf] = None,
     
-                    out_keys: list[str] = ["text","dic", "obj"],
+                    out_keys: list[str] = ["text","dic", "value"],
                    
                     thread_titles: Optional[list[str]] = None                   
                     ) -> list[list[GenOut]]:
@@ -315,12 +329,12 @@ def thread_multigen(threads: list[Thread],
 
     Args:
         threads: List of threads to input into each model.
-        model_names: A list of ModelDir names.
+        model_names: A list of Models names.
         text: An str list with "print"=print results, path=a path to output a text file with results. Defaults to None.
         csv: An str list with "print"=print CSV results, path=a path to output a CSV file with results. Defaults to None.
         gencall: Callable function that does the actual generation. Defaults to None, which will use a text generation default function.
         genconf: Model generation configuration to use in models. Defaults to None, meaning default values.
-        out_keys: A list with GenOut members to output. Defaults to ["text","dic", "obj"].
+        out_keys: A list with GenOut members to output. Defaults to ["text","dic", "value"].
         thread_titles: A human-friendly title for each Thread. Defaults to None.
 
     Returns:
@@ -382,7 +396,7 @@ def query_multigen(in_list: list[str],
                    gencall: Optional[Callable] = None,                   
                    genconf: Optional[GenConf] = None,
     
-                   out_keys: list[str] = ["text","dic", "obj"],
+                   out_keys: list[str] = ["text","dic", "value"],
                    in_titles: Optional[list[str]] = None
                    ) -> list[list[GenOut]]:
     """Generate an INST+IN thread on a list of models, returning/saving results in text/CSV.
@@ -395,12 +409,12 @@ def query_multigen(in_list: list[str],
     Args:
         in_list: List of IN messages to initialize Threads.
         inst_text: The common INST to use in all models.
-        model_names: A list of ModelDir names.
+        model_names: A list of Models names.
         text: An str list with "print"=print results, path=a path to output a text file with results. Defaults to None.
         csv: An str list with "print"=print CSV results, path=a path to output a CSV file with results. Defaults to None.
         gencall: Callable function that does the actual generation. Defaults to None, which will use a text generation default function.
         genconf: Model generation configuration to use in models. Defaults to None, meaning default values.
-        out_keys: A list with GenOut members to output. Defaults to ["text","dic", "obj"].
+        out_keys: A list with GenOut members to output. Defaults to ["text","dic", "value"].
         in_titles: A human-friendly title for each Thread. Defaults to None.
 
     Returns:
@@ -439,7 +453,7 @@ def cycle_gen_print(in_list: list[str],
                     gencall: Optional[Callable] = None,                   
                     genconf: Optional[GenConf] = None,
     
-                    out_keys: list[str] = ["text","dic", "obj"],
+                    out_keys: list[str] = ["text","dic", "value"],
 
                     json_kwargs: dict = {"indent": 2,
                                          "sort_keys": False,
@@ -463,10 +477,10 @@ def cycle_gen_print(in_list: list[str],
     Args:
         in_list: List of IN messages to initialize Threads.
         inst_text: The common INST to use in all models.
-        model_names: A list of ModelDir names.
+        model_names: A list of Models names.
         gencall: Callable function that does the actual generation. Defaults to None, which will use a text generation default function.
         genconf: Model generation configuration to use in models. Defaults to None, meaning default values.
-        out_keys: A list with GenOut members to output. Defaults to ["text","dic", "obj"].
+        out_keys: A list with GenOut members to output. Defaults to ["text","dic", "value"].
         json_kwargs: JSON dumps() configuration. Defaults to {"indent": 2, "sort_keys": False, "ensure_ascii": False }.
     """
 
@@ -482,7 +496,7 @@ def cycle_gen_print(in_list: list[str],
     for m in range(n_model):
         
         name = model_names[m]
-        model = ModelDir.create(name)
+        model = Models.create(name)
         
         print('=' * 80)
         print(f"Model: {name} -> {model.desc}")

@@ -25,7 +25,7 @@ Models.setup("../../models")
 model = Models.create("llamacpp:openchat-3.5-1210.Q4_K_M.gguf")
 
 # to use an OpenAI model:
-# model = ModelDir.create("openai:gpt-4")
+# model = Models.create("openai:gpt-4")
 ```
 
 We'll use this text written in a flamboyant style, courtesy GPT three and a half:
@@ -116,7 +116,7 @@ for person in out:
 
 Quite reasonable: the model is doing a good job and we didn't even add descriptions to the fields - it's inferring what we want from the field names only.
 
-Let's now query an attribute that only one of the person have: being married. Adding the "is_married" field to the person_type dictype.
+Let's now query an attribute that only one of the person have: being married. Adding the "is_married" field to the Person dataclass.
 
 
 ```python

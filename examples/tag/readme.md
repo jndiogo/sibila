@@ -1,6 +1,6 @@
-In this example we'll summarize and classify customer queries with tags.
+In this example we'll summarize and classify customer queries with tags. We'll use dataclasses to specify the structure of the information we want extracted (we could also use Pydantic BaseModel classes).
 
-To use a local model, make sure you have its file in the folder "../../models/". You can use any GGUF format model - [see here how to download the OpenChat model used below](https://jndiogo.github.io/sibila/setup-local-models/#default-model-used-in-the-examples-openchat). If you use a different one, don't forget to set its filename in the name variable below, after the text "llamacpp:".
+To use a local model, make sure you have its file in the folder "../../models". You can use any GGUF format model - [see here how to download the OpenChat model used below](https://jndiogo.github.io/sibila/setup-local-models/#default-model-used-in-the-examples-openchat). If you use a different one, don't forget to set its filename in the name variable below, after the text "llamacpp:".
 
 To use an OpenAI model, make sure you defined the env variable OPENAI_API_KEY with a valid token and uncomment the line after "# to use an OpenAI model:".
 
@@ -10,21 +10,20 @@ Let's start by creating the model:
 
 
 ```python
-from sibila import ModelDir
+from sibila import Models
 
 # delete any previous model
 try: del model
 except: ...
 
-# to use a local model, assuming it's in ../../models/:
-# add models folder config which also adds to ModelDir path
-ModelDir.add("../../models/modeldir.json")
+# to use a local model, assuming it's in ../../models:
+# setup models folder:
+Models.setup("../../models")
 # set the model's filename - change to your own model
-name = "llamacpp:openchat-3.5-1210.Q4_K_M.gguf"
-model = ModelDir.create(name)
+model = Models.create("llamacpp:openchat-3.5-1210.Q4_K_M.gguf")
 
 # to use an OpenAI model:
-# model = ModelDir.create("openai:gpt-4")
+# model = Models.create("openai:gpt-4")
 ```
 
 These will be our queries, ten typical customer support questions:
@@ -45,97 +44,97 @@ queries = """\
 """
 ```
 
-We'll start by summarizing each query. No need adding field descriptions, the field names should be enough to tell the model about what we want.
+We'll start by summarizing each query. 
+
+Let's try just using field names (without descriptions), perhaps they are enough to tell the model about what we want.
 
 
 ```python
-from pydantic import BaseModel, Field
-from typing import List
-from enum import Enum
+from dataclasses import dataclass
 
-class Query(BaseModel):
+@dataclass        
+class Query():
     id: int
     query_summary: str
     query_text: str
-    
-class QueryTags(BaseModel):
-    queries: List[Query]
 
 # model instructions text, also known as system message
 inst_text = "Extract information from customer queries."
 
+# the input query, including the above text
 in_text = "Each line is a customer query. Extract information about each query:\n\n" + queries
 
-out = model.query_pydantic(QueryTags,
-                           inst_text,
-                           in_text)
-for query in out.queries:
+out = model.extract(list[Query],
+                    in_text,
+                    inst=inst_text)
+
+for query in out:
     print(query)
 ```
 
-    id=1 query_summary='Trial period inquiry' query_text='Do you offer a trial period for your software before purchasing?'
-    id=2 query_summary='Technical issue' query_text="I'm experiencing a glitch with your app, it keeps freezing after the latest update."
-    id=3 query_summary='Pricing inquiry' query_text='What are the different pricing plans available for your subscription service?'
-    id=4 query_summary='Password reset request' query_text='Can you provide instructions on how to reset my account password?'
-    id=5 query_summary='Compatibility inquiry' query_text="I'm unsure about the compatibility of your product with my device, can you advise?"
-    id=6 query_summary='Order tracking' query_text='How can I track my recent order and estimate its delivery date?'
-    id=7 query_summary='Loyalty program inquiry' query_text='Is there a customer loyalty program or rewards system for frequent buyers?'
-    id=8 query_summary='Refund policy inquiry' query_text="I'm interested in your online courses, but do you offer refunds if I'm not satisfied?"
-    id=9 query_summary='Warranty inquiry' query_text='Could you clarify the coverage and limitations of your product warranty?'
-    id=10 query_summary='Customer support hours' query_text='What are your customer support hours and how can I reach your team in case of emergencies?'
+    Query(id=1, query_summary='Trial period inquiry', query_text='Do you offer a trial period for your software before purchasing?')
+    Query(id=2, query_summary='Technical issue', query_text="I'm experiencing a glitch with your app, it keeps freezing after the latest update.")
+    Query(id=3, query_summary='Pricing inquiry', query_text='What are the different pricing plans available for your subscription service?')
+    Query(id=4, query_summary='Password reset request', query_text='Can you provide instructions on how to reset my account password?')
+    Query(id=5, query_summary='Compatibility inquiry', query_text="I'm unsure about the compatibility of your product with my device, can you advise?")
+    Query(id=6, query_summary='Order tracking', query_text='How can I track my recent order and estimate its delivery date?')
+    Query(id=7, query_summary='Loyalty program inquiry', query_text='Is there a customer loyalty program or rewards system for frequent buyers?')
+    Query(id=8, query_summary='Refund policy inquiry', query_text="I'm interested in your online courses, but do you offer refunds if I'm not satisfied?")
+    Query(id=9, query_summary='Warranty inquiry', query_text='Could you clarify the coverage and limitations of your product warranty?')
+    Query(id=10, query_summary='Customer support inquiry', query_text='What are your customer support hours and how can I reach your team in case of emergencies?')
 
 
-The summaries appear to be quite good.
+The summaries look good.
 
-Let's now define tags and ask the model to classify each query into a tag. In the Tag class, we set its docstring to the rules we want for the classification. This is done in the docstring because the class is not derived from BaseModel, so we cannot set a Field(description="...") for each item.
+Let's now define tags and ask the model to classify each query into a tag. In the Tag class, we set its docstring to the rules we want for the classification. This is done in the docstring because Tag is not a dataclass, but derived from Enum.
 
 No longer asking for the query_text in the Query class to keep output shorter.
 
 
 ```python
+from enum import Enum
+
 class Tag(str, Enum):
     """Queries can be classified into the following tags:
 tech_support: queries related with technical problems.
 billing: post-sale queries about billing cycle, or subscription termination.
 account: queries about user account problems.
 pre_sales: queries from prospective customers (who have not yet purchased).
-other: all other query topics."""
-    
+other: all other query topics."""        
     TECH_SUPPORT = "tech_support"
     BILLING = "billing"
     PRE_SALES = "pre_sales"
     ACCOUNT = "account"
     OTHER = "other"
-    
-class Query(BaseModel):
+
+@dataclass        
+class Query():
     id: int
     query_summary: str
     query_tag: Tag
-    
-class QueryTags(BaseModel):
-    queries: List[Query]
 
-out = model.query_pydantic(QueryTags,
-                           inst_text,
-                           in_text)
-for query in out.queries:
+out = model.extract(list[Query],
+                    in_text,
+                    inst=inst_text)
+
+for query in out:
     print(query)
 ```
 
-    id=1 query_summary='Asking about trial period' query_tag=<Tag.PRE_SALES: 'pre_sales'>
-    id=2 query_summary='Reporting app glitch after update' query_tag=<Tag.TECH_SUPPORT: 'tech_support'>
-    id=3 query_summary='Inquiring about pricing plans' query_tag=<Tag.PRE_SALES: 'pre_sales'>
-    id=4 query_summary='Requesting password reset instructions' query_tag=<Tag.ACCOUNT: 'account'>
-    id=5 query_summary='Asking about device compatibility' query_tag=<Tag.PRE_SALES: 'pre_sales'>
-    id=6 query_summary='Tracking recent order and delivery date' query_tag=<Tag.OTHER: 'other'>
-    id=7 query_summary='Inquiring about customer loyalty program' query_tag=<Tag.BILLING: 'billing'>
-    id=8 query_summary='Asking about refund policy for online courses' query_tag=<Tag.PRE_SALES: 'pre_sales'>
-    id=9 query_summary='Seeking warranty coverage and limitations' query_tag=<Tag.OTHER: 'other'>
-    id=10 query_summary='Inquiring about customer support hours' query_tag=<Tag.OTHER: 'other'>
+    Query(id=1, query_summary='Asking about trial period', query_tag='pre_sales')
+    Query(id=2, query_summary='Reporting app issue', query_tag='tech_support')
+    Query(id=3, query_summary='Inquiring about pricing plans', query_tag='billing')
+    Query(id=4, query_summary='Requesting password reset instructions', query_tag='account')
+    Query(id=5, query_summary='Seeking device compatibility advice', query_tag='pre_sales')
+    Query(id=6, query_summary='Tracking order and delivery date', query_tag='other')
+    Query(id=7, query_summary='Inquiring about loyalty program', query_tag='billing')
+    Query(id=8, query_summary='Asking about refund policy', query_tag='pre_sales')
+    Query(id=9, query_summary='Seeking warranty information', query_tag='other')
+    Query(id=10, query_summary='Inquiring about customer support hours', query_tag='other')
 
 
 The applied tags appear mostly reasonable. 
 
-Of course, pre-sales tagging could be done automatically from a database of existing customer contacts, but the model is doing a good job of identifying questions likely to be pre-sales, like ids 1, 3, 5 and 8 which are questions typically asked before buying/subscribing.
+Of course, pre-sales tagging could be done automatically from a database of existing customer contacts, but the model is doing a good job of identifying questions likely to be pre-sales, like ids 1, 5 and 8 which are questions typically asked before buying/subscribing.
 
-Also, classification is being done from a single phrase. More text in each customer query could allow for fine grained classification.
+Also, note that classification is being done from a single phrase. More information in each customer query would certainly allow for fine-grained classification.

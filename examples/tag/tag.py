@@ -17,7 +17,7 @@ if __name__ == "__main__":
     model = Models.create("llamacpp:openchat-3.5-1210.Q4_K_M.gguf")
 
     # to use an OpenAI model:
-    # model = ModelDir.create("openai:gpt-4")
+    # model = Models.create("openai:gpt-4")
 
 
     queries = """\

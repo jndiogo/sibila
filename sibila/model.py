@@ -332,7 +332,7 @@ class Model(ABC):
                       schemaconf: Optional[JSchemaConf] = None
                       ) -> GenOut:
         """Grammar-constrained generation after a dataclass definition.
-        An initialized dataclass object is returned in the "obj" field of the returned dict.
+        An initialized dataclass object is returned in the "value" field of the returned dict.
         Doesn't raise an exception if an error occurs, always returns GenOut containing the created object.
 
         Args:
@@ -342,7 +342,7 @@ class Model(ABC):
             schemaconf: JSchemaConf object that controls schema simplification. Defaults to None, which uses model's default.
 
         Returns:
-            A GenOut object with result, generated text, etc. The initialized dataclass object is in GenOut.obj.
+            A GenOut object with result, generated text, etc. The initialized dataclass object is in GenOut.value.
         """
 
         if is_dataclass(cls):
@@ -362,7 +362,7 @@ class Model(ABC):
                                             is_list=False,
                                             val=out.dic,
                                             schemaconf=schemaconf)
-                out.obj = obj
+                out.value = obj
                 
             except TypeError as e:
                 out.res = GenRes.ERROR_JSON_SCHEMA_VAL # error initializing object from JSON
@@ -382,7 +382,7 @@ class Model(ABC):
                      schemaconf: Optional[JSchemaConf] = None
                      ) -> GenOut:
         """Grammar-constrained generation after a Pydantic BaseModel-derived class definition.
-        An initialized Pydantic BaseModel object is returned in the "obj" field of the returned dict.
+        An initialized Pydantic BaseModel object is returned in the "value" field of the returned dict.
         Doesn't raise an exception if an error occurs, always returns GenOut containing the created object.
 
         Args:
@@ -392,7 +392,7 @@ class Model(ABC):
             schemaconf: JSchemaConf object that controls schema simplification. Defaults to None, which uses model's default.
 
         Returns:
-            A GenOut object with result, generated text, etc. The initialized Pydantic BaseModel-derived object is in GenOut.obj.
+            A GenOut object with result, generated text, etc. The initialized Pydantic BaseModel-derived object is in GenOut.value.
         """
 
         if is_subclass_of(cls, BaseModel):
@@ -411,7 +411,7 @@ class Model(ABC):
                 obj = pydantic_obj_from_json(cls, 
                                              out.dic,
                                              schemaconf=schemaconf)
-                out.obj = obj
+                out.value = obj
                 
             except TypeError as e:
                 out.res = GenRes.ERROR_JSON_SCHEMA_VAL # error validating for object (by Pydantic), but JSON is valid for its schema
@@ -423,6 +423,70 @@ class Model(ABC):
         return out
 
 
+
+
+
+    def gen_extract(self,
+                    target: Any,
+                    thread: Thread,
+                    genconf: Optional[GenConf] = None,
+                    schemaconf: Optional[JSchemaConf] = None
+                    ) -> GenOut:
+        """
+        @TODO
+
+        Grammar-constrained generation after a Pydantic BaseModel-derived class definition.
+        An initialized Pydantic BaseModel object is returned in the "value" field of the returned dict.
+        Doesn't raise an exception if an error occurs, always returns GenOut containing the created object.
+
+        Args:
+            cls: A class derived from a Pydantic BaseModel class.
+            thread: The Thread to use as model input.
+            genconf: Model generation configuration. Defaults to None, which uses model's default.
+            schemaconf: JSchemaConf object that controls schema simplification. Defaults to None, which uses model's default.
+
+        Returns:
+            A GenOut object with result, generated text, etc. The initialized Pydantic BaseModel-derived object is in GenOut.value.
+        """
+
+        OUTPUT_KEY_NAME = "output"
+
+        schema, created_output_key = build_root_json_schema(target, OUTPUT_KEY_NAME)
+        
+        final_type, is_list = get_final_type(target)
+
+        if schemaconf is None:
+            schemaconf = JSchemaConf()
+
+        out = self.gen_json(schema,
+                            thread,
+                            genconf,
+                            massage_schema=True,
+                            schemaconf=schemaconf)
+    
+        if out.dic is not None:
+
+            if created_output_key:
+                val = out.dic[OUTPUT_KEY_NAME]
+            else:
+                val = out.dic
+
+            try:
+                value = create_final_instance(final_type, 
+                                            is_list, 
+                                            val,
+                                            schemaconf=schemaconf)
+                out.value = value
+
+            except TypeError as e:
+                out.res = GenRes.ERROR_JSON_SCHEMA_VAL # error validating, but JSON is valid for its schema
+                out.text += f"\nJSON Schema error: {e}"
+
+        else:
+            # out.res already holds the right error
+            ...
+
+        return out
 
 
 
@@ -549,7 +613,7 @@ class Model(ABC):
         GenError.raise_if_error(out,
                                 ok_length_is_error=False) # as valid JSON can still be produced
 
-        return out.obj
+        return out.value
 
 
 
@@ -594,7 +658,7 @@ class Model(ABC):
         GenError.raise_if_error(out,
                                 ok_length_is_error=False) # as valid JSON can still be produced
 
-        return out.obj
+        return out.value
 
 
 
@@ -640,36 +704,18 @@ class Model(ABC):
 
         """
 
-        OUTPUT_KEY_NAME = "output"
-
-        schema, created_output_key = build_root_json_schema(target, OUTPUT_KEY_NAME)
-        
-        final_type, is_list = get_final_type(target)
 
         thread = Thread.ensure(query, inst)
 
-        if schemaconf is None:
-            schemaconf = JSchemaConf()
+        out = self.gen_extract(target,
+                               thread,
+                               genconf,
+                               schemaconf)
 
-        out = self.json(schema,
-                        query,
-                        inst=inst,
-                        genconf=genconf,
-                        massage_schema=True,
-                        schemaconf=schemaconf)
-        
-        if created_output_key:
-            val = out[OUTPUT_KEY_NAME]
-        else:
-            val = out
+        GenError.raise_if_error(out,
+                                ok_length_is_error=False) # as valid JSON can still be produced
 
-        value = create_final_instance(final_type, 
-                                      is_list, 
-                                      val,
-                                      schemaconf=schemaconf)
-
-        return value
-
+        return out.value
 
 
 

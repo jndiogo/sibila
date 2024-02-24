@@ -341,7 +341,7 @@ class Models:
             # resolve filename -> path
             path = cls._locate_file(args["name"])
             if path is None:
-                raise FileNotFoundError(f"File not found in '{res_name}' while looking for file '{args['name']}'. Make sure you initialized ModelDir with a path to this file's folder")
+                raise FileNotFoundError(f"File not found in '{res_name}' while looking for file '{args['name']}'. Make sure you initialized Models with a path to this file's folder")
 
             logger.debug(f"Resolved llamacpp model '{args['name']}' to '{path}'")
             
@@ -403,9 +403,6 @@ class Models:
     def add_search_path(cls,
                         path: Union[str,list[str]]):
         """Prepends new paths to model search path.
-
-        During initialization env variable SIBILA_MODEL_SEARCH_PATH is searched for ';'-delimited paths.
-        ~/ can be used in paths for current account's home directory.        
 
         Args:
             path: A path or list of paths to add to model search path.
@@ -738,7 +735,7 @@ class Models:
                     
                     model_entry = prov_models[model_name]
                     if not all(mand in model_entry for mand in mandatory_keys):
-                        raise ValueError(f"ModelDir entry '{prov}:{model_name}' doesn't have all mandatory keys for this provider ({mandatory_keys})") 
+                        raise ValueError(f"Models entry '{prov}:{model_name}' doesn't have all mandatory keys for this provider ({mandatory_keys})") 
                                
                 
         # ensure all providers have their own entry
