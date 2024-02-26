@@ -65,7 +65,7 @@
     
     
     
-    <body dir="ltr" data-md-color-scheme="default" data-md-color-primary="indigo" data-md-color-accent="indigo">
+    <body dir="ltr" data-md-color-scheme="default" data-md-color-primary="pink" data-md-color-accent="indigo">
   
     
     <input class="md-toggle" data-md-toggle="drawer" type="checkbox" id="__drawer" autocomplete="off">
@@ -123,7 +123,7 @@
     
     
     
-    <input class="md-option" data-md-color-media="" data-md-color-scheme="default" data-md-color-primary="indigo" data-md-color-accent="indigo"  aria-label="Switch to dark mode"  type="radio" name="__palette" id="__palette_0">
+    <input class="md-option" data-md-color-media="" data-md-color-scheme="default" data-md-color-primary="pink" data-md-color-accent="indigo"  aria-label="Switch to dark mode"  type="radio" name="__palette" id="__palette_0">
     
       <label class="md-header__button md-icon" title="Switch to dark mode" for="__palette_1" hidden>
         <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a4 4 0 0 0-4 4 4 4 0 0 0 4 4 4 4 0 0 0 4-4 4 4 0 0 0-4-4m0 10a6 6 0 0 1-6-6 6 6 0 0 1 6-6 6 6 0 0 1 6 6 6 6 0 0 1-6 6m8-9.31V4h-4.69L12 .69 8.69 4H4v4.69L.69 12 4 15.31V20h4.69L12 23.31 15.31 20H20v-4.69L23.31 12 20 8.69Z"/></svg>
@@ -133,7 +133,7 @@
     
     
     
-    <input class="md-option" data-md-color-media="" data-md-color-scheme="slate" data-md-color-primary="indigo" data-md-color-accent="indigo"  aria-label="Switch to light mode"  type="radio" name="__palette" id="__palette_1">
+    <input class="md-option" data-md-color-media="" data-md-color-scheme="slate" data-md-color-primary="pink" data-md-color-accent="indigo"  aria-label="Switch to light mode"  type="radio" name="__palette" id="__palette_1">
     
       <label class="md-header__button md-icon" title="Switch to light mode" for="__palette_0" hidden>
         <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 18c-.89 0-1.74-.2-2.5-.55C11.56 16.5 13 14.42 13 12c0-2.42-1.44-4.5-3.5-5.45C10.26 6.2 11.11 6 12 6a6 6 0 0 1 6 6 6 6 0 0 1-6 6m8-9.31V4h-4.69L12 .69 8.69 4H4v4.69L.69 12 4 15.31V20h4.69L12 23.31 15.31 20H20v-4.69L23.31 12 20 8.69Z"/></svg>
@@ -487,17 +487,17 @@
 
 
 <h1 id="documentation">Documentation<a class="headerlink" href="#documentation" title="Permanent link">#</a></h1>
-<p>Extract structured information from LLM models, using a common API to access remote models like GPT-4 or local GGUF quantized models with llama.cpp.</p>
+<p>Extract structured data from LLM models, using a common API to access remote models like GPT-4 or local models via llama.cpp.</p>
 <ul>
-<li>Query structured information into Pydantic BaseModel objects or typed Python dicts.</li>
+<li>Query structured data into dataset or Pydantic BaseModel objects.</li>
 <li>Use the same API for local and remote models.</li>
 <li>Thread-based interaction with chat/instruct fine-tuned models.</li>
 <li>Compare output across local/remote models with included utilities, text or CSV output.</li>
-<li>Model management directory: manage models and their configurations and quickly switch between models.</li>
+<li>Model directory: store configurations and quickly switch between models.</li>
 <li>Automatic chat templates: identifies and uses the right templates for each model.</li>
 </ul>
-<p>With Sibila you can extract structured data from a small local model like OpenChat-3.5:</p>
-<div class="language-py highlight"><pre><span></span><code><span id="__span-0-1"><a id="__codelineno-0-1" name="__codelineno-0-1" href="#__codelineno-0-1"></a><span class="kn">from</span> <span class="nn">sibila</span> <span class="kn">import</span> <span class="n">LlamaCppModel</span><span class="p">,</span> <span class="n">OpenAIModel</span>
+<p>With Sibila you can extract structured data from a local quantized model like OpenChat-3.5 with 7B params:</p>
+<div class="language-python highlight"><pre><span></span><code><span id="__span-0-1"><a id="__codelineno-0-1" name="__codelineno-0-1" href="#__codelineno-0-1"></a><span class="kn">from</span> <span class="nn">sibila</span> <span class="kn">import</span> <span class="p">(</span><span class="n">LlamaCppModel</span><span class="p">,</span> <span class="n">OpenAIModel</span><span class="p">)</span>
 </span><span id="__span-0-2"><a id="__codelineno-0-2" name="__codelineno-0-2" href="#__codelineno-0-2"></a><span class="kn">from</span> <span class="nn">pydantic</span> <span class="kn">import</span> <span class="n">BaseModel</span><span class="p">,</span> <span class="n">Field</span>
 </span><span id="__span-0-3"><a id="__codelineno-0-3" name="__codelineno-0-3" href="#__codelineno-0-3"></a>
 </span><span id="__span-0-4"><a id="__codelineno-0-4" name="__codelineno-0-4" href="#__codelineno-0-4"></a><span class="k">class</span> <span class="nc">Info</span><span class="p">(</span><span class="n">BaseModel</span><span class="p">):</span>
@@ -507,19 +507,29 @@
 </span><span id="__span-0-8"><a id="__codelineno-0-8" name="__codelineno-0-8" href="#__codelineno-0-8"></a>    <span class="n">age_at_the_time</span><span class="p">:</span> <span class="nb">int</span>
 </span><span id="__span-0-9"><a id="__codelineno-0-9" name="__codelineno-0-9" href="#__codelineno-0-9"></a>    <span class="n">nationality</span><span class="p">:</span> <span class="nb">str</span>
 </span><span id="__span-0-10"><a id="__codelineno-0-10" name="__codelineno-0-10" href="#__codelineno-0-10"></a>
-</span><span id="__span-0-11"><a id="__codelineno-0-11" name="__codelineno-0-11" href="#__codelineno-0-11"></a><span class="n">openchat</span> <span class="o">=</span> <span class="n">LlamaCppModel</span><span class="p">(</span><span class="s2">&quot;models/openchat-3.5-1210.Q5_K_M.gguf&quot;</span><span class="p">)</span>
+</span><span id="__span-0-11"><a id="__codelineno-0-11" name="__codelineno-0-11" href="#__codelineno-0-11"></a><span class="n">openchat</span> <span class="o">=</span> <span class="n">LlamaCppModel</span><span class="p">(</span><span class="s2">&quot;openchat-3.5-1210.Q5_K_M.gguf&quot;</span><span class="p">)</span>
 </span><span id="__span-0-12"><a id="__codelineno-0-12" name="__codelineno-0-12" href="#__codelineno-0-12"></a>
-</span><span id="__span-0-13"><a id="__codelineno-0-13" name="__codelineno-0-13" href="#__codelineno-0-13"></a><span class="n">openchat</span><span class="o">.</span><span class="n">query_pydantic</span><span class="p">(</span><span class="n">Info</span><span class="p">,</span>
-</span><span id="__span-0-14"><a id="__codelineno-0-14" name="__codelineno-0-14" href="#__codelineno-0-14"></a>                       <span class="s2">&quot;Just be helpful.&quot;</span><span class="p">,</span>
-</span><span id="__span-0-15"><a id="__codelineno-0-15" name="__codelineno-0-15" href="#__codelineno-0-15"></a>                       <span class="s2">&quot;Who was the first man in the moon?&quot;</span><span class="p">)</span>
+</span><span id="__span-0-13"><a id="__codelineno-0-13" name="__codelineno-0-13" href="#__codelineno-0-13"></a><span class="n">openchat</span><span class="o">.</span><span class="n">extract</span><span class="p">(</span><span class="n">Info</span><span class="p">,</span>
+</span><span id="__span-0-14"><a id="__codelineno-0-14" name="__codelineno-0-14" href="#__codelineno-0-14"></a>                 <span class="s2">&quot;Who was the first man in the moon?&quot;</span><span class="p">,</span>
+</span><span id="__span-0-15"><a id="__codelineno-0-15" name="__codelineno-0-15" href="#__codelineno-0-15"></a>                 <span class="n">inst</span><span class="o">=</span><span class="s2">&quot;Just be helpful.&quot;</span><span class="p">)</span> <span class="c1"># instructions, aka system message</span>
 </span></code></pre></div>
 <p>Outputs an object of class Info, initialized with the model's output:</p>
-<div class="language-python highlight"><pre><span></span><code><span id="__span-1-1"><a id="__codelineno-1-1" name="__codelineno-1-1" href="#__codelineno-1-1"></a><span class="n">Info</span><span class="p">(</span><span class="n">event_year</span><span class="o">=</span><span class="mi">1969</span><span class="p">,</span> 
+<div class="language-python highlight"><pre><span></span><code><span id="__span-1-1"><a id="__codelineno-1-1" name="__codelineno-1-1" href="#__codelineno-1-1"></a><span class="n">Info</span><span class="p">(</span><span class="n">event_year</span><span class="o">=</span><span class="mi">1969</span><span class="p">,</span>
 </span><span id="__span-1-2"><a id="__codelineno-1-2" name="__codelineno-1-2" href="#__codelineno-1-2"></a>     <span class="n">first_name</span><span class="o">=</span><span class="s1">&#39;Neil&#39;</span><span class="p">,</span>
 </span><span id="__span-1-3"><a id="__codelineno-1-3" name="__codelineno-1-3" href="#__codelineno-1-3"></a>     <span class="n">last_name</span><span class="o">=</span><span class="s1">&#39;Armstrong&#39;</span><span class="p">,</span>
 </span><span id="__span-1-4"><a id="__codelineno-1-4" name="__codelineno-1-4" href="#__codelineno-1-4"></a>     <span class="n">age_at_the_time</span><span class="o">=</span><span class="mi">38</span><span class="p">,</span>
 </span><span id="__span-1-5"><a id="__codelineno-1-5" name="__codelineno-1-5" href="#__codelineno-1-5"></a>     <span class="n">nationality</span><span class="o">=</span><span class="s1">&#39;American&#39;</span><span class="p">)</span>
 </span></code></pre></div>
+<p>With the same API you can also query OpenAI models:</p>
+<div class="language-python highlight"><pre><span></span><code><span id="__span-2-1"><a id="__codelineno-2-1" name="__codelineno-2-1" href="#__codelineno-2-1"></a><span class="n">gpt4</span> <span class="o">=</span> <span class="n">OpenAIModel</span><span class="p">(</span><span class="s2">&quot;gpt-4-0613&quot;</span><span class="p">)</span>
+</span><span id="__span-2-2"><a id="__codelineno-2-2" name="__codelineno-2-2" href="#__codelineno-2-2"></a>
+</span><span id="__span-2-3"><a id="__codelineno-2-3" name="__codelineno-2-3" href="#__codelineno-2-3"></a><span class="n">gpt4</span><span class="o">.</span><span class="n">extract</span><span class="p">(</span><span class="n">Info</span><span class="p">,</span>
+</span><span id="__span-2-4"><a id="__codelineno-2-4" name="__codelineno-2-4" href="#__codelineno-2-4"></a>             <span class="s2">&quot;Who was the first man in the moon?&quot;</span><span class="p">,</span>
+</span><span id="__span-2-5"><a id="__codelineno-2-5" name="__codelineno-2-5" href="#__codelineno-2-5"></a>             <span class="n">inst</span><span class="o">=</span><span class="s2">&quot;Just be helpful.&quot;</span><span class="p">)</span> <span class="c1"># instructions, aka system message</span>
+</span></code></pre></div>
+<p>And this creates an Info object initialized from model's response, as above.</p>
+<p>If Pydantic BaseModel objects are too much for your project, you can also use ligher Python dataclass.</p>
+<p>Sibila also includes model management and tools to compare output between models.</p>
 <h2 id="getting-started">Getting started<a class="headerlink" href="#getting-started" title="Permanent link">#</a></h2>
 <p>Installation, accessing OpenAI, getting local models - <a href="getting-started/">how to get started</a>.</p>
 <h2 id="api-reference">API Reference<a class="headerlink" href="#api-reference" title="Permanent link">#</a></h2>
