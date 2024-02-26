@@ -97,8 +97,7 @@ def loop(callback: Callable[[Union[GenOut,None], Context, Model, GenConf], bool]
         
             ctx.trim(trim_flags,
                      model,
-                     max_token_len=max_token_len,
-                     genconf=genconf
+                     max_token_len=max_token_len
                      )
        
             out = model.gen(ctx, genconf)
@@ -296,8 +295,7 @@ def interact(model: Model,
                ctx=ctx,
                inst_text=inst_text,
                in_text=None, # call callback for first prompt
-               trim_flags=trim_flags,
-               genconf=genconf)
+               trim_flags=trim_flags)
 
     return ctx
 
@@ -314,17 +312,16 @@ def recursive_summarize(model: Model,
     """Recursively summarize a (large) text or text file.
      
     Works by:
-    ```
-    1) Breaking text into chunks that fit models context.
-    2) Run model to summarize chunks.
-    3) Join summries and jump to 1) - do this until text size no longer decreases.
-    ``` 
+
+    1. Breaking text into chunks that fit models context.
+    2. Run model to summarize chunks.
+    3. Join generated summaries and jump to 1. - do this until text size no longer decreases.
 
     Args:
         model: Model to use for summarizing.
         text: Initial text.
         path: --Or-- A path to an UTF-8 text file.
-        overlap_size: Size in model tokens of the overlapping portions at begining and end of chunks.
+        overlap_size: Size in model tokens of the overlapping portions at beginning and end of chunks.
 
     Returns:
         The summarized text.

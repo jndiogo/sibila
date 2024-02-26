@@ -9,11 +9,11 @@ title: API Reference
             - __init__
             - extract
             - classify
-            - gen
+            - __call__
             - json
             - dataclass
             - pydantic
-            - __call__
+            - gen
             - gen_json
             - gen_dataclass
             - gen_pydantic
@@ -45,6 +45,49 @@ title: API Reference
             - ctx_len
             - desc
             - get_metadata
+
+
+
+## Models directory
+::: sibila.Models
+    options:
+        members:
+            - setup
+            - clear
+            - info
+            - create
+            - add_search_path
+            - set_genconf
+            - add_model
+            - get_format
+            - search_format
+            - is_format_supported
+            - add_format
+
+
+
+
+## Generation Configs
+::: sibila.GenConf
+
+::: sibila.JSchemaConf
+
+
+
+
+## Generation Results and Errors
+::: sibila.GenRes
+
+::: sibila.GenError
+    options:
+        members:
+            - __init__
+            - raise_if_error
+
+::: sibila.GenOut
+
+
+
 
 
 
@@ -93,47 +136,14 @@ title: API Reference
             - trim
 
 
-## Generation Configs
-::: sibila.GenConf
 
-::: sibila.JSchemaConf
-
-
-
-
-
-
-## Generation Results and Errors
-::: sibila.GenRes
-
-::: sibila.GenError
+## Tools
+::: sibila.tools
     options:
         members:
-            - __init__
-            - raise_if_error
-
-::: sibila.GenOut
-
-
-
-## Models directory
-::: sibila.Models
-    options:
-        members:
-            - setup
-            - clear
-            - info
-            - create
-            - add_search_path
-            - set_genconf
-            - add_model
-            - get_format
-            - search_format
-            - is_format_supported
-            - add_format
-
-
-
+            - interact
+            - loop
+            - recursive_summarize
 
 ## Multigen
 ::: sibila.multigen
@@ -144,14 +154,6 @@ title: API Reference
             - multigen
             - cycle_gen_print
 
-
-## Tools
-::: sibila.tools
-    options:
-        members:
-            - interact
-            - loop
-            - recursive_summarize
 
 
 

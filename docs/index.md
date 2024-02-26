@@ -2,14 +2,14 @@
 
 Extract structured data from LLM models, using a common API to access remote models like GPT-4 or local models via llama.cpp.
 
-- Query structured data into Pydantic BaseModel objects or typed Python dicts.
+- Query structured data into dataset or Pydantic BaseModel objects.
 - Use the same API for local and remote models.
 - Thread-based interaction with chat/instruct fine-tuned models.
 - Compare output across local/remote models with included utilities, text or CSV output.
-- Model management directory: manage models and their configurations and quickly switch between models.
+- Model directory: store configurations and quickly switch between models.
 - Automatic chat templates: identifies and uses the right templates for each model.
 
-With Sibila you can extract structured data from a local model like OpenChat-3.5 with 7B params:
+With Sibila you can extract structured data from a local quantized model like OpenChat-3.5 with 7B params:
 
 ```python
 from sibila import (LlamaCppModel, OpenAIModel)
@@ -38,6 +38,24 @@ Info(event_year=1969,
      age_at_the_time=38,
      nationality='American')
 ```
+
+
+With the same API you can also query OpenAI models:
+
+```python
+gpt4 = OpenAIModel("gpt-4-0613")
+
+gpt4.extract(Info,
+             "Who was the first man in the moon?",
+             inst="Just be helpful.") # instructions, aka system message
+```
+
+And this creates an Info object initialized from model's response, as above.
+
+If Pydantic BaseModel objects are too much for your project, you can also use ligher Python dataclass.
+
+Sibila also includes model management and tools to compare output between models.
+
 
 ## Getting started
 

@@ -1,10 +1,6 @@
-"""Null models for testing.
+"""Null model(s) for testing.
 
-
-
-Create when needed:
-    NullFormattedTextModel
-    NullMessagesModel
+Created later if  needed: NullFormattedTextModel, NullMessagesModel
 """
 
 
@@ -46,7 +42,7 @@ class NullModel(Model):
 
                  genconf: Optional[GenConf] = None,
                  schemaconf: Optional[JSchemaConf] = None
-                ):
+                 ):
 
         super().__init__(is_local_model,
                          genconf,
@@ -99,4 +95,4 @@ class NullModel(Model):
         """Provider library version: provider x.y.z
         Ex. openai 1.3.6
         """
-        return f"NullModel 0.0.0"        
+        return "NullModel 0.0.0"

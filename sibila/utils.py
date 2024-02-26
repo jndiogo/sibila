@@ -1,4 +1,4 @@
-"""A bag of assorted utilities."""
+"""A bag of general utilities."""
 
 import os
 

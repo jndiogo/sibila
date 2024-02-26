@@ -85,11 +85,11 @@ Hello there?<|im_end|>
 Ahoy there matey! How can I assist ye today on this here ship o' mine?<|im_end|>
 ```
 
-Specific chat templates are needed for the best results when dealing with each model. Sibila uses a singleton class named FormatDir, that tries to automatically detect which template to use with a model, either from the model name or from embedded metadata, if available. This information is stored in the sibila/base_formatdir.json file, which contains several well templates for well-known models; and you can add your own templates as needed into other JSON configuration files.
+Specific chat templates are needed for the best results when dealing with each model. Sibila uses a singleton class named Models, that tries to automatically detect which template to use with a model, either from the model name or from embedded metadata, if available. This information is stored in JSON files named "base_formats.json". The base formats configuration file, which contains several well-known templates is available in "sibila/base_formats.json", and you can add your own templates as needed into other JSON configuration files.
 
-So, how to find the chat template for a new model you intend to use? When downloading a model file, you should look for mentions of the used chat template in its information page and then check if it's already available in FormatDir's base_formatdir.json initialization file.
+So, how to find the chat template for a new model you intend to use? Chances are, that it's already included in the GGUF model file and you don't need to do anything. If you receive an error when creating the local model, you should look for mentions of the used chat template in its information page and add it to a "formats.json" file in the models folder.
 
-What if the model uses a new chat template that's not yet supported in FormatDir? It's becoming common to include the template in the model's GGUF file metadata, so you should look for a file named "tokenizer_config.json" in the main model files. This file should include an entry named "chat_template" which is what we want. For example in OpenChat's tokenizer_config.json:
+If the chat template is not included in the GGUF file, you can look for a file named "tokenizer_config.json" in the main model files. This file should include an entry named "chat_template" which is what we want. For example in OpenChat's tokenizer_config.json:
 
 [https://huggingface.co/openchat/openchat-3.5-1210/blob/main/tokenizer_config.json](https://huggingface.co/openchat/openchat-3.5-1210/blob/main/tokenizer_config.json)
 
@@ -107,7 +107,7 @@ You'll find this line with the template:
 
 (Don't be confused by the text "GPT4 correct...", it's just the text format the model was trained on, and it's not related with OpenAI's)
 
-With this text string, we could create an entry in FormatDir and all further models with this name will then use the template.
+With this text string, we could create an entry in a "formats.json" file and all further models with this name will then use the template.
 
 
 
@@ -161,7 +161,7 @@ This will register all the defined entries in Models. For the "nous-hermes-2-sol
 }
 ```
 
-The "name" key specify the filename, "format" the FormatDir entry that it should use.
+The "name" key specifies the filename, "format" the formats entry that it should use.
 
 And we can use then use the model by simply doing:
 

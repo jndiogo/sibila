@@ -84,9 +84,10 @@ def resolve_model(name: str,
     Args:
         name: The model name to resolve.
         unknown_name_mask: How to deal with unmatched names, a mask of:
-            2: Raise NameError if exact name not found.
-            1: Only allow versioned names - raise NameError if generic non-versioned model name used.
-            0: Accept any name, use first in list if necessary.
+
+            - 2: Raise NameError if exact name not found.
+            - 1: Only allow versioned names - raise NameError if generic non-versioned model name used.
+            - 0: Accept any name, use first in list if necessary.
 
     Raises:
         NameError: If not found, according to unknown_name_mask.
@@ -94,7 +95,6 @@ def resolve_model(name: str,
     Returns:
         Existing model name from KNOWN_MODELS.
     """
-
     
     if name not in KNOWN_MODELS:
         
@@ -139,9 +139,9 @@ def resolve_model(name: str,
 
 
 class OpenAIModel(MessagesModel):
-    """Access an OpenAI model via OpenAI API.
+    """Access an OpenAI model.
 
-    Supports grammar-constrained JSON output, via the OpenAI API tools mechanism.
+    Supports constrained JSON output, via the OpenAI API tools mechanism.
     Ref: https://platform.openai.com/docs/api-reference/chat/create
 
     Attributes:
@@ -171,14 +171,16 @@ class OpenAIModel(MessagesModel):
         Args:
             name: Model name.
             unknown_name_mask: How to deal with unmatched names, a mask of:
-                2: Raise NameError if exact name not found.
-                1: Only allow versioned names - raise NameError if generic non-versioned model name used.
-                0 (Default): Accept any name, use first in list if necessary. 
+
+                - 2: Raise NameError if exact name not found.
+                - 1: Only allow versioned names - raise NameError if generic non-versioned model name used.
+                - 0: (default) Accept any name, use first in list if necessary.
+            
             genconf: Model generation configuration. Defaults to None.
             tokenizer: An external initialized tokenizer to use instead of the created from the GGUF file. Defaults to None.
             ctx_len: Maximum context length to be used (shared for input and output). Defaults to 0 which means model's maximum.
             api_key: OpenAI API key. Defaults to None, which will use env variable OPENAI_API_KEY.
-            base_url: _description_. Defaults to None, which will use en variable OPENAI_BASE_URL.
+            base_url: Base location for API access. Defaults to None, which will use env variable OPENAI_BASE_URL.
             openai_init_kwargs: Extra args for OpenAI.OpenAI() initialization. Defaults to {}.
 
         Raises:
@@ -400,7 +402,7 @@ class OpenAIModel(MessagesModel):
         try:        
             import openai
             ver = openai.__version__
-        except:
+        except Exception:
             raise ImportError("Please install openai by running: pip install openai")
             
         return f"openai {ver}"

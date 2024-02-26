@@ -31,16 +31,16 @@ To use an OpenAI remote model, you'll need a paid OpenAI account and its API key
 
 In Linux/Mac you can define this key by running:
 ```
-export OPENAI_API_KEY="sk-xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx"
+export OPENAI_API_KEY="..."
 ```
 
 And in Windows command prompt:
 
 ```
-setx OPENAI_API_KEY "sk-xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx"
+setx OPENAI_API_KEY "..."
 ```
 
-Having set this variable with your OpenAI API key, you can run an ["Hello Model" example](https://github.com/jndiogo/sibila/blob/main/examples/hello_model/hello_openai.py) :
+Having set this variable with your OpenAI API key, you can run an ["Hello Model" example](https://github.com/jndiogo/sibila/tree/main/examples/hello_model) :
 
 ```python
 from sibila import OpenAIModel, GenConf
@@ -105,7 +105,7 @@ The script is available here: [hello_llamacpp.py](https://github.com/jndiogo/sib
 
 
 
-# Arrr-answer
+# Arrr-answer!
 
 After running the above and/or OpenAI's script you'll receive the model's answer to your "Hello there?" - in arrr-style:
 

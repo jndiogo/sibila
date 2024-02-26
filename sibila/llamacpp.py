@@ -53,7 +53,7 @@ except ImportError:
 class LlamaCppModel(FormattedTextModel):
     """Use local GGUF format models via llama.cpp engine.
     
-    Supports grammar-constrained JSON output, possibly following a JSON schema.
+    Supports grammar-constrained JSON output following a JSON schema.
 
     Attributes:
         ctx_len: Maximum context length, shared for input + output.
@@ -106,8 +106,8 @@ class LlamaCppModel(FormattedTextModel):
             ValueError: If ctx_len is 0 or larger than the values supported by model.
         """
 
-        self._llama = None
-        self.tokenizer = None
+        self._llama = None # type: ignore[assignment]
+        self.tokenizer = None # type: ignore[assignment]
 
         if not has_llama_cpp:
             raise ImportError("Please install llama-cpp-python by running: pip install llama-cpp-python")
@@ -238,7 +238,7 @@ class LlamaCppModel(FormattedTextModel):
         try:        
             import llama_cpp
             ver = llama_cpp.__version__
-        except:
+        except Exception:
             raise ImportError("Please install llama-cpp-python by running: pip install llama-cpp-python")
             
         return f"llama-cpp-python {ver}"

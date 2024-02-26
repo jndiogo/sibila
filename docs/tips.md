@@ -9,7 +9,8 @@ Suppose you want to extract a list of person names from a group. You could use t
 
 ```python
 class Group(BaseModel):
-    persons: List[str] = Field(description="List of persons")
+    persons: list[str] = Field(description="List of persons")
+    group_info: str
 
 out = model.extract(Group, in_text)
 ```
@@ -21,11 +22,12 @@ class Person(BaseModel):
     name: str
 
 class Group(BaseModel):
-    persons: List[Person]
+    persons: list[Person]
+    group_info: str
 
 out = model.extract(Group, in_text)
 ```
 
 The same applies to the equivalent dataclass definitions.
 
-Adding descriptions seems to always help, specially for non-trivial extraction. Without descriptions, the model can only look into variable names for clues on what's wanted.
+Adding descriptions seems to always help, specially for non-trivial extraction. Without descriptions, the model can only look into variable names for clues on what's wanted, so it's important to tell it what we want by adding field descriptions.

@@ -195,11 +195,12 @@ class Model(ABC):
                  genconf: Union[GenConf, None],
                  schemaconf: Union[JSchemaConf, None],
                  tokenizer: Union[Tokenizer, None]):
-        """_summary_
+        """Initializer for base model type, shared by actual model classes like LlamaCpp, OpenAI, etc.
 
         Args:
             is_local_model: Is the model running locally?
-            genconf: Generation configuration options used in gen().
+            genconf: Default generation configuration options, used if generation call doesn't supply one.
+            schemaconf: Default configuration for JSON schema validation, used if generation call doesn't supply one.
             tokenizer: Tokenizer used to encode text (even for message-based models).
         """
         
@@ -282,7 +283,7 @@ class Model(ABC):
                  massage_schema: bool = True,
                  schemaconf: Optional[JSchemaConf] = None,
                  ) -> GenOut:
-        """JSON/JSON-schema grammar-constrained generation, returning a Python dict of values, constrained or not by a JSON schema.
+        """JSON/JSON-schema constrained generation, returning a Python dict of values, conditioned or not by a JSON schema.
         Doesn't raise an exception if an error occurs, always returns GenOut.
 
         Args:
@@ -331,13 +332,13 @@ class Model(ABC):
                       genconf: Optional[GenConf] = None,
                       schemaconf: Optional[JSchemaConf] = None
                       ) -> GenOut:
-        """Grammar-constrained generation after a dataclass definition.
+        """Constrained generation after a dataclass definition.
         An initialized dataclass object is returned in the "value" field of the returned dict.
         Doesn't raise an exception if an error occurs, always returns GenOut containing the created object.
 
         Args:
             cls: A dataclass definition.
-            thread: The Thread to use as model input.
+            thread: The Thread object to use as model input.
             genconf: Model generation configuration. Defaults to None, which uses model's default.
             schemaconf: JSchemaConf object that controls schema simplification. Defaults to None, which uses model's default.
 
@@ -381,7 +382,7 @@ class Model(ABC):
                      genconf: Optional[GenConf] = None,
                      schemaconf: Optional[JSchemaConf] = None
                      ) -> GenOut:
-        """Grammar-constrained generation after a Pydantic BaseModel-derived class definition.
+        """Constrained generation after a Pydantic BaseModel-derived class definition.
         An initialized Pydantic BaseModel object is returned in the "value" field of the returned dict.
         Doesn't raise an exception if an error occurs, always returns GenOut containing the created object.
 
@@ -432,21 +433,49 @@ class Model(ABC):
                     genconf: Optional[GenConf] = None,
                     schemaconf: Optional[JSchemaConf] = None
                     ) -> GenOut:
-        """
-        @TODO
+        """Free type constrained generation: an instance of the given type is initialized with the model's output.
+        The initialized value is placed in the "value" field of the returned dict.
+        Doesn't raise an exception if an error occurs, always returns GenOut.
 
-        Grammar-constrained generation after a Pydantic BaseModel-derived class definition.
-        An initialized Pydantic BaseModel object is returned in the "value" field of the returned dict.
-        Doesn't raise an exception if an error occurs, always returns GenOut containing the created object.
+        The following target types are accepted:
+
+            - prim_type:
+                bool
+                int
+                float
+                str
+                
+            - enums:
+                [1, 2, 3] or ["a","b"] - all items of the same prim_type
+                Literal['year', 'name'] - all items of the same prim_type
+                Enum, EnumInt, EnumStr, (Enum, int),... - all items of the same prim_type
+
+            - datetime/date/time
+
+            - a list in the form:
+                list[type] - for example list[int]. 
+                The list can be annotated:
+                    Annotated[list[T], "List desc"]
+                And/or the list item type can be annotated:
+                    list[Annotated[T, "Item desc"]]
+
+            - dataclass with fields of the above supported types (or dataclass).
+
+            - Pydantic BaseModel
+
+        All types can be Annotated[T, "Desc"], for example: 
+            count: int
+        Can be annotated as:
+            count: Annotated[int, "How many units?"]
 
         Args:
-            cls: A class derived from a Pydantic BaseModel class.
+            target: One of the above types.
             thread: The Thread to use as model input.
             genconf: Model generation configuration. Defaults to None, which uses model's default.
             schemaconf: JSchemaConf object that controls schema simplification. Defaults to None, which uses model's default.
 
         Returns:
-            A GenOut object with result, generated text, etc. The initialized Pydantic BaseModel-derived object is in GenOut.value.
+            A GenOut object with model's results and instantiated type in the "value" field.
         """
 
         OUTPUT_KEY_NAME = "output"
@@ -473,9 +502,9 @@ class Model(ABC):
 
             try:
                 value = create_final_instance(final_type, 
-                                            is_list, 
-                                            val,
-                                            schemaconf=schemaconf)
+                                              is_list, 
+                                              val,
+                                              schemaconf=schemaconf)
                 out.value = value
 
             except TypeError as e:
@@ -503,7 +532,7 @@ class Model(ABC):
                  genconf: Optional[GenConf] = None,
                  ok_length_is_error: bool = False
                  ) -> str:
-        """Text generation from a Thread, used by the other model generation methods.
+        """Text generation from a Thread or plain text, used by the other model generation methods.
 
         Args:
             query: Thread or an str with the text of a single IN message to use as model input.
@@ -542,7 +571,7 @@ class Model(ABC):
              massage_schema: bool = True,
              schemaconf: Optional[JSchemaConf] = None,
              ) -> dict:
-        """JSON/JSON-schema grammar-constrained generation, returning a Python dict of values, constrained or not by a JSON schema.
+        """JSON/JSON-schema constrained generation, returning a Python dict of values, constrained or not by a JSON schema.
         Raises GenError if unable to get a valid/schema-validated JSON.
 
         Args:
@@ -576,7 +605,7 @@ class Model(ABC):
 
 
 
-    def dataclass(self,
+    def dataclass(self, # noqa: E811
                   cls: Any, # a dataclass definition
 
                   query: Union[str,Thread],
@@ -586,7 +615,7 @@ class Model(ABC):
                   genconf: Optional[GenConf] = None,
                   schemaconf: Optional[JSchemaConf] = None
                   ) -> Any: # a dataclass object
-        """Grammar-constrained generation after a dataclass definition resulting in an object initialized with the model response.
+        """Constrained generation after a dataclass definition, resulting in an object initialized with the model's response.
         Raises GenError if unable to get a valid response that follows the dataclass definition.
 
         Args:
@@ -597,7 +626,7 @@ class Model(ABC):
             schemaconf: JSchemaConf object that controls schema simplification. Defaults to None, which uses model's default.
 
         Raises:
-            GenError: If an error occurred, for example returning invalid object initialization. See GenError.
+            GenError: If an error occurred, for example invalid object initialization. See GenError.
 
         Returns:
             An object of class cls (derived from dataclass) initialized from the constrained JSON output.
@@ -630,7 +659,7 @@ class Model(ABC):
                  genconf: Optional[GenConf] = None,
                  schemaconf: Optional[JSchemaConf] = None
                  ) -> Any: # a Pydantic BaseModel object
-        """Grammar-constrained generation after a Pydantic BaseModel-derived class definition.
+        """Constrained generation after a Pydantic BaseModel-derived class definition.
         Results in an object initialized with the model response.
         Raises GenError if unable to get a valid dict that follows the BaseModel class definition.
 
@@ -663,6 +692,9 @@ class Model(ABC):
 
 
 
+
+
+
     def extract(self,
                 target: Any,
 
@@ -674,36 +706,54 @@ class Model(ABC):
                 schemaconf: Optional[JSchemaConf] = None
                 ) -> Any:
         
-        """
-        @TODO
-        All types can be Annotated[T, "Desc"]
+        """Free type constrained generation: an instance of the given type will be initialized with the model's output.
+        The following target types are accepted:
 
-        prim_type:
-            bool
-            int
-            float
-            str
+        - prim_type:
+
+            - bool
+            - int
+            - float
+            - str
             
-        enums:
-            [1, 2, 3] or ["a","b"] - all items of the same prim_type
-            Literal['year', 'name'] - all items of the same prim_type
-            Enum, EnumInt, EnumStr, (Enum, int),... - all items of the same prim_type
+        - enums:
 
-        datetime/date/time
+            - [1, 2, 3] or ["a","b"] - all items of the same prim_type
+            - Literal['year', 'name'] - all items of the same prim_type
+            - Enum, EnumInt, EnumStr, (Enum, int),... - all items of the same prim_type
 
-        dataclass
+        - datetime/date/time
 
-        Pydantic BaseModel
-
-        list of values of a get_type() accepted types: 
-            list[type] - for example list[int]
-            can be as list:
-                Annotated[list[T], "List desc"] 
-            and/or as list item:
+        - a list in the form:
+            - list[type]
+            
+            For example list[int]. The list can be annotated:
+                Annotated[list[T], "List desc"]
+            And/or the list item type can be annotated:
                 list[Annotated[T, "Item desc"]]
 
-        """
+        - dataclass with fields of the above supported types (or dataclass).
 
+        - Pydantic BaseModel
+
+        All types can be Annotated[T, "Desc"], for example: 
+            count: int
+        Can be annotated as:
+            count: Annotated[int, "How many units?"]
+
+        Args:
+            target: One of the above types.
+            query: Thread or an str with the text of a single IN message to use as model input.
+            inst: Instruction message for model. Will override Thread's inst, if set. Defaults to None.
+            genconf: Model generation configuration. Defaults to None, which uses model's default.
+            schemaconf: JSchemaConf object that controls schema simplification. Defaults to None, which uses model's default.
+
+        Raises:
+            GenError: If an error occurred, for example invalid object initialization. See GenError.
+
+        Returns:
+            A value of target arg type instantiated with the model's output.
+        """
 
         thread = Thread.ensure(query, inst)
 
@@ -730,12 +780,31 @@ class Model(ABC):
                  genconf: Optional[GenConf] = None,
                  schemaconf: Optional[JSchemaConf] = None
                  ) -> Any:
+        """Returns a classification from one of the given enumeration values
+        The following ways to specify the valid labels are accepted:
 
+        - [1, 2, 3] or ["a","b"] - all items of the same prim_type
+        - Literal['year', 'name'] - all items of the same prim_type
+        - Enum, EnumInt, EnumStr, (Enum, int),... - all items of the same prim_type
+
+        Args:
+            labels: One of the above types.
+            query: Thread or an str with the text of a single IN message to use as model input.
+            inst: Instruction message for model. Will override Thread's inst, if set. Defaults to None.
+            genconf: Model generation configuration. Defaults to None, which uses model's default.
+            schemaconf: JSchemaConf object that controls schema simplification. Defaults to None, which uses model's default.
+
+        Raises:
+            GenError: If an error occurred. See GenError.
+
+        Returns:
+            One of the given labels, as classified by the model.
+        """
 
         # verify it's a valid enum "type"
         type_,_ = get_enum_type(labels)
         if type_ is None:
-            raise TypeError(f"Arg labels must be one of Literal, Enum class or a list of str, float or int items")
+            raise TypeError("Arg labels must be one of Literal, Enum class or a list of str, float or int items")
         
         return self.extract(labels,
                             query,
@@ -775,8 +844,7 @@ class Model(ABC):
     @property
     def ctx_len(self) -> int:
         """Maximum context length, shared for input + output.
-        We assume a common in+out context where total token length must always be less than this number.
-        """
+        We assume a common in+out context where total token length must always be less than this number."""
         return self._ctx_len
 
 
@@ -1096,7 +1164,7 @@ class FormattedTextModel(TextModel, ABC):
             genconf: Optional[GenConf] = None,
             ) -> GenOut:
         """Text generation from a Thread, used by the other model generation methods.
-        Doesn't raise an exception if an error occurs, always returns a result dict.
+        Doesn't raise an exception if an error occurs, always returns GenOut.
 
         Args:
             thread: The Thread object to use as model input.
@@ -1180,5 +1248,3 @@ class MessagesModel(Model, ABC):
         
         self.is_message_model = True
                 
-
-

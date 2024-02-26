@@ -31,14 +31,14 @@ class GenConf:
     """List of generation stop text sequences"""
     
     temperature: float = 0.
-    """Generation temperature. Use 0 to always pick the most probable output, without random sampling. Other positive values will produce random outputs."""
+    """Generation temperature. Use 0 to always pick the most probable output, without random sampling. Larger positive values will produce more random outputs."""
 
     top_p: float = 0.9
     """Nucleus sampling top_p value. Only applies if temperature > 0."""
 
     format: str = "text"
-    """Output format: "text" or "json". For JSON output, text is validaded as in json.loads().
-    Thread msgs must explicitely request JSON output or a warning will be emited if string json not present
+    """Output format: "text" or "json". For JSON output, text is validated as in json.loads().
+    Thread msgs must explicitly request JSON output or a warning will be emitted if string json not present
     (this is automatically done in Model.json() and related calls).
     """
 
@@ -164,7 +164,7 @@ class GenRes(IntEnum):
 
 @dataclass
 class GenOut:
-    """Model output, returned by gen_(), json_() and other Model calls that don't raise exceptions."""
+    """Model output, returned by gen_extract(), gen_json() and other model calls that don't raise exceptions."""
     
     res: GenRes
     """Result of model generation."""
@@ -176,7 +176,7 @@ class GenOut:
     """Python dictionary, output by the structured calls like gen_json()."""
 
     value: Union[Any, None] = None # Any = accepted type instances, dataclass or Pydantic BaseModel object
-    """Initialized instance, dataclass or Pydantic BaseModel object returned in calls like gen_dataclass()."""
+    """Initialized instance value, dataclass or Pydantic BaseModel object, as returned in calls like extract()."""
     
     
     def asdict(self):
@@ -195,7 +195,7 @@ class GenOut:
 
 
 class GenError(RuntimeError, GenOut):
-    """Model generation exception."""
+    """Model generation exception, raised when the model was unable to return a response."""
 
     def __init__(self, 
                  out: GenOut):

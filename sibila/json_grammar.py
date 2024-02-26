@@ -1,3 +1,5 @@
+"""JSON Schema grammar generation utilities for local models."""
+
 from typing import Any, Optional, Union, Literal, Annotated, get_origin, get_args
 
 import json, re

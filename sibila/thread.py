@@ -1,4 +1,6 @@
-"""Threads of Msgs are the way to communicate with models.
+"""Threads of messages are the way to communicate with models. 
+For a quick extraction or classification, a thread with a simple IN message and possibly model instructions can be used.
+For more sophisticated queries that depend on previous interactions, IN (user or input) and OUT (model response) messages can be added.
 
 - Msg: A message of type IN (user query), OUT (assistant answer) or SYS (initial assistant instructions).
 - Thread: A sequence of Msgs alternating between user and model.
@@ -60,7 +62,7 @@ class Thread(Sequence):
     """
 
     inst: str
-    """Text for system instructions, defaults to ''"""
+    """Text for system instructions, defaults to empty string"""
 
     join_sep: str
     """Separator used when message text needs to be joined. Defaults to '\\n'"""
@@ -179,17 +181,13 @@ class Thread(Sequence):
             text: Optional[str] = None):
         """Add a message to Thread by parsing a mix of types.
 
-        Accepts these combinations of arg types:
+        Accepts any of these argument combinations:
 
-            t:MsgKind, text:str
-
-            t:str, text=None -> uses last thread message's MsgKind
-
-            (MsgKind, text)
-
-            {"kind": "...", text: "..."}
-
-            {"role": "...", content: "..."} - ChatML format
+        - t=MsgKind, text=str
+        - t=str, text=None -> uses last thread message's MsgKind
+        - (MsgKind, text)
+        - {"kind": "...", text: "..."}
+        - {"role": "...", content: "..."} - ChatML format
 
         Args:
             t: One of the accepted types listed above.
@@ -492,7 +490,7 @@ class Thread(Sequence):
             text_lower: The lowercase text to search for in messages.
 
         Returns:
-            True if text was found.
+            True if such text was found.
         """
         for msg in self._msgs:
             if text_lower in msg.lower():
@@ -658,59 +656,3 @@ class Thread(Sequence):
             kind = Thread._kind_from_pos(index)
             out += f"\n{index}: {kind.name}=█{text}█"
         return out
-    
-
-
-
-    '''
-    def __setitem__(self, 
-                    index: int,
-                    value: str):
-        assert isinstance(value, str), "Only message text can be set."
-        self._msgs[index] = value
-
-
-    @property                     
-    def first(self) -> tuple[MsgKind,str]:
-        """Get first message.
-
-        Raises:
-            IndexError: If empty thread.
-
-        Returns:
-            First message in thread: MsgKind, text.
-        """
-
-        if len(self._msgs):
-            return Thread._kind_from_pos(0), self._msgs[0]
-        else:
-            raise IndexError("No msgs in thread")
-    
-    @property                     
-    def last(self) -> tuple[MsgKind,str]:
-        """Get last message.
-
-        Raises:
-            IndexError: If empty thread.
-
-        Returns:
-            Last message in thread: MsgKind, text.
-        """
-
-        if len(self._msgs):
-            return self.last_kind, self._msgs[-1]
-        else:
-            raise IndexError("No msgs in thread")
-
-    @property
-    def next_kind(self):
-        """Get kind of next new message in thread .
-
-        Returns:
-            Kind of next message or MsgKind.IN if empty.
-        """
-
-        return Thread._kind_from_pos(len(self._msgs))
-
-
-    '''

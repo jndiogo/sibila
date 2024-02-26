@@ -1,3 +1,6 @@
+"""Text chunk splitter for RAG-like applications."""
+
+
 from typing import Any, Optional, Union, Callable
 from copy import copy
 import re

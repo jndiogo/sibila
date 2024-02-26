@@ -1,7 +1,7 @@
 __pycache__/
 .ipynb_checkpoints
 .pylintrc
-
+.vscode
 *.egg-info
 *.swp
 

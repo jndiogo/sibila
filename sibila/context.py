@@ -46,8 +46,8 @@ class Trim(IntFlag):
 
 class Context(Thread):
 
-    """A class based on Thread that manages total token length to be kept below a certain value.
-    Also supports a persistent instructions text."""
+    """A class based on Thread that manages total token length, so that it's kept under a certain value.
+    Also supports a persistent inst (instructions) text."""
 
     
     def __init__(self,                 
@@ -86,29 +86,20 @@ class Context(Thread):
              model: Model,
              *,
              max_token_len: Optional[int] = None,
-             genconf: Optional[GenConf] = None
              ) -> bool:
-        """_summary_
+        """Trim context by selectively removing older messages until thread fits max_token_len.
 
         Args:
-            trim_flags: _description_
-            model: _description_
-            max_token_len: _description_. Defaults to None.
-            genconf: _description_. Defaults to None.
+            trim_flags: Flags to guide selection of which messages to remove.
+            model: Model that will process the thread.
+            max_token_len: Cut messages until size is lower than this number. Defaults to None.
 
         Raises:
             RuntimeError: If unable to trim anything.
 
         Returns:
-            True if any trimmin occurred.
+            True if any context trimming occurred.
         """
-
-
-
-
-
-        if genconf is None:
-            genconf = model.genconf            
 
         if max_token_len is None:
             max_token_len = self.max_token_len
@@ -116,8 +107,9 @@ class Context(Thread):
         if max_token_len is None:
             max_token_len = model.ctx_len
 
+        # if genconf is None:
+        #     genconf = model.genconf            
         # assert max_token_len < model.ctx_len, f"max_token_len ({max_token_len}) must be < model's context size ({model.ctx_len}) - genconf.max_new_tokens"
-
         
         if trim_flags == Trim.NONE: # no trimming
             return False
@@ -141,7 +133,7 @@ class Context(Thread):
                 logger.debug(f"Cutting INST {self.inst[:80]} (...)")
                 continue
 
-            # cut first possible nessage, starting from oldest (first are older)
+            # cut first possible message, starting from oldest first ones
             trimmed = False
             in_index = out_index = 0
 

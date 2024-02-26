@@ -418,7 +418,8 @@ def query_multigen(in_list: list[str],
         in_titles: A human-friendly title for each Thread. Defaults to None.
 
     Returns:
-        A list of lists in the format [thread,model] of shape (len(threads), len(models)). For example: out[0] holds threads[0] results on all models, out[1]: threads[1] on all models, ...
+        A list of lists in the format [thread,model] of shape (len(threads), len(models)).        
+        For example: out[0] holds threads[0] results on all models, out[1]: threads[1] on all models, ...
     """    
 
     th_list = []
@@ -457,17 +458,15 @@ def cycle_gen_print(in_list: list[str],
 
                     json_kwargs: dict = {"indent": 2,
                                          "sort_keys": False,
-                                         "ensure_ascii": False
-                                        }
+                                         "ensure_ascii": False}
                     ):
     """For a list of models, sequentially grow a Thread with model responses to given IN messages and print the results.
 
     Works by doing:
-    ```
-    1) Generate an INST+IN prompt for a list of models. (Same INST for all).
-    2) Append the output of each model to its own Thread.
-    3) Append the next IN prompt and generate again. Back to 2.
-    ```
+    
+    1. Generate an INST+IN prompt for a list of models. (Same INST for all).
+    2. Append the output of each model to its own Thread.
+    3. Append the next IN prompt and generate again. Back to 2.
 
     Actual generation for each model is implemented by an optional Callable with this signature:
         def gencall(model: Model,

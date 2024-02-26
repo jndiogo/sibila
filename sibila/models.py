@@ -1,3 +1,5 @@
+"""Models is a singleton class that centralizes model configuration and creation."""
+
 from typing import Any, Optional, Union, Callable
 
 import os, json, re
@@ -24,7 +26,7 @@ from .utils import (
 class Models:
     """Model and template format directory that unifies (and simplifies) model access and configuration.
 
-    This env variables is checked and used during initialization:
+    This env variable is checked and used during initialization:
         SIBILA_MODELS: ';'-delimited list of folders where to find: models.json, formats.json and the model files.
 
 
@@ -54,8 +56,7 @@ class Models:
             
             "openchat": { # this is model definition
                 "name": "openchat-3.5-1210.Q4_K_M.gguf",
-                "format": "openchat" # FormatDir's format used by this model
-                                     # (formats are chat templates)
+                "format": "openchat" # chat template format used by this model
             },
 
             "phi2": {
@@ -100,7 +101,7 @@ class Models:
 
     Any new directory entries with the same name replace previous ones on each new call.
     
-    Initializes from file base_formatdir.json in this module's directory.
+    Initializes from file base_formats.json in this module's directory.
 
     This env variable is checked during initialization to load from a file:
 
@@ -190,21 +191,13 @@ class Models:
     @classmethod
     def setup(cls,
               path: Optional[Union[str,list[str]]] = None,
-              clear: bool = False
-            ):
-        """Add a JSON file or configuration dict to the model directory.
-        When adding a JSON file, its folder is also added to the search path for model files.
-        ~/ can be used in paths for current account's home directory.
-
-        @TODO
-        path: folder or models.json/formats.json path or nothing (tries env if...)
+              clear: bool = False):
+        """Initialize models and formats directory from given model files folder and/or contained configuration files.
+        Path can start with "~/" current account's home directory.
 
         Args:
-            conf_path: Path to a JSON file with directory configuration. See class __doc__ for format. Defaults to None.
-            conf: A dict with configuration as if loaded from JSON by json.loads(). Defaults to None.
-
-        Raises:
-            TypeError: Only one of conf_path or conf can be given.
+            path: Path to a folder or to "models.json" or "formats.json" configuration files. Defaults to None which tries to initialize from defaults and env variable.
+            clear: Set to clear existing directories before loading from path arg.
         """
         
         if clear:
@@ -228,7 +221,7 @@ class Models:
 
     @classmethod
     def clear(cls):
-        """Clear directories. Member genconf remains."""
+        """Clear directories. Member genconf is not cleared."""
         cls.model_dir = None
         cls.search_path = []
         cls.format_dir = None
@@ -240,14 +233,22 @@ class Models:
     
     @classmethod
     def info(cls,
-             verbose: bool = False):
+             verbose: bool = False) -> str:
+        """Return information about current setup.
+
+        Args:
+            verbose: If False, formats directory values are abbreviated. Defaults to False.
+
+        Returns:
+            Textual information about the current setup.
+        """
         
         cls._ensure()
 
         out = ""
         
         out += f"Model search path: {cls.search_path}\n"
-        out +=  f"Models directory:\n{pformat(cls.model_dir, sort_dicts=False)}\n"
+        out += f"Models directory:\n{pformat(cls.model_dir, sort_dicts=False)}\n"
         out += f"Model Genconf:\n{cls.genconf}\n"
 
         if not verbose:
@@ -281,7 +282,7 @@ class Models:
 
                # model-specific overriding:
                **over_args: Union[Any]) -> Model:
-        """Create a model after an entry in the model directory.
+        """Create a model.
 
         Args:
             res_name: Resource name in the format: provider:model_name, for example "llamacpp:openchat".
@@ -359,7 +360,7 @@ class Models:
                     
             model = OpenAIModel(**args)
             
-        """            
+        """
         elif provider == "hf":
             from .hf import HFModel
             
@@ -376,7 +377,7 @@ class Models:
                   res_name: str,
                   conf_or_link: Union[dict,str]):
         
-        """Add configuration or model alias at given res_name.
+        """Add model configuration or name alias for given res_name.
 
         Args:
             res_name: A name in the form "provider:model_name", for example "openai:gtp-4".
@@ -402,7 +403,7 @@ class Models:
     @classmethod
     def add_search_path(cls,
                         path: Union[str,list[str]]):
-        """Prepends new paths to model search path.
+        """Prepends new paths to model files search path.
 
         Args:
             path: A path or list of paths to add to model search path.
@@ -415,6 +416,7 @@ class Models:
         logger.debug(f"Adding '{path}' to search_path")
 
          
+
     @classmethod
     def set_genconf(cls,
                     genconf: GenConf):
@@ -480,7 +482,7 @@ class Models:
             if isinstance(val, str): # str means link -> follow it
                 na = val
             else:
-                logger.debug(f"FormatDir get('{name}'): found '{na}' entry")
+                logger.debug(f"Format get('{name}'): found '{na}' entry")
                 return cls._prepare_format_entry(na, val)
 
         return None
@@ -529,7 +531,7 @@ class Models:
         """Checks if there's template support for a model with this name.
 
         Args:
-            name: Model filename or general name.
+            model_id: Model filename or general name.
 
         Returns:
             True if Models knows the format.
@@ -560,18 +562,12 @@ class Models:
     @classmethod
     def add_format(cls,
                    conf: dict,
-            ):
+                   ):
         """Add a JSON file or configuration dict to the format directory.
 
         Args:
             conf: A dict with configuration as if loaded from JSON by json.loads(). Defaults to None.
-
-        Raises:
-            TypeError: Only one of conf_path or conf can be given.
         """
-
-        if not ((conf_path is not None) ^ (conf is not None)):
-            raise TypeError("One of conf_path or conf must be given")
 
         cls._ensure()
         
@@ -585,7 +581,7 @@ class Models:
 
 
 
-    #================================================================== lower level
+    # ================================================================== Lower level
 
     @classmethod
     def _ensure(cls,
@@ -606,6 +602,7 @@ class Models:
         # always add "." to search path
         cls.add_search_path(cls.DEFAULT_SEARCH_PATH)
 
+        path: Union[str, None]
         # read default base_model.json in same folder as this file
         path = os.path.abspath(__file__)
         path = os.path.dirname(path)
@@ -768,7 +765,7 @@ class Models:
 
 
 
-# = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = utils
+# ======================================================================== Utils
 
 
 def prepend_path(base_list: list[str],
