@@ -1,20 +1,76 @@
 site_name: Sibila
-
+site_url: https://jndiogo.github.io/sibila/
 repo_url: https://github.com/jndiogo/sibila
 
 nav:
-  - index.md
-  - Examples: 'https://github.com/jndiogo/sibila/tree/main/examples'
-  - getting-started.md
-  - setup-local-models.md
-  - tips.md
-  - api-reference.md
+  - Start:
+    - index.md
+    - what.md
+  
+    - Getting Started:
+      - installing.md
+      - first_run.md
+
+    - Creating Models:
+      - models/remote_model.md
+      
+      - Local model:
+        - models/local_model.md
+        - models/find_local_models.md
+        - models/setup_format.md
+
+      - Models factory:
+        - models/models_factory.md
+        - models/models_json.md
+        - models/formats_json.md
+
+    - Extracting Structured Data:
+      - extract/simple_types.md
+      - extract/enums.md
+      - extract/dataclass.md
+      - extract/pydantic.md
+      - extract/free_text.md
+
+    - tools.md
+
+    - tips.md
+
+  - Examples:
+    - examples/index.md
+    - examples/hello_model.md
+    - examples/from_text_to_object.md
+    - "Extract Pydantic": examples/extract.md
+    - examples/extract_dataclass.md
+    - examples/tag.md
+    - examples/quick_meeting.md
+    - examples/tough_meeting.md
+    - examples/compare.md
+    - examples/interact.md
+
+  - API Reference:
+    - api-reference/model.md
+    - api-reference/models.md
+    - api-reference/generation.md
+    - api-reference/thread.md
+    - api-reference/multigen.md
+    - api-reference/tools.md
+    - api-reference/tokenizer.md
+
 
 
 
 theme:
-  name: "material"
+  name: material
   features:
+    - navigation.tabs
+    - navigation.tabs.sticky
+    - navigation.sections
+    - navigation.expand
+    - navigation.path
+    - navigation.indexes
+
+    - toc.follow
+
     - content.code.copy
     # - content.code.select
 
@@ -22,6 +78,7 @@ theme:
     # Palette toggle for light mode
     - scheme: default
       primary: pink
+      accent: indigo
       toggle:
         icon: material/brightness-7 
         name: Switch to dark mode
@@ -29,6 +86,7 @@ theme:
     # Palette toggle for dark mode
     - scheme: slate
       primary: pink
+      accent: indigo
       toggle:
         icon: material/brightness-4
         name: Switch to light mode  
@@ -40,11 +98,10 @@ extra_css:
 plugins:
   - search
 
-  #- mkdocs-jupyter:
-
   - mkdocstrings:
       handlers:
         python:
+          paths: [sibila]
           options:
             # general: https://mkdocstrings.github.io/python/usage/configuration/general/
             show_bases: false
@@ -78,21 +135,42 @@ plugins:
             show_signature_annotations: false
             signature_crossrefs: true
 
-
           import:
             - https://docs.python.org/3/objects.inv
             
+  #- mkdocs-jupyter:
+
 
 
 markdown_extensions:
+  - attr_list
+  - md_in_html
+  - tables
+
+  - admonition
+  - pymdownx.details
+
   - toc:
       permalink: "#"
-      
+      title: Contents
+
+  - pymdownx.snippets:
+      check_paths: true
+      base_path: ["examples"]
+
   - pymdownx.highlight:
       anchor_linenums: true
       line_spans: __span
       pygments_lang_class: true
-  - pymdownx.inlinehilite
-  - pymdownx.snippets
-  - pymdownx.superfences
 
+  - pymdownx.inlinehilite
+
+  - pymdownx.superfences
+  - pymdownx.tabbed:
+      alternate_style: true
+
+
+watch:
+  - sibila
+  - docs
+  - examples

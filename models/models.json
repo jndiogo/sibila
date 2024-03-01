@@ -1,6 +1,7 @@
 {
 "llamacpp": {
     "default": {
+        "genconf": {}
     },
       
     "llama2": {
@@ -8,7 +9,7 @@
         "format": "llama2"
     },
     "mistral": {
-        "name": "mistral-7b-instruct-v0.2.Q5_K_M.gguf",
+        "name": "mistral-7b-instruct-v0.2.Q4_K_M.gguf",
         "format": "mistral"
     },
     "nous-hermes-solar": {
@@ -20,34 +21,40 @@
         "format": "openchat"
     },
     "phi2": {
-        "name": "phi-2.Q5_K_M.gguf",
+        "name": "phi-2.Q4_K_M.gguf",
         "format": "phi2"
     },
     "starling": {
-        "name": "starling-lm-7b-alpha.Q5_K_M.gguf",
+        "name": "starling-lm-7b-alpha.Q4_K_M.gguf",
         "format": "starling"
     },
     "zephyr": {
         "name": "zephyr-7b-beta.Q4_K_M.gguf",
         "format": "zephyr"
     },
-    "zephyrlink": "zephyr"
+    "zephyrlink": "zephyr",
+
+    "peculiar": {
+        "name": "peculiar-7b.gguf",
+        "genconf": {"temperature": 1.5}
+    }
 },
 
 "openai": {
     "default": {
+        "genconf": {}
     },
     
     "gpt-3.5": {
-        "name": "gpt-3.5-turbo-1106"
+        "name": "gpt-3.5"
     },
     "gpt-4": {
-        "name": "gpt-4-1106-preview"
+        "name": "gpt-4"
     },
     "llamacpp-server": {
         "name": "gpt-3.5-turbo-1106",
         "base_url": "http://localhost:8000/v1",
-        "api_key": "sk-xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx"
+        "api_key": "sk-..."
     }
 
 },

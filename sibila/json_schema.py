@@ -740,21 +740,19 @@ def get_final_type(type_: Any) -> Any:
             is_subclass_of(type_, time)):
             break
         
-        elif is_subclass_of(type_, Enum):
-            enum_list = [e.value for e in type_]
-            type_ = type(enum_list[0])
-            break
-
-        elif get_origin(type_) is Literal:
-            enum_list = list(get_args(type_))
-            type_ = type(enum_list[0])
-            break
-
         elif isinstance(type_, list): # enum list: ["a", "b"]
             type_ = type(type_[0])
             break
         
-        elif (type_ is str or 
+        elif get_origin(type_) is Literal: # Literals resolve to their prim_types
+            enum_list = list(get_args(type_))
+            type_ = type(enum_list[0])
+            break
+
+        elif is_subclass_of(type_, Enum): # Enum types resolve to themselves
+            break
+
+        elif (type_ is str or # prim_types
               type_ is float or 
               type_ is int or 
               type_ is bool):
@@ -811,6 +809,10 @@ def create_final_instance(type_: Any,
                 raise TypeError(f"Expecting str to initialize time but got: '{val}'")
             return time.fromisoformat(val)
 
+        elif is_subclass_of(type_, Enum):
+            return type_(val)
+        
+        # Literals also resolve to their prim_types        
         elif (type_ is str or 
               type_ is float or 
               type_ is int or 

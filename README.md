@@ -1,19 +1,17 @@
 # Sibila
 
-Extract structured data from LLM models, using a common API to access remote models like GPT-4 or local models via llama.cpp.
+Extract structured data from remote or local file LLM models.
 
-- Query structured data into dataset or Pydantic BaseModel objects.
-- Use the same API for local and remote models.
-- Thread-based interaction with chat/instruct fine-tuned models.
-- Compare output across local/remote models with included utilities, text or CSV output.
-- Model directory: store configurations and quickly switch between models.
-- Automatic chat templates: identifies and uses the right templates for each model.
+- Extract data into Pydantic objects, dataclasses or simple types.
+- Same API for local file models and remote OpenAI models.
+- Model management: store model files, configuration and chat templates and quickly switch between models.
+- Tools for evaluating output across local/remote models, for chat-like interaction and more.
 
-With Sibila you can extract structured data from a local quantized model like OpenChat-3.5 with 7B params:
+To extract structured data from a local model:
 
-```python
-from sibila import (LlamaCppModel, OpenAIModel)
-from pydantic import BaseModel, Field
+``` python
+from sibila import Models
+from pydantic import BaseModel
 
 class Info(BaseModel):
     event_year: int
@@ -22,16 +20,14 @@ class Info(BaseModel):
     age_at_the_time: int
     nationality: str
 
-openchat = LlamaCppModel("openchat-3.5-1210.Q5_K_M.gguf")
+model = Models.create("llamacpp:openchat")
 
-openchat.extract(Info,
-                 "Who was the first man in the moon?",
-                 inst="Just be helpful.") # instructions, aka system message
+model.extract(Info, "Who was the first man in the moon?)
 ```
 
-Outputs an object of class Info, initialized with the model's output:
+Returns an instance of class Info, created from the model's output:
 
-```python
+``` python
 Info(event_year=1969,
      first_name='Neil',
      last_name='Armstrong',
@@ -39,35 +35,28 @@ Info(event_year=1969,
      nationality='American')
 ```
 
+Or to use OpenAI's GPT-4, we would simply replace the model's name:
 
-With the same API you can also query OpenAI models:
+``` python
+model = Models.create("openai:gpt-4")
 
-```python
-gpt4 = OpenAIModel("gpt-4-0613")
-
-gpt4.extract(Info,
-             "Who was the first man in the moon?",
-             inst="Just be helpful.") # instructions, aka system message
+model.extract(Info, "Who was the first man in the moon?")
 ```
 
-Which creates an Info object initialized from model's response, as above.
+If Pydantic BaseModel objects are too much for your project, Sibila supports similar functionality with Python dataclass.
 
-If Pydantic BaseModel objects are too much for your project, you can also use a ligher Python dataclass.
-
-Sibila also includes model management and tools to compare output between models.
-
-
-## Examples
-
-The included examples show what you can do with local or remote models in Sibila: structured data extraction, classification, summarization, etc. 
-
-Although you can use any llama.cpp or OpenAI supported model, by default most of the examples use OpenChat, a local 7B quantized model which is very capable for information extraction tasks. To use OpenAI models, just uncomment a line or two.
-
-[Check the examples here](https://github.com/jndiogo/sibila/blob/main/examples/readme.md).
+See: [What can you do with Sibila?](https://jndiogo.github.io/sibila/what/)
 
 
 
-## Installation and getting started
+
+
+## Docs
+
+The docs explain the main concepts, explain examples and include the API reference: [https://jndiogo.github.io/sibila/](https://jndiogo.github.io/sibila/)
+
+
+## Installation
 
 Sibila can be installed from PyPI by doing:
 
@@ -75,13 +64,14 @@ Sibila can be installed from PyPI by doing:
 pip install sibila
 ```
 
-For running local models with hardware acceleration, accessing OpenAI and general "getting started" help, see [How to get started](https://jndiogo.github.io/sibila/getting-started/).
+See [Getting started](https://jndiogo.github.io/sibila/installing/) for more information.
 
 
 
-## Documentation
+## Examples
 
-The API reference and more info is [available here](https://jndiogo.github.io/sibila/).
+The [examples](https://github.com/jndiogo/sibila/blob/main/examples/readme.md) show what you can do with local or remote models in Sibila: structured data extraction, classification, summarization, etc.
+
 
 
 ## License

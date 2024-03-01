@@ -1,12 +1,12 @@
 Let's extract structured data from a meeting transcript, like attendees, action items and their priorities.
 
-This is a quick meeting whose transcript is not very large, so a small local model should work well. See the [Tough meeting example](../tough_meeting/readme.md) for a larger and more complex transcription text.
+This is a quick meeting whose transcript is not very large, so a small local model should work well. See the Tough meeting example for a larger and more complex transcription text.
 
-To use a local model, make sure you have its file in the folder "../../models". You can use any GGUF format model - [see here how to download the OpenChat model used below](https://jndiogo.github.io/sibila/setup-local-models/#default-model-used-in-the-examples-openchat). If you use a different one, don't forget to set its filename in the name variable below, after the text "llamacpp:".
+To use a local model, make sure you have its file in the folder "../../models". You can use any GGUF format model - [see here how to download the OpenChat model used below](https://jndiogo.github.io/sibila/models/local_model/#examples). If you use a different one, don't forget to set its filename in the name variable below, after the text "llamacpp:".
 
 If you prefer to use an OpenAI model, make sure you defined the env variable OPENAI_API_KEY with a valid token and uncomment the line after "# to use an OpenAI model:".
 
-Available as a [Jupyter notebook](quick_meeting.ipynb) or [Python script](quick_meeting.py).
+Jupyter notebook and Python script versions are available in the example's folder.
 
 Let's create the model:
 
@@ -232,4 +232,4 @@ for items in out.action_items:
 
 The new information was correctly extracted: priorities, due by and assigned attendees for each action item.
 
-For an example of a harder, more complex transcript see the [Tough meeting example](../tough_meeting/readme.md).
+For an example of a harder, more complex transcript see the Tough meeting example.

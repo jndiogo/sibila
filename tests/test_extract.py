@@ -74,7 +74,7 @@ def test_extract_root_types():
     extract(list[Tag],
             "Dogs and horses and a ball",
             '{"output": ["dog", "horse", "other"]}',
-            ['dog', 'horse', 'other'],
+            [Tag('dog'), Tag('horse'), Tag('other')],
             inst="Select 'other' if no other category fits")
 
 

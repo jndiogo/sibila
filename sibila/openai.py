@@ -80,14 +80,16 @@ KNOWN_MODELS: dict = { # name: link | (ctx_len, n_msg_tokens, n_name_tokens)
 def resolve_model(name: str, 
                   unknown_name_mask: int) -> tuple[str, int, int, int]:
     """Resolve a name string into an existing model from KNOWN_MODELS.
-
+     Resolution depends on unknown_name_mask and will keep removing letters 
+     from the end of name and searching existing entries in KNOWN_MODELS.
+     
     Args:
         name: The model name to resolve.
-        unknown_name_mask: How to deal with unmatched names, a mask of:
+        unknown_name_mask: How to deal with unmatched names in name resolution, a mask of:
 
-            - 2: Raise NameError if exact name not found.
-            - 1: Only allow versioned names - raise NameError if generic non-versioned model name used.
-            - 0: Accept any name, use first in list if necessary.
+            - 2: Raise NameError if exact name not found (no generics)
+            - 1: Only allow versioned names - raise NameError if generic non-versioned model name used
+            - 0: Accept any name that can be resolved from KNOWN_MODELS
 
     Raises:
         NameError: If not found, according to unknown_name_mask.
@@ -96,10 +98,11 @@ def resolve_model(name: str,
         Existing model name from KNOWN_MODELS.
     """
     
-    if name not in KNOWN_MODELS:
+    if name not in KNOWN_MODELS: # not an exact match
         
         if unknown_name_mask & 2:
-            raise NameError(f"Unknown model '{name}'. Please provide a correct model name (see openai.KNOWN_MODELS) or use a more permissive unknown_name_mask")
+            raise NameError(f"Unknown model '{name}'. Please provide a correct model name. "
+                            "Call OpenAIModel.known_models() for a list of supported model names.")
         
         # 1) search first entry that starts with name
         nam = name
@@ -116,17 +119,21 @@ def resolve_model(name: str,
             nam = nam[:-1] # remove last letter and try again
             
         if found is None: # 2) pick first entry in list
-            found = list(KNOWN_MODELS.keys())[0]
+            raise NameError(f"Unknown model '{name}'. Please provide an existing model name. "
+                            "Call OpenAIModel.known_models() for a list of supported model names.")
 
-        logger.warn(f"'{name}' not found: assuming '{found}' model")
+        logger.warn(f"Exact match '{name}' not found: using '{found}' model")
         name = found
             
     v = KNOWN_MODELS[name]
     if isinstance(v, str):
+        
         if unknown_name_mask & 1:
-            raise NameError(f"Unknown model '{name}': would substitute with '{v}'. Please provide a versioned model name (see openai.KNOWN_MODELS) or use a more permissive unknown_name_mask")
+            raise NameError(f"Unknown model '{name}' (would use '{v}' but unknown_name_mask doesn't allow). "
+                            "Please provide a versioned model name or use a more permissive unknown_name_mask. "
+                            "Call OpenAIModel.known_models() for a list of supported model names.")
             
-        logger.info(f"'{name}' is a generic model name that may be updated over time: assuming '{v}' model")
+        logger.warn(f"'{name}' is a generic name that may be updated over time: resolved as '{v}' model")
         name = v
 
     t = KNOWN_MODELS[name]
@@ -149,9 +156,14 @@ class OpenAIModel(MessagesModel):
         desc: Model information.
     """
 
+    TOOLS_TOKEN_LEN_FACTOR: float
+    """Multiplication factor to use for tools section token length estimation."""
+
+    DEFAULT_TOOLS_TOKEN_LEN_FACTOR: float = 1.2
+
     def __init__(self,
                  name: str,
-                 unknown_name_mask: int = 0,
+                 unknown_name_mask: int = 2,
                  *,
                  
                  # common base model args
@@ -167,15 +179,18 @@ class OpenAIModel(MessagesModel):
                  # OpenAI-specific args
                  openai_init_kwargs: dict = {},
                  ):
-        """
-        Args:
-            name: Model name.
-            unknown_name_mask: How to deal with unmatched names, a mask of:
+        """Create an OpenAI remote model.
+        Name resolution depends on unknown_name_mask and will keep removing letters 
+        from the end of name and searching existing entries in penAIModel.known_models().
 
-                - 2: Raise NameError if exact name not found.
-                - 1: Only allow versioned names - raise NameError if generic non-versioned model name used.
-                - 0: (default) Accept any name, use first in list if necessary.
-            
+        Args:
+            name: Model name to resolve into an existing model.
+            unknown_name_mask: How to deal with unmatched names in name resolution, a mask of:
+
+                - 2: Raise NameError if exact name not found (no generics)
+                - 1: Only allow versioned names - raise NameError if generic non-versioned model name used
+                - 0: Accept any name that can be resolved from OpenAIModel.known_models()
+
             genconf: Model generation configuration. Defaults to None.
             tokenizer: An external initialized tokenizer to use instead of the created from the GGUF file. Defaults to None.
             ctx_len: Maximum context length to be used (shared for input and output). Defaults to 0 which means model's maximum.
@@ -206,7 +221,7 @@ class OpenAIModel(MessagesModel):
         # only check for "json" text presence as json schema is requested with the tools facility.
         self.json_format_instructors["json_schema"] = self.json_format_instructors["json"]
         
-        logger.debug(f"Creating OpenAI with base_url={base_url}, openai_init_kwargs={openai_init_kwargs}")
+        logger.debug(f"Creating inner OpenAI with base_url={base_url}, openai_init_kwargs={openai_init_kwargs}")
 
         self._client = openai.OpenAI(api_key=api_key,
                                      base_url=base_url,
@@ -224,6 +239,11 @@ class OpenAIModel(MessagesModel):
         else:
             self._ctx_len = ctx_len
         
+
+        self.TOOLS_TOKEN_LEN_FACTOR = self.DEFAULT_TOOLS_TOKEN_LEN_FACTOR
+
+
+
 
     
     def gen(self, 
@@ -248,18 +268,18 @@ class OpenAIModel(MessagesModel):
         if genconf is None:
             genconf = self.genconf
 
+        thread = self._prepare_gen_in(thread, genconf)
+
         token_len = self.token_len(thread, genconf)
         if genconf.max_tokens == 0:
-            genconf = genconf(max_tokens=self.ctx_len - token_len)
+            max_tokens = self.ctx_len - token_len            
+            genconf = genconf(max_tokens=max_tokens)
             
         elif token_len + genconf.max_tokens > self.ctx_len:
             # this is not true for all models: 1106 models have 128k max input and 4k max output (in and out ctx are not shared)
             # so we assume the smaller max ctx length for the model
             logger.warn(f"Token length + genconf.max_tokens ({token_len + genconf.max_tokens}) is greater than model's context window length ({self.ctx_len})")
 
-        
-        thread = self._prepare_gen_in(thread, genconf)
-        
         fn_name = "json_out"
 
         json_kwargs: dict = {}
@@ -367,6 +387,7 @@ class OpenAIModel(MessagesModel):
         num_tokens = 0
         for index in range(-1, len(thread)): # -1 for system message
             message = thread.msg_as_chatml(index)
+            # print(message)
             num_tokens += self._tokens_per_message
             for key, value in message.items():
                 num_tokens += len(self.tokenizer.encode(value))
@@ -374,14 +395,24 @@ class OpenAIModel(MessagesModel):
                 #     num_tokens += self._tokens_per_name
         
         num_tokens += 3  # every reply is primed with <|start|>assistant<|message|>
+        num_tokens += 10 # match API return counts
+
+        # print("text token_len", num_tokens)
 
         if genconf is not None and genconf.json_schema is not None:
             if isinstance(genconf.json_schema, str):
                 js_str = genconf.json_schema
             else:
                 js_str = json.dumps(genconf.json_schema)
+
+            tools_num_tokens = self.tokenizer.token_len(js_str)
+
             # this is an upper bound, as empirically tested with the api.
-            num_tokens += self.tokenizer.token_len(js_str)                
+            tools_num_tokens = int(tools_num_tokens * self.TOOLS_TOKEN_LEN_FACTOR)
+
+            # print("tools token_len", tools_num_tokens)
+
+            num_tokens += tools_num_tokens
         
         return num_tokens
 
@@ -407,6 +438,14 @@ class OpenAIModel(MessagesModel):
             
         return f"openai {ver}"
     
+    @classmethod
+    def known_models(cls) -> Union[list[str], None]:
+        """If the model can only use a fixed set of models, return their names. Otherwise, return None.
+
+        Returns:
+            Returns a list of known models or None if it can accept any model.
+        """
+        return list(KNOWN_MODELS.keys())
 
 
 

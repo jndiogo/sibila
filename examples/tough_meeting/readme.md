@@ -4,7 +4,7 @@ Start by creating the model. As you'll see below, the transcript is large, with 
 
 Make sure to set your OPENAI_API_KEY env variable.
 
-Available as a [Jupyter notebook](tough_meeting.ipynb) or [Python script](tough_meeting.py).
+Jupyter notebook and Python script versions are available in the example's folder.
 
 Let's create the model.
 

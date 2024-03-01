@@ -4,13 +4,9 @@
 - cycle_gen_print(): For a list of models, sequentially grow a Thread with model responses to given IN messages.
 """
 
-
 from typing import Any, Optional, Union, Callable
-from dataclasses import dataclass, field, asdict
 
 import json, csv, re
-from pprint import pformat
-from copy import copy
 from io import StringIO
 
 import logging
@@ -220,7 +216,7 @@ def format_text(f: StringIO,
             wrote_anything = False
             first = True
             
-            out_dict = out.asdict()
+            out_dict = out.as_dict()
             for k in out_keys:
                 
                 if k in out_dict and out_dict[k] is not None:
@@ -281,7 +277,7 @@ def format_csv(f: StringIO,
         for index,out in enumerate(table[il]): # foreach model out
 
             cell = ""
-            out_dict = out.asdict()
+            out_dict = out.as_dict()
             first = True
             for k in out_keys:
                 
@@ -510,7 +506,7 @@ def cycle_gen_print(in_list: list[str],
 
             out = gencall(model, th, genconf)
 
-            out_dict = out.asdict()
+            out_dict = out.as_dict()
 
             print("OUT")
             

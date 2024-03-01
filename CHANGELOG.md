@@ -8,6 +8,12 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [0.3.1]
+- feat: Improved documentation.
+- feat: Model.known_models() returns a list of fixed known models or None if unlimited.
+- feat: LlamaCppModel now also looks for the chat template format in a 'formats.json' file in the same folder as the model file.
+- feat: Added GenConf.from_dict() and renamed asdict() to as_dict().
+- fix: Creating a model entry in "models.json" with a genconf key was not being passed on model creation.
 
 ## [0.3.0]
 - feat: Added Models singleton class that centralizes ModelDir and FormatDir.

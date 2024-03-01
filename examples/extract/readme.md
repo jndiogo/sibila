@@ -1,10 +1,10 @@
-In this example we'll extract information about all persons mentioned in a text.
+In this example we'll extract information about all persons mentioned in a text. This example is also available in a dataclass version.
 
-Available as a [Jupyter notebook](extract.ipynb) or [Python script](extract.py).
-
-To use a local model, make sure you have its file in the folder "../../models". You can use any GGUF format model - [see here how to download the OpenChat model used below](https://jndiogo.github.io/sibila/setup-local-models/#default-model-used-in-the-examples-openchat). If you use a different one, don't forget to set its filename in the name variable below, after the text "llamacpp:".
+To use a local model, make sure you have its file in the folder "../../models". You can use any GGUF format model - [see here how to download the OpenChat model used below](https://jndiogo.github.io/sibila/models/local_model/#examples). If you use a different one, don't forget to set its filename in the name variable below, after the text "llamacpp:".
 
 To use an OpenAI model, make sure you defined the env variable OPENAI_API_KEY with a valid token and uncomment the line after "# to use an OpenAI model:".
+
+Jupyter notebook and Python script versions are available in the example's folder.
 
 Start by creating the model:
 
@@ -142,5 +142,3 @@ for person in out:
 
 
 From the five characters only Ahmed is mentioned to be married, and it is the one that the model marked with the is_married=True attribute.
-
-This example is also available in a [dataclass version here](readme_dataclass.md).

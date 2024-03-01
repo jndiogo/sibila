@@ -7,11 +7,11 @@ In this example we'll ask the model to extract keypoints from a text:
 All the queries will be made at temperature=0, which is the default GenConf setting.
 This means that the model is giving it's best (as in most probable) answer and that it will always output the same results, given the same inputs.
 
-Available as a [Jupyter notebook](from_text_to_object.ipynb) or [Python script](from_text_to_object.py).
+Also available as a Jupyter notebook or a Python script in the example's folder.
 
 We'll start by creating either a local model or a GPT-4 model.
 
-To use a local model, make sure you have its file in the folder "../../models". You can use any GGUF format model - [see here how to download the OpenChat model used below](https://jndiogo.github.io/sibila/setup-local-models/#default-model-used-in-the-examples-openchat). If you use a different one, don't forget to set its filename in the name variable below, after the text "llamacpp:".
+To use a local model, make sure you have its file in the folder "../../models". You can use any GGUF format model - [see here how to download the OpenChat model used below](https://jndiogo.github.io/sibila/models/local_model/#examples). If you use a different one, don't forget to set its filename in the name variable below, after the text "llamacpp:".
 
 To use an OpenAI model, make sure you defined the env variable OPENAI_API_KEY with a valid token and uncomment the line after "# to use an OpenAI model:".
 For an OpenAI model, make sure you defined the env variable OPENAI_API_KEY with a valid token and uncomment the line after "# to use an OpenAI model:".

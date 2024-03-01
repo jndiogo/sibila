@@ -49,19 +49,20 @@ class Models:
         # like "provider:model_name", for ex: "llamacpp:openchat"
         "llamacpp": { 
 
-            "default": {
-                # Place here default args for all llamacpp: models. 
-                # Each entry below can then override as needed.
+            "default": { # place here default args for all llamacpp: models.
+                "genconf": {"temperature": 0.0}
+                # each entry below can then override as needed
             },
             
-            "openchat": { # this is model definition
+            "openchat": { # a model definition
                 "name": "openchat-3.5-1210.Q4_K_M.gguf",
                 "format": "openchat" # chat template format used by this model
             },
 
             "phi2": {
-                "name": "phi-2.Q5_K_M.gguf", # model filename
-                "format": "phi2"
+                "name": "phi-2.Q4_K_M.gguf", # model filename
+                "format": "phi2",
+                "genconf": {"temperature": 2.0} # a hot-headed model
             },
 
             "oc": "openchat" 
@@ -71,10 +72,10 @@ class Models:
         # The "openai" provider. A model can be created with name: "openai:gpt-4"
         "openai": { 
 
-            "default": {}, # default settings for all openai models
+            "default": {}, # default settings for all OpenAI models
             
             "gpt-3.5": {
-                "name": "gpt-3.5-turbo-1106" # OpenAI's  model name
+                "name": "gpt-3.5-turbo-1106" # OpenAI's model name
             },
 
             "gpt-4": {
@@ -82,37 +83,32 @@ class Models:
             },
         },
 
-        # Entry "alias" is not a provider but a way to have simpler alias names.
-        # For example you can use "alias:develop" or even simpler, just "develop".
+        # "alias" entry is not a provider but a way to have simpler alias names.
+        # For example you can use "alias:develop" or even simpler, just "develop" to create the model:
         "alias": { 
             "develop": "llamacpp:openchat",
             "production": "openai:gpt-3.5"
         }
-    
     }
-
     ```
 
     = Format Directory ================================
 
     Detects chat templates from model name/filename or uses from metadata if possible.
 
-    This directory can be setup from a JSON file or by calling add().
+    This directory can be setup from a JSON file or by calling add_format().
 
-    Any new directory entries with the same name replace previous ones on each new call.
+    Any new entries with the same name replace previous ones on each new call.
     
     Initializes from file base_formats.json in this module's directory.
 
-    This env variable is checked during initialization to load from a file:
 
-        SIBILA_FORMAT_CONF: path of a JSON configuration file to add().
-
-    An example of a format directory JSON config file:
+    Example of a "formats.json" file:
 
     ``` json
     {
         "chatml": {
-            # template is a Jinja2 template for this model
+            # template is a Jinja template for this model
             "template": "{% for message in messages %}..."
         },
 
@@ -148,7 +144,7 @@ class Models:
     """Model search path: list of folders with models."""
 
     genconf: Union[GenConf,None] = None
-    """Default GenConfig for created models."""
+    """Default GenConf for created models."""
 
     ENV_VAR_NAME = "SIBILA_MODELS"
 
@@ -212,9 +208,6 @@ class Models:
                 path_list = path
 
             cls._read_any(path_list)
-            
-        cls._sanity_check_models()
-        cls._sanity_check_formats()
         
     
 
@@ -286,7 +279,7 @@ class Models:
 
         Args:
             res_name: Resource name in the format: provider:model_name, for example "llamacpp:openchat".
-            genconf: Optional model generation configuration. Used instead of set_genconf() value and any directory defaults. Defaults to None.
+            genconf: Optional model generation configuration. Overrides set_genconf() value and any directory defaults. Defaults to None.
             ctx_len: Maximum context length to be used. Overrides directory defaults. Defaults to None.
             over_args: Model-specific creation args, which will override default args set in model directory.
 
@@ -325,16 +318,23 @@ class Models:
             args.update(model_args)
             args.update(over_args)
 
+
         # override genconf, ctx_len
         if genconf is None:
             genconf = cls.genconf
+
         if genconf is not None:
             args["genconf"] = genconf
+
+        elif "genconf" in args and isinstance(args["genconf"], dict):
+            # transform dict into a GenConf instance:
+            args["genconf"] = GenConf.from_dict(args["genconf"])
 
         if ctx_len is not None:
             args["ctx_len"] = ctx_len
 
         logger.debug(f"Creating model '{provider}:{name}' with resolved args: {args}")
+
 
         model: Model
         if provider == "llamacpp":
@@ -342,7 +342,7 @@ class Models:
             # resolve filename -> path
             path = cls._locate_file(args["name"])
             if path is None:
-                raise FileNotFoundError(f"File not found in '{res_name}' while looking for file '{args['name']}'. Make sure you initialized Models with a path to this file's folder")
+                raise FileNotFoundError(f"File not found in '{res_name}' while looking for file '{args['name']}'. Make sure you called Models.setup() with a path to the file's folder")
 
             logger.debug(f"Resolved llamacpp model '{args['name']}' to '{path}'")
             
@@ -389,11 +389,11 @@ class Models:
         
         cls._ensure()
         
-        provider,_ = provider_name_from_urn(res_name)
+        provider,name = provider_name_from_urn(res_name)
         if provider not in cls.ALL_PROVIDER_NAMES:
             raise ValueError(f"Unknown provider '{provider}' in '{res_name}'")
         
-        cls.model_dir[provider] = conf_or_link
+        cls.model_dir[provider][name] = conf_or_link
 
         cls._sanity_check_models()
        
@@ -460,6 +460,9 @@ class Models:
         return provider, name
     
 
+
+
+
     # =========================================================================== Formats
 
     @classmethod
@@ -483,7 +486,9 @@ class Models:
                 na = val
             else:
                 logger.debug(f"Format get('{name}'): found '{na}' entry")
-                return cls._prepare_format_entry(na, val)
+                return prepare_format_entry(cls.format_dir,
+                                            na,
+                                            val)
 
         return None
 
@@ -493,35 +498,19 @@ class Models:
     @classmethod
     def search_format(cls,
                       model_id: str) -> Union[dict,None]:
-        """Search for model name or filename in the registry.
+        """Search the formats registry, based on model name or filename.
 
         Args:
             model_id: Name of filename of model.
 
         Returns:
-            Format dict with chat template or None if none found.
+            Format dict with chat template or None if not found.
         """
-
-        # Todo: cache compiled re patterns in "_re" entries
 
         cls._ensure()
 
-        for name,val in cls.format_dir.items():
-            if isinstance(val, str): # a link: ignore when searching
-                continue
-            if "match" not in val:
-                continue
-                
-            patterns = val["match"]
-            if isinstance(patterns, str):
-                patterns = [patterns]
-                
-            for pat in patterns:
-                if re.search(pat, model_id, flags=re.IGNORECASE):
-                    logger.debug(f"Format search for '{model_id}' found '{name}' entry")
-                    return cls._prepare_format_entry(name, val)
-                                
-        return None
+        return search_format(cls.format_dir,
+                             model_id)
 
 
 
@@ -536,25 +525,43 @@ class Models:
         Returns:
             True if Models knows the format.
         """
+
         return cls.search_format(model_id) is not None
 
 
 
-
     @classmethod
-    def _prepare_format_entry(cls,
-                              name: str,
-                              val: Union[dict,str]):
-        val = copy(val)
-        
-        if "{{" not in val["template"]: # type: ignore[index] # a link to another template entry
-            linked_name = val["template"] # type: ignore[index]
-            if linked_name not in cls.format_dir:
-                raise ValueError(f"Broken template link at '{name}': '{linked_name}' does not exist")
-            val2 = cls.format_dir[linked_name]
-            val["template"] = val2["template"] # type: ignore[index]
-            
-        return val
+    def folder_search_format(cls,
+                             model_path: str) -> Union[dict,None]:
+        """Locally search for format in a formats.json file located in the same folder as the model.
+        Doesn't add format to class formats directory.
+
+        Args:
+            model_path: Model path.
+
+        Returns:
+            Format dict with chat template or None if none found.
+        """
+
+        folder_path = os.path.dirname(model_path)
+        formats_path = os.path.join(folder_path, cls.FORMATS_CONF_FILENAME)
+        if not os.path.isfile(formats_path):
+            return None
+
+        logger.info(f"Loading local formats conf from '{formats_path}'")
+
+        format_dir:dict = {}
+        try:
+            update_dir_json(format_dir, formats_path)
+        except Exception:
+            raise ValueError(f"Could not load 'formats.json' at '{formats_path}', while looking for model format. "
+                             "Please verify that he JSON syntax is correct.")
+
+        sanity_check_formats(format_dir)
+
+        model_id = os.path.basename(model_path)
+        return search_format(format_dir, model_id)
+
 
 
 
@@ -573,7 +580,7 @@ class Models:
         
         cls.format_dir.update(conf)
 
-        cls._sanity_check_formats()
+        sanity_check_formats(cls.format_dir)
         
 
     
@@ -602,18 +609,20 @@ class Models:
         # always add "." to search path
         cls.add_search_path(cls.DEFAULT_SEARCH_PATH)
 
-        path: Union[str, None]
-        # read default base_model.json in same folder as this file
-        path = os.path.abspath(__file__)
-        path = os.path.dirname(path)
-        path = os.path.join(path, cls.MODELS_BASE_CONF_FILENAME)
-        if os.path.isfile(path):
-            cls._read_models(path)
+        # read base models and formats in same folder as this file
+        base_path: str = os.path.abspath(__file__)
+        base_path = os.path.dirname(base_path)
 
-        # read base_formats.json in same folder
-        path = os.path.abspath(__file__)
-        path = os.path.dirname(path)
-        path = os.path.join(path, cls.FORMATS_BASE_CONF_FILENAME)
+        path: Union[str, None]
+
+        # read base_models.json
+        path = os.path.join(base_path, cls.MODELS_BASE_CONF_FILENAME)
+        if os.path.isfile(path):
+            cls._read_models(path,
+                             add_folder_to_search_path=False)
+
+        # read base_formats.json
+        path = os.path.join(base_path, cls.FORMATS_BASE_CONF_FILENAME)
         if os.path.isfile(path):
             cls._read_formats(path)
             
@@ -628,16 +637,21 @@ class Models:
 
 
 
+
     @classmethod
     def _read_models(cls,
-                     models_path: str):
+                     models_path: str,
+                     add_folder_to_search_path: bool = True):
  
         logger.info(f"Loading models conf from: '{models_path}'")
         merge_dir_json(cls.model_dir,
                        models_path)
 
-        dir_path = os.path.dirname(models_path)
-        cls.add_search_path(dir_path)
+        cls._sanity_check_models()
+
+        if add_folder_to_search_path:
+            dir_path = os.path.dirname(models_path)
+            cls.add_search_path(dir_path)
 
 
     @classmethod
@@ -646,6 +660,8 @@ class Models:
         
         logger.info(f"Loading formats conf from '{formats_path}'")
         update_dir_json(cls.format_dir, formats_path)
+
+        sanity_check_formats(cls.format_dir)
         
 
 
@@ -668,6 +684,7 @@ class Models:
         if os.path.isfile(formats_path):
             cls._read_formats(formats_path)
            
+
 
     @classmethod
     def _read_any(cls,
@@ -710,6 +727,8 @@ class Models:
         return None
 
         
+
+
     @classmethod
     def _sanity_check_models(cls):
         
@@ -743,23 +762,6 @@ class Models:
         if "alias" not in cls.model_dir:
             cls.model_dir["alias"] = {}
             
-
-
-    @classmethod
-    def _sanity_check_formats(cls):
-
-        # sanity check complete directory
-        for name,val in cls.format_dir.items():
-            if isinstance(val, str): # a link -> does pointed-to exist?
-                if val not in cls.format_dir.keys():
-                    raise ValueError(f"Entry '{name}' points to non-existant entry '{val}'")
-            else:
-                if not isinstance(val, dict):
-                    raise ValueError(f"Entry '{name}' must be a dict")
-                    
-                if "template" not in val:
-                    raise ValueError(f"Entry '{name}' must have a 'template' value")
-                      
 
 
 
@@ -821,3 +823,67 @@ def update_dir_json(dir: dict,
     with open(path, "r", encoding="utf-8") as f:
         new_dir = json.load(f)
         dir.update(new_dir)
+
+
+
+def prepare_format_entry(format_dir: dict,
+                         name: str,
+                         val: Union[dict,str]):
+    val = copy(val)
+    
+    if "{{" not in val["template"]: # type: ignore[index] # a link to another template entry
+        linked_name = val["template"] # type: ignore[index]
+        if linked_name not in format_dir:
+            raise ValueError(f"Broken template link at '{name}': '{linked_name}' does not exist")
+        val2 = format_dir[linked_name]
+        val["template"] = val2["template"] # type: ignore[index]
+        
+    return val
+
+
+
+
+def search_format(format_dir: dict,
+                  model_id: str) -> Union[dict,None]:
+
+    # TODO: cache compiled re patterns in "_re" entries
+
+    for name,val in format_dir.items():
+        if isinstance(val, str): # a link: ignore when searching
+            continue
+        if "match" not in val:
+            continue
+            
+        patterns = val["match"]
+        if isinstance(patterns, str):
+            patterns = [patterns]
+            
+        for pat in patterns:
+            if re.search(pat, model_id, flags=re.IGNORECASE):
+                logger.debug(f"Format search for '{model_id}' found '{name}' entry")
+                return prepare_format_entry(format_dir,
+                                            name,
+                                            val)
+                            
+    return None
+
+
+def sanity_check_formats(format_dir: dict):
+
+    # sanity check complete directory
+    for name,val in format_dir.items():
+        if isinstance(val, str): # a link -> does pointed-to exist?
+            if val not in format_dir.keys():
+                raise ValueError(f"Entry '{name}' points to non-existent entry '{val}'")
+        else:
+            if not isinstance(val, dict):
+                raise ValueError(f"Entry '{name}' must be a dict")
+                
+            if "template" not in val:
+                raise ValueError(f"Entry '{name}' must have a 'template' value")
+                    
+
+
+
+
+

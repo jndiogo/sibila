@@ -67,7 +67,7 @@ class LlamaCppModel(FormattedTextModel):
                  path: str,
 
                  format: Optional[Union[str,dict]] = None,                 
-                 format_search_order: list[str] = ["name","meta_template"],
+                 format_search_order: list[str] = ["name","meta_template", "formats_json"],
 
                  *,
 
@@ -130,7 +130,7 @@ class LlamaCppModel(FormattedTextModel):
                                verbose=verbose
                                )
         
-        logger.debug(f"Creating Llama with model_path='{path}', llamacpp_kwargs={llamacpp_kwargs}")
+        logger.debug(f"Creating inner Llama with model_path='{path}', llamacpp_kwargs={llamacpp_kwargs}")
 
         with normalize_notebook_stdout_stderr(not verbose):
             self._llama = Llama(model_path=path, **llamacpp_kwargs)
@@ -152,6 +152,7 @@ class LlamaCppModel(FormattedTextModel):
             self.init_format(format,
                              format_search_order,
                              {"name": os.path.basename(self._model_path),
+                              "path": self._model_path,
                               "meta_template_name": "tokenizer.chat_template"}
                              )
         except Exception as e:
@@ -197,7 +198,7 @@ class LlamaCppModel(FormattedTextModel):
             logger.warn(f"Token length + genconf.max_tokens ({len(token_ids) + genconf.max_tokens}) is greater than model's context window length ({self.ctx_len})")
 
         # prepare llamaCpp args:
-        genconf_kwargs = genconf.asdict()
+        genconf_kwargs = genconf.as_dict()
         
         format = genconf_kwargs.pop("format")
         if format == "json":

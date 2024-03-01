@@ -11,8 +11,8 @@ from typing_extensions import Self
 from dataclasses import dataclass, field, asdict
 from enum import IntEnum
 
+import json
 from copy import copy
-from pprint import pformat
 
 import logging
 logger = logging.getLogger(__name__)
@@ -72,14 +72,17 @@ class GenConf:
         return ret
 
 
-    def clone(self):
+    def clone(self) -> Self:
         """Return a copy of this configuration."""
         return copy(self)
         
-    def asdict(self):
+    def as_dict(self) -> dict:
         """Return GenConf as a dict."""
         return asdict(self)
 
+    @staticmethod
+    def from_dict(dic: dict) -> Any: # Any = GenConf
+        return GenConf(**dic)
 
 
 
@@ -179,7 +182,7 @@ class GenOut:
     """Initialized instance value, dataclass or Pydantic BaseModel object, as returned in calls like extract()."""
     
     
-    def asdict(self):
+    def as_dict(self):
         """Return GenOut as a dict."""
         return asdict(self)
 

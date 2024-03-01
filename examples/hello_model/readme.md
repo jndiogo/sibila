@@ -1,6 +1,6 @@
-# Hello Model
+# Hello model
 
-In this example we see how to directly create local or remote model objects and later to do that mor eeasily with the Models class. 
+In this example we see how to directly create local or remote model objects and later to do that more easily with the Models class. 
 
 
 ## Using a local model
@@ -11,7 +11,7 @@ In these examples, we'll use a [4-bit quantization of the OpenChat-3.5 7 billion
 
 The file is named "openchat-3.5-1210.Q4_K_M.gguf" and was downloaded from the above link. Make sure to save it into the "../../models" folder.
 
-[See here for more information](https://jndiogo.github.io/sibila/setup-local-models/#default-model-used-in-the-examples-openchat) about setting up your local models.
+[See here for more information](https://jndiogo.github.io/sibila/models/local_model/) about setting up your local models.
 
 
 With the model file in the "../../models" folder, we can run the following script:
@@ -43,7 +43,9 @@ Run the script above and after a few seconds (it has to load the model from disk
 
 ```
 User: Hello there?
-Model: Ahoy there matey! How can I assist ye today on this here ship o' mine? Is it be treasure you seek or maybe some tales from the sea? Let me know, and we'll set sail together!
+Model: Ahoy there matey! How can I assist ye today on this here ship o' mine?
+Is it be treasure you seek or maybe some tales from the sea?
+Let me know, and we'll set sail together!
 ```
 
 
@@ -51,7 +53,7 @@ Model: Ahoy there matey! How can I assist ye today on this here ship o' mine? Is
 
 To use a remote model like GPT-4 you'll need a paid OpenAI account: https://openai.com/pricing
 
-With an OpenAI account, you'll be able to generate an access token that you should [set into the OPENAI_API_KEY env variable](https://jndiogo.github.io/sibila/getting-started/#using-open-ai-models). 
+With an OpenAI account, you'll be able to generate an access token that you should [set into the OPENAI_API_KEY env variable](https://jndiogo.github.io/sibila/models/remote_model/). 
 
 (An even better way is to use .env files with your variables, and use the [dotenv library](https://pypi.org/project/python-dotenv/) to read them.)
 

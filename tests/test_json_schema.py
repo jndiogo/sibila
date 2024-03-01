@@ -473,7 +473,7 @@ def test_get_final_type():
         GREEN = 2
         BLUE = 3    
     res = get_final_type(Color)
-    assert res == (int, False)
+    assert res == (Color, False)
 
 
     # datetime

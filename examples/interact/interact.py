@@ -5,9 +5,7 @@ except: ...
 if __name__ == "__main__":
 
     from sibila import Models, GenConf
-    from sibila.tools import (
-        interact
-    )
+    from sibila.tools import interact
 
     # delete any previous model
     try: del model

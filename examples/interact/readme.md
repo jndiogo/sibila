@@ -1,12 +1,12 @@
-In this example we look at the interact() function which allows to have a back-and-forth chat session. You enter messages in an input() prompt and can use some special "!" commands for more functionality.
+In this example we look at the interact() function, which allows a back-and-forth chat session. The user enters messages in an input() prompt and can use some special "!" commands for more functionality. The model answers back after each user message.
 
 In a chat interaction, the model has to "remember" the previous messages exchanged. For this to work, a persistent context with the previous messages has to be provided to the model in each turn. This is done by using a Context class object, which can manage thread messages and delete older ones when the context maximum length is reached.
 
-Available as a [Jupyter notebook](interact.ipynb) or [Python script](interact.py).
-
-To use a local model, make sure you have its file in the folder "../../models". You can use any GGUF format model - [see here how to download the OpenChat model used below](https://jndiogo.github.io/sibila/setup-local-models/#default-model-used-in-the-examples-openchat). If you use a different one, don't forget to set its filename in the name variable below, after the text "llamacpp:".
+To use a local model, make sure you have its file in the folder "../../models". You can use any GGUF format model - [see here how to download the OpenChat model used below](https://jndiogo.github.io/sibila/models/local_model/#examples). If you use a different one, don't forget to set its filename in the name variable below, after the text "llamacpp:".
 
 To use an OpenAI model, make sure you defined the env variable OPENAI_API_KEY with a valid token and uncomment the line after "# to use an OpenAI model:".
+
+Jupyter notebook and Python script versions are available in the example's folder.
 
 So, let's create a local model.
 

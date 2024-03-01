@@ -1,12 +1,12 @@
-This is the Python dataclass version of of the [Pydantic extraction example](readme.md). 
+This is the Python dataclass version of of the Pydantic extraction example. 
 
 We'll extract information about all persons mentioned in a text.
 
-Available as a [Jupyter notebook](extract_dataclass.ipynb) or [Python script](extract_dataclass.py).
-
-To use a local model, make sure you have its file in the folder "../../models". You can use any GGUF format model - [see here how to download the OpenChat model used below](https://jndiogo.github.io/sibila/setup-local-models/#default-model-used-in-the-examples-openchat). If you use a different one, don't forget to set its filename in the name variable below, after the text "llamacpp:".
+To use a local model, make sure you have its file in the folder "../../models". You can use any GGUF format model - [see here how to download the OpenChat model used below](https://jndiogo.github.io/sibila/models/local_model/#examples). If you use a different one, don't forget to set its filename in the name variable below, after the text "llamacpp:".
 
 To use an OpenAI model, make sure you defined the env variable OPENAI_API_KEY with a valid token and uncomment the line after "# to use an OpenAI model:".
+
+Jupyter notebook and Python script versions are available in the example's folder.
 
 Start by creating the model:
 

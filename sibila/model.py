@@ -847,6 +847,14 @@ class Model(ABC):
         We assume a common in+out context where total token length must always be less than this number."""
         return self._ctx_len
 
+    @classmethod
+    def known_models(cls) -> Union[list[str], None]:
+        """If the model can only use a fixed set of models, return their names. Otherwise, return None.
+
+        Returns:
+            Returns a list of known models or None if it can accept any model.
+        """
+        return None
 
     @classmethod
     def version(cls) -> str:
@@ -907,7 +915,7 @@ class Model(ABC):
         logger.debug(f"GenConf: {genconf}")
 
         if not len(thread):
-            raise ValueError("Cannot generate from empty thread")
+            raise ValueError("Cannot generate from an empty thread")
         
         if thread.last_kind != MsgKind.IN:
             logger.warn("Last thread message is not an IN message.")
@@ -1097,13 +1105,15 @@ class FormattedTextModel(TextModel, ABC):
                     format_search_order: list,
                     info: dict):
         """
-        format_search_order is a flags list:
+        format_search_order is a list of str flags:
             "name: match by name
             "meta_template": use model file metadata's template
-            ex: ["name","meta_template"]
+            "formats_json": look for a "formats.json" file in the same folder
+            ex: ["name", "meta_template", "formats_json"]
         
         info fields: {
-            "name": name, # ex: filename
+            "name": "filename.gguf"
+            "path": full path to model
             "meta_template_name": "chat_template"
         }
         """
@@ -1114,8 +1124,7 @@ class FormattedTextModel(TextModel, ABC):
             for order in format_search_order:
 
                 if order == "name":
-                    name = info["name"]
-                    fmt = Models.search_format(name)
+                    fmt = Models.search_format(info["name"])
                     if fmt is not None:
                         return fmt
                         
@@ -1128,8 +1137,17 @@ class FormattedTextModel(TextModel, ABC):
                             "template": md[key_name]
                         }
                         return fmt
+                    
+                elif order == "formats_json":
+                    fmt = Models.folder_search_format(info["path"])
+                    if fmt is not None:
+                        return fmt
+
             
-            raise ValueError("Could not find a suitable format (chat template) for this model. Without a format, fine-tuned models (models with chat, instruct, etc in their names) cannot properly answer queries. You can pass a template string in the format arg when creating this model. It is a Jinja template which you can locate in the internet: try searching by the model name + 'chat template'.")
+            raise ValueError("Could not find a suitable chat template format for this model. "
+                             "Without a format, fine-tuned models cannot function properly. "
+                             "See the docs on how you can fix this: "
+                             "pass the template in the format arg or create a 'formats.json' file.")
 
         
         if format is not None:

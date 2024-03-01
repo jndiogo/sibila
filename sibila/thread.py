@@ -77,7 +77,7 @@ class Thread(Sequence):
                  join_sep: str = "\n"):
         """
         Examples:
-            Creation with message list
+            Creation with a list of  messages
 
             >>> from sibila import Thread, MsgKind
             >>> th = Thread([(MsgKind.IN, "Hello model!"), (MsgKind.OUT, "Hello there human!")],
@@ -107,7 +107,8 @@ class Thread(Sequence):
             inst=█Be informative.█, sep='\\n', len=1
             0: IN=█Tell me about kangaroos, please?\\nThey are so impressive.█
             
-            As a ChatML message list
+            Return thread as a ChatML message list
+
             >>> from sibila import Thread, MsgKind
             >>> th = Thread([(MsgKind.IN, "Hello model!"), (MsgKind.OUT, "Hello there human!")], 
             ...             inst="Be helpful.")
@@ -460,6 +461,7 @@ class Thread(Sequence):
         Returns:
             A ChatML dict with "role" and "content" keys.
         """
+
         kind = Thread._kind_from_pos(index)
         role = MsgKind.chatml_role_from_kind(kind)
         text = self._msgs[index] if index >= 0 else self.inst
