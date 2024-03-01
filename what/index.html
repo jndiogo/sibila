@@ -1665,12 +1665,13 @@
 
   <h1>What can you do with Sibila?</h1>
 
-<p>LLM models answer your questions in the best way their training allows, but they always answer back in plain text (tokens).</p>
+<p>LLM models answer your questions in the best way their training allows, but they always answer back in plain text (or tokens).</p>
 <p>With Sibila, you can extract structured data from LLM models. Not whatever the model chose to output (even if you asked it to answer in a certain format), but the exact fields and types that you need.</p>
 <p>This not only simplifies handling the model responses but can also open new possibilities: you can now deal with the model in a structured way.</p>
 <h2 id="extract-pydantic-dataclasses-or-simple-types">Extract Pydantic, dataclasses or simple types<a class="headerlink" href="#extract-pydantic-dataclasses-or-simple-types" title="Permanent link">#</a></h2>
 <p>To specify the structured output that you want from the model, you can use Pydantic's BaseModel derived classes, or the lightweight Python dataclasses, if you don't need the whole Pydantic.</p>
-<p>You can also use simple types like bool, int or lists - for example, need a simple classification? </p>
+<p>With Sibila, you can also use simple types like bool, int, str, enumerations or lists. 
+For example, need to classify something? </p>
 <div class="admonition example">
 <p class="admonition-title">Example</p>
 <div class="language-python highlight"><pre><span></span><code><span id="__span-0-1"><a id="__codelineno-0-1" name="__codelineno-0-1" href="#__codelineno-0-1"></a><span class="kn">from</span> <span class="nn">sibila</span> <span class="kn">import</span> <span class="n">Models</span>
@@ -1688,15 +1689,15 @@
 </div>
 <h2 id="from-your-models-or-openais">From your models or OpenAI's<a class="headerlink" href="#from-your-models-or-openais" title="Permanent link">#</a></h2>
 <p>Small downloadable 7B parameter models are getting better every month and they have reached a level where they are competent enough for most common data extraction or summarization tasks.</p>
-<p>With 8Gb or more of RAM or GPU memory you can get good structured output from models like OpenChat, Zephyr, Mistral 7B, or any other GGUF file.</p>
-<p>With the same API you can both use any paid OpenAI model, as well as any model that llama.cpp can run. You can choose the best model for each use, allowing you the freedom of choice.</p>
+<p>With 8Gb or more of RAM or GPU memory, you can get good structured output from models like OpenChat, Zephyr, Mistral 7B, or any other GGUF file.</p>
+<p>You can use any paid OpenAI model, as well as any model that llama.cpp can run, with the same API. Choose the best model for each use, allowing you the freedom of choice.</p>
 <h2 id="with-model-management">With model management<a class="headerlink" href="#with-model-management" title="Permanent link">#</a></h2>
-<p>You can create models from simple names instead of having to track model configurations, filenames or chat templates.</p>
+<p>Create models from simple names instead of having to track model configurations, filenames or chat templates.</p>
 <div class="language-python highlight"><pre><span></span><code><span id="__span-2-1"><a id="__codelineno-2-1" name="__codelineno-2-1" href="#__codelineno-2-1"></a><span class="n">local_model</span> <span class="o">=</span> <span class="n">Models</span><span class="o">.</span><span class="n">create</span><span class="p">(</span><span class="s2">&quot;llamacpp:openchat&quot;</span><span class="p">)</span>
 </span><span id="__span-2-2"><a id="__codelineno-2-2" name="__codelineno-2-2" href="#__codelineno-2-2"></a>
 </span><span id="__span-2-3"><a id="__codelineno-2-3" name="__codelineno-2-3" href="#__codelineno-2-3"></a><span class="n">remote_model</span> <span class="o">=</span> <span class="n">Models</span><span class="o">.</span><span class="n">create</span><span class="p">(</span><span class="s2">&quot;openai:gpt-4&quot;</span><span class="p">)</span>    
 </span></code></pre></div>
-<p>This makes the switch to newer models much easier. And makes it simpler to compare model outputs.</p>
+<p>This makes the switch to newer models much easier, and makes it simpler to compare model outputs.</p>
 
 
 

@@ -1571,6 +1571,7 @@
 <li>Model management: store model files, configuration and chat templates and quickly switch between models.</li>
 <li>Tools for evaluating output across local/remote models, for chat-like interaction and more.</li>
 </ul>
+<p>See <a href="what/">What can you do with Sibila?</a></p>
 <p>To extract structured data from a local model:</p>
 <div class="language-python highlight"><pre><span></span><code><span id="__span-0-1"><a id="__codelineno-0-1" name="__codelineno-0-1" href="#__codelineno-0-1"></a><span class="kn">from</span> <span class="nn">sibila</span> <span class="kn">import</span> <span class="n">Models</span>
 </span><span id="__span-0-2"><a id="__codelineno-0-2" name="__codelineno-0-2" href="#__codelineno-0-2"></a><span class="kn">from</span> <span class="nn">pydantic</span> <span class="kn">import</span> <span class="n">BaseModel</span>
@@ -1599,7 +1600,6 @@
 </span><span id="__span-2-3"><a id="__codelineno-2-3" name="__codelineno-2-3" href="#__codelineno-2-3"></a><span class="n">model</span><span class="o">.</span><span class="n">extract</span><span class="p">(</span><span class="n">Info</span><span class="p">,</span> <span class="s2">&quot;Who was the first man in the moon?&quot;</span><span class="p">)</span>
 </span></code></pre></div>
 <p>If Pydantic BaseModel objects are too much for your project, Sibila supports similar functionality with Python dataclass.</p>
-<p>See: <a href="what/">What can you do with Sibila?</a></p>
 
 
 
