@@ -7,6 +7,8 @@ Extract structured data from remote or local file LLM models.
 - Model management: store model files, configuration and chat templates and quickly switch between models.
 - Tools for evaluating output across local/remote models, for chat-like interaction and more.
 
+See [What can you do with Sibila?](what.md)
+
 To extract structured data from a local model:
 
 ``` python
@@ -45,4 +47,3 @@ model.extract(Info, "Who was the first man in the moon?")
 
 If Pydantic BaseModel objects are too much for your project, Sibila supports similar functionality with Python dataclass.
 
-See: [What can you do with Sibila?](what.md)

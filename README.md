@@ -7,6 +7,8 @@ Extract structured data from remote or local file LLM models.
 - Model management: store model files, configuration and chat templates and quickly switch between models.
 - Tools for evaluating output across local/remote models, for chat-like interaction and more.
 
+See [What can you do with Sibila?](https://jndiogo.github.io/sibila/what/)
+
 To extract structured data from a local model:
 
 ``` python
@@ -45,15 +47,12 @@ model.extract(Info, "Who was the first man in the moon?")
 
 If Pydantic BaseModel objects are too much for your project, Sibila supports similar functionality with Python dataclass.
 
-See: [What can you do with Sibila?](https://jndiogo.github.io/sibila/what/)
-
-
 
 
 
 ## Docs
 
-The docs explain the main concepts, explain examples and include the API reference: [https://jndiogo.github.io/sibila/](https://jndiogo.github.io/sibila/)
+The docs explain the main concepts, include examples and an API reference: [https://jndiogo.github.io/sibila/](https://jndiogo.github.io/sibila/)
 
 
 ## Installation
@@ -70,7 +69,7 @@ See [Getting started](https://jndiogo.github.io/sibila/installing/) for more inf
 
 ## Examples
 
-The [examples](https://github.com/jndiogo/sibila/blob/main/examples/readme.md) show what you can do with local or remote models in Sibila: structured data extraction, classification, summarization, etc.
+The [examples](https://jndiogo.github.io/sibila/examples/) show what you can do with local or remote models in Sibila: structured data extraction, classification, summarization, etc.
 
 
 

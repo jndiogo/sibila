@@ -3,7 +3,7 @@ title: What can you do with Sibila?
 ---
 
 
-LLM models answer your questions in the best way their training allows, but they always answer back in plain text (tokens).
+LLM models answer your questions in the best way their training allows, but they always answer back in plain text (or tokens).
 
 With Sibila, you can extract structured data from LLM models. Not whatever the model chose to output (even if you asked it to answer in a certain format), but the exact fields and types that you need.
 
@@ -15,7 +15,8 @@ This not only simplifies handling the model responses but can also open new poss
 
 To specify the structured output that you want from the model, you can use Pydantic's BaseModel derived classes, or the lightweight Python dataclasses, if you don't need the whole Pydantic.
 
-You can also use simple types like bool, int or lists - for example, need a simple classification? 
+With Sibila, you can also use simple types like bool, int, str, enumerations or lists. 
+For example, need to classify something? 
 
 !!! example
     ``` python
@@ -37,16 +38,16 @@ You can also use simple types like bool, int or lists - for example, need a simp
 
 Small downloadable 7B parameter models are getting better every month and they have reached a level where they are competent enough for most common data extraction or summarization tasks.
 
-With 8Gb or more of RAM or GPU memory you can get good structured output from models like OpenChat, Zephyr, Mistral 7B, or any other GGUF file.
+With 8Gb or more of RAM or GPU memory, you can get good structured output from models like OpenChat, Zephyr, Mistral 7B, or any other GGUF file.
 
-With the same API you can both use any paid OpenAI model, as well as any model that llama.cpp can run. You can choose the best model for each use, allowing you the freedom of choice.
+You can use any paid OpenAI model, as well as any model that llama.cpp can run, with the same API. Choose the best model for each use, allowing you the freedom of choice.
 
 
 
 
 ## With model management
 
-You can create models from simple names instead of having to track model configurations, filenames or chat templates.
+Create models from simple names instead of having to track model configurations, filenames or chat templates.
 
 ``` python
 local_model = Models.create("llamacpp:openchat")
@@ -54,5 +55,6 @@ local_model = Models.create("llamacpp:openchat")
 remote_model = Models.create("openai:gpt-4")    
 ```
 
-This makes the switch to newer models much easier. And makes it simpler to compare model outputs.
+This makes the switch to newer models much easier, and makes it simpler to compare model outputs.
+
 
