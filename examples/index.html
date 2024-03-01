@@ -8,26 +8,28 @@
       
       
       
-        <link rel="canonical" href="https://jndiogo.github.io/sibila/">
+        <link rel="canonical" href="https://jndiogo.github.io/sibila/examples/">
       
       
+        <link rel="prev" href="../tips/">
       
-        <link rel="next" href="what/">
+      
+        <link rel="next" href="hello_model/">
       
       
-      <link rel="icon" href="assets/images/favicon.png">
+      <link rel="icon" href="../assets/images/favicon.png">
       <meta name="generator" content="mkdocs-1.5.3, mkdocs-material-9.5.6">
     
     
       
-        <title>Sibila - Sibila</title>
+        <title>Examples - Sibila</title>
       
     
     
-      <link rel="stylesheet" href="assets/stylesheets/main.50c56a3b.min.css">
+      <link rel="stylesheet" href="../assets/stylesheets/main.50c56a3b.min.css">
       
         
-        <link rel="stylesheet" href="assets/stylesheets/palette.06af60db.min.css">
+        <link rel="stylesheet" href="../assets/stylesheets/palette.06af60db.min.css">
       
       
 
@@ -46,11 +48,11 @@
       
     
     
-      <link rel="stylesheet" href="assets/_mkdocstrings.css">
+      <link rel="stylesheet" href="../assets/_mkdocstrings.css">
     
-      <link rel="stylesheet" href="stylesheets/extra.css">
+      <link rel="stylesheet" href="../stylesheets/extra.css">
     
-    <script>__md_scope=new URL(".",location),__md_hash=e=>[...e].reduce((e,_)=>(e<<5)-e+_.charCodeAt(0),0),__md_get=(e,_=localStorage,t=__md_scope)=>JSON.parse(_.getItem(t.pathname+"."+e)),__md_set=(e,_,t=localStorage,a=__md_scope)=>{try{t.setItem(a.pathname+"."+e,JSON.stringify(_))}catch(e){}}</script>
+    <script>__md_scope=new URL("..",location),__md_hash=e=>[...e].reduce((e,_)=>(e<<5)-e+_.charCodeAt(0),0),__md_get=(e,_=localStorage,t=__md_scope)=>JSON.parse(_.getItem(t.pathname+"."+e)),__md_set=(e,_,t=localStorage,a=__md_scope)=>{try{t.setItem(a.pathname+"."+e,JSON.stringify(_))}catch(e){}}</script>
     
       
 
@@ -75,11 +77,6 @@
     <label class="md-overlay" for="__drawer"></label>
     <div data-md-component="skip">
       
-        
-        <a href="#sibila" class="md-skip">
-          Skip to content
-        </a>
-      
     </div>
     <div data-md-component="announce">
       
@@ -92,7 +89,7 @@
 
 <header class="md-header md-header--shadow md-header--lifted" data-md-component="header">
   <nav class="md-header__inner md-grid" aria-label="Header">
-    <a href="." title="Sibila" class="md-header__button md-logo" aria-label="Sibila" data-md-component="logo">
+    <a href=".." title="Sibila" class="md-header__button md-logo" aria-label="Sibila" data-md-component="logo">
       
   
   <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a3 3 0 0 0 3-3 3 3 0 0 0-3-3 3 3 0 0 0-3 3 3 3 0 0 0 3 3m0 3.54C9.64 9.35 6.5 8 3 8v11c3.5 0 6.64 1.35 9 3.54 2.36-2.19 5.5-3.54 9-3.54V8c-3.5 0-6.64 1.35-9 3.54Z"/></svg>
@@ -112,7 +109,7 @@
         <div class="md-header__topic" data-md-component="header-topic">
           <span class="md-ellipsis">
             
-              Sibila
+              Examples
             
           </span>
         </div>
@@ -211,13 +208,11 @@
         
   
   
-    
-  
   
     
     
-      <li class="md-tabs__item md-tabs__item--active">
-        <a href="." class="md-tabs__link">
+      <li class="md-tabs__item">
+        <a href=".." class="md-tabs__link">
           
   
     
@@ -233,11 +228,13 @@
         
   
   
+    
+  
   
     
     
-      <li class="md-tabs__item">
-        <a href="examples/" class="md-tabs__link">
+      <li class="md-tabs__item md-tabs__item--active">
+        <a href="./" class="md-tabs__link">
           
   
     
@@ -257,7 +254,7 @@
     
     
       <li class="md-tabs__item">
-        <a href="api-reference/model/" class="md-tabs__link">
+        <a href="../api-reference/model/" class="md-tabs__link">
           
   
     
@@ -298,7 +295,7 @@
 
 <nav class="md-nav md-nav--primary md-nav--lifted" aria-label="Navigation" data-md-level="0">
   <label class="md-nav__title" for="__drawer">
-    <a href="." title="Sibila" class="md-nav__button md-logo" aria-label="Sibila" data-md-component="logo">
+    <a href=".." title="Sibila" class="md-nav__button md-logo" aria-label="Sibila" data-md-component="logo">
       
   
   <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a3 3 0 0 0 3-3 3 3 0 0 0-3-3 3 3 0 0 0-3 3 3 3 0 0 0 3 3m0 3.54C9.64 9.35 6.5 8 3 8v11c3.5 0 6.64 1.35 9 3.54 2.36-2.19 5.5-3.54 9-3.54V8c-3.5 0-6.64 1.35-9 3.54Z"/></svg>
@@ -325,8 +322,6 @@
       
   
   
-    
-  
   
   
     
@@ -355,17 +350,19 @@
       
       
     
-    <li class="md-nav__item md-nav__item--active md-nav__item--section md-nav__item--nested">
+    <li class="md-nav__item md-nav__item--section md-nav__item--nested">
       
         
         
         
-        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_1" checked>
+          
+        
+        <input class="md-nav__toggle md-toggle md-toggle--indeterminate" type="checkbox" id="__nav_1" >
         
           
           
           <div class="md-nav__link md-nav__container">
-            <a href="." class="md-nav__link md-nav__link--active">
+            <a href=".." class="md-nav__link ">
               
   
   <span class="md-ellipsis">
@@ -376,13 +373,13 @@
             </a>
             
               
-              <label class="md-nav__link md-nav__link--active" for="__nav_1" id="__nav_1_label" tabindex="">
+              <label class="md-nav__link " for="__nav_1" id="__nav_1_label" tabindex="">
                 <span class="md-nav__icon md-icon"></span>
               </label>
             
           </div>
         
-        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_1_label" aria-expanded="true">
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_1_label" aria-expanded="false">
           <label class="md-nav__title" for="__nav_1">
             <span class="md-nav__icon md-icon"></span>
             Start
@@ -398,7 +395,7 @@
   
   
     <li class="md-nav__item">
-      <a href="what/" class="md-nav__link">
+      <a href="../what/" class="md-nav__link">
         
   
   <span class="md-ellipsis">
@@ -467,7 +464,7 @@
   
   
     <li class="md-nav__item">
-      <a href="installing/" class="md-nav__link">
+      <a href="../installing/" class="md-nav__link">
         
   
   <span class="md-ellipsis">
@@ -488,7 +485,7 @@
   
   
     <li class="md-nav__item">
-      <a href="first_run/" class="md-nav__link">
+      <a href="../first_run/" class="md-nav__link">
         
   
   <span class="md-ellipsis">
@@ -567,7 +564,7 @@
   
   
     <li class="md-nav__item">
-      <a href="models/remote_model/" class="md-nav__link">
+      <a href="../models/remote_model/" class="md-nav__link">
         
   
   <span class="md-ellipsis">
@@ -635,7 +632,7 @@
   
   
     <li class="md-nav__item">
-      <a href="models/local_model/" class="md-nav__link">
+      <a href="../models/local_model/" class="md-nav__link">
         
   
   <span class="md-ellipsis">
@@ -656,7 +653,7 @@
   
   
     <li class="md-nav__item">
-      <a href="models/find_local_models/" class="md-nav__link">
+      <a href="../models/find_local_models/" class="md-nav__link">
         
   
   <span class="md-ellipsis">
@@ -677,7 +674,7 @@
   
   
     <li class="md-nav__item">
-      <a href="models/setup_format/" class="md-nav__link">
+      <a href="../models/setup_format/" class="md-nav__link">
         
   
   <span class="md-ellipsis">
@@ -753,7 +750,7 @@
   
   
     <li class="md-nav__item">
-      <a href="models/models_factory/" class="md-nav__link">
+      <a href="../models/models_factory/" class="md-nav__link">
         
   
   <span class="md-ellipsis">
@@ -774,7 +771,7 @@
   
   
     <li class="md-nav__item">
-      <a href="models/models_json/" class="md-nav__link">
+      <a href="../models/models_json/" class="md-nav__link">
         
   
   <span class="md-ellipsis">
@@ -795,7 +792,7 @@
   
   
     <li class="md-nav__item">
-      <a href="models/formats_json/" class="md-nav__link">
+      <a href="../models/formats_json/" class="md-nav__link">
         
   
   <span class="md-ellipsis">
@@ -886,7 +883,7 @@
   
   
     <li class="md-nav__item">
-      <a href="extract/simple_types/" class="md-nav__link">
+      <a href="../extract/simple_types/" class="md-nav__link">
         
   
   <span class="md-ellipsis">
@@ -907,7 +904,7 @@
   
   
     <li class="md-nav__item">
-      <a href="extract/enums/" class="md-nav__link">
+      <a href="../extract/enums/" class="md-nav__link">
         
   
   <span class="md-ellipsis">
@@ -928,7 +925,7 @@
   
   
     <li class="md-nav__item">
-      <a href="extract/dataclass/" class="md-nav__link">
+      <a href="../extract/dataclass/" class="md-nav__link">
         
   
   <span class="md-ellipsis">
@@ -949,7 +946,7 @@
   
   
     <li class="md-nav__item">
-      <a href="extract/pydantic/" class="md-nav__link">
+      <a href="../extract/pydantic/" class="md-nav__link">
         
   
   <span class="md-ellipsis">
@@ -970,7 +967,7 @@
   
   
     <li class="md-nav__item">
-      <a href="extract/free_text/" class="md-nav__link">
+      <a href="../extract/free_text/" class="md-nav__link">
         
   
   <span class="md-ellipsis">
@@ -999,7 +996,7 @@
   
   
     <li class="md-nav__item">
-      <a href="tools/" class="md-nav__link">
+      <a href="../tools/" class="md-nav__link">
         
   
   <span class="md-ellipsis">
@@ -1020,7 +1017,7 @@
   
   
     <li class="md-nav__item">
-      <a href="tips/" class="md-nav__link">
+      <a href="../tips/" class="md-nav__link">
         
   
   <span class="md-ellipsis">
@@ -1045,6 +1042,8 @@
       
   
   
+    
+  
   
   
     
@@ -1079,19 +1078,17 @@
       
       
     
-    <li class="md-nav__item md-nav__item--section md-nav__item--nested">
+    <li class="md-nav__item md-nav__item--active md-nav__item--section md-nav__item--nested">
       
         
         
         
-          
-        
-        <input class="md-nav__toggle md-toggle md-toggle--indeterminate" type="checkbox" id="__nav_2" >
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_2" checked>
         
           
           
           <div class="md-nav__link md-nav__container">
-            <a href="examples/" class="md-nav__link ">
+            <a href="./" class="md-nav__link md-nav__link--active">
               
   
   <span class="md-ellipsis">
@@ -1102,13 +1099,13 @@
             </a>
             
               
-              <label class="md-nav__link " for="__nav_2" id="__nav_2_label" tabindex="">
+              <label class="md-nav__link md-nav__link--active" for="__nav_2" id="__nav_2_label" tabindex="">
                 <span class="md-nav__icon md-icon"></span>
               </label>
             
           </div>
         
-        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_2_label" aria-expanded="false">
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_2_label" aria-expanded="true">
           <label class="md-nav__title" for="__nav_2">
             <span class="md-nav__icon md-icon"></span>
             Examples
@@ -1124,7 +1121,7 @@
   
   
     <li class="md-nav__item">
-      <a href="examples/hello_model/" class="md-nav__link">
+      <a href="hello_model/" class="md-nav__link">
         
   
   <span class="md-ellipsis">
@@ -1145,7 +1142,7 @@
   
   
     <li class="md-nav__item">
-      <a href="examples/from_text_to_object/" class="md-nav__link">
+      <a href="from_text_to_object/" class="md-nav__link">
         
   
   <span class="md-ellipsis">
@@ -1166,7 +1163,7 @@
   
   
     <li class="md-nav__item">
-      <a href="examples/extract/" class="md-nav__link">
+      <a href="extract/" class="md-nav__link">
         
   
   <span class="md-ellipsis">
@@ -1187,7 +1184,7 @@
   
   
     <li class="md-nav__item">
-      <a href="examples/extract_dataclass/" class="md-nav__link">
+      <a href="extract_dataclass/" class="md-nav__link">
         
   
   <span class="md-ellipsis">
@@ -1208,7 +1205,7 @@
   
   
     <li class="md-nav__item">
-      <a href="examples/tag/" class="md-nav__link">
+      <a href="tag/" class="md-nav__link">
         
   
   <span class="md-ellipsis">
@@ -1229,7 +1226,7 @@
   
   
     <li class="md-nav__item">
-      <a href="examples/quick_meeting/" class="md-nav__link">
+      <a href="quick_meeting/" class="md-nav__link">
         
   
   <span class="md-ellipsis">
@@ -1250,7 +1247,7 @@
   
   
     <li class="md-nav__item">
-      <a href="examples/tough_meeting/" class="md-nav__link">
+      <a href="tough_meeting/" class="md-nav__link">
         
   
   <span class="md-ellipsis">
@@ -1271,7 +1268,7 @@
   
   
     <li class="md-nav__item">
-      <a href="examples/compare/" class="md-nav__link">
+      <a href="compare/" class="md-nav__link">
         
   
   <span class="md-ellipsis">
@@ -1292,7 +1289,7 @@
   
   
     <li class="md-nav__item">
-      <a href="examples/interact/" class="md-nav__link">
+      <a href="interact/" class="md-nav__link">
         
   
   <span class="md-ellipsis">
@@ -1378,7 +1375,7 @@
   
   
     <li class="md-nav__item">
-      <a href="api-reference/model/" class="md-nav__link">
+      <a href="../api-reference/model/" class="md-nav__link">
         
   
   <span class="md-ellipsis">
@@ -1399,7 +1396,7 @@
   
   
     <li class="md-nav__item">
-      <a href="api-reference/models/" class="md-nav__link">
+      <a href="../api-reference/models/" class="md-nav__link">
         
   
   <span class="md-ellipsis">
@@ -1420,7 +1417,7 @@
   
   
     <li class="md-nav__item">
-      <a href="api-reference/generation/" class="md-nav__link">
+      <a href="../api-reference/generation/" class="md-nav__link">
         
   
   <span class="md-ellipsis">
@@ -1441,7 +1438,7 @@
   
   
     <li class="md-nav__item">
-      <a href="api-reference/thread/" class="md-nav__link">
+      <a href="../api-reference/thread/" class="md-nav__link">
         
   
   <span class="md-ellipsis">
@@ -1462,7 +1459,7 @@
   
   
     <li class="md-nav__item">
-      <a href="api-reference/multigen/" class="md-nav__link">
+      <a href="../api-reference/multigen/" class="md-nav__link">
         
   
   <span class="md-ellipsis">
@@ -1483,7 +1480,7 @@
   
   
     <li class="md-nav__item">
-      <a href="api-reference/tools/" class="md-nav__link">
+      <a href="../api-reference/tools/" class="md-nav__link">
         
   
   <span class="md-ellipsis">
@@ -1504,7 +1501,7 @@
   
   
     <li class="md-nav__item">
-      <a href="api-reference/tokenizer/" class="md-nav__link">
+      <a href="../api-reference/tokenizer/" class="md-nav__link">
         
   
   <span class="md-ellipsis">
@@ -1544,8 +1541,6 @@
   
   
   
-    
-  
   
 </nav>
                   </div>
@@ -1563,49 +1558,61 @@
   
 
 
-<h1 id="sibila">Sibila<a class="headerlink" href="#sibila" title="Permanent link">#</a></h1>
-<p>Extract structured data from remote or local file LLM models.</p>
-<ul>
-<li>Extract data into Pydantic objects, dataclasses or simple types.</li>
-<li>Same API for local file models and remote OpenAI models.</li>
-<li>Model management: store model files, configuration and chat templates and quickly switch between models.</li>
-<li>Tools for evaluating output across local/remote models, for chat-like interaction and more.</li>
-</ul>
-<p>To extract structured data from a local model:</p>
-<div class="language-python highlight"><pre><span></span><code><span id="__span-0-1"><a id="__codelineno-0-1" name="__codelineno-0-1" href="#__codelineno-0-1"></a><span class="kn">from</span> <span class="nn">sibila</span> <span class="kn">import</span> <span class="n">Models</span>
-</span><span id="__span-0-2"><a id="__codelineno-0-2" name="__codelineno-0-2" href="#__codelineno-0-2"></a><span class="kn">from</span> <span class="nn">pydantic</span> <span class="kn">import</span> <span class="n">BaseModel</span>
-</span><span id="__span-0-3"><a id="__codelineno-0-3" name="__codelineno-0-3" href="#__codelineno-0-3"></a>
-</span><span id="__span-0-4"><a id="__codelineno-0-4" name="__codelineno-0-4" href="#__codelineno-0-4"></a><span class="k">class</span> <span class="nc">Info</span><span class="p">(</span><span class="n">BaseModel</span><span class="p">):</span>
-</span><span id="__span-0-5"><a id="__codelineno-0-5" name="__codelineno-0-5" href="#__codelineno-0-5"></a>    <span class="n">event_year</span><span class="p">:</span> <span class="nb">int</span>
-</span><span id="__span-0-6"><a id="__codelineno-0-6" name="__codelineno-0-6" href="#__codelineno-0-6"></a>    <span class="n">first_name</span><span class="p">:</span> <span class="nb">str</span>
-</span><span id="__span-0-7"><a id="__codelineno-0-7" name="__codelineno-0-7" href="#__codelineno-0-7"></a>    <span class="n">last_name</span><span class="p">:</span> <span class="nb">str</span>
-</span><span id="__span-0-8"><a id="__codelineno-0-8" name="__codelineno-0-8" href="#__codelineno-0-8"></a>    <span class="n">age_at_the_time</span><span class="p">:</span> <span class="nb">int</span>
-</span><span id="__span-0-9"><a id="__codelineno-0-9" name="__codelineno-0-9" href="#__codelineno-0-9"></a>    <span class="n">nationality</span><span class="p">:</span> <span class="nb">str</span>
-</span><span id="__span-0-10"><a id="__codelineno-0-10" name="__codelineno-0-10" href="#__codelineno-0-10"></a>
-</span><span id="__span-0-11"><a id="__codelineno-0-11" name="__codelineno-0-11" href="#__codelineno-0-11"></a><span class="n">model</span> <span class="o">=</span> <span class="n">Models</span><span class="o">.</span><span class="n">create</span><span class="p">(</span><span class="s2">&quot;llamacpp:openchat&quot;</span><span class="p">)</span>
-</span><span id="__span-0-12"><a id="__codelineno-0-12" name="__codelineno-0-12" href="#__codelineno-0-12"></a>
-</span><span id="__span-0-13"><a id="__codelineno-0-13" name="__codelineno-0-13" href="#__codelineno-0-13"></a><span class="n">model</span><span class="o">.</span><span class="n">extract</span><span class="p">(</span><span class="n">Info</span><span class="p">,</span> <span class="s2">&quot;Who was the first man in the moon?)</span>
-</span></code></pre></div>
-<p>Returns an instance of class Info, created from the model's output:</p>
-<div class="language-python highlight"><pre><span></span><code><span id="__span-1-1"><a id="__codelineno-1-1" name="__codelineno-1-1" href="#__codelineno-1-1"></a><span class="n">Info</span><span class="p">(</span><span class="n">event_year</span><span class="o">=</span><span class="mi">1969</span><span class="p">,</span>
-</span><span id="__span-1-2"><a id="__codelineno-1-2" name="__codelineno-1-2" href="#__codelineno-1-2"></a>     <span class="n">first_name</span><span class="o">=</span><span class="s1">&#39;Neil&#39;</span><span class="p">,</span>
-</span><span id="__span-1-3"><a id="__codelineno-1-3" name="__codelineno-1-3" href="#__codelineno-1-3"></a>     <span class="n">last_name</span><span class="o">=</span><span class="s1">&#39;Armstrong&#39;</span><span class="p">,</span>
-</span><span id="__span-1-4"><a id="__codelineno-1-4" name="__codelineno-1-4" href="#__codelineno-1-4"></a>     <span class="n">age_at_the_time</span><span class="o">=</span><span class="mi">38</span><span class="p">,</span>
-</span><span id="__span-1-5"><a id="__codelineno-1-5" name="__codelineno-1-5" href="#__codelineno-1-5"></a>     <span class="n">nationality</span><span class="o">=</span><span class="s1">&#39;American&#39;</span><span class="p">)</span>
-</span></code></pre></div>
-<p>Or to use OpenAI's GPT-4, we would simply replace the model's name:</p>
-<div class="language-python highlight"><pre><span></span><code><span id="__span-2-1"><a id="__codelineno-2-1" name="__codelineno-2-1" href="#__codelineno-2-1"></a><span class="n">model</span> <span class="o">=</span> <span class="n">Models</span><span class="o">.</span><span class="n">create</span><span class="p">(</span><span class="s2">&quot;openai:gpt-4&quot;</span><span class="p">)</span>
-</span><span id="__span-2-2"><a id="__codelineno-2-2" name="__codelineno-2-2" href="#__codelineno-2-2"></a>
-</span><span id="__span-2-3"><a id="__codelineno-2-3" name="__codelineno-2-3" href="#__codelineno-2-3"></a><span class="n">model</span><span class="o">.</span><span class="n">extract</span><span class="p">(</span><span class="n">Info</span><span class="p">,</span> <span class="s2">&quot;Who was the first man in the moon?&quot;</span><span class="p">)</span>
-</span></code></pre></div>
-<p>If Pydantic BaseModel objects are too much for your project, Sibila supports similar functionality with Python dataclass.</p>
-<p>See: <a href="what/">What can you do with Sibila?</a></p>
+  <h1>Examples</h1>
+
+<table>
+<thead>
+<tr>
+<th>Example</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><a href="hello_model/">Hello model</a></td>
+<td>Introductory pirate arrr-example: create local or remote models, use the Models class to simplify.</td>
+</tr>
+<tr>
+<td><a href="from_text_to_object/">From text to object</a></td>
+<td>Keypoint extractor, showing progressively better ways to query a model, from plain text, JSON, to Pydantic classes.</td>
+</tr>
+<tr>
+<td><a href="extract/">Extract information</a></td>
+<td>Extract information about all persons mentioned in a text. Also available in a <a href="extract_dataclass/">dataclass version</a>.</td>
+</tr>
+<tr>
+<td><a href="tag/">Tag customer queries</a></td>
+<td>Summarize and classify customer queries into tags.</td>
+</tr>
+<tr>
+<td><a href="quick_meeting/">Quick meeting</a></td>
+<td>Extracting participants, action items and priorities from a simple meeting transcript.</td>
+</tr>
+<tr>
+<td><a href="tough_meeting/">Tough meeting</a></td>
+<td>Extracting information from a long and complex transcript.</td>
+</tr>
+<tr>
+<td><a href="compare/">Compare model output</a></td>
+<td>Compare sentiment analyses of customer reviews done by two models.</td>
+</tr>
+<tr>
+<td><a href="interact/">Chat interaction</a></td>
+<td>Interact with the model as in a back-and-forth chat session.</td>
+</tr>
+</tbody>
+</table>
+<p>Each example is explained in a Read Me and usually include a Jupyter notebook and/or a .py script version.</p>
+<p>Most of the examples use a local model but you can quickly change to using OpenAI models by uncommenting one or two lines.</p>
 
 
 
 
 
 
+
+  
+  
 
 
 
@@ -1646,10 +1653,10 @@
     </div>
     
     
-    <script id="__config" type="application/json">{"base": ".", "features": ["navigation.tabs", "navigation.tabs.sticky", "navigation.sections", "navigation.expand", "navigation.path", "navigation.indexes", "toc.follow", "content.code.copy"], "search": "assets/javascripts/workers/search.b8dbb3d2.min.js", "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}}</script>
+    <script id="__config" type="application/json">{"base": "..", "features": ["navigation.tabs", "navigation.tabs.sticky", "navigation.sections", "navigation.expand", "navigation.path", "navigation.indexes", "toc.follow", "content.code.copy"], "search": "../assets/javascripts/workers/search.b8dbb3d2.min.js", "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}}</script>
     
     
-      <script src="assets/javascripts/bundle.e1c3ead8.min.js"></script>
+      <script src="../assets/javascripts/bundle.e1c3ead8.min.js"></script>
       
     
   </body>

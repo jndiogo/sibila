@@ -8,26 +8,28 @@
       
       
       
-        <link rel="canonical" href="https://jndiogo.github.io/sibila/">
+        <link rel="canonical" href="https://jndiogo.github.io/sibila/examples/interact/">
       
       
+        <link rel="prev" href="../compare/">
       
-        <link rel="next" href="what/">
+      
+        <link rel="next" href="../../api-reference/model/">
       
       
-      <link rel="icon" href="assets/images/favicon.png">
+      <link rel="icon" href="../../assets/images/favicon.png">
       <meta name="generator" content="mkdocs-1.5.3, mkdocs-material-9.5.6">
     
     
       
-        <title>Sibila - Sibila</title>
+        <title>Interact - Sibila</title>
       
     
     
-      <link rel="stylesheet" href="assets/stylesheets/main.50c56a3b.min.css">
+      <link rel="stylesheet" href="../../assets/stylesheets/main.50c56a3b.min.css">
       
         
-        <link rel="stylesheet" href="assets/stylesheets/palette.06af60db.min.css">
+        <link rel="stylesheet" href="../../assets/stylesheets/palette.06af60db.min.css">
       
       
 
@@ -46,11 +48,11 @@
       
     
     
-      <link rel="stylesheet" href="assets/_mkdocstrings.css">
+      <link rel="stylesheet" href="../../assets/_mkdocstrings.css">
     
-      <link rel="stylesheet" href="stylesheets/extra.css">
+      <link rel="stylesheet" href="../../stylesheets/extra.css">
     
-    <script>__md_scope=new URL(".",location),__md_hash=e=>[...e].reduce((e,_)=>(e<<5)-e+_.charCodeAt(0),0),__md_get=(e,_=localStorage,t=__md_scope)=>JSON.parse(_.getItem(t.pathname+"."+e)),__md_set=(e,_,t=localStorage,a=__md_scope)=>{try{t.setItem(a.pathname+"."+e,JSON.stringify(_))}catch(e){}}</script>
+    <script>__md_scope=new URL("../..",location),__md_hash=e=>[...e].reduce((e,_)=>(e<<5)-e+_.charCodeAt(0),0),__md_get=(e,_=localStorage,t=__md_scope)=>JSON.parse(_.getItem(t.pathname+"."+e)),__md_set=(e,_,t=localStorage,a=__md_scope)=>{try{t.setItem(a.pathname+"."+e,JSON.stringify(_))}catch(e){}}</script>
     
       
 
@@ -75,11 +77,6 @@
     <label class="md-overlay" for="__drawer"></label>
     <div data-md-component="skip">
       
-        
-        <a href="#sibila" class="md-skip">
-          Skip to content
-        </a>
-      
     </div>
     <div data-md-component="announce">
       
@@ -92,7 +89,7 @@
 
 <header class="md-header md-header--shadow md-header--lifted" data-md-component="header">
   <nav class="md-header__inner md-grid" aria-label="Header">
-    <a href="." title="Sibila" class="md-header__button md-logo" aria-label="Sibila" data-md-component="logo">
+    <a href="../.." title="Sibila" class="md-header__button md-logo" aria-label="Sibila" data-md-component="logo">
       
   
   <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a3 3 0 0 0 3-3 3 3 0 0 0-3-3 3 3 0 0 0-3 3 3 3 0 0 0 3 3m0 3.54C9.64 9.35 6.5 8 3 8v11c3.5 0 6.64 1.35 9 3.54 2.36-2.19 5.5-3.54 9-3.54V8c-3.5 0-6.64 1.35-9 3.54Z"/></svg>
@@ -112,7 +109,7 @@
         <div class="md-header__topic" data-md-component="header-topic">
           <span class="md-ellipsis">
             
-              Sibila
+              Interact
             
           </span>
         </div>
@@ -211,13 +208,11 @@
         
   
   
-    
-  
   
     
     
-      <li class="md-tabs__item md-tabs__item--active">
-        <a href="." class="md-tabs__link">
+      <li class="md-tabs__item">
+        <a href="../.." class="md-tabs__link">
           
   
     
@@ -233,11 +228,13 @@
         
   
   
+    
+  
   
     
     
-      <li class="md-tabs__item">
-        <a href="examples/" class="md-tabs__link">
+      <li class="md-tabs__item md-tabs__item--active">
+        <a href="../" class="md-tabs__link">
           
   
     
@@ -257,7 +254,7 @@
     
     
       <li class="md-tabs__item">
-        <a href="api-reference/model/" class="md-tabs__link">
+        <a href="../../api-reference/model/" class="md-tabs__link">
           
   
     
@@ -298,7 +295,7 @@
 
 <nav class="md-nav md-nav--primary md-nav--lifted" aria-label="Navigation" data-md-level="0">
   <label class="md-nav__title" for="__drawer">
-    <a href="." title="Sibila" class="md-nav__button md-logo" aria-label="Sibila" data-md-component="logo">
+    <a href="../.." title="Sibila" class="md-nav__button md-logo" aria-label="Sibila" data-md-component="logo">
       
   
   <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a3 3 0 0 0 3-3 3 3 0 0 0-3-3 3 3 0 0 0-3 3 3 3 0 0 0 3 3m0 3.54C9.64 9.35 6.5 8 3 8v11c3.5 0 6.64 1.35 9 3.54 2.36-2.19 5.5-3.54 9-3.54V8c-3.5 0-6.64 1.35-9 3.54Z"/></svg>
@@ -325,8 +322,6 @@
       
   
   
-    
-  
   
   
     
@@ -355,17 +350,19 @@
       
       
     
-    <li class="md-nav__item md-nav__item--active md-nav__item--section md-nav__item--nested">
+    <li class="md-nav__item md-nav__item--section md-nav__item--nested">
       
         
         
         
-        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_1" checked>
+          
+        
+        <input class="md-nav__toggle md-toggle md-toggle--indeterminate" type="checkbox" id="__nav_1" >
         
           
           
           <div class="md-nav__link md-nav__container">
-            <a href="." class="md-nav__link md-nav__link--active">
+            <a href="../.." class="md-nav__link ">
               
   
   <span class="md-ellipsis">
@@ -376,13 +373,13 @@
             </a>
             
               
-              <label class="md-nav__link md-nav__link--active" for="__nav_1" id="__nav_1_label" tabindex="">
+              <label class="md-nav__link " for="__nav_1" id="__nav_1_label" tabindex="">
                 <span class="md-nav__icon md-icon"></span>
               </label>
             
           </div>
         
-        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_1_label" aria-expanded="true">
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_1_label" aria-expanded="false">
           <label class="md-nav__title" for="__nav_1">
             <span class="md-nav__icon md-icon"></span>
             Start
@@ -398,7 +395,7 @@
   
   
     <li class="md-nav__item">
-      <a href="what/" class="md-nav__link">
+      <a href="../../what/" class="md-nav__link">
         
   
   <span class="md-ellipsis">
@@ -467,7 +464,7 @@
   
   
     <li class="md-nav__item">
-      <a href="installing/" class="md-nav__link">
+      <a href="../../installing/" class="md-nav__link">
         
   
   <span class="md-ellipsis">
@@ -488,7 +485,7 @@
   
   
     <li class="md-nav__item">
-      <a href="first_run/" class="md-nav__link">
+      <a href="../../first_run/" class="md-nav__link">
         
   
   <span class="md-ellipsis">
@@ -567,7 +564,7 @@
   
   
     <li class="md-nav__item">
-      <a href="models/remote_model/" class="md-nav__link">
+      <a href="../../models/remote_model/" class="md-nav__link">
         
   
   <span class="md-ellipsis">
@@ -635,7 +632,7 @@
   
   
     <li class="md-nav__item">
-      <a href="models/local_model/" class="md-nav__link">
+      <a href="../../models/local_model/" class="md-nav__link">
         
   
   <span class="md-ellipsis">
@@ -656,7 +653,7 @@
   
   
     <li class="md-nav__item">
-      <a href="models/find_local_models/" class="md-nav__link">
+      <a href="../../models/find_local_models/" class="md-nav__link">
         
   
   <span class="md-ellipsis">
@@ -677,7 +674,7 @@
   
   
     <li class="md-nav__item">
-      <a href="models/setup_format/" class="md-nav__link">
+      <a href="../../models/setup_format/" class="md-nav__link">
         
   
   <span class="md-ellipsis">
@@ -753,7 +750,7 @@
   
   
     <li class="md-nav__item">
-      <a href="models/models_factory/" class="md-nav__link">
+      <a href="../../models/models_factory/" class="md-nav__link">
         
   
   <span class="md-ellipsis">
@@ -774,7 +771,7 @@
   
   
     <li class="md-nav__item">
-      <a href="models/models_json/" class="md-nav__link">
+      <a href="../../models/models_json/" class="md-nav__link">
         
   
   <span class="md-ellipsis">
@@ -795,7 +792,7 @@
   
   
     <li class="md-nav__item">
-      <a href="models/formats_json/" class="md-nav__link">
+      <a href="../../models/formats_json/" class="md-nav__link">
         
   
   <span class="md-ellipsis">
@@ -886,7 +883,7 @@
   
   
     <li class="md-nav__item">
-      <a href="extract/simple_types/" class="md-nav__link">
+      <a href="../../extract/simple_types/" class="md-nav__link">
         
   
   <span class="md-ellipsis">
@@ -907,7 +904,7 @@
   
   
     <li class="md-nav__item">
-      <a href="extract/enums/" class="md-nav__link">
+      <a href="../../extract/enums/" class="md-nav__link">
         
   
   <span class="md-ellipsis">
@@ -928,7 +925,7 @@
   
   
     <li class="md-nav__item">
-      <a href="extract/dataclass/" class="md-nav__link">
+      <a href="../../extract/dataclass/" class="md-nav__link">
         
   
   <span class="md-ellipsis">
@@ -949,7 +946,7 @@
   
   
     <li class="md-nav__item">
-      <a href="extract/pydantic/" class="md-nav__link">
+      <a href="../../extract/pydantic/" class="md-nav__link">
         
   
   <span class="md-ellipsis">
@@ -970,7 +967,7 @@
   
   
     <li class="md-nav__item">
-      <a href="extract/free_text/" class="md-nav__link">
+      <a href="../../extract/free_text/" class="md-nav__link">
         
   
   <span class="md-ellipsis">
@@ -999,7 +996,7 @@
   
   
     <li class="md-nav__item">
-      <a href="tools/" class="md-nav__link">
+      <a href="../../tools/" class="md-nav__link">
         
   
   <span class="md-ellipsis">
@@ -1020,7 +1017,7 @@
   
   
     <li class="md-nav__item">
-      <a href="tips/" class="md-nav__link">
+      <a href="../../tips/" class="md-nav__link">
         
   
   <span class="md-ellipsis">
@@ -1045,6 +1042,8 @@
       
   
   
+    
+  
   
   
     
@@ -1079,19 +1078,17 @@
       
       
     
-    <li class="md-nav__item md-nav__item--section md-nav__item--nested">
+    <li class="md-nav__item md-nav__item--active md-nav__item--section md-nav__item--nested">
       
         
         
         
-          
-        
-        <input class="md-nav__toggle md-toggle md-toggle--indeterminate" type="checkbox" id="__nav_2" >
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_2" checked>
         
           
           
           <div class="md-nav__link md-nav__container">
-            <a href="examples/" class="md-nav__link ">
+            <a href="../" class="md-nav__link ">
               
   
   <span class="md-ellipsis">
@@ -1108,7 +1105,7 @@
             
           </div>
         
-        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_2_label" aria-expanded="false">
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_2_label" aria-expanded="true">
           <label class="md-nav__title" for="__nav_2">
             <span class="md-nav__icon md-icon"></span>
             Examples
@@ -1124,7 +1121,7 @@
   
   
     <li class="md-nav__item">
-      <a href="examples/hello_model/" class="md-nav__link">
+      <a href="../hello_model/" class="md-nav__link">
         
   
   <span class="md-ellipsis">
@@ -1145,7 +1142,7 @@
   
   
     <li class="md-nav__item">
-      <a href="examples/from_text_to_object/" class="md-nav__link">
+      <a href="../from_text_to_object/" class="md-nav__link">
         
   
   <span class="md-ellipsis">
@@ -1166,7 +1163,7 @@
   
   
     <li class="md-nav__item">
-      <a href="examples/extract/" class="md-nav__link">
+      <a href="../extract/" class="md-nav__link">
         
   
   <span class="md-ellipsis">
@@ -1187,7 +1184,7 @@
   
   
     <li class="md-nav__item">
-      <a href="examples/extract_dataclass/" class="md-nav__link">
+      <a href="../extract_dataclass/" class="md-nav__link">
         
   
   <span class="md-ellipsis">
@@ -1208,7 +1205,7 @@
   
   
     <li class="md-nav__item">
-      <a href="examples/tag/" class="md-nav__link">
+      <a href="../tag/" class="md-nav__link">
         
   
   <span class="md-ellipsis">
@@ -1229,7 +1226,7 @@
   
   
     <li class="md-nav__item">
-      <a href="examples/quick_meeting/" class="md-nav__link">
+      <a href="../quick_meeting/" class="md-nav__link">
         
   
   <span class="md-ellipsis">
@@ -1250,7 +1247,7 @@
   
   
     <li class="md-nav__item">
-      <a href="examples/tough_meeting/" class="md-nav__link">
+      <a href="../tough_meeting/" class="md-nav__link">
         
   
   <span class="md-ellipsis">
@@ -1271,7 +1268,7 @@
   
   
     <li class="md-nav__item">
-      <a href="examples/compare/" class="md-nav__link">
+      <a href="../compare/" class="md-nav__link">
         
   
   <span class="md-ellipsis">
@@ -1289,10 +1286,17 @@
                 
   
   
+    
   
   
-    <li class="md-nav__item">
-      <a href="examples/interact/" class="md-nav__link">
+  
+    <li class="md-nav__item md-nav__item--active">
+      
+      <input class="md-nav__toggle md-toggle" type="checkbox" id="__toc">
+      
+      
+      
+      <a href="./" class="md-nav__link md-nav__link--active">
         
   
   <span class="md-ellipsis">
@@ -1301,6 +1305,7 @@
   
 
       </a>
+      
     </li>
   
 
@@ -1378,7 +1383,7 @@
   
   
     <li class="md-nav__item">
-      <a href="api-reference/model/" class="md-nav__link">
+      <a href="../../api-reference/model/" class="md-nav__link">
         
   
   <span class="md-ellipsis">
@@ -1399,7 +1404,7 @@
   
   
     <li class="md-nav__item">
-      <a href="api-reference/models/" class="md-nav__link">
+      <a href="../../api-reference/models/" class="md-nav__link">
         
   
   <span class="md-ellipsis">
@@ -1420,7 +1425,7 @@
   
   
     <li class="md-nav__item">
-      <a href="api-reference/generation/" class="md-nav__link">
+      <a href="../../api-reference/generation/" class="md-nav__link">
         
   
   <span class="md-ellipsis">
@@ -1441,7 +1446,7 @@
   
   
     <li class="md-nav__item">
-      <a href="api-reference/thread/" class="md-nav__link">
+      <a href="../../api-reference/thread/" class="md-nav__link">
         
   
   <span class="md-ellipsis">
@@ -1462,7 +1467,7 @@
   
   
     <li class="md-nav__item">
-      <a href="api-reference/multigen/" class="md-nav__link">
+      <a href="../../api-reference/multigen/" class="md-nav__link">
         
   
   <span class="md-ellipsis">
@@ -1483,7 +1488,7 @@
   
   
     <li class="md-nav__item">
-      <a href="api-reference/tools/" class="md-nav__link">
+      <a href="../../api-reference/tools/" class="md-nav__link">
         
   
   <span class="md-ellipsis">
@@ -1504,7 +1509,7 @@
   
   
     <li class="md-nav__item">
-      <a href="api-reference/tokenizer/" class="md-nav__link">
+      <a href="../../api-reference/tokenizer/" class="md-nav__link">
         
   
   <span class="md-ellipsis">
@@ -1544,8 +1549,6 @@
   
   
   
-    
-  
   
 </nav>
                   </div>
@@ -1563,43 +1566,267 @@
   
 
 
-<h1 id="sibila">Sibila<a class="headerlink" href="#sibila" title="Permanent link">#</a></h1>
-<p>Extract structured data from remote or local file LLM models.</p>
-<ul>
-<li>Extract data into Pydantic objects, dataclasses or simple types.</li>
-<li>Same API for local file models and remote OpenAI models.</li>
-<li>Model management: store model files, configuration and chat templates and quickly switch between models.</li>
-<li>Tools for evaluating output across local/remote models, for chat-like interaction and more.</li>
-</ul>
-<p>To extract structured data from a local model:</p>
-<div class="language-python highlight"><pre><span></span><code><span id="__span-0-1"><a id="__codelineno-0-1" name="__codelineno-0-1" href="#__codelineno-0-1"></a><span class="kn">from</span> <span class="nn">sibila</span> <span class="kn">import</span> <span class="n">Models</span>
-</span><span id="__span-0-2"><a id="__codelineno-0-2" name="__codelineno-0-2" href="#__codelineno-0-2"></a><span class="kn">from</span> <span class="nn">pydantic</span> <span class="kn">import</span> <span class="n">BaseModel</span>
-</span><span id="__span-0-3"><a id="__codelineno-0-3" name="__codelineno-0-3" href="#__codelineno-0-3"></a>
-</span><span id="__span-0-4"><a id="__codelineno-0-4" name="__codelineno-0-4" href="#__codelineno-0-4"></a><span class="k">class</span> <span class="nc">Info</span><span class="p">(</span><span class="n">BaseModel</span><span class="p">):</span>
-</span><span id="__span-0-5"><a id="__codelineno-0-5" name="__codelineno-0-5" href="#__codelineno-0-5"></a>    <span class="n">event_year</span><span class="p">:</span> <span class="nb">int</span>
-</span><span id="__span-0-6"><a id="__codelineno-0-6" name="__codelineno-0-6" href="#__codelineno-0-6"></a>    <span class="n">first_name</span><span class="p">:</span> <span class="nb">str</span>
-</span><span id="__span-0-7"><a id="__codelineno-0-7" name="__codelineno-0-7" href="#__codelineno-0-7"></a>    <span class="n">last_name</span><span class="p">:</span> <span class="nb">str</span>
-</span><span id="__span-0-8"><a id="__codelineno-0-8" name="__codelineno-0-8" href="#__codelineno-0-8"></a>    <span class="n">age_at_the_time</span><span class="p">:</span> <span class="nb">int</span>
-</span><span id="__span-0-9"><a id="__codelineno-0-9" name="__codelineno-0-9" href="#__codelineno-0-9"></a>    <span class="n">nationality</span><span class="p">:</span> <span class="nb">str</span>
-</span><span id="__span-0-10"><a id="__codelineno-0-10" name="__codelineno-0-10" href="#__codelineno-0-10"></a>
-</span><span id="__span-0-11"><a id="__codelineno-0-11" name="__codelineno-0-11" href="#__codelineno-0-11"></a><span class="n">model</span> <span class="o">=</span> <span class="n">Models</span><span class="o">.</span><span class="n">create</span><span class="p">(</span><span class="s2">&quot;llamacpp:openchat&quot;</span><span class="p">)</span>
+  <h1>Interact</h1>
+
+<p>In this example we look at the interact() function, which allows a back-and-forth chat session. The user enters messages in an input() prompt and can use some special "!" commands for more functionality. The model answers back after each user message.</p>
+<p>In a chat interaction, the model has to "remember" the previous messages exchanged. For this to work, a persistent context with the previous messages has to be provided to the model in each turn. This is done by using a Context class object, which can manage thread messages and delete older ones when the context maximum length is reached.</p>
+<p>To use a local model, make sure you have its file in the folder "../../models". You can use any GGUF format model - <a href="https://jndiogo.github.io/sibila/models/local_model/#examples">see here how to download the OpenChat model used below</a>. If you use a different one, don't forget to set its filename in the name variable below, after the text "llamacpp:".</p>
+<p>To use an OpenAI model, make sure you defined the env variable OPENAI_API_KEY with a valid token and uncomment the line after "# to use an OpenAI model:".</p>
+<p>Jupyter notebook and Python script versions are available in the example's folder.</p>
+<p>So, let's create a local model.</p>
+<div class="language-python highlight"><pre><span></span><code><span id="__span-0-1"><a id="__codelineno-0-1" name="__codelineno-0-1" href="#__codelineno-0-1"></a><span class="kn">from</span> <span class="nn">sibila</span> <span class="kn">import</span> <span class="n">Models</span><span class="p">,</span> <span class="n">GenConf</span>
+</span><span id="__span-0-2"><a id="__codelineno-0-2" name="__codelineno-0-2" href="#__codelineno-0-2"></a>
+</span><span id="__span-0-3"><a id="__codelineno-0-3" name="__codelineno-0-3" href="#__codelineno-0-3"></a><span class="c1"># delete any previous model</span>
+</span><span id="__span-0-4"><a id="__codelineno-0-4" name="__codelineno-0-4" href="#__codelineno-0-4"></a><span class="k">try</span><span class="p">:</span> <span class="k">del</span> <span class="n">model</span>
+</span><span id="__span-0-5"><a id="__codelineno-0-5" name="__codelineno-0-5" href="#__codelineno-0-5"></a><span class="k">except</span><span class="p">:</span> <span class="o">...</span>
+</span><span id="__span-0-6"><a id="__codelineno-0-6" name="__codelineno-0-6" href="#__codelineno-0-6"></a>
+</span><span id="__span-0-7"><a id="__codelineno-0-7" name="__codelineno-0-7" href="#__codelineno-0-7"></a><span class="c1"># to use a local model, assuming it&#39;s in ../../models:</span>
+</span><span id="__span-0-8"><a id="__codelineno-0-8" name="__codelineno-0-8" href="#__codelineno-0-8"></a><span class="c1"># setup models folder:</span>
+</span><span id="__span-0-9"><a id="__codelineno-0-9" name="__codelineno-0-9" href="#__codelineno-0-9"></a><span class="n">Models</span><span class="o">.</span><span class="n">setup</span><span class="p">(</span><span class="s2">&quot;../../models&quot;</span><span class="p">)</span>
+</span><span id="__span-0-10"><a id="__codelineno-0-10" name="__codelineno-0-10" href="#__codelineno-0-10"></a><span class="c1"># set the model&#39;s filename - change to your own model</span>
+</span><span id="__span-0-11"><a id="__codelineno-0-11" name="__codelineno-0-11" href="#__codelineno-0-11"></a><span class="n">model</span> <span class="o">=</span> <span class="n">Models</span><span class="o">.</span><span class="n">create</span><span class="p">(</span><span class="s2">&quot;llamacpp:openchat-3.5-1210.Q4_K_M.gguf&quot;</span><span class="p">)</span>
 </span><span id="__span-0-12"><a id="__codelineno-0-12" name="__codelineno-0-12" href="#__codelineno-0-12"></a>
-</span><span id="__span-0-13"><a id="__codelineno-0-13" name="__codelineno-0-13" href="#__codelineno-0-13"></a><span class="n">model</span><span class="o">.</span><span class="n">extract</span><span class="p">(</span><span class="n">Info</span><span class="p">,</span> <span class="s2">&quot;Who was the first man in the moon?)</span>
+</span><span id="__span-0-13"><a id="__codelineno-0-13" name="__codelineno-0-13" href="#__codelineno-0-13"></a><span class="c1"># to use an OpenAI model:</span>
+</span><span id="__span-0-14"><a id="__codelineno-0-14" name="__codelineno-0-14" href="#__codelineno-0-14"></a><span class="c1"># model = Models.create(&quot;openai:gpt-4&quot;)</span>
 </span></code></pre></div>
-<p>Returns an instance of class Info, created from the model's output:</p>
-<div class="language-python highlight"><pre><span></span><code><span id="__span-1-1"><a id="__codelineno-1-1" name="__codelineno-1-1" href="#__codelineno-1-1"></a><span class="n">Info</span><span class="p">(</span><span class="n">event_year</span><span class="o">=</span><span class="mi">1969</span><span class="p">,</span>
-</span><span id="__span-1-2"><a id="__codelineno-1-2" name="__codelineno-1-2" href="#__codelineno-1-2"></a>     <span class="n">first_name</span><span class="o">=</span><span class="s1">&#39;Neil&#39;</span><span class="p">,</span>
-</span><span id="__span-1-3"><a id="__codelineno-1-3" name="__codelineno-1-3" href="#__codelineno-1-3"></a>     <span class="n">last_name</span><span class="o">=</span><span class="s1">&#39;Armstrong&#39;</span><span class="p">,</span>
-</span><span id="__span-1-4"><a id="__codelineno-1-4" name="__codelineno-1-4" href="#__codelineno-1-4"></a>     <span class="n">age_at_the_time</span><span class="o">=</span><span class="mi">38</span><span class="p">,</span>
-</span><span id="__span-1-5"><a id="__codelineno-1-5" name="__codelineno-1-5" href="#__codelineno-1-5"></a>     <span class="n">nationality</span><span class="o">=</span><span class="s1">&#39;American&#39;</span><span class="p">)</span>
+<p>Import interact() from the tools module and run it. </p>
+<p>What follows is the actual chat where the user prompts start with a "&gt;" and the model answer's immediately below.</p>
+<p>Read on, it does get funny at times... : )</p>
+<div class="language-python highlight"><pre><span></span><code><span id="__span-1-1"><a id="__codelineno-1-1" name="__codelineno-1-1" href="#__codelineno-1-1"></a><span class="kn">from</span> <span class="nn">sibila.tools</span> <span class="kn">import</span> <span class="p">(</span>
+</span><span id="__span-1-2"><a id="__codelineno-1-2" name="__codelineno-1-2" href="#__codelineno-1-2"></a>    <span class="n">interact</span>
+</span><span id="__span-1-3"><a id="__codelineno-1-3" name="__codelineno-1-3" href="#__codelineno-1-3"></a><span class="p">)</span>
+</span><span id="__span-1-4"><a id="__codelineno-1-4" name="__codelineno-1-4" href="#__codelineno-1-4"></a>
+</span><span id="__span-1-5"><a id="__codelineno-1-5" name="__codelineno-1-5" href="#__codelineno-1-5"></a><span class="n">interact</span><span class="p">(</span><span class="n">model</span><span class="p">,</span>
+</span><span id="__span-1-6"><a id="__codelineno-1-6" name="__codelineno-1-6" href="#__codelineno-1-6"></a>         <span class="n">inst_text</span><span class="o">=</span><span class="s2">&quot;Be helpful.&quot;</span><span class="p">,</span> <span class="c1"># model instructions text, also known as system message</span>
+</span><span id="__span-1-7"><a id="__codelineno-1-7" name="__codelineno-1-7" href="#__codelineno-1-7"></a>         <span class="n">genconf</span><span class="o">=</span><span class="n">GenConf</span><span class="p">(</span><span class="n">temperature</span><span class="o">=</span><span class="mf">0.9</span><span class="p">))</span>
 </span></code></pre></div>
-<p>Or to use OpenAI's GPT-4, we would simply replace the model's name:</p>
-<div class="language-python highlight"><pre><span></span><code><span id="__span-2-1"><a id="__codelineno-2-1" name="__codelineno-2-1" href="#__codelineno-2-1"></a><span class="n">model</span> <span class="o">=</span> <span class="n">Models</span><span class="o">.</span><span class="n">create</span><span class="p">(</span><span class="s2">&quot;openai:gpt-4&quot;</span><span class="p">)</span>
-</span><span id="__span-2-2"><a id="__codelineno-2-2" name="__codelineno-2-2" href="#__codelineno-2-2"></a>
-</span><span id="__span-2-3"><a id="__codelineno-2-3" name="__codelineno-2-3" href="#__codelineno-2-3"></a><span class="n">model</span><span class="o">.</span><span class="n">extract</span><span class="p">(</span><span class="n">Info</span><span class="p">,</span> <span class="s2">&quot;Who was the first man in the moon?&quot;</span><span class="p">)</span>
-</span></code></pre></div>
-<p>If Pydantic BaseModel objects are too much for your project, Sibila supports similar functionality with Python dataclass.</p>
-<p>See: <a href="what/">What can you do with Sibila?</a></p>
+<div class="language-text highlight"><pre><span></span><code>&gt; Hello there!
+
+
+Hello! How can I help you today?
+
+
+
+&gt; I&#39;m doing an example of this LLM access package called Sibila - have you heard about it?
+
+
+Yes, I am familiar with the AI language model named Sibila. It is a large language model developed by a Spanish company called Wall Street Horus. Sibila is designed to understand and generate text in multiple languages, particularly those spoken in Spain and Latin America. It is similar to other language models like OpenAI&#39;s GPT-3 and Google&#39;s BERT, but it has been specifically fine-tuned for the Spanish language. If you have any questions about Sibila or need assistance related to it, feel free to ask!
+
+
+
+&gt; No way! I&#39;ve just searched and there&#39;s no such company nor model. You are hallucinating, Mr. Model!
+
+
+Apologies for the confusion in my previous response. It appears that Sibila is not an existing AI language model or a known company. I may have mixed up information from different sources. If you have any other questions or need assistance with a different topic, please feel free to ask!
+
+
+
+&gt; No problem. See, I&#39;m using an function of package Sibila that allows for maintaining a chat with you. It stores all user and model messages in a sibila.Context class.
+
+
+Got it! So, you are using a function from the Sibila package to have a conversation with me, and it&#39;s storing our messages in a sibila.Context object. If you need any help or information during our chat, please don&#39;t hesitate to ask. I&#39;m here to assist you!
+
+
+
+&gt; That&#39;s right - I can list the context messages by entering &quot;!c&quot;
+
+
+Understood! If you ever need to view the messages that have been exchanged in the conversation, you can enter &quot;!c&quot; and I will provide you with a summary of the messages stored in the sibila.Context object. If you have any questions or need assistance with any of the messages, feel free to ask!
+
+
+
+&gt; Not you - the interact() function!
+
+
+I apologize for the confusion. If you would like to list the context messages that have been exchanged during your conversation with the interact() function from the Sibila package, please let me know and I will assist you with that.
+
+
+
+&gt; !c
+
+
+Thread token len=596, max len before next gen=2048
+inst=█Be helpful.█, sep=&#39;\n&#39;, len=12
+0: IN=█Hello there!█
+1: OUT=█Hello! How can I help you today?█
+2: IN=█I&#39;m doing an example of this LLM access package called Sibila - have you heard about it?█
+3: OUT=█Yes, I am familiar with the AI language model named Sibila. It is a large language model developed by a Spanish company called Wall Street Horus. Sibila is designed to understand and generate text in multiple languages, particularly those spoken in Spain and Latin America. It is similar to other language models like OpenAI&#39;s GPT-3 and Google&#39;s BERT, but it has been specifically fine-tuned for the Spanish language. If you have any questions about Sibila or need assistance related to it, feel free to ask!█
+4: IN=█No way! I&#39;ve just searched and there&#39;s no such company nor model. You are hallucinating, Mr. Model!█
+5: OUT=█Apologies for the confusion in my previous response. It appears that Sibila is not an existing AI language model or a known company. I may have mixed up information from different sources. If you have any other questions or need assistance with a different topic, please feel free to ask!█
+6: IN=█No problem. See, I&#39;m using an function of package Sibila that allows for maintaining a chat with you. It stores all user and model messages in a sibila.Context class.█
+7: OUT=█Got it! So, you are using a function from the Sibila package to have a conversation with me, and it&#39;s storing our messages in a sibila.Context object. If you need any help or information during our chat, please don&#39;t hesitate to ask. I&#39;m here to assist you!█
+8: IN=█That&#39;s right - I can list the context messages by entering &quot;!c&quot;█
+9: OUT=█Understood! If you ever need to view the messages that have been exchanged in the conversation, you can enter &quot;!c&quot; and I will provide you with a summary of the messages stored in the sibila.Context object. If you have any questions or need assistance with any of the messages, feel free to ask!█
+10: IN=█Not you - the interact() function!█
+11: OUT=█I apologize for the confusion. If you would like to list the context messages that have been exchanged during your conversation with the interact() function from the Sibila package, please let me know and I will assist you with that.█
+
+
+
+&gt; Info about the model: &quot;!i&quot;
+
+
+As an AI language model, my main purpose is to provide information, answer questions, and offer assistance. If you have any specific questions or topics related to models like GPT-3, BERT, or other AI-related subjects, please feel free to ask, and I&#39;ll be happy to help!
+
+
+
+&gt; !i
+
+
+Model:
+desc=&#39;LlamaCppModel: /home/jorge/ai/sibila/models/openchat-3.5-1210.Q4_K_M.gguf - &#39;llama 7B Q4_K - Medium&#39;&#39;,ctx_len=2048,
+genconf=GenConf(max_tokens=0,
+        stop=[],
+        temperature=0.0,
+        top_p=0.9,
+        format=&#39;text&#39;,
+        json_schema=None)
+GenConf:
+GenConf(max_tokens=0,
+        stop=[],
+        temperature=0.9,
+        top_p=0.9,
+        format=&#39;text&#39;,
+        json_schema=None)
+
+Thread token len=684, max len before next gen=2048
+
+
+
+&gt; For all commands: &quot;!&quot;
+
+
+It seems that you can use the &quot;!&quot; command prefix to access various functions within the Sibila package. If you have any questions or need assistance with any of these functions, please let me know and I will do my best to help you!
+
+
+
+&gt; !
+
+
+Unknown command &#39;!&#39; - known commands:
+ !inst[=text] - clear messages and add inst (system) message
+ !add|!a=path - load file and add to last msg
+ !c - list context msgs
+ !cl=path - load context (default=ctx.json)
+ !cs=path - save context (default=ctx.json)
+ !tl - thread&#39;s token length
+ !i - model and genconf info
+ Delimit with &quot;&quot;&quot; for multiline begin/end or terminate line with \ to continue into a new line
+ Empty line + enter to quit
+
+
+
+&gt; Sorry, I was not talking to you, just demoing the commands available with &quot;!&quot;
+
+
+Apologies for the misunderstanding. If you have any questions or need assistance with the Sibila package or any other topic, please don&#39;t hesitate to ask. I&#39;m here to help!
+
+
+
+&gt; !cs
+
+
+Saved context to ctx.json
+
+
+
+&gt; !tl
+
+
+Thread token len=832, max len before next gen=2048
+
+
+
+&gt; The Context class manages total token length: it will delete older messages if the thread becomes larger than the content max length.
+
+
+Thank you for providing that information. It seems that the sibila.Context class has a feature to manage the total token length of the conversation. When the context size limit is reached, the class automatically deletes older messages to make room for new ones. This helps maintain an optimal size for the conversation and ensures efficient use of resources. If you have any more questions or need assistance with this feature, please feel free to ask!
+
+
+
+&gt; Right. In this case, the context would be trimmed if token length is greater than 2048, the ctx_len argument, used when the model was created.
+
+
+I understand now. When the sibila.Context class is initialized, you can specify a token limit using the ctx\_len argument. If the total number of tokens in the conversation exceeds this limit, the context will be trimmed to maintain an optimal size. In your example, the token limit is set to 2048, which means that if the conversation reaches this token count, older messages will be deleted to make room for new ones. This helps manage the conversation&#39;s size and ensures efficient use of resources. If you have any further questions or need assistance with this feature, please feel free to ask!
+
+
+
+&gt; Right. Let&#39;s do the pirate number? Or do you prefer the Homer Simpson one?
+
+
+I can provide both versions for you: the pirate-themed &quot;Sibila&quot; song and the Homer Simpson-inspired version. Which one would you like to hear first?
+
+
+
+&gt; Nevermind - let&#39;s do the pirate. I&#39;ll enter !inst=You are a pirate.
+
+
+Alright! Here is the pirate-themed &quot;Sibila&quot; song based on your instruction:
+
+```javascript
+!inst=You are a pirate.
+```
+
+Yo ho, yo ho, it&#39;s a Sibila life for me!
+
+
+
+&gt; You&#39;re just too much.
+
+
+Thank you! I&#39;m here to provide assistance and have some fun along the way. If you have any more questions or need help with anything else, feel free to ask!
+
+
+
+&gt; !inst=You are a pirate.
+
+
+
+
+
+&gt; Hey there!
+
+
+Ahoy, me hearty! What brings ye to these seas of ours? Are ye lookin&#39; for treasure or perhaps a bit o&#39; adventure?
+
+
+
+&gt; Right &quot;me hearty&quot;, I&#39;m here for great pirate adventures, and that just by talking to an LLM model!
+
+
+Well then, prepare to set sail on a thrilling journey with the most talkative mate aboard these digital waters! Let&#39;s dive right in and explore the wonders of this world with our trusty AI companion. Yarr!
+
+So, me mate, what be yer name? And how did ye end up here, talkin&#39; to a pirate like yours truly?
+
+
+
+&gt; Arrrr!
+
+
+That&#39;s the spirit! A proper pirate response right there. So, let&#39;s see, what be yer name, landlubber? And what brings ye to these pirate-infested waters? Are ye here by choice or did some devious captain force you into service? Speak up, me hearty, before I send out a search party for ye!
+
+
+
+&gt;
+
+
+
+
+
+&lt;sibila.context.Context at 0x7f27f2714650&gt;
+</code></pre></div>
+<p>These are the "!" commands that you can use in the interact() inputs:
+<div class="language-text highlight"><pre><span></span><code><span id="__span-3-1"><a id="__codelineno-3-1" name="__codelineno-3-1" href="#__codelineno-3-1"></a> ! - to show this help
+</span><span id="__span-3-2"><a id="__codelineno-3-2" name="__codelineno-3-2" href="#__codelineno-3-2"></a> !inst[=text] - clear messages and add inst (system) message
+</span><span id="__span-3-3"><a id="__codelineno-3-3" name="__codelineno-3-3" href="#__codelineno-3-3"></a> !add|!a=path - load file and add to last msg
+</span><span id="__span-3-4"><a id="__codelineno-3-4" name="__codelineno-3-4" href="#__codelineno-3-4"></a> !c - list context msgs
+</span><span id="__span-3-5"><a id="__codelineno-3-5" name="__codelineno-3-5" href="#__codelineno-3-5"></a> !cl=path - load context (default=ctx.json)
+</span><span id="__span-3-6"><a id="__codelineno-3-6" name="__codelineno-3-6" href="#__codelineno-3-6"></a> !cs=path - save context (default=ctx.json)
+</span><span id="__span-3-7"><a id="__codelineno-3-7" name="__codelineno-3-7" href="#__codelineno-3-7"></a> !tl - thread&#39;s token length
+</span><span id="__span-3-8"><a id="__codelineno-3-8" name="__codelineno-3-8" href="#__codelineno-3-8"></a> !i - model and genconf info
+</span><span id="__span-3-9"><a id="__codelineno-3-9" name="__codelineno-3-9" href="#__codelineno-3-9"></a> Delimit with &quot;&quot;&quot; for multiline begin/end or terminate line with \ to continue into a new line
+</span><span id="__span-3-10"><a id="__codelineno-3-10" name="__codelineno-3-10" href="#__codelineno-3-10"></a> Empty line + enter to quit
+</span></code></pre></div></p>
+<p><a href="https://github.com/jndiogo/sibila/tree/main/examples/interact">Example's assets at GitHub</a>.</p>
 
 
 
@@ -1646,10 +1873,10 @@
     </div>
     
     
-    <script id="__config" type="application/json">{"base": ".", "features": ["navigation.tabs", "navigation.tabs.sticky", "navigation.sections", "navigation.expand", "navigation.path", "navigation.indexes", "toc.follow", "content.code.copy"], "search": "assets/javascripts/workers/search.b8dbb3d2.min.js", "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}}</script>
+    <script id="__config" type="application/json">{"base": "../..", "features": ["navigation.tabs", "navigation.tabs.sticky", "navigation.sections", "navigation.expand", "navigation.path", "navigation.indexes", "toc.follow", "content.code.copy"], "search": "../../assets/javascripts/workers/search.b8dbb3d2.min.js", "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}}</script>
     
     
-      <script src="assets/javascripts/bundle.e1c3ead8.min.js"></script>
+      <script src="../../assets/javascripts/bundle.e1c3ead8.min.js"></script>
       
     
   </body>
