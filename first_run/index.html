@@ -629,7 +629,7 @@
         
   
   <span class="md-ellipsis">
-    Remote model
+    Remote models
   </span>
   
 
@@ -672,7 +672,7 @@
             
   
   <span class="md-ellipsis">
-    Local model
+    Local models
   </span>
   
 
@@ -682,7 +682,7 @@
         <nav class="md-nav" data-md-level="3" aria-labelledby="__nav_1_4_2_label" aria-expanded="false">
           <label class="md-nav__title" for="__nav_1_4_2">
             <span class="md-nav__icon md-icon"></span>
-            Local model
+            Local models
           </label>
           <ul class="md-nav__list" data-md-scrollfix>
             
@@ -772,6 +772,8 @@
       
         
       
+        
+      
     
     
     
@@ -836,7 +838,7 @@
         
   
   <span class="md-ellipsis">
-    models.json file
+    Managing models
   </span>
   
 
@@ -857,7 +859,28 @@
         
   
   <span class="md-ellipsis">
-    formats.json file
+    Managing formats
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../models/sibila_cli/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Sibila CLI tool
   </span>
   
 
@@ -1130,6 +1153,8 @@
       
         
       
+        
+      
     
     
     
@@ -1355,6 +1380,27 @@
   
   <span class="md-ellipsis">
     Interact
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../examples/cli/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Sibila CLI
   </span>
   
 
@@ -1693,10 +1739,10 @@
 </div>
 <p>You're all set if you only plan to use remote OpenAI models.</p>
 <h2 id="with-a-local-model">With a local model<a class="headerlink" href="#with-a-local-model" title="Permanent link">#</a></h2>
-<p>You'll need to download a GGUF model file: we suggest OpenChat 3.5 - an excellent 7B parameters quantized model that will run in less thant 7Gb of memory.</p>
-<p>Most of the examples included with Sibila use OpenChat. You can download the model file (4.4Gb) from:</p>
-<p><a href="https://huggingface.co/TheBloke/openchat-3.5-1210-GGUF/blob/main/openchat-3.5-1210.Q4_K_M.gguf">https://huggingface.co/TheBloke/openchat-3.5-1210-GGUF/blob/main/openchat-3.5-1210.Q4_K_M.gguf</a></p>
-<p>In the above page, click "download" and save this file into the "models" folder. If you downloaded the the repository from GitHub, it already includes a "models" folder. Otherwise, just create a "models" folder, where you'll store your local model files.</p>
+<p>Local models run from files in GGUF format which are loaded run by the llama.cpp component.</p>
+<p>You'll need to download a GGUF model file: we suggest OpenChat 3.5 - an excellent 7B parameters quantized model that will run in less thant 7Gb of memory. </p>
+<p>To download the OpenChat model file, please see <a href="../models/local_model/#openchat-model">Download OpenChat model</a>.</p>
+<p>After downloading the file, you can run this "Hello Model" script:</p>
 <div class="admonition example">
 <p class="admonition-title">Example</p>
 <div class="language-python highlight"><pre><span></span><code><span id="__span-4-1"><a id="__codelineno-4-1" name="__codelineno-4-1" href="#__codelineno-4-1"></a><span class="kn">from</span> <span class="nn">sibila</span> <span class="kn">import</span> <span class="n">LlamaCppModel</span><span class="p">,</span> <span class="n">GenConf</span>

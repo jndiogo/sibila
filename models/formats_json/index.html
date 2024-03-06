@@ -14,7 +14,7 @@
         <link rel="prev" href="../models_json/">
       
       
-        <link rel="next" href="../../extract/simple_types/">
+        <link rel="next" href="../sibila_cli/">
       
       
       <link rel="icon" href="../../assets/images/favicon.png">
@@ -22,7 +22,7 @@
     
     
       
-        <title>formats.json file - Sibila</title>
+        <title>Managing formats - Sibila</title>
       
     
     
@@ -77,6 +77,11 @@
     <label class="md-overlay" for="__drawer"></label>
     <div data-md-component="skip">
       
+        
+        <a href="#with-sibila-formats-cli-tool" class="md-skip">
+          Skip to content
+        </a>
+      
     </div>
     <div data-md-component="announce">
       
@@ -109,7 +114,7 @@
         <div class="md-header__topic" data-md-component="header-topic">
           <span class="md-ellipsis">
             
-              formats.json file
+              Managing formats
             
           </span>
         </div>
@@ -568,7 +573,7 @@
         
   
   <span class="md-ellipsis">
-    Remote model
+    Remote models
   </span>
   
 
@@ -611,7 +616,7 @@
             
   
   <span class="md-ellipsis">
-    Local model
+    Local models
   </span>
   
 
@@ -621,7 +626,7 @@
         <nav class="md-nav" data-md-level="3" aria-labelledby="__nav_1_4_2_label" aria-expanded="false">
           <label class="md-nav__title" for="__nav_1_4_2">
             <span class="md-nav__icon md-icon"></span>
-            Local model
+            Local models
           </label>
           <ul class="md-nav__list" data-md-scrollfix>
             
@@ -713,6 +718,8 @@
       
         
       
+        
+      
     
     
     
@@ -775,7 +782,7 @@
         
   
   <span class="md-ellipsis">
-    models.json file
+    Managing models
   </span>
   
 
@@ -799,16 +806,85 @@
       
       
       
+        <label class="md-nav__link md-nav__link--active" for="__toc">
+          
+  
+  <span class="md-ellipsis">
+    Managing formats
+  </span>
+  
+
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
       <a href="./" class="md-nav__link md-nav__link--active">
         
   
   <span class="md-ellipsis">
-    formats.json file
+    Managing formats
   </span>
   
 
       </a>
       
+        
+
+  
+
+<nav class="md-nav md-nav--secondary" aria-label="Contents">
+  
+  
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Contents
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#with-sibila-formats-cli-tool" class="md-nav__link">
+    <span class="md-ellipsis">
+      With "sibila formats" CLI tool
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#manually-edit-formatsjson" class="md-nav__link">
+    <span class="md-ellipsis">
+      Manually edit "formats.json"
+    </span>
+  </a>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../sibila_cli/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Sibila CLI tool
+  </span>
+  
+
+      </a>
     </li>
   
 
@@ -1077,6 +1153,8 @@
       
         
       
+        
+      
     
     
     
@@ -1302,6 +1380,27 @@
   
   <span class="md-ellipsis">
     Interact
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../examples/cli/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Sibila CLI
   </span>
   
 
@@ -1550,6 +1649,32 @@
   
   
   
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Contents
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#with-sibila-formats-cli-tool" class="md-nav__link">
+    <span class="md-ellipsis">
+      With "sibila formats" CLI tool
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#manually-edit-formatsjson" class="md-nav__link">
+    <span class="md-ellipsis">
+      Manually edit "formats.json"
+    </span>
+  </a>
+  
+</li>
+      
+    </ul>
+  
 </nav>
                   </div>
                 </div>
@@ -1566,37 +1691,24 @@
   
 
 
-  <h1>formats.json file</h1>
+  <h1>Managing formats</h1>
 
-<p>A "formats.json" file stores the <a href="../setup_format/">chat template definitions</a> to use in models. This allows for models that don't have a chat template in their metadata to be detected and get the right format so they can function well.</p>
+<p>A "formats.json" file stores the <a href="../setup_format/">chat template definitions</a> used in models. This allows for models that don't have a chat template in their metadata to be detected and get the right format so they can function well.</p>
 <p>If you downloaded the GitHub repository, you'll find a file named "<a href="https://github.com/jndiogo/sibila/blob/main/sibila/base_formats.json">base_formats.json</a>", which is the default base configuration that will be used, with many known chat template formats. </p>
 <p>When you call <a href="../../api-reference/models/#sibila.Models.setup">Models.setup()</a>, any "formats.json" file found in the folder will be loaded and its definitions will be merged with the ones from "base_formats.json" which are loaded on initialization. Any entries with the same name will be replaced by freshly loaded ones.</p>
-<div class="admonition example">
-<p class="admonition-title">Example of a "formats.json" file</p>
-<div class="language-json highlight"><pre><span></span><code><span id="__span-0-1"><a id="__codelineno-0-1" name="__codelineno-0-1" href="#__codelineno-0-1"></a><span class="p">{</span>
-</span><span id="__span-0-2"><a id="__codelineno-0-2" name="__codelineno-0-2" href="#__codelineno-0-2"></a><span class="w">    </span><span class="nt">&quot;chatml&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">{</span>
-</span><span id="__span-0-3"><a id="__codelineno-0-3" name="__codelineno-0-3" href="#__codelineno-0-3"></a><span class="w">        </span><span class="err">#</span><span class="w"> </span><span class="kc">te</span><span class="err">mpla</span><span class="kc">te</span><span class="w"> </span><span class="err">is</span><span class="w"> </span><span class="err">a</span><span class="w"> </span><span class="err">Ji</span><span class="kc">n</span><span class="err">ja</span><span class="w"> </span><span class="kc">te</span><span class="err">mpla</span><span class="kc">te</span><span class="w"> </span><span class="kc">f</span><span class="err">or</span><span class="w"> </span><span class="kc">t</span><span class="err">his</span><span class="w"> </span><span class="err">model</span>
-</span><span id="__span-0-4"><a id="__codelineno-0-4" name="__codelineno-0-4" href="#__codelineno-0-4"></a><span class="w">        </span><span class="nt">&quot;template&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;{% for message in messages %}...&quot;</span>
-</span><span id="__span-0-5"><a id="__codelineno-0-5" name="__codelineno-0-5" href="#__codelineno-0-5"></a><span class="w">    </span><span class="p">},</span>
-</span><span id="__span-0-6"><a id="__codelineno-0-6" name="__codelineno-0-6" href="#__codelineno-0-6"></a>
-</span><span id="__span-0-7"><a id="__codelineno-0-7" name="__codelineno-0-7" href="#__codelineno-0-7"></a><span class="w">    </span><span class="nt">&quot;openchat&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">{</span>
-</span><span id="__span-0-8"><a id="__codelineno-0-8" name="__codelineno-0-8" href="#__codelineno-0-8"></a><span class="w">        </span><span class="nt">&quot;match&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;openchat.3&quot;</span><span class="p">,</span><span class="w"> </span><span class="err">#</span><span class="w"> </span><span class="err">a</span><span class="w"> </span><span class="err">regexp</span><span class="w"> </span><span class="kc">t</span><span class="err">o</span><span class="w"> </span><span class="err">ma</span><span class="kc">t</span><span class="err">ch</span><span class="w"> </span><span class="err">model</span><span class="w"> </span><span class="kc">na</span><span class="err">me</span><span class="w"> </span><span class="err">or</span><span class="w"> </span><span class="kc">f</span><span class="err">ile</span><span class="kc">na</span><span class="err">me</span>
-</span><span id="__span-0-9"><a id="__codelineno-0-9" name="__codelineno-0-9" href="#__codelineno-0-9"></a><span class="w">        </span><span class="nt">&quot;template&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;{{ bos_token }}...&quot;</span>
-</span><span id="__span-0-10"><a id="__codelineno-0-10" name="__codelineno-0-10" href="#__codelineno-0-10"></a><span class="w">    </span><span class="p">},</span><span class="w">    </span>
-</span><span id="__span-0-11"><a id="__codelineno-0-11" name="__codelineno-0-11" href="#__codelineno-0-11"></a>
-</span><span id="__span-0-12"><a id="__codelineno-0-12" name="__codelineno-0-12" href="#__codelineno-0-12"></a><span class="w">    </span><span class="nt">&quot;phi2&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">{</span>
-</span><span id="__span-0-13"><a id="__codelineno-0-13" name="__codelineno-0-13" href="#__codelineno-0-13"></a><span class="w">        </span><span class="nt">&quot;match&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;phi-2&quot;</span><span class="p">,</span>
-</span><span id="__span-0-14"><a id="__codelineno-0-14" name="__codelineno-0-14" href="#__codelineno-0-14"></a><span class="w">        </span><span class="nt">&quot;template&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;...&quot;</span>
-</span><span id="__span-0-15"><a id="__codelineno-0-15" name="__codelineno-0-15" href="#__codelineno-0-15"></a><span class="w">    </span><span class="p">},</span>
-</span><span id="__span-0-16"><a id="__codelineno-0-16" name="__codelineno-0-16" href="#__codelineno-0-16"></a>
-</span><span id="__span-0-17"><a id="__codelineno-0-17" name="__codelineno-0-17" href="#__codelineno-0-17"></a><span class="w">    </span><span class="nt">&quot;phi&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;phi2&quot;</span><span class="p">,</span>
-</span><span id="__span-0-18"><a id="__codelineno-0-18" name="__codelineno-0-18" href="#__codelineno-0-18"></a><span class="w">    </span><span class="err">#</span><span class="w"> </span><span class="kc">t</span><span class="err">his</span><span class="w"> </span><span class="err">is</span><span class="w"> </span><span class="err">a</span><span class="kc">n</span><span class="w"> </span><span class="err">alias</span><span class="w"> </span><span class="s2">&quot;phi&quot;</span><span class="w"> </span><span class="mi">-</span><span class="err">&gt;</span><span class="w"> </span><span class="s2">&quot;phi2&quot;</span>
-</span><span id="__span-0-19"><a id="__codelineno-0-19" name="__codelineno-0-19" href="#__codelineno-0-19"></a><span class="p">}</span>
+<p>How to add a new format entry that can be used when creating a model? You can do it with the sibila CLI tool or by manually editing the formats.json file.</p>
+<h2 id="with-sibila-formats-cli-tool">With "sibila formats" CLI tool<a class="headerlink" href="#with-sibila-formats-cli-tool" title="Permanent link">#</a></h2>
+<p>Run the sibila CLI tool in the "models" folder:</p>
+<div class="language-text highlight"><pre><span></span><code><span id="__span-0-1"><a id="__codelineno-0-1" name="__codelineno-0-1" href="#__codelineno-0-1"></a>&gt; sibila formats -s openchat openchat &quot;{{ bos_token }}...{% endif %}&quot;
+</span><span id="__span-0-2"><a id="__codelineno-0-2" name="__codelineno-0-2" href="#__codelineno-0-2"></a>
+</span><span id="__span-0-3"><a id="__codelineno-0-3" name="__codelineno-0-3" href="#__codelineno-0-3"></a>Using models directory &#39;.&#39;
+</span><span id="__span-0-4"><a id="__codelineno-0-4" name="__codelineno-0-4" href="#__codelineno-0-4"></a>Set format &#39;openchat&#39; with match=&#39;openchat&#39;, template=&#39;{{ bos_token }}...&#39;
 </span></code></pre></div>
-</div>
-<p>Let's see the "openchat" format entry in the example above:</p>
+<p>First argument after -s is the format entry name, second the match regular expression (to identify the model filename) and finally the template. Help is available with "sibila formats --help".</p>
+<h2 id="manually-edit-formatsjson">Manually edit "formats.json"<a class="headerlink" href="#manually-edit-formatsjson" title="Permanent link">#</a></h2>
+<p>In alternative, we can edit the "formats.json" file in the "Models" folder, and add the entry:</p>
 <div class="language-json highlight"><pre><span></span><code><span id="__span-1-1"><a id="__codelineno-1-1" name="__codelineno-1-1" href="#__codelineno-1-1"></a><span class="nt">&quot;openchat&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">{</span>
-</span><span id="__span-1-2"><a id="__codelineno-1-2" name="__codelineno-1-2" href="#__codelineno-1-2"></a><span class="w">    </span><span class="nt">&quot;match&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;openchat.3&quot;</span><span class="p">,</span><span class="w"> </span><span class="err">#</span><span class="w"> </span><span class="err">a</span><span class="w"> </span><span class="err">regexp</span><span class="w"> </span><span class="kc">t</span><span class="err">o</span><span class="w"> </span><span class="err">ma</span><span class="kc">t</span><span class="err">ch</span><span class="w"> </span><span class="err">model</span><span class="w"> </span><span class="kc">na</span><span class="err">me</span><span class="w"> </span><span class="err">or</span><span class="w"> </span><span class="kc">f</span><span class="err">ile</span><span class="kc">na</span><span class="err">me</span>
+</span><span id="__span-1-2"><a id="__codelineno-1-2" name="__codelineno-1-2" href="#__codelineno-1-2"></a><span class="w">    </span><span class="nt">&quot;match&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;openchat&quot;</span><span class="p">,</span><span class="w"> </span><span class="err">#</span><span class="w"> </span><span class="err">a</span><span class="w"> </span><span class="err">regexp</span><span class="w"> </span><span class="kc">t</span><span class="err">o</span><span class="w"> </span><span class="err">ma</span><span class="kc">t</span><span class="err">ch</span><span class="w"> </span><span class="err">model</span><span class="w"> </span><span class="kc">na</span><span class="err">me</span><span class="w"> </span><span class="err">or</span><span class="w"> </span><span class="kc">f</span><span class="err">ile</span><span class="kc">na</span><span class="err">me</span>
 </span><span id="__span-1-3"><a id="__codelineno-1-3" name="__codelineno-1-3" href="#__codelineno-1-3"></a><span class="w">    </span><span class="nt">&quot;template&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;{{ bos_token }}...&quot;</span>
 </span><span id="__span-1-4"><a id="__codelineno-1-4" name="__codelineno-1-4" href="#__codelineno-1-4"></a><span class="p">},</span>
 </span></code></pre></div>
@@ -1619,11 +1731,11 @@
 </tr>
 </tbody>
 </table>
-<p>The "openchat" format name we are defining here, is the name you can use when creating a model, by setting the format argument:</p>
+<p>The "openchat" format name we are defining here is the name you can use when creating a model, by setting the format argument:</p>
 <div class="language-python highlight"><pre><span></span><code><span id="__span-2-1"><a id="__codelineno-2-1" name="__codelineno-2-1" href="#__codelineno-2-1"></a><span class="n">model</span> <span class="o">=</span> <span class="n">LlamaCppModel</span><span class="o">.</span><span class="n">create</span><span class="p">(</span><span class="s2">&quot;openchat-3.5-1210.Q4_K_M.gguf&quot;</span><span class="p">,</span>
 </span><span id="__span-2-2"><a id="__codelineno-2-2" name="__codelineno-2-2" href="#__codelineno-2-2"></a>                             <span class="nb">format</span><span class="o">=</span><span class="s2">&quot;openchat&quot;</span><span class="p">)</span>
 </span></code></pre></div>
-<p>And "openchat" is also the format name you would use when creating a "models.json" entry for a model, by setting the "format" key:</p>
+<p>or to be more practical: "openchat" is also the format name you would use when creating a <a href="../models_json/">"models.json" entry</a> for a model, in the "format" key:</p>
 <div class="language-json highlight"><pre><span></span><code><span id="__span-3-1"><a id="__codelineno-3-1" name="__codelineno-3-1" href="#__codelineno-3-1"></a><span class="nt">&quot;openchat&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">{</span>
 </span><span id="__span-3-2"><a id="__codelineno-3-2" name="__codelineno-3-2" href="#__codelineno-3-2"></a><span class="w">    </span><span class="nt">&quot;name&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;openchat-3.5-1210.Q4_K_M.gguf&quot;</span><span class="p">,</span>
 </span><span id="__span-3-3"><a id="__codelineno-3-3" name="__codelineno-3-3" href="#__codelineno-3-3"></a><span class="w">    </span><span class="nt">&quot;format&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;openchat&quot;</span><span class="w"> </span><span class="err">#</span><span class="w"> </span><span class="err">cha</span><span class="kc">t</span><span class="w"> </span><span class="kc">te</span><span class="err">mpla</span><span class="kc">te</span><span class="w"> </span><span class="kc">f</span><span class="err">orma</span><span class="kc">t</span><span class="w"> </span><span class="err">used</span><span class="w"> </span><span class="err">by</span><span class="w"> </span><span class="kc">t</span><span class="err">his</span><span class="w"> </span><span class="err">model</span>

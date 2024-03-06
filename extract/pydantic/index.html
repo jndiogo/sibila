@@ -77,6 +77,11 @@
     <label class="md-overlay" for="__drawer"></label>
     <div data-md-component="skip">
       
+        
+        <a href="#field-annotations" class="md-skip">
+          Skip to content
+        </a>
+      
     </div>
     <div data-md-component="announce">
       
@@ -568,7 +573,7 @@
         
   
   <span class="md-ellipsis">
-    Remote model
+    Remote models
   </span>
   
 
@@ -611,7 +616,7 @@
             
   
   <span class="md-ellipsis">
-    Local model
+    Local models
   </span>
   
 
@@ -621,7 +626,7 @@
         <nav class="md-nav" data-md-level="3" aria-labelledby="__nav_1_4_2_label" aria-expanded="false">
           <label class="md-nav__title" for="__nav_1_4_2">
             <span class="md-nav__icon md-icon"></span>
-            Local model
+            Local models
           </label>
           <ul class="md-nav__list" data-md-scrollfix>
             
@@ -711,6 +716,8 @@
       
         
       
+        
+      
     
     
     
@@ -775,7 +782,7 @@
         
   
   <span class="md-ellipsis">
-    models.json file
+    Managing models
   </span>
   
 
@@ -796,7 +803,28 @@
         
   
   <span class="md-ellipsis">
-    formats.json file
+    Managing formats
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../models/sibila_cli/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Sibila CLI tool
   </span>
   
 
@@ -953,6 +981,17 @@
       
       
       
+        <label class="md-nav__link md-nav__link--active" for="__toc">
+          
+  
+  <span class="md-ellipsis">
+    Pydantic
+  </span>
+  
+
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
       <a href="./" class="md-nav__link md-nav__link--active">
         
   
@@ -962,6 +1001,34 @@
   
 
       </a>
+      
+        
+
+  
+
+<nav class="md-nav md-nav--secondary" aria-label="Contents">
+  
+  
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Contents
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#field-annotations" class="md-nav__link">
+    <span class="md-ellipsis">
+      Field annotations
+    </span>
+  </a>
+  
+</li>
+      
+    </ul>
+  
+</nav>
       
     </li>
   
@@ -1057,6 +1124,8 @@
       
         
           
+        
+      
         
       
         
@@ -1311,6 +1380,27 @@
 
               
             
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../examples/cli/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Sibila CLI
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
           </ul>
         </nav>
       
@@ -1550,6 +1640,23 @@
   
   
   
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Contents
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#field-annotations" class="md-nav__link">
+    <span class="md-ellipsis">
+      Field annotations
+    </span>
+  </a>
+  
+</li>
+      
+    </ul>
+  
 </nav>
                   </div>
                 </div>
@@ -1635,8 +1742,10 @@
 </span></code></pre></div>
 </div>
 </div>
-<p>As when extracting to simple types, we could also provide instructions by setting the inst argument.</p>
-<p>Field annotations can also be provided to clarify what we want extracted for each field. For Pydantic this is done with Annotated[type, description"]:</p>
+<h2 id="field-annotations">Field annotations<a class="headerlink" href="#field-annotations" title="Permanent link">#</a></h2>
+<p>As when extracting to simple types, we could also provide instructions by setting the inst argument. However, instructions are by nature general and when extracting structured data, it's harder to provide specific instructions for fields.</p>
+<p>For this purpose, field annotations are more effective than instructions: they can be provided to clarify what we want extracted for each specific field.</p>
+<p>For Pydantic this is done with Field(description="description") - see the "start" and "end" attributes of the Period class:</p>
 <div class="admonition example">
 <p class="admonition-title">Example</p>
 <div class="language-python highlight"><pre><span></span><code><span id="__span-4-1"><a id="__codelineno-4-1" name="__codelineno-4-1" href="#__codelineno-4-1"></a><span class="kn">from</span> <span class="nn">pydantic</span> <span class="kn">import</span> <span class="n">Field</span>
@@ -1658,6 +1767,7 @@
 </span></code></pre></div>
 </div>
 </div>
+<p>In this manner, the model can be informed of what is wanted for each specific field.</p>
 <p>Check the <a href="../../examples/extract/">Extract Pydantic example</a>.</p>
 
 

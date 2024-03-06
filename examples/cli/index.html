@@ -8,26 +8,28 @@
       
       
       
-        <link rel="canonical" href="https://jndiogo.github.io/sibila/">
+        <link rel="canonical" href="https://jndiogo.github.io/sibila/examples/cli/">
       
       
+        <link rel="prev" href="../interact/">
       
-        <link rel="next" href="what/">
+      
+        <link rel="next" href="../../api-reference/model/">
       
       
-      <link rel="icon" href="assets/images/favicon.png">
+      <link rel="icon" href="../../assets/images/favicon.png">
       <meta name="generator" content="mkdocs-1.5.3, mkdocs-material-9.5.6">
     
     
       
-        <title>Sibila - Sibila</title>
+        <title>Sibila CLI - Sibila</title>
       
     
     
-      <link rel="stylesheet" href="assets/stylesheets/main.50c56a3b.min.css">
+      <link rel="stylesheet" href="../../assets/stylesheets/main.50c56a3b.min.css">
       
         
-        <link rel="stylesheet" href="assets/stylesheets/palette.06af60db.min.css">
+        <link rel="stylesheet" href="../../assets/stylesheets/palette.06af60db.min.css">
       
       
 
@@ -46,11 +48,11 @@
       
     
     
-      <link rel="stylesheet" href="assets/_mkdocstrings.css">
+      <link rel="stylesheet" href="../../assets/_mkdocstrings.css">
     
-      <link rel="stylesheet" href="stylesheets/extra.css">
+      <link rel="stylesheet" href="../../stylesheets/extra.css">
     
-    <script>__md_scope=new URL(".",location),__md_hash=e=>[...e].reduce((e,_)=>(e<<5)-e+_.charCodeAt(0),0),__md_get=(e,_=localStorage,t=__md_scope)=>JSON.parse(_.getItem(t.pathname+"."+e)),__md_set=(e,_,t=localStorage,a=__md_scope)=>{try{t.setItem(a.pathname+"."+e,JSON.stringify(_))}catch(e){}}</script>
+    <script>__md_scope=new URL("../..",location),__md_hash=e=>[...e].reduce((e,_)=>(e<<5)-e+_.charCodeAt(0),0),__md_get=(e,_=localStorage,t=__md_scope)=>JSON.parse(_.getItem(t.pathname+"."+e)),__md_set=(e,_,t=localStorage,a=__md_scope)=>{try{t.setItem(a.pathname+"."+e,JSON.stringify(_))}catch(e){}}</script>
     
       
 
@@ -75,11 +77,6 @@
     <label class="md-overlay" for="__drawer"></label>
     <div data-md-component="skip">
       
-        
-        <a href="#sibila" class="md-skip">
-          Skip to content
-        </a>
-      
     </div>
     <div data-md-component="announce">
       
@@ -92,7 +89,7 @@
 
 <header class="md-header md-header--shadow md-header--lifted" data-md-component="header">
   <nav class="md-header__inner md-grid" aria-label="Header">
-    <a href="." title="Sibila" class="md-header__button md-logo" aria-label="Sibila" data-md-component="logo">
+    <a href="../.." title="Sibila" class="md-header__button md-logo" aria-label="Sibila" data-md-component="logo">
       
   
   <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a3 3 0 0 0 3-3 3 3 0 0 0-3-3 3 3 0 0 0-3 3 3 3 0 0 0 3 3m0 3.54C9.64 9.35 6.5 8 3 8v11c3.5 0 6.64 1.35 9 3.54 2.36-2.19 5.5-3.54 9-3.54V8c-3.5 0-6.64 1.35-9 3.54Z"/></svg>
@@ -112,7 +109,7 @@
         <div class="md-header__topic" data-md-component="header-topic">
           <span class="md-ellipsis">
             
-              Sibila
+              Sibila CLI
             
           </span>
         </div>
@@ -211,13 +208,11 @@
         
   
   
-    
-  
   
     
     
-      <li class="md-tabs__item md-tabs__item--active">
-        <a href="." class="md-tabs__link">
+      <li class="md-tabs__item">
+        <a href="../.." class="md-tabs__link">
           
   
     
@@ -233,11 +228,13 @@
         
   
   
+    
+  
   
     
     
-      <li class="md-tabs__item">
-        <a href="examples/" class="md-tabs__link">
+      <li class="md-tabs__item md-tabs__item--active">
+        <a href="../" class="md-tabs__link">
           
   
     
@@ -257,7 +254,7 @@
     
     
       <li class="md-tabs__item">
-        <a href="api-reference/model/" class="md-tabs__link">
+        <a href="../../api-reference/model/" class="md-tabs__link">
           
   
     
@@ -298,7 +295,7 @@
 
 <nav class="md-nav md-nav--primary md-nav--lifted" aria-label="Navigation" data-md-level="0">
   <label class="md-nav__title" for="__drawer">
-    <a href="." title="Sibila" class="md-nav__button md-logo" aria-label="Sibila" data-md-component="logo">
+    <a href="../.." title="Sibila" class="md-nav__button md-logo" aria-label="Sibila" data-md-component="logo">
       
   
   <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a3 3 0 0 0 3-3 3 3 0 0 0-3-3 3 3 0 0 0-3 3 3 3 0 0 0 3 3m0 3.54C9.64 9.35 6.5 8 3 8v11c3.5 0 6.64 1.35 9 3.54 2.36-2.19 5.5-3.54 9-3.54V8c-3.5 0-6.64 1.35-9 3.54Z"/></svg>
@@ -325,8 +322,6 @@
       
   
   
-    
-  
   
   
     
@@ -355,17 +350,19 @@
       
       
     
-    <li class="md-nav__item md-nav__item--active md-nav__item--section md-nav__item--nested">
+    <li class="md-nav__item md-nav__item--section md-nav__item--nested">
       
         
         
         
-        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_1" checked>
+          
+        
+        <input class="md-nav__toggle md-toggle md-toggle--indeterminate" type="checkbox" id="__nav_1" >
         
           
           
           <div class="md-nav__link md-nav__container">
-            <a href="." class="md-nav__link md-nav__link--active">
+            <a href="../.." class="md-nav__link ">
               
   
   <span class="md-ellipsis">
@@ -376,13 +373,13 @@
             </a>
             
               
-              <label class="md-nav__link md-nav__link--active" for="__nav_1" id="__nav_1_label" tabindex="">
+              <label class="md-nav__link " for="__nav_1" id="__nav_1_label" tabindex="">
                 <span class="md-nav__icon md-icon"></span>
               </label>
             
           </div>
         
-        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_1_label" aria-expanded="true">
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_1_label" aria-expanded="false">
           <label class="md-nav__title" for="__nav_1">
             <span class="md-nav__icon md-icon"></span>
             Start
@@ -398,7 +395,7 @@
   
   
     <li class="md-nav__item">
-      <a href="what/" class="md-nav__link">
+      <a href="../../what/" class="md-nav__link">
         
   
   <span class="md-ellipsis">
@@ -467,7 +464,7 @@
   
   
     <li class="md-nav__item">
-      <a href="installing/" class="md-nav__link">
+      <a href="../../installing/" class="md-nav__link">
         
   
   <span class="md-ellipsis">
@@ -488,7 +485,7 @@
   
   
     <li class="md-nav__item">
-      <a href="first_run/" class="md-nav__link">
+      <a href="../../first_run/" class="md-nav__link">
         
   
   <span class="md-ellipsis">
@@ -567,7 +564,7 @@
   
   
     <li class="md-nav__item">
-      <a href="models/remote_model/" class="md-nav__link">
+      <a href="../../models/remote_model/" class="md-nav__link">
         
   
   <span class="md-ellipsis">
@@ -635,7 +632,7 @@
   
   
     <li class="md-nav__item">
-      <a href="models/local_model/" class="md-nav__link">
+      <a href="../../models/local_model/" class="md-nav__link">
         
   
   <span class="md-ellipsis">
@@ -656,7 +653,7 @@
   
   
     <li class="md-nav__item">
-      <a href="models/find_local_models/" class="md-nav__link">
+      <a href="../../models/find_local_models/" class="md-nav__link">
         
   
   <span class="md-ellipsis">
@@ -677,7 +674,7 @@
   
   
     <li class="md-nav__item">
-      <a href="models/setup_format/" class="md-nav__link">
+      <a href="../../models/setup_format/" class="md-nav__link">
         
   
   <span class="md-ellipsis">
@@ -755,7 +752,7 @@
   
   
     <li class="md-nav__item">
-      <a href="models/models_factory/" class="md-nav__link">
+      <a href="../../models/models_factory/" class="md-nav__link">
         
   
   <span class="md-ellipsis">
@@ -776,7 +773,7 @@
   
   
     <li class="md-nav__item">
-      <a href="models/models_json/" class="md-nav__link">
+      <a href="../../models/models_json/" class="md-nav__link">
         
   
   <span class="md-ellipsis">
@@ -797,7 +794,7 @@
   
   
     <li class="md-nav__item">
-      <a href="models/formats_json/" class="md-nav__link">
+      <a href="../../models/formats_json/" class="md-nav__link">
         
   
   <span class="md-ellipsis">
@@ -818,7 +815,7 @@
   
   
     <li class="md-nav__item">
-      <a href="models/sibila_cli/" class="md-nav__link">
+      <a href="../../models/sibila_cli/" class="md-nav__link">
         
   
   <span class="md-ellipsis">
@@ -909,7 +906,7 @@
   
   
     <li class="md-nav__item">
-      <a href="extract/simple_types/" class="md-nav__link">
+      <a href="../../extract/simple_types/" class="md-nav__link">
         
   
   <span class="md-ellipsis">
@@ -930,7 +927,7 @@
   
   
     <li class="md-nav__item">
-      <a href="extract/enums/" class="md-nav__link">
+      <a href="../../extract/enums/" class="md-nav__link">
         
   
   <span class="md-ellipsis">
@@ -951,7 +948,7 @@
   
   
     <li class="md-nav__item">
-      <a href="extract/dataclass/" class="md-nav__link">
+      <a href="../../extract/dataclass/" class="md-nav__link">
         
   
   <span class="md-ellipsis">
@@ -972,7 +969,7 @@
   
   
     <li class="md-nav__item">
-      <a href="extract/pydantic/" class="md-nav__link">
+      <a href="../../extract/pydantic/" class="md-nav__link">
         
   
   <span class="md-ellipsis">
@@ -993,7 +990,7 @@
   
   
     <li class="md-nav__item">
-      <a href="extract/free_text/" class="md-nav__link">
+      <a href="../../extract/free_text/" class="md-nav__link">
         
   
   <span class="md-ellipsis">
@@ -1022,7 +1019,7 @@
   
   
     <li class="md-nav__item">
-      <a href="tools/" class="md-nav__link">
+      <a href="../../tools/" class="md-nav__link">
         
   
   <span class="md-ellipsis">
@@ -1043,7 +1040,7 @@
   
   
     <li class="md-nav__item">
-      <a href="tips/" class="md-nav__link">
+      <a href="../../tips/" class="md-nav__link">
         
   
   <span class="md-ellipsis">
@@ -1068,6 +1065,8 @@
       
   
   
+    
+  
   
   
     
@@ -1104,19 +1103,17 @@
       
       
     
-    <li class="md-nav__item md-nav__item--section md-nav__item--nested">
+    <li class="md-nav__item md-nav__item--active md-nav__item--section md-nav__item--nested">
       
         
         
         
-          
-        
-        <input class="md-nav__toggle md-toggle md-toggle--indeterminate" type="checkbox" id="__nav_2" >
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_2" checked>
         
           
           
           <div class="md-nav__link md-nav__container">
-            <a href="examples/" class="md-nav__link ">
+            <a href="../" class="md-nav__link ">
               
   
   <span class="md-ellipsis">
@@ -1133,7 +1130,7 @@
             
           </div>
         
-        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_2_label" aria-expanded="false">
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_2_label" aria-expanded="true">
           <label class="md-nav__title" for="__nav_2">
             <span class="md-nav__icon md-icon"></span>
             Examples
@@ -1149,7 +1146,7 @@
   
   
     <li class="md-nav__item">
-      <a href="examples/hello_model/" class="md-nav__link">
+      <a href="../hello_model/" class="md-nav__link">
         
   
   <span class="md-ellipsis">
@@ -1170,7 +1167,7 @@
   
   
     <li class="md-nav__item">
-      <a href="examples/from_text_to_object/" class="md-nav__link">
+      <a href="../from_text_to_object/" class="md-nav__link">
         
   
   <span class="md-ellipsis">
@@ -1191,7 +1188,7 @@
   
   
     <li class="md-nav__item">
-      <a href="examples/extract/" class="md-nav__link">
+      <a href="../extract/" class="md-nav__link">
         
   
   <span class="md-ellipsis">
@@ -1212,7 +1209,7 @@
   
   
     <li class="md-nav__item">
-      <a href="examples/extract_dataclass/" class="md-nav__link">
+      <a href="../extract_dataclass/" class="md-nav__link">
         
   
   <span class="md-ellipsis">
@@ -1233,7 +1230,7 @@
   
   
     <li class="md-nav__item">
-      <a href="examples/tag/" class="md-nav__link">
+      <a href="../tag/" class="md-nav__link">
         
   
   <span class="md-ellipsis">
@@ -1254,7 +1251,7 @@
   
   
     <li class="md-nav__item">
-      <a href="examples/quick_meeting/" class="md-nav__link">
+      <a href="../quick_meeting/" class="md-nav__link">
         
   
   <span class="md-ellipsis">
@@ -1275,7 +1272,7 @@
   
   
     <li class="md-nav__item">
-      <a href="examples/tough_meeting/" class="md-nav__link">
+      <a href="../tough_meeting/" class="md-nav__link">
         
   
   <span class="md-ellipsis">
@@ -1296,7 +1293,7 @@
   
   
     <li class="md-nav__item">
-      <a href="examples/compare/" class="md-nav__link">
+      <a href="../compare/" class="md-nav__link">
         
   
   <span class="md-ellipsis">
@@ -1317,7 +1314,7 @@
   
   
     <li class="md-nav__item">
-      <a href="examples/interact/" class="md-nav__link">
+      <a href="../interact/" class="md-nav__link">
         
   
   <span class="md-ellipsis">
@@ -1335,10 +1332,17 @@
                 
   
   
+    
   
   
-    <li class="md-nav__item">
-      <a href="examples/cli/" class="md-nav__link">
+  
+    <li class="md-nav__item md-nav__item--active">
+      
+      <input class="md-nav__toggle md-toggle" type="checkbox" id="__toc">
+      
+      
+      
+      <a href="./" class="md-nav__link md-nav__link--active">
         
   
   <span class="md-ellipsis">
@@ -1347,6 +1351,7 @@
   
 
       </a>
+      
     </li>
   
 
@@ -1424,7 +1429,7 @@
   
   
     <li class="md-nav__item">
-      <a href="api-reference/model/" class="md-nav__link">
+      <a href="../../api-reference/model/" class="md-nav__link">
         
   
   <span class="md-ellipsis">
@@ -1445,7 +1450,7 @@
   
   
     <li class="md-nav__item">
-      <a href="api-reference/models/" class="md-nav__link">
+      <a href="../../api-reference/models/" class="md-nav__link">
         
   
   <span class="md-ellipsis">
@@ -1466,7 +1471,7 @@
   
   
     <li class="md-nav__item">
-      <a href="api-reference/generation/" class="md-nav__link">
+      <a href="../../api-reference/generation/" class="md-nav__link">
         
   
   <span class="md-ellipsis">
@@ -1487,7 +1492,7 @@
   
   
     <li class="md-nav__item">
-      <a href="api-reference/thread/" class="md-nav__link">
+      <a href="../../api-reference/thread/" class="md-nav__link">
         
   
   <span class="md-ellipsis">
@@ -1508,7 +1513,7 @@
   
   
     <li class="md-nav__item">
-      <a href="api-reference/multigen/" class="md-nav__link">
+      <a href="../../api-reference/multigen/" class="md-nav__link">
         
   
   <span class="md-ellipsis">
@@ -1529,7 +1534,7 @@
   
   
     <li class="md-nav__item">
-      <a href="api-reference/tools/" class="md-nav__link">
+      <a href="../../api-reference/tools/" class="md-nav__link">
         
   
   <span class="md-ellipsis">
@@ -1550,7 +1555,7 @@
   
   
     <li class="md-nav__item">
-      <a href="api-reference/tokenizer/" class="md-nav__link">
+      <a href="../../api-reference/tokenizer/" class="md-nav__link">
         
   
   <span class="md-ellipsis">
@@ -1590,8 +1595,6 @@
   
   
   
-    
-  
   
 </nav>
                   </div>
@@ -1609,43 +1612,94 @@
   
 
 
-<h1 id="sibila">Sibila<a class="headerlink" href="#sibila" title="Permanent link">#</a></h1>
-<p>Extract structured data from remote or local file LLM models.</p>
+  <h1>Sibila CLI</h1>
+
+<p>In this example we'll see how to use the sibila Command-Line Interface (CLI) to download a GGUF model from the <a href="https://huggingface.co">Hugging Face model hub</a>.</p>
+<p>We'll then register it in the Models factory, so that it can be easily used with Models.create(). The Models factory is based in a folder where model GGUF format files are stored and two configuration files: "models.json" and "formats.json".</p>
+<p>After Doing the above, we'll be able to use this model in Python with two lines:</p>
+<div class="language-python highlight"><pre><span></span><code><span id="__span-0-1"><a id="__codelineno-0-1" name="__codelineno-0-1" href="#__codelineno-0-1"></a><span class="n">Models</span><span class="o">.</span><span class="n">setup</span><span class="p">(</span><span class="s2">&quot;../../models&quot;</span><span class="p">)</span>
+</span><span id="__span-0-2"><a id="__codelineno-0-2" name="__codelineno-0-2" href="#__codelineno-0-2"></a>
+</span><span id="__span-0-3"><a id="__codelineno-0-3" name="__codelineno-0-3" href="#__codelineno-0-3"></a><span class="n">model</span> <span class="o">=</span> <span class="n">Models</span><span class="o">.</span><span class="n">create</span><span class="p">(</span><span class="s2">&quot;llamacpp:rocket&quot;</span><span class="p">)</span>
+</span></code></pre></div>
+<p>Let's run sibila CLI to get help:</p>
+<div class="language-text highlight"><pre><span></span><code><span id="__span-1-1"><a id="__codelineno-1-1" name="__codelineno-1-1" href="#__codelineno-1-1"></a>&gt; sibila --help
+</span><span id="__span-1-2"><a id="__codelineno-1-2" name="__codelineno-1-2" href="#__codelineno-1-2"></a>
+</span><span id="__span-1-3"><a id="__codelineno-1-3" name="__codelineno-1-3" href="#__codelineno-1-3"></a>usage: sibila [-h] [--version] {models,formats,hub} ...
+</span><span id="__span-1-4"><a id="__codelineno-1-4" name="__codelineno-1-4" href="#__codelineno-1-4"></a>
+</span><span id="__span-1-5"><a id="__codelineno-1-5" name="__codelineno-1-5" href="#__codelineno-1-5"></a>Sibila cli tool for managing models and formats.
+</span><span id="__span-1-6"><a id="__codelineno-1-6" name="__codelineno-1-6" href="#__codelineno-1-6"></a>
+</span><span id="__span-1-7"><a id="__codelineno-1-7" name="__codelineno-1-7" href="#__codelineno-1-7"></a>options:
+</span><span id="__span-1-8"><a id="__codelineno-1-8" name="__codelineno-1-8" href="#__codelineno-1-8"></a>  -h, --help            show this help message and exit
+</span><span id="__span-1-9"><a id="__codelineno-1-9" name="__codelineno-1-9" href="#__codelineno-1-9"></a>  --version             show program&#39;s version number and exit
+</span><span id="__span-1-10"><a id="__codelineno-1-10" name="__codelineno-1-10" href="#__codelineno-1-10"></a>
+</span><span id="__span-1-11"><a id="__codelineno-1-11" name="__codelineno-1-11" href="#__codelineno-1-11"></a>actions:
+</span><span id="__span-1-12"><a id="__codelineno-1-12" name="__codelineno-1-12" href="#__codelineno-1-12"></a>  hf, models, formats
+</span><span id="__span-1-13"><a id="__codelineno-1-13" name="__codelineno-1-13" href="#__codelineno-1-13"></a>
+</span><span id="__span-1-14"><a id="__codelineno-1-14" name="__codelineno-1-14" href="#__codelineno-1-14"></a>  {models,formats,hub}  Run &#39;sibila {command} --help&#39; for specific help.
+</span></code></pre></div>
+<p>Sibila CLI has three modes:</p>
 <ul>
-<li>Extract data into Pydantic objects, dataclasses or simple types.</li>
-<li>Same API for local file models and remote OpenAI models.</li>
-<li>Model management: download models, manage configuration and quickly switch between models.</li>
-<li>Tools for evaluating output across local/remote models, for chat-like interaction and more.</li>
+<li>models: to edit a 'models.json' file, create model entries set format, etc.</li>
+<li>formats: to edit a 'formats.json' file, add new formats, etc.</li>
+<li>hub: search and download models from Hugging Face model hub.</li>
 </ul>
-<p>See <a href="what/">What can you do with Sibila?</a></p>
-<p>To extract structured data from a local model:</p>
-<div class="language-python highlight"><pre><span></span><code><span id="__span-0-1"><a id="__codelineno-0-1" name="__codelineno-0-1" href="#__codelineno-0-1"></a><span class="kn">from</span> <span class="nn">sibila</span> <span class="kn">import</span> <span class="n">Models</span>
-</span><span id="__span-0-2"><a id="__codelineno-0-2" name="__codelineno-0-2" href="#__codelineno-0-2"></a><span class="kn">from</span> <span class="nn">pydantic</span> <span class="kn">import</span> <span class="n">BaseModel</span>
-</span><span id="__span-0-3"><a id="__codelineno-0-3" name="__codelineno-0-3" href="#__codelineno-0-3"></a>
-</span><span id="__span-0-4"><a id="__codelineno-0-4" name="__codelineno-0-4" href="#__codelineno-0-4"></a><span class="k">class</span> <span class="nc">Info</span><span class="p">(</span><span class="n">BaseModel</span><span class="p">):</span>
-</span><span id="__span-0-5"><a id="__codelineno-0-5" name="__codelineno-0-5" href="#__codelineno-0-5"></a>    <span class="n">event_year</span><span class="p">:</span> <span class="nb">int</span>
-</span><span id="__span-0-6"><a id="__codelineno-0-6" name="__codelineno-0-6" href="#__codelineno-0-6"></a>    <span class="n">first_name</span><span class="p">:</span> <span class="nb">str</span>
-</span><span id="__span-0-7"><a id="__codelineno-0-7" name="__codelineno-0-7" href="#__codelineno-0-7"></a>    <span class="n">last_name</span><span class="p">:</span> <span class="nb">str</span>
-</span><span id="__span-0-8"><a id="__codelineno-0-8" name="__codelineno-0-8" href="#__codelineno-0-8"></a>    <span class="n">age_at_the_time</span><span class="p">:</span> <span class="nb">int</span>
-</span><span id="__span-0-9"><a id="__codelineno-0-9" name="__codelineno-0-9" href="#__codelineno-0-9"></a>    <span class="n">nationality</span><span class="p">:</span> <span class="nb">str</span>
-</span><span id="__span-0-10"><a id="__codelineno-0-10" name="__codelineno-0-10" href="#__codelineno-0-10"></a>
-</span><span id="__span-0-11"><a id="__codelineno-0-11" name="__codelineno-0-11" href="#__codelineno-0-11"></a><span class="n">model</span> <span class="o">=</span> <span class="n">Models</span><span class="o">.</span><span class="n">create</span><span class="p">(</span><span class="s2">&quot;llamacpp:openchat&quot;</span><span class="p">)</span>
-</span><span id="__span-0-12"><a id="__codelineno-0-12" name="__codelineno-0-12" href="#__codelineno-0-12"></a>
-</span><span id="__span-0-13"><a id="__codelineno-0-13" name="__codelineno-0-13" href="#__codelineno-0-13"></a><span class="n">model</span><span class="o">.</span><span class="n">extract</span><span class="p">(</span><span class="n">Info</span><span class="p">,</span> <span class="s2">&quot;Who was the first man in the moon?)</span>
-</span></code></pre></div>
-<p>Returns an instance of class Info, created from the model's output:</p>
-<div class="language-python highlight"><pre><span></span><code><span id="__span-1-1"><a id="__codelineno-1-1" name="__codelineno-1-1" href="#__codelineno-1-1"></a><span class="n">Info</span><span class="p">(</span><span class="n">event_year</span><span class="o">=</span><span class="mi">1969</span><span class="p">,</span>
-</span><span id="__span-1-2"><a id="__codelineno-1-2" name="__codelineno-1-2" href="#__codelineno-1-2"></a>     <span class="n">first_name</span><span class="o">=</span><span class="s1">&#39;Neil&#39;</span><span class="p">,</span>
-</span><span id="__span-1-3"><a id="__codelineno-1-3" name="__codelineno-1-3" href="#__codelineno-1-3"></a>     <span class="n">last_name</span><span class="o">=</span><span class="s1">&#39;Armstrong&#39;</span><span class="p">,</span>
-</span><span id="__span-1-4"><a id="__codelineno-1-4" name="__codelineno-1-4" href="#__codelineno-1-4"></a>     <span class="n">age_at_the_time</span><span class="o">=</span><span class="mi">38</span><span class="p">,</span>
-</span><span id="__span-1-5"><a id="__codelineno-1-5" name="__codelineno-1-5" href="#__codelineno-1-5"></a>     <span class="n">nationality</span><span class="o">=</span><span class="s1">&#39;American&#39;</span><span class="p">)</span>
-</span></code></pre></div>
-<p>Or to use OpenAI's GPT-4, we would simply replace the model's name:</p>
-<div class="language-python highlight"><pre><span></span><code><span id="__span-2-1"><a id="__codelineno-2-1" name="__codelineno-2-1" href="#__codelineno-2-1"></a><span class="n">model</span> <span class="o">=</span> <span class="n">Models</span><span class="o">.</span><span class="n">create</span><span class="p">(</span><span class="s2">&quot;openai:gpt-4&quot;</span><span class="p">)</span>
+<p>Specific help for each mode is available by doing: sibila mode --help</p>
+<p>Let's download the Rocket 3B model, a small but capable model, fine-tuned for chat/instruct prompts:</p>
+<p><a href="https://huggingface.co/TheBloke/rocket-3B-GGUF">https://huggingface.co/TheBloke/rocket-3B-GGUF</a></p>
+<p>We'll use a "sibila hub -d" command to download to "../../models" folder. We'll get the 4-bit quantization (Q4_K_M):</p>
+<div class="language-text highlight"><pre><span></span><code><span id="__span-2-1"><a id="__codelineno-2-1" name="__codelineno-2-1" href="#__codelineno-2-1"></a>&gt; sibila hub -d &#39;TheBloke/rocket-3B-GGUF&#39; -f Q4_K_M -m &#39;../../models&#39;
 </span><span id="__span-2-2"><a id="__codelineno-2-2" name="__codelineno-2-2" href="#__codelineno-2-2"></a>
-</span><span id="__span-2-3"><a id="__codelineno-2-3" name="__codelineno-2-3" href="#__codelineno-2-3"></a><span class="n">model</span><span class="o">.</span><span class="n">extract</span><span class="p">(</span><span class="n">Info</span><span class="p">,</span> <span class="s2">&quot;Who was the first man in the moon?&quot;</span><span class="p">)</span>
+</span><span id="__span-2-3"><a id="__codelineno-2-3" name="__codelineno-2-3" href="#__codelineno-2-3"></a>Searching...
+</span><span id="__span-2-4"><a id="__codelineno-2-4" name="__codelineno-2-4" href="#__codelineno-2-4"></a>Downloading model &#39;TheBloke/rocket-3B-GGUF&#39; file &#39;rocket-3b.Q4_K_M.gguf&#39; to &#39;../../models/rocket-3b.Q4_K_M.gguf&#39;
+</span><span id="__span-2-5"><a id="__codelineno-2-5" name="__codelineno-2-5" href="#__codelineno-2-5"></a>
+</span><span id="__span-2-6"><a id="__codelineno-2-6" name="__codelineno-2-6" href="#__codelineno-2-6"></a>Download complete.
+</span><span id="__span-2-7"><a id="__codelineno-2-7" name="__codelineno-2-7" href="#__codelineno-2-7"></a>For information about this and other models, please visit https://huggingface.co
 </span></code></pre></div>
-<p>If Pydantic BaseModel objects are too much for your project, Sibila supports similar functionality with Python dataclass.</p>
+<p>After this command, the "rocket-3b.Q4_K_M.gguf" file has now been downloaded to the "../../models" folder.</p>
+<p>We'll now register it with the Models factory, which is located in the folder to where we downloaded the model.</p>
+<p>This can be done by editing the "models.json" file directly or even simpler, with a "sibila models -s" command:</p>
+<div class="language-text highlight"><pre><span></span><code><span id="__span-3-1"><a id="__codelineno-3-1" name="__codelineno-3-1" href="#__codelineno-3-1"></a>&gt; sibila models -s llamacpp:rocket rocket-3b.Q4_K_M.gguf -m &#39;../../models&#39;
+</span><span id="__span-3-2"><a id="__codelineno-3-2" name="__codelineno-3-2" href="#__codelineno-3-2"></a>
+</span><span id="__span-3-3"><a id="__codelineno-3-3" name="__codelineno-3-3" href="#__codelineno-3-3"></a>Using models directory &#39;../../models&#39;
+</span><span id="__span-3-4"><a id="__codelineno-3-4" name="__codelineno-3-4" href="#__codelineno-3-4"></a>Set model &#39;llamacpp:rocket&#39; with name=&#39;rocket-3b.Q4_K_M.gguf&#39; at &#39;/home/jorge/ai/sibila/models/models.json&#39;.
+</span></code></pre></div>
+<p>An entry has now been created in "models.json" for this model.</p>
+<p>However, we did not set the chat template format - but let's first test if the downloaded GGUF file already includes it in its metadata.</p>
+<p>This is done with "sibila models -t":</p>
+<div class="language-text highlight"><pre><span></span><code><span id="__span-4-1"><a id="__codelineno-4-1" name="__codelineno-4-1" href="#__codelineno-4-1"></a>&gt; sibila models -t llamacpp:rocket -m &#39;../../models&#39;
+</span><span id="__span-4-2"><a id="__codelineno-4-2" name="__codelineno-4-2" href="#__codelineno-4-2"></a>
+</span><span id="__span-4-3"><a id="__codelineno-4-3" name="__codelineno-4-3" href="#__codelineno-4-3"></a>Using models directory &#39;../../models&#39;
+</span><span id="__span-4-4"><a id="__codelineno-4-4" name="__codelineno-4-4" href="#__codelineno-4-4"></a>Testing model &#39;llamacpp:rocket&#39;...
+</span><span id="__span-4-5"><a id="__codelineno-4-5" name="__codelineno-4-5" href="#__codelineno-4-5"></a>Error: Could not find a suitable chat template format for this model. Without a format, fine-tuned models cannot function properly. See the docs on how you can fix this: either setup the format in Models factory, or provide the chat template in the &#39;format&#39; arg.
+</span></code></pre></div>
+<p>Error. Looks like we need to set the chat template format!</p>
+<p>Checking the <a href="https://huggingface.co/TheBloke/rocket-3B-GGUF">model's page</a>, we find that it uses the ChatML prompt/chat template, which is great because it's one of the base formats included with Sibila.</p>
+<p>So let's set the template format in the "llamacpp:rocket" entry we've just created:</p>
+<div class="language-text highlight"><pre><span></span><code><span id="__span-5-1"><a id="__codelineno-5-1" name="__codelineno-5-1" href="#__codelineno-5-1"></a>&gt; sibila models -f llamacpp:rocket chatml -m &#39;../../models&#39;
+</span><span id="__span-5-2"><a id="__codelineno-5-2" name="__codelineno-5-2" href="#__codelineno-5-2"></a>
+</span><span id="__span-5-3"><a id="__codelineno-5-3" name="__codelineno-5-3" href="#__codelineno-5-3"></a>Using models directory &#39;/home/jorge/ai/sibila/models&#39;
+</span><span id="__span-5-4"><a id="__codelineno-5-4" name="__codelineno-5-4" href="#__codelineno-5-4"></a>Updated model &#39;llamacpp:rocket&#39; with format &#39;chatml&#39; at &#39;/home/jorge/ai/sibila/models/models.json&#39;.
+</span></code></pre></div>
+<p>Let's now test again:</p>
+<div class="language-text highlight"><pre><span></span><code><span id="__span-6-1"><a id="__codelineno-6-1" name="__codelineno-6-1" href="#__codelineno-6-1"></a>&gt; sibila models -t llamacpp:rocket -m &#39;../../models&#39;
+</span><span id="__span-6-2"><a id="__codelineno-6-2" name="__codelineno-6-2" href="#__codelineno-6-2"></a>
+</span><span id="__span-6-3"><a id="__codelineno-6-3" name="__codelineno-6-3" href="#__codelineno-6-3"></a>Using models directory &#39;../../models&#39;
+</span><span id="__span-6-4"><a id="__codelineno-6-4" name="__codelineno-6-4" href="#__codelineno-6-4"></a>Testing model &#39;llamacpp:rocket&#39;...
+</span><span id="__span-6-5"><a id="__codelineno-6-5" name="__codelineno-6-5" href="#__codelineno-6-5"></a>Model &#39;llamacpp:rocket&#39; was properly created and should run fine.
+</span></code></pre></div>
+<p>Great - the model passed the test and should be ready for use.</p>
+<p>Let's try using it from Python:</p>
+<div class="language-python highlight"><pre><span></span><code><span id="__span-7-1"><a id="__codelineno-7-1" name="__codelineno-7-1" href="#__codelineno-7-1"></a><span class="kn">from</span> <span class="nn">sibila</span> <span class="kn">import</span> <span class="n">Models</span>
+</span><span id="__span-7-2"><a id="__codelineno-7-2" name="__codelineno-7-2" href="#__codelineno-7-2"></a>
+</span><span id="__span-7-3"><a id="__codelineno-7-3" name="__codelineno-7-3" href="#__codelineno-7-3"></a><span class="n">Models</span><span class="o">.</span><span class="n">setup</span><span class="p">(</span><span class="s2">&quot;../../models&quot;</span><span class="p">)</span> <span class="c1"># the folder with models and configs</span>
+</span><span id="__span-7-4"><a id="__codelineno-7-4" name="__codelineno-7-4" href="#__codelineno-7-4"></a>
+</span><span id="__span-7-5"><a id="__codelineno-7-5" name="__codelineno-7-5" href="#__codelineno-7-5"></a><span class="n">model</span> <span class="o">=</span> <span class="n">Models</span><span class="o">.</span><span class="n">create</span><span class="p">(</span><span class="s2">&quot;llamacpp:rocket&quot;</span><span class="p">)</span> <span class="c1"># model name in provider:name format</span>
+</span><span id="__span-7-6"><a id="__codelineno-7-6" name="__codelineno-7-6" href="#__codelineno-7-6"></a>
+</span><span id="__span-7-7"><a id="__codelineno-7-7" name="__codelineno-7-7" href="#__codelineno-7-7"></a><span class="n">model</span><span class="p">(</span><span class="s2">&quot;Hello there!&quot;</span><span class="p">)</span>
+</span></code></pre></div>
+<div class="language-text highlight"><pre><span></span><code>&quot;Hello! I&#39;m an AI language model here to assist you with your inquiries or generate content for you. I am programmed to be polite and respectful, so please let me know how I can help you today.&quot;
+</code></pre></div>
+<p>Seems to be working - and politely too!</p>
 
 
 
@@ -1692,10 +1746,10 @@
     </div>
     
     
-    <script id="__config" type="application/json">{"base": ".", "features": ["navigation.tabs", "navigation.tabs.sticky", "navigation.sections", "navigation.expand", "navigation.path", "navigation.indexes", "toc.follow", "content.code.copy"], "search": "assets/javascripts/workers/search.b8dbb3d2.min.js", "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}}</script>
+    <script id="__config" type="application/json">{"base": "../..", "features": ["navigation.tabs", "navigation.tabs.sticky", "navigation.sections", "navigation.expand", "navigation.path", "navigation.indexes", "toc.follow", "content.code.copy"], "search": "../../assets/javascripts/workers/search.b8dbb3d2.min.js", "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}}</script>
     
     
-      <script src="assets/javascripts/bundle.e1c3ead8.min.js"></script>
+      <script src="../../assets/javascripts/bundle.e1c3ead8.min.js"></script>
       
     
   </body>

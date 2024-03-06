@@ -78,7 +78,7 @@
     <div data-md-component="skip">
       
         
-        <a href="#openchat-gguf" class="md-skip">
+        <a href="#openchat-model" class="md-skip">
           Skip to content
         </a>
       
@@ -573,7 +573,7 @@
         
   
   <span class="md-ellipsis">
-    Remote model
+    Remote models
   </span>
   
 
@@ -616,7 +616,7 @@
             
   
   <span class="md-ellipsis">
-    Local model
+    Local models
   </span>
   
 
@@ -626,7 +626,7 @@
         <nav class="md-nav" data-md-level="3" aria-labelledby="__nav_1_4_2_label" aria-expanded="true">
           <label class="md-nav__title" for="__nav_1_4_2">
             <span class="md-nav__icon md-icon"></span>
-            Local model
+            Local models
           </label>
           <ul class="md-nav__list" data-md-scrollfix>
             
@@ -681,11 +681,35 @@
     <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
       
         <li class="md-nav__item">
-  <a href="#openchat-gguf" class="md-nav__link">
+  <a href="#openchat-model" class="md-nav__link">
     <span class="md-ellipsis">
-      OpenChat GGUF
+      OpenChat model
     </span>
   </a>
+  
+    <nav class="md-nav" aria-label="OpenChat model">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#download-with-sibila-hub" class="md-nav__link">
+    <span class="md-ellipsis">
+      Download with "sibila hub"
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#manual-download" class="md-nav__link">
+    <span class="md-ellipsis">
+      Manual download
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
   
 </li>
       
@@ -781,6 +805,8 @@
       
         
       
+        
+      
     
     
     
@@ -845,7 +871,7 @@
         
   
   <span class="md-ellipsis">
-    models.json file
+    Managing models
   </span>
   
 
@@ -866,7 +892,28 @@
         
   
   <span class="md-ellipsis">
-    formats.json file
+    Managing formats
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../sibila_cli/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Sibila CLI tool
   </span>
   
 
@@ -1139,6 +1186,8 @@
       
         
       
+        
+      
     
     
     
@@ -1364,6 +1413,27 @@
   
   <span class="md-ellipsis">
     Interact
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../examples/cli/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Sibila CLI
   </span>
   
 
@@ -1619,11 +1689,35 @@
     <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
       
         <li class="md-nav__item">
-  <a href="#openchat-gguf" class="md-nav__link">
+  <a href="#openchat-model" class="md-nav__link">
     <span class="md-ellipsis">
-      OpenChat GGUF
+      OpenChat model
     </span>
   </a>
+  
+    <nav class="md-nav" aria-label="OpenChat model">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#download-with-sibila-hub" class="md-nav__link">
+    <span class="md-ellipsis">
+      Download with "sibila hub"
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#manual-download" class="md-nav__link">
+    <span class="md-ellipsis">
+      Manual download
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
   
 </li>
       
@@ -1665,27 +1759,37 @@
 
   <h1>Using a local model</h1>
 
-<p>Sibila uses llama.cpp to run local models, which are ordinary files in the GGUF format. You can download local models from places like the <a href="https://huggingface.co/models">HuggingFace model hub</a>.</p>
+<p>Sibila uses llama.cpp to run local models, which are ordinary files in the GGUF format. You can download local models from places like the <a href="https://huggingface.co/models">Hugging Face model hub</a>.</p>
 <p>Most current 7B quantized models are very capable for common data extraction tasks (and getting better all the time). We'll see how to find and setup local models for use with Sibila. If you only plan to use OpenAI remote models, you can skip this section.</p>
 <p><a id="examples"></a></p>
-<h2 id="openchat-gguf">OpenChat GGUF<a class="headerlink" href="#openchat-gguf" title="Permanent link">#</a></h2>
-<p>By default, most of the examples included with Sibila use OpenChat, a very good 7B parameters quantized model, that you can download from:</p>
+<h2 id="openchat-model">OpenChat model<a class="headerlink" href="#openchat-model" title="Permanent link">#</a></h2>
+<p>By default, most of the examples included with Sibila use OpenChat, a very good 7B parameters quantized model:
+<a href="https://huggingface.co/TheBloke/openchat-3.5-1210-GGUF">https://huggingface.co/TheBloke/openchat-3.5-1210-GGUF</a></p>
+<p>You can download this model with the sibila CLI tool or manually in your browser.</p>
+<h3 id="download-with-sibila-hub">Download with "sibila hub"<a class="headerlink" href="#download-with-sibila-hub" title="Permanent link">#</a></h3>
+<p>Open a command line prompt in the "models" folder if you downloaded the GitHub repository, or create a folder named "models".</p>
+<p>Run this command:</p>
+<div class="language-text highlight"><pre><span></span><code><span id="__span-0-1"><a id="__codelineno-0-1" name="__codelineno-0-1" href="#__codelineno-0-1"></a>sibila hub -d TheBloke/openchat-3.5-1210-GGUF -f openchat-3.5-1210.Q4_K_M.gguf
+</span></code></pre></div>
+<p>After downloading the 4.4Gb, the file "openchat-3.5-1210.Q4_K_M.gguf" will be available in your "models" folder and you can run the examples. You can do the same to download any other GGUF models.</p>
+<h3 id="manual-download">Manual download<a class="headerlink" href="#manual-download" title="Permanent link">#</a></h3>
+<p>Alternatively, you can download in your browser from this URL:</p>
 <p><a href="https://huggingface.co/TheBloke/openchat-3.5-1210-GGUF/blob/main/openchat-3.5-1210.Q4_K_M.gguf">https://huggingface.co/TheBloke/openchat-3.5-1210-GGUF/blob/main/openchat-3.5-1210.Q4_K_M.gguf</a></p>
 <p>In the linked page, click "download" and save this file into a "models" folder. If you downloaded the Sibila GitHub repository it already includes a "models" folder which you can use. Otherwise, just create a "models" folder, where you'll store your local model files.</p>
 <p>Once the file "openchat-3.5-1210.Q4_K_M.gguf" is placed in the "models" folder, you should be able to run the examples.</p>
 <h2 id="llamacppmodel-class">LlamaCppModel class<a class="headerlink" href="#llamacppmodel-class" title="Permanent link">#</a></h2>
-<p>Local llama.cpp models can be used with the <a href="../../api-reference/model/#sibila.LlamaCppModel">LlamaCppModel</a> class. Let's generate some text:</p>
+<p>Local llama.cpp models can be used with the <a href="../../api-reference/model/#sibila.LlamaCppModel">LlamaCppModel</a> class. Let's generate text after our prompt:</p>
 <div class="admonition example">
 <p class="admonition-title">Example</p>
-<div class="language-python highlight"><pre><span></span><code><span id="__span-0-1"><a id="__codelineno-0-1" name="__codelineno-0-1" href="#__codelineno-0-1"></a><span class="kn">from</span> <span class="nn">sibila</span> <span class="kn">import</span> <span class="n">LlamaCppModel</span>
-</span><span id="__span-0-2"><a id="__codelineno-0-2" name="__codelineno-0-2" href="#__codelineno-0-2"></a>
-</span><span id="__span-0-3"><a id="__codelineno-0-3" name="__codelineno-0-3" href="#__codelineno-0-3"></a><span class="n">model</span> <span class="o">=</span> <span class="n">LlamaCppModel</span><span class="p">(</span><span class="s2">&quot;../../models/openchat-3.5-1210.Q4_K_M.gguf&quot;</span><span class="p">)</span>
-</span><span id="__span-0-4"><a id="__codelineno-0-4" name="__codelineno-0-4" href="#__codelineno-0-4"></a>
-</span><span id="__span-0-5"><a id="__codelineno-0-5" name="__codelineno-0-5" href="#__codelineno-0-5"></a><span class="n">model</span><span class="p">(</span><span class="s2">&quot;I think that I shall never see.&quot;</span><span class="p">)</span>
+<div class="language-python highlight"><pre><span></span><code><span id="__span-1-1"><a id="__codelineno-1-1" name="__codelineno-1-1" href="#__codelineno-1-1"></a><span class="kn">from</span> <span class="nn">sibila</span> <span class="kn">import</span> <span class="n">LlamaCppModel</span>
+</span><span id="__span-1-2"><a id="__codelineno-1-2" name="__codelineno-1-2" href="#__codelineno-1-2"></a>
+</span><span id="__span-1-3"><a id="__codelineno-1-3" name="__codelineno-1-3" href="#__codelineno-1-3"></a><span class="n">model</span> <span class="o">=</span> <span class="n">LlamaCppModel</span><span class="p">(</span><span class="s2">&quot;../../models/openchat-3.5-1210.Q4_K_M.gguf&quot;</span><span class="p">)</span>
+</span><span id="__span-1-4"><a id="__codelineno-1-4" name="__codelineno-1-4" href="#__codelineno-1-4"></a>
+</span><span id="__span-1-5"><a id="__codelineno-1-5" name="__codelineno-1-5" href="#__codelineno-1-5"></a><span class="n">model</span><span class="p">(</span><span class="s2">&quot;I think that I shall never see.&quot;</span><span class="p">)</span>
 </span></code></pre></div>
 <div class="admonition success">
 <p class="admonition-title">Result</p>
-<div class="language-text highlight"><pre><span></span><code><span id="__span-1-1"><a id="__codelineno-1-1" name="__codelineno-1-1" href="#__codelineno-1-1"></a>&#39;A poem as lovely as a tree.&#39;
+<div class="language-text highlight"><pre><span></span><code><span id="__span-2-1"><a id="__codelineno-2-1" name="__codelineno-2-1" href="#__codelineno-2-1"></a>&#39;A poem as lovely as a tree.&#39;
 </span></code></pre></div>
 </div>
 </div>
@@ -1697,17 +1801,17 @@
 <p>This is less of a problem when running scripts from the command line, but in environments like Jupyter where you can have multiple open notebooks, you may get "out of memory" errors or python kernel errors like:</p>
 <div class="admonition error">
 <p class="admonition-title">Error</p>
-<div class="language-text highlight"><pre><span></span><code><span id="__span-2-1"><a id="__codelineno-2-1" name="__codelineno-2-1" href="#__codelineno-2-1"></a>Kernel Restarting
-</span><span id="__span-2-2"><a id="__codelineno-2-2" name="__codelineno-2-2" href="#__codelineno-2-2"></a>The kernel for sibila/examples/name.ipynb appears to have died.
-</span><span id="__span-2-3"><a id="__codelineno-2-3" name="__codelineno-2-3" href="#__codelineno-2-3"></a>It will restart automatically.
+<div class="language-text highlight"><pre><span></span><code><span id="__span-3-1"><a id="__codelineno-3-1" name="__codelineno-3-1" href="#__codelineno-3-1"></a>Kernel Restarting
+</span><span id="__span-3-2"><a id="__codelineno-3-2" name="__codelineno-3-2" href="#__codelineno-3-2"></a>The kernel for sibila/examples/name.ipynb appears to have died.
+</span><span id="__span-3-3"><a id="__codelineno-3-3" name="__codelineno-3-3" href="#__codelineno-3-3"></a>It will restart automatically.
 </span></code></pre></div>
 </div>
 <p>If you get an error like this in JupyterLab, open the Kernel menu and select "Shut Down All Kernels...". This will get rid of any out-of-memory stuck models.</p>
 <p>A good practice is to delete any local model after you no longer need it or right before loading a new one. A simple "del model" works fine, or you can add these two lines before creating a model:</p>
-<div class="language-python highlight"><pre><span></span><code><span id="__span-3-1"><a id="__codelineno-3-1" name="__codelineno-3-1" href="#__codelineno-3-1"></a><span class="k">try</span><span class="p">:</span> <span class="k">del</span> <span class="n">model</span>
-</span><span id="__span-3-2"><a id="__codelineno-3-2" name="__codelineno-3-2" href="#__codelineno-3-2"></a><span class="k">except</span><span class="p">:</span> <span class="o">...</span>
-</span><span id="__span-3-3"><a id="__codelineno-3-3" name="__codelineno-3-3" href="#__codelineno-3-3"></a>
-</span><span id="__span-3-4"><a id="__codelineno-3-4" name="__codelineno-3-4" href="#__codelineno-3-4"></a><span class="n">model</span> <span class="o">=</span> <span class="n">LlamaCppModel</span><span class="p">(</span><span class="o">...</span><span class="p">)</span>
+<div class="language-python highlight"><pre><span></span><code><span id="__span-4-1"><a id="__codelineno-4-1" name="__codelineno-4-1" href="#__codelineno-4-1"></a><span class="k">try</span><span class="p">:</span> <span class="k">del</span> <span class="n">model</span>
+</span><span id="__span-4-2"><a id="__codelineno-4-2" name="__codelineno-4-2" href="#__codelineno-4-2"></a><span class="k">except</span><span class="p">:</span> <span class="o">...</span>
+</span><span id="__span-4-3"><a id="__codelineno-4-3" name="__codelineno-4-3" href="#__codelineno-4-3"></a>
+</span><span id="__span-4-4"><a id="__codelineno-4-4" name="__codelineno-4-4" href="#__codelineno-4-4"></a><span class="n">model</span> <span class="o">=</span> <span class="n">LlamaCppModel</span><span class="p">(</span><span class="o">...</span><span class="p">)</span>
 </span></code></pre></div>
 <p>This way, any existing model in the current notebook is deleted before creating a new one.</p>
 <p>However this won't work across multiple notebooks. In those cases, open JupyterLab's Kernel menu and select "Shut Down All Kernels...". This will get rid of any models currently in memory.</p>

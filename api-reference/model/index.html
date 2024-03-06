@@ -11,7 +11,7 @@
         <link rel="canonical" href="https://jndiogo.github.io/sibila/api-reference/model/">
       
       
-        <link rel="prev" href="../../examples/interact/">
+        <link rel="prev" href="../../examples/cli/">
       
       
         <link rel="next" href="../models/">
@@ -573,7 +573,7 @@
         
   
   <span class="md-ellipsis">
-    Remote model
+    Remote models
   </span>
   
 
@@ -616,7 +616,7 @@
             
   
   <span class="md-ellipsis">
-    Local model
+    Local models
   </span>
   
 
@@ -626,7 +626,7 @@
         <nav class="md-nav" data-md-level="3" aria-labelledby="__nav_1_4_2_label" aria-expanded="false">
           <label class="md-nav__title" for="__nav_1_4_2">
             <span class="md-nav__icon md-icon"></span>
-            Local model
+            Local models
           </label>
           <ul class="md-nav__list" data-md-scrollfix>
             
@@ -716,6 +716,8 @@
       
         
       
+        
+      
     
     
     
@@ -780,7 +782,7 @@
         
   
   <span class="md-ellipsis">
-    models.json file
+    Managing models
   </span>
   
 
@@ -801,7 +803,28 @@
         
   
   <span class="md-ellipsis">
-    formats.json file
+    Managing formats
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../models/sibila_cli/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Sibila CLI tool
   </span>
   
 
@@ -1074,6 +1097,8 @@
       
         
       
+        
+      
     
     
     
@@ -1299,6 +1324,27 @@
   
   <span class="md-ellipsis">
     Interact
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../examples/cli/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Sibila CLI
   </span>
   
 
@@ -2396,7 +2442,7 @@
         <tr>
           <td><code>format</code></td>
           <td>
-                <code><a class="autorefs autorefs-external" title="typing.Optional" href="https://docs.python.org/3/library/typing.html#typing.Optional">Optional</a>[<a class="autorefs autorefs-external" title="typing.Union" href="https://docs.python.org/3/library/typing.html#typing.Union">Union</a>[<a class="autorefs autorefs-external" href="https://docs.python.org/3/library/stdtypes.html#str">str</a>, <a class="autorefs autorefs-external" href="https://docs.python.org/3/library/stdtypes.html#dict">dict</a>]]</code>
+                <code><a class="autorefs autorefs-external" title="typing.Optional" href="https://docs.python.org/3/library/typing.html#typing.Optional">Optional</a>[<a class="autorefs autorefs-external" href="https://docs.python.org/3/library/stdtypes.html#str">str</a>]</code>
           </td>
           <td>
             <div class="doc-md-description">
@@ -2670,7 +2716,7 @@
 <span class="normal"><a href="#__codelineno-0-161">161</a></span></pre></div></td><td class="code"><div><pre><span></span><code><span id="__span-0-66"><a id="__codelineno-0-66" name="__codelineno-0-66"></a><span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span>
 </span><span id="__span-0-67"><a id="__codelineno-0-67" name="__codelineno-0-67"></a>             <span class="n">path</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
 </span><span id="__span-0-68"><a id="__codelineno-0-68" name="__codelineno-0-68"></a>
-</span><span id="__span-0-69"><a id="__codelineno-0-69" name="__codelineno-0-69"></a>             <span class="nb">format</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">Union</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span><span class="nb">dict</span><span class="p">]]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>                 
+</span><span id="__span-0-69"><a id="__codelineno-0-69" name="__codelineno-0-69"></a>             <span class="nb">format</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>                 
 </span><span id="__span-0-70"><a id="__codelineno-0-70" name="__codelineno-0-70"></a>             <span class="n">format_search_order</span><span class="p">:</span> <span class="nb">list</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="p">[</span><span class="s2">&quot;name&quot;</span><span class="p">,</span><span class="s2">&quot;meta_template&quot;</span><span class="p">,</span> <span class="s2">&quot;formats_json&quot;</span><span class="p">],</span>
 </span><span id="__span-0-71"><a id="__codelineno-0-71" name="__codelineno-0-71"></a>
 </span><span id="__span-0-72"><a id="__codelineno-0-72" name="__codelineno-0-72"></a>             <span class="o">*</span><span class="p">,</span>
@@ -4453,7 +4499,17 @@ Doesn't raise an exception if an error occurs, always returns GenOut.</p>
 
           <details class="quote">
             <summary>Source code in <code>sibila/model.py</code></summary>
-            <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal"><a href="#__codelineno-0-1180">1180</a></span>
+            <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal"><a href="#__codelineno-0-1170">1170</a></span>
+<span class="normal"><a href="#__codelineno-0-1171">1171</a></span>
+<span class="normal"><a href="#__codelineno-0-1172">1172</a></span>
+<span class="normal"><a href="#__codelineno-0-1173">1173</a></span>
+<span class="normal"><a href="#__codelineno-0-1174">1174</a></span>
+<span class="normal"><a href="#__codelineno-0-1175">1175</a></span>
+<span class="normal"><a href="#__codelineno-0-1176">1176</a></span>
+<span class="normal"><a href="#__codelineno-0-1177">1177</a></span>
+<span class="normal"><a href="#__codelineno-0-1178">1178</a></span>
+<span class="normal"><a href="#__codelineno-0-1179">1179</a></span>
+<span class="normal"><a href="#__codelineno-0-1180">1180</a></span>
 <span class="normal"><a href="#__codelineno-0-1181">1181</a></span>
 <span class="normal"><a href="#__codelineno-0-1182">1182</a></span>
 <span class="normal"><a href="#__codelineno-0-1183">1183</a></span>
@@ -4471,45 +4527,35 @@ Doesn't raise an exception if an error occurs, always returns GenOut.</p>
 <span class="normal"><a href="#__codelineno-0-1195">1195</a></span>
 <span class="normal"><a href="#__codelineno-0-1196">1196</a></span>
 <span class="normal"><a href="#__codelineno-0-1197">1197</a></span>
-<span class="normal"><a href="#__codelineno-0-1198">1198</a></span>
-<span class="normal"><a href="#__codelineno-0-1199">1199</a></span>
-<span class="normal"><a href="#__codelineno-0-1200">1200</a></span>
-<span class="normal"><a href="#__codelineno-0-1201">1201</a></span>
-<span class="normal"><a href="#__codelineno-0-1202">1202</a></span>
-<span class="normal"><a href="#__codelineno-0-1203">1203</a></span>
-<span class="normal"><a href="#__codelineno-0-1204">1204</a></span>
-<span class="normal"><a href="#__codelineno-0-1205">1205</a></span>
-<span class="normal"><a href="#__codelineno-0-1206">1206</a></span>
-<span class="normal"><a href="#__codelineno-0-1207">1207</a></span>
-<span class="normal"><a href="#__codelineno-0-1208">1208</a></span></pre></div></td><td class="code"><div><pre><span></span><code><span id="__span-0-1180"><a id="__codelineno-0-1180" name="__codelineno-0-1180"></a><span class="k">def</span> <span class="nf">gen</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> 
-</span><span id="__span-0-1181"><a id="__codelineno-0-1181" name="__codelineno-0-1181"></a>        <span class="n">thread</span><span class="p">:</span> <span class="n">Thread</span><span class="p">,</span>
-</span><span id="__span-0-1182"><a id="__codelineno-0-1182" name="__codelineno-0-1182"></a>        <span class="n">genconf</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">GenConf</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
-</span><span id="__span-0-1183"><a id="__codelineno-0-1183" name="__codelineno-0-1183"></a>        <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">GenOut</span><span class="p">:</span>
-</span><span id="__span-0-1184"><a id="__codelineno-0-1184" name="__codelineno-0-1184"></a><span class="w">    </span><span class="sd">&quot;&quot;&quot;Text generation from a Thread, used by the other model generation methods.</span>
-</span><span id="__span-0-1185"><a id="__codelineno-0-1185" name="__codelineno-0-1185"></a><span class="sd">    Doesn&#39;t raise an exception if an error occurs, always returns GenOut.</span>
-</span><span id="__span-0-1186"><a id="__codelineno-0-1186" name="__codelineno-0-1186"></a>
-</span><span id="__span-0-1187"><a id="__codelineno-0-1187" name="__codelineno-0-1187"></a><span class="sd">    Args:</span>
-</span><span id="__span-0-1188"><a id="__codelineno-0-1188" name="__codelineno-0-1188"></a><span class="sd">        thread: The Thread object to use as model input.</span>
-</span><span id="__span-0-1189"><a id="__codelineno-0-1189" name="__codelineno-0-1189"></a><span class="sd">        genconf: Model generation configuration. Defaults to None, which uses model&#39;s default.</span>
-</span><span id="__span-0-1190"><a id="__codelineno-0-1190" name="__codelineno-0-1190"></a>
-</span><span id="__span-0-1191"><a id="__codelineno-0-1191" name="__codelineno-0-1191"></a><span class="sd">    Returns:</span>
-</span><span id="__span-0-1192"><a id="__codelineno-0-1192" name="__codelineno-0-1192"></a><span class="sd">        A GenOut object with result, generated text, etc. </span>
-</span><span id="__span-0-1193"><a id="__codelineno-0-1193" name="__codelineno-0-1193"></a><span class="sd">    &quot;&quot;&quot;</span>
-</span><span id="__span-0-1194"><a id="__codelineno-0-1194" name="__codelineno-0-1194"></a>
-</span><span id="__span-0-1195"><a id="__codelineno-0-1195" name="__codelineno-0-1195"></a>    <span class="k">if</span> <span class="n">genconf</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
-</span><span id="__span-0-1196"><a id="__codelineno-0-1196" name="__codelineno-0-1196"></a>        <span class="n">genconf</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">genconf</span>
+<span class="normal"><a href="#__codelineno-0-1198">1198</a></span></pre></div></td><td class="code"><div><pre><span></span><code><span id="__span-0-1170"><a id="__codelineno-0-1170" name="__codelineno-0-1170"></a><span class="k">def</span> <span class="nf">gen</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> 
+</span><span id="__span-0-1171"><a id="__codelineno-0-1171" name="__codelineno-0-1171"></a>        <span class="n">thread</span><span class="p">:</span> <span class="n">Thread</span><span class="p">,</span>
+</span><span id="__span-0-1172"><a id="__codelineno-0-1172" name="__codelineno-0-1172"></a>        <span class="n">genconf</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">GenConf</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+</span><span id="__span-0-1173"><a id="__codelineno-0-1173" name="__codelineno-0-1173"></a>        <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">GenOut</span><span class="p">:</span>
+</span><span id="__span-0-1174"><a id="__codelineno-0-1174" name="__codelineno-0-1174"></a><span class="w">    </span><span class="sd">&quot;&quot;&quot;Text generation from a Thread, used by the other model generation methods.</span>
+</span><span id="__span-0-1175"><a id="__codelineno-0-1175" name="__codelineno-0-1175"></a><span class="sd">    Doesn&#39;t raise an exception if an error occurs, always returns GenOut.</span>
+</span><span id="__span-0-1176"><a id="__codelineno-0-1176" name="__codelineno-0-1176"></a>
+</span><span id="__span-0-1177"><a id="__codelineno-0-1177" name="__codelineno-0-1177"></a><span class="sd">    Args:</span>
+</span><span id="__span-0-1178"><a id="__codelineno-0-1178" name="__codelineno-0-1178"></a><span class="sd">        thread: The Thread object to use as model input.</span>
+</span><span id="__span-0-1179"><a id="__codelineno-0-1179" name="__codelineno-0-1179"></a><span class="sd">        genconf: Model generation configuration. Defaults to None, which uses model&#39;s default.</span>
+</span><span id="__span-0-1180"><a id="__codelineno-0-1180" name="__codelineno-0-1180"></a>
+</span><span id="__span-0-1181"><a id="__codelineno-0-1181" name="__codelineno-0-1181"></a><span class="sd">    Returns:</span>
+</span><span id="__span-0-1182"><a id="__codelineno-0-1182" name="__codelineno-0-1182"></a><span class="sd">        A GenOut object with result, generated text, etc. </span>
+</span><span id="__span-0-1183"><a id="__codelineno-0-1183" name="__codelineno-0-1183"></a><span class="sd">    &quot;&quot;&quot;</span>
+</span><span id="__span-0-1184"><a id="__codelineno-0-1184" name="__codelineno-0-1184"></a>
+</span><span id="__span-0-1185"><a id="__codelineno-0-1185" name="__codelineno-0-1185"></a>    <span class="k">if</span> <span class="n">genconf</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+</span><span id="__span-0-1186"><a id="__codelineno-0-1186" name="__codelineno-0-1186"></a>        <span class="n">genconf</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">genconf</span>
+</span><span id="__span-0-1187"><a id="__codelineno-0-1187" name="__codelineno-0-1187"></a>
+</span><span id="__span-0-1188"><a id="__codelineno-0-1188" name="__codelineno-0-1188"></a>    <span class="n">thread</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_prepare_gen_in</span><span class="p">(</span><span class="n">thread</span><span class="p">,</span> <span class="n">genconf</span><span class="p">)</span>
+</span><span id="__span-0-1189"><a id="__codelineno-0-1189" name="__codelineno-0-1189"></a>
+</span><span id="__span-0-1190"><a id="__codelineno-0-1190" name="__codelineno-0-1190"></a>    <span class="n">prompt</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">text_from_thread</span><span class="p">(</span><span class="n">thread</span><span class="p">)</span>
+</span><span id="__span-0-1191"><a id="__codelineno-0-1191" name="__codelineno-0-1191"></a>
+</span><span id="__span-0-1192"><a id="__codelineno-0-1192" name="__codelineno-0-1192"></a>    <span class="n">logger</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Prompt: █</span><span class="si">{</span><span class="n">prompt</span><span class="si">}</span><span class="s2">█&quot;</span><span class="p">)</span>
+</span><span id="__span-0-1193"><a id="__codelineno-0-1193" name="__codelineno-0-1193"></a>
+</span><span id="__span-0-1194"><a id="__codelineno-0-1194" name="__codelineno-0-1194"></a>    <span class="n">text</span><span class="p">,</span><span class="n">finish</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_gen_text</span><span class="p">(</span><span class="n">prompt</span><span class="p">,</span> <span class="n">genconf</span><span class="p">)</span>
+</span><span id="__span-0-1195"><a id="__codelineno-0-1195" name="__codelineno-0-1195"></a>
+</span><span id="__span-0-1196"><a id="__codelineno-0-1196" name="__codelineno-0-1196"></a>    <span class="n">out</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_prepare_gen_out</span><span class="p">(</span><span class="n">text</span><span class="p">,</span> <span class="n">finish</span><span class="p">,</span> <span class="n">genconf</span><span class="p">)</span>
 </span><span id="__span-0-1197"><a id="__codelineno-0-1197" name="__codelineno-0-1197"></a>
-</span><span id="__span-0-1198"><a id="__codelineno-0-1198" name="__codelineno-0-1198"></a>    <span class="n">thread</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_prepare_gen_in</span><span class="p">(</span><span class="n">thread</span><span class="p">,</span> <span class="n">genconf</span><span class="p">)</span>
-</span><span id="__span-0-1199"><a id="__codelineno-0-1199" name="__codelineno-0-1199"></a>
-</span><span id="__span-0-1200"><a id="__codelineno-0-1200" name="__codelineno-0-1200"></a>    <span class="n">prompt</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">text_from_thread</span><span class="p">(</span><span class="n">thread</span><span class="p">)</span>
-</span><span id="__span-0-1201"><a id="__codelineno-0-1201" name="__codelineno-0-1201"></a>
-</span><span id="__span-0-1202"><a id="__codelineno-0-1202" name="__codelineno-0-1202"></a>    <span class="n">logger</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Prompt: █</span><span class="si">{</span><span class="n">prompt</span><span class="si">}</span><span class="s2">█&quot;</span><span class="p">)</span>
-</span><span id="__span-0-1203"><a id="__codelineno-0-1203" name="__codelineno-0-1203"></a>
-</span><span id="__span-0-1204"><a id="__codelineno-0-1204" name="__codelineno-0-1204"></a>    <span class="n">text</span><span class="p">,</span><span class="n">finish</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_gen_text</span><span class="p">(</span><span class="n">prompt</span><span class="p">,</span> <span class="n">genconf</span><span class="p">)</span>
-</span><span id="__span-0-1205"><a id="__codelineno-0-1205" name="__codelineno-0-1205"></a>
-</span><span id="__span-0-1206"><a id="__codelineno-0-1206" name="__codelineno-0-1206"></a>    <span class="n">out</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_prepare_gen_out</span><span class="p">(</span><span class="n">text</span><span class="p">,</span> <span class="n">finish</span><span class="p">,</span> <span class="n">genconf</span><span class="p">)</span>
-</span><span id="__span-0-1207"><a id="__codelineno-0-1207" name="__codelineno-0-1207"></a>
-</span><span id="__span-0-1208"><a id="__codelineno-0-1208" name="__codelineno-0-1208"></a>    <span class="k">return</span> <span class="n">out</span>
+</span><span id="__span-0-1198"><a id="__codelineno-0-1198" name="__codelineno-0-1198"></a>    <span class="k">return</span> <span class="n">out</span>
 </span></code></pre></div></td></tr></table></div>
           </details>
   </div>
@@ -5543,8 +5589,7 @@ We assume a common in+out context where total token length must always be less t
 
           <details class="quote">
             <summary>Source code in <code>sibila/llamacpp.py</code></summary>
-            <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal"><a href="#__codelineno-0-266">266</a></span>
-<span class="normal"><a href="#__codelineno-0-267">267</a></span>
+            <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal"><a href="#__codelineno-0-267">267</a></span>
 <span class="normal"><a href="#__codelineno-0-268">268</a></span>
 <span class="normal"><a href="#__codelineno-0-269">269</a></span>
 <span class="normal"><a href="#__codelineno-0-270">270</a></span>
@@ -5557,21 +5602,22 @@ We assume a common in+out context where total token length must always be less t
 <span class="normal"><a href="#__codelineno-0-277">277</a></span>
 <span class="normal"><a href="#__codelineno-0-278">278</a></span>
 <span class="normal"><a href="#__codelineno-0-279">279</a></span>
-<span class="normal"><a href="#__codelineno-0-280">280</a></span></pre></div></td><td class="code"><div><pre><span></span><code><span id="__span-0-266"><a id="__codelineno-0-266" name="__codelineno-0-266"></a><span class="k">def</span> <span class="nf">get_metadata</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-</span><span id="__span-0-267"><a id="__codelineno-0-267" name="__codelineno-0-267"></a><span class="w">    </span><span class="sd">&quot;&quot;&quot;Returns model metadata.&quot;&quot;&quot;</span>
-</span><span id="__span-0-268"><a id="__codelineno-0-268" name="__codelineno-0-268"></a>    <span class="n">out</span> <span class="o">=</span> <span class="p">{}</span>
-</span><span id="__span-0-269"><a id="__codelineno-0-269" name="__codelineno-0-269"></a>    <span class="n">buf</span> <span class="o">=</span> <span class="nb">bytes</span><span class="p">(</span><span class="mi">16</span> <span class="o">*</span> <span class="mi">1024</span><span class="p">)</span>
-</span><span id="__span-0-270"><a id="__codelineno-0-270" name="__codelineno-0-270"></a>    <span class="n">lmodel</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_llama</span><span class="o">.</span><span class="n">model</span>
-</span><span id="__span-0-271"><a id="__codelineno-0-271" name="__codelineno-0-271"></a>    <span class="n">count</span> <span class="o">=</span> <span class="n">llama_cpp</span><span class="o">.</span><span class="n">llama_model_meta_count</span><span class="p">(</span><span class="n">lmodel</span><span class="p">)</span>
-</span><span id="__span-0-272"><a id="__codelineno-0-272" name="__codelineno-0-272"></a>    <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">count</span><span class="p">):</span>
-</span><span id="__span-0-273"><a id="__codelineno-0-273" name="__codelineno-0-273"></a>        <span class="n">res</span> <span class="o">=</span> <span class="n">llama_cpp</span><span class="o">.</span><span class="n">llama_model_meta_key_by_index</span><span class="p">(</span><span class="n">lmodel</span><span class="p">,</span> <span class="n">i</span><span class="p">,</span> <span class="n">buf</span><span class="p">,</span><span class="nb">len</span><span class="p">(</span><span class="n">buf</span><span class="p">))</span>
-</span><span id="__span-0-274"><a id="__codelineno-0-274" name="__codelineno-0-274"></a>        <span class="k">if</span> <span class="n">res</span> <span class="o">&gt;=</span> <span class="mi">0</span><span class="p">:</span>
-</span><span id="__span-0-275"><a id="__codelineno-0-275" name="__codelineno-0-275"></a>            <span class="n">key</span> <span class="o">=</span> <span class="n">buf</span><span class="p">[:</span><span class="n">res</span><span class="p">]</span><span class="o">.</span><span class="n">decode</span><span class="p">(</span><span class="s1">&#39;utf-8&#39;</span><span class="p">)</span>
-</span><span id="__span-0-276"><a id="__codelineno-0-276" name="__codelineno-0-276"></a>            <span class="n">res</span> <span class="o">=</span> <span class="n">llama_cpp</span><span class="o">.</span><span class="n">llama_model_meta_val_str_by_index</span><span class="p">(</span><span class="n">lmodel</span><span class="p">,</span> <span class="n">i</span><span class="p">,</span> <span class="n">buf</span><span class="p">,</span><span class="nb">len</span><span class="p">(</span><span class="n">buf</span><span class="p">))</span>
-</span><span id="__span-0-277"><a id="__codelineno-0-277" name="__codelineno-0-277"></a>            <span class="k">if</span> <span class="n">res</span> <span class="o">&gt;=</span> <span class="mi">0</span><span class="p">:</span>
-</span><span id="__span-0-278"><a id="__codelineno-0-278" name="__codelineno-0-278"></a>                <span class="n">value</span> <span class="o">=</span> <span class="n">buf</span><span class="p">[:</span><span class="n">res</span><span class="p">]</span><span class="o">.</span><span class="n">decode</span><span class="p">(</span><span class="s1">&#39;utf-8&#39;</span><span class="p">)</span>
-</span><span id="__span-0-279"><a id="__codelineno-0-279" name="__codelineno-0-279"></a>                <span class="n">out</span><span class="p">[</span><span class="n">key</span><span class="p">]</span> <span class="o">=</span> <span class="n">value</span>
-</span><span id="__span-0-280"><a id="__codelineno-0-280" name="__codelineno-0-280"></a>    <span class="k">return</span> <span class="n">out</span>
+<span class="normal"><a href="#__codelineno-0-280">280</a></span>
+<span class="normal"><a href="#__codelineno-0-281">281</a></span></pre></div></td><td class="code"><div><pre><span></span><code><span id="__span-0-267"><a id="__codelineno-0-267" name="__codelineno-0-267"></a><span class="k">def</span> <span class="nf">get_metadata</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+</span><span id="__span-0-268"><a id="__codelineno-0-268" name="__codelineno-0-268"></a><span class="w">    </span><span class="sd">&quot;&quot;&quot;Returns model metadata.&quot;&quot;&quot;</span>
+</span><span id="__span-0-269"><a id="__codelineno-0-269" name="__codelineno-0-269"></a>    <span class="n">out</span> <span class="o">=</span> <span class="p">{}</span>
+</span><span id="__span-0-270"><a id="__codelineno-0-270" name="__codelineno-0-270"></a>    <span class="n">buf</span> <span class="o">=</span> <span class="nb">bytes</span><span class="p">(</span><span class="mi">16</span> <span class="o">*</span> <span class="mi">1024</span><span class="p">)</span>
+</span><span id="__span-0-271"><a id="__codelineno-0-271" name="__codelineno-0-271"></a>    <span class="n">lmodel</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_llama</span><span class="o">.</span><span class="n">model</span>
+</span><span id="__span-0-272"><a id="__codelineno-0-272" name="__codelineno-0-272"></a>    <span class="n">count</span> <span class="o">=</span> <span class="n">llama_cpp</span><span class="o">.</span><span class="n">llama_model_meta_count</span><span class="p">(</span><span class="n">lmodel</span><span class="p">)</span>
+</span><span id="__span-0-273"><a id="__codelineno-0-273" name="__codelineno-0-273"></a>    <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">count</span><span class="p">):</span>
+</span><span id="__span-0-274"><a id="__codelineno-0-274" name="__codelineno-0-274"></a>        <span class="n">res</span> <span class="o">=</span> <span class="n">llama_cpp</span><span class="o">.</span><span class="n">llama_model_meta_key_by_index</span><span class="p">(</span><span class="n">lmodel</span><span class="p">,</span> <span class="n">i</span><span class="p">,</span> <span class="n">buf</span><span class="p">,</span><span class="nb">len</span><span class="p">(</span><span class="n">buf</span><span class="p">))</span>
+</span><span id="__span-0-275"><a id="__codelineno-0-275" name="__codelineno-0-275"></a>        <span class="k">if</span> <span class="n">res</span> <span class="o">&gt;=</span> <span class="mi">0</span><span class="p">:</span>
+</span><span id="__span-0-276"><a id="__codelineno-0-276" name="__codelineno-0-276"></a>            <span class="n">key</span> <span class="o">=</span> <span class="n">buf</span><span class="p">[:</span><span class="n">res</span><span class="p">]</span><span class="o">.</span><span class="n">decode</span><span class="p">(</span><span class="s1">&#39;utf-8&#39;</span><span class="p">)</span>
+</span><span id="__span-0-277"><a id="__codelineno-0-277" name="__codelineno-0-277"></a>            <span class="n">res</span> <span class="o">=</span> <span class="n">llama_cpp</span><span class="o">.</span><span class="n">llama_model_meta_val_str_by_index</span><span class="p">(</span><span class="n">lmodel</span><span class="p">,</span> <span class="n">i</span><span class="p">,</span> <span class="n">buf</span><span class="p">,</span><span class="nb">len</span><span class="p">(</span><span class="n">buf</span><span class="p">))</span>
+</span><span id="__span-0-278"><a id="__codelineno-0-278" name="__codelineno-0-278"></a>            <span class="k">if</span> <span class="n">res</span> <span class="o">&gt;=</span> <span class="mi">0</span><span class="p">:</span>
+</span><span id="__span-0-279"><a id="__codelineno-0-279" name="__codelineno-0-279"></a>                <span class="n">value</span> <span class="o">=</span> <span class="n">buf</span><span class="p">[:</span><span class="n">res</span><span class="p">]</span><span class="o">.</span><span class="n">decode</span><span class="p">(</span><span class="s1">&#39;utf-8&#39;</span><span class="p">)</span>
+</span><span id="__span-0-280"><a id="__codelineno-0-280" name="__codelineno-0-280"></a>                <span class="n">out</span><span class="p">[</span><span class="n">key</span><span class="p">]</span> <span class="o">=</span> <span class="n">value</span>
+</span><span id="__span-0-281"><a id="__codelineno-0-281" name="__codelineno-0-281"></a>    <span class="k">return</span> <span class="n">out</span>
 </span></code></pre></div></td></tr></table></div>
           </details>
   </div>

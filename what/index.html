@@ -638,7 +638,7 @@
         
   
   <span class="md-ellipsis">
-    Remote model
+    Remote models
   </span>
   
 
@@ -681,7 +681,7 @@
             
   
   <span class="md-ellipsis">
-    Local model
+    Local models
   </span>
   
 
@@ -691,7 +691,7 @@
         <nav class="md-nav" data-md-level="3" aria-labelledby="__nav_1_4_2_label" aria-expanded="false">
           <label class="md-nav__title" for="__nav_1_4_2">
             <span class="md-nav__icon md-icon"></span>
-            Local model
+            Local models
           </label>
           <ul class="md-nav__list" data-md-scrollfix>
             
@@ -781,6 +781,8 @@
       
         
       
+        
+      
     
     
     
@@ -845,7 +847,7 @@
         
   
   <span class="md-ellipsis">
-    models.json file
+    Managing models
   </span>
   
 
@@ -866,7 +868,28 @@
         
   
   <span class="md-ellipsis">
-    formats.json file
+    Managing formats
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../models/sibila_cli/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Sibila CLI tool
   </span>
   
 
@@ -1139,6 +1162,8 @@
       
         
       
+        
+      
     
     
     
@@ -1364,6 +1389,27 @@
   
   <span class="md-ellipsis">
     Interact
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../examples/cli/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Sibila CLI
   </span>
   
 
@@ -1692,12 +1738,13 @@ For example, need to classify something? </p>
 <p>With 8Gb or more of RAM or GPU memory, you can get good structured output from models like OpenChat, Zephyr, Mistral 7B, or any other GGUF file.</p>
 <p>You can use any paid OpenAI model, as well as any model that llama.cpp can run, with the same API. Choose the best model for each use, allowing you the freedom of choice.</p>
 <h2 id="with-model-management">With model management<a class="headerlink" href="#with-model-management" title="Permanent link">#</a></h2>
-<p>Create models from simple names instead of having to track model configurations, filenames or chat templates.</p>
+<p>Includes a Models factory that creates models from simple names instead of having to track model configurations, filenames or chat templates.</p>
 <div class="language-python highlight"><pre><span></span><code><span id="__span-2-1"><a id="__codelineno-2-1" name="__codelineno-2-1" href="#__codelineno-2-1"></a><span class="n">local_model</span> <span class="o">=</span> <span class="n">Models</span><span class="o">.</span><span class="n">create</span><span class="p">(</span><span class="s2">&quot;llamacpp:openchat&quot;</span><span class="p">)</span>
 </span><span id="__span-2-2"><a id="__codelineno-2-2" name="__codelineno-2-2" href="#__codelineno-2-2"></a>
 </span><span id="__span-2-3"><a id="__codelineno-2-3" name="__codelineno-2-3" href="#__codelineno-2-3"></a><span class="n">remote_model</span> <span class="o">=</span> <span class="n">Models</span><span class="o">.</span><span class="n">create</span><span class="p">(</span><span class="s2">&quot;openai:gpt-4&quot;</span><span class="p">)</span>    
 </span></code></pre></div>
 <p>This makes the switch to newer models much easier, and makes it simpler to compare model outputs.</p>
+<p>Sibila includes a CLI tool to download GGUF models from <a href="https://www.huggingface.co">Hugging Face model hub</a>, and to manage its Models factory.</p>
 
 
 

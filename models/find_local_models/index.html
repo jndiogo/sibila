@@ -573,7 +573,7 @@
         
   
   <span class="md-ellipsis">
-    Remote model
+    Remote models
   </span>
   
 
@@ -616,7 +616,7 @@
             
   
   <span class="md-ellipsis">
-    Local model
+    Local models
   </span>
   
 
@@ -626,7 +626,7 @@
         <nav class="md-nav" data-md-level="3" aria-labelledby="__nav_1_4_2_label" aria-expanded="true">
           <label class="md-nav__title" for="__nav_1_4_2">
             <span class="md-nav__icon md-icon"></span>
-            Local model
+            Local models
           </label>
           <ul class="md-nav__list" data-md-scrollfix>
             
@@ -781,6 +781,8 @@
       
         
       
+        
+      
     
     
     
@@ -845,7 +847,7 @@
         
   
   <span class="md-ellipsis">
-    models.json file
+    Managing models
   </span>
   
 
@@ -866,7 +868,28 @@
         
   
   <span class="md-ellipsis">
-    formats.json file
+    Managing formats
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../sibila_cli/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Sibila CLI tool
   </span>
   
 
@@ -1139,6 +1162,8 @@
       
         
       
+        
+      
     
     
     
@@ -1364,6 +1389,27 @@
   
   <span class="md-ellipsis">
     Interact
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../examples/cli/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Sibila CLI
   </span>
   
 
@@ -1685,9 +1731,8 @@
 <p>And a good model that we'll be using for the examples is a 4 bit quantization of the OpenChat-3.5 model, which itself is a fine-tuning of Mistral-7b:</p>
 <p><a href="https://huggingface.co/TheBloke/openchat-3.5-1210-GGUF">https://huggingface.co/TheBloke/openchat-3.5-1210-GGUF</a></p>
 <h2 id="download-the-file-into-the-models-folder">Download the file into the "models" folder<a class="headerlink" href="#download-the-file-into-the-models-folder" title="Permanent link">#</a></h2>
-<p>From HuggingFace, you can download the GGUF file (in this and any other quantized models in HuggingFace) by scrolling down to the "Provided files" section and clicking one of the links. Usually the files ending in "Q4_K_M" are very reasonable 4-bit quantizations.</p>
-<p>In this case you'd download the file "openchat-3.5-1210.Q4_K_M.gguf" - save it into the "models" folder inside Sibila.</p>
-<p>Because these models use a chat template format, we need to make sure it's the right one - see the <a href="../setup_format/">Setup chat template format</a> section on how to handle this.</p>
+<p>See the <a href="../local_model/#openchat-model">OpenChat model section</a> on how to download models with the sibila CLI tool or manually in your browser.</p>
+<p>The OpenChat model already includes the chat template format in its metadada, but for some other models we'll need to set the format - see the <a href="../setup_format/">Setup chat template format</a> section on how to handle this.</p>
 
 
 

@@ -573,7 +573,7 @@
         
   
   <span class="md-ellipsis">
-    Remote model
+    Remote models
   </span>
   
 
@@ -616,7 +616,7 @@
             
   
   <span class="md-ellipsis">
-    Local model
+    Local models
   </span>
   
 
@@ -626,7 +626,7 @@
         <nav class="md-nav" data-md-level="3" aria-labelledby="__nav_1_4_2_label" aria-expanded="true">
           <label class="md-nav__title" for="__nav_1_4_2">
             <span class="md-nav__icon md-icon"></span>
-            Local model
+            Local models
           </label>
           <ul class="md-nav__list" data-md-scrollfix>
             
@@ -752,18 +752,42 @@
         <li class="md-nav__item">
   <a href="#option-1-pass-the-chat-template-format-when-creating-the-model" class="md-nav__link">
     <span class="md-ellipsis">
-      Option 1: pass the chat template format when creating the model
+      Option 1: Pass the chat template format when creating the model
     </span>
   </a>
   
 </li>
       
         <li class="md-nav__item">
-  <a href="#option-2-add-the-chat-template-to-formatsjson" class="md-nav__link">
+  <a href="#option-2-add-the-chat-template-to-the-models-factory" class="md-nav__link">
     <span class="md-ellipsis">
-      Option 2: add the chat template to formats.json
+      Option 2: Add the chat template to the Models factory
     </span>
   </a>
+  
+    <nav class="md-nav" aria-label="Option 2: Add the chat template to the Models factory">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#with-sibila-formats-cli-tool" class="md-nav__link">
+    <span class="md-ellipsis">
+      With "sibila formats" CLI tool
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#manually-edit-formatsjson" class="md-nav__link">
+    <span class="md-ellipsis">
+      Manually edit "formats.json"
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
   
 </li>
       
@@ -792,6 +816,8 @@
   
     
     
+      
+        
       
         
       
@@ -863,7 +889,7 @@
         
   
   <span class="md-ellipsis">
-    models.json file
+    Managing models
   </span>
   
 
@@ -884,7 +910,28 @@
         
   
   <span class="md-ellipsis">
-    formats.json file
+    Managing formats
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../sibila_cli/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Sibila CLI tool
   </span>
   
 
@@ -1157,6 +1204,8 @@
       
         
       
+        
+      
     
     
     
@@ -1382,6 +1431,27 @@
   
   <span class="md-ellipsis">
     Interact
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../examples/cli/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Sibila CLI
   </span>
   
 
@@ -1666,18 +1736,42 @@
         <li class="md-nav__item">
   <a href="#option-1-pass-the-chat-template-format-when-creating-the-model" class="md-nav__link">
     <span class="md-ellipsis">
-      Option 1: pass the chat template format when creating the model
+      Option 1: Pass the chat template format when creating the model
     </span>
   </a>
   
 </li>
       
         <li class="md-nav__item">
-  <a href="#option-2-add-the-chat-template-to-formatsjson" class="md-nav__link">
+  <a href="#option-2-add-the-chat-template-to-the-models-factory" class="md-nav__link">
     <span class="md-ellipsis">
-      Option 2: add the chat template to formats.json
+      Option 2: Add the chat template to the Models factory
     </span>
   </a>
+  
+    <nav class="md-nav" aria-label="Option 2: Add the chat template to the Models factory">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#with-sibila-formats-cli-tool" class="md-nav__link">
+    <span class="md-ellipsis">
+      With "sibila formats" CLI tool
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#manually-edit-formatsjson" class="md-nav__link">
+    <span class="md-ellipsis">
+      Manually edit "formats.json"
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
   
 </li>
       
@@ -1702,7 +1796,7 @@
   <h1>Chat template format</h1>
 
 <h2 id="what-are-chat-templates">What are chat templates?<a class="headerlink" href="#what-are-chat-templates" title="Permanent link">#</a></h2>
-<p>Because these models were fine-tuned for chat or instruct interaction, they use a chat template, which is just a Jinja2 template that converts a list of messages into a text prompt, which should follow the format that the model was trained on.</p>
+<p>Because these models were fine-tuned for chat or instruct interaction, they use a chat template, which is a Jinja template that converts a list of messages into a text prompt. This template must follow the original format that the model was trained on - this is very important or you won't get good results.</p>
 <p>Chat template definitions are Jinja templates like the following one, which is in ChatML format:</p>
 <div class="language-text highlight"><pre><span></span><code><span id="__span-0-1"><a id="__codelineno-0-1" name="__codelineno-0-1" href="#__codelineno-0-1"></a>{% for message in messages %}
 </span><span id="__span-0-2"><a id="__codelineno-0-2" name="__codelineno-0-2" href="#__codelineno-0-2"></a>    {{&#39;&lt;|im_start|&gt;&#39; + message[&#39;role&#39;] + &#39;\n&#39; + message[&#39;content&#39;] + &#39;&lt;|im_end|&gt;&#39; + &#39;\n&#39;}}
@@ -1719,72 +1813,90 @@
 <p>Only by using the specific chat template for the model, can we get back the best results. </p>
 <p>Sibila tries to automatically detect which template to use with a model, either from the model name or from embedded metadata, if available. </p>
 <h2 id="does-the-model-have-a-built-in-chat-template-format">Does the model have a built-in chat template format?<a class="headerlink" href="#does-the-model-have-a-built-in-chat-template-format" title="Permanent link">#</a></h2>
-<p>Before you even worry about the model's chat template, try creating a LlamaCppModel with the model file. Most models have built-in chat template information in their metadata information. If no exception is raised, the model GGUF file contains the template definition and should work fine.</p>
+<p>Some GGUF models include the chat template in their metadata, unfortunately this is not standard.</p>
+<p>You can quickly check if the model has a chat template by running the sibila CLI in the same folder as the model file:</p>
+<div class="language-text highlight"><pre><span></span><code><span id="__span-2-1"><a id="__codelineno-2-1" name="__codelineno-2-1" href="#__codelineno-2-1"></a>&gt; sibila models -t &quot;llamacpp:openchat-3.5-1210.Q4_K_M.gguf&quot;
+</span><span id="__span-2-2"><a id="__codelineno-2-2" name="__codelineno-2-2" href="#__codelineno-2-2"></a>
+</span><span id="__span-2-3"><a id="__codelineno-2-3" name="__codelineno-2-3" href="#__codelineno-2-3"></a>Using models directory &#39;.&#39;
+</span><span id="__span-2-4"><a id="__codelineno-2-4" name="__codelineno-2-4" href="#__codelineno-2-4"></a>Testing model &#39;llamacpp:openchat-3.5-1210.Q4_K_M.gguf&#39;...
+</span><span id="__span-2-5"><a id="__codelineno-2-5" name="__codelineno-2-5" href="#__codelineno-2-5"></a>Model &#39;llamacpp:openchat-3.5-1210.Q4_K_M.gguf&#39; was properly created and should run fine.
+</span></code></pre></div>
+<p>In this case the chat template format is included with the model and nothing else is needed.</p>
+<p>Another way to test this is to try creating the model in python. If no exception is raised, the model GGUF file contains the template definition and should work fine.</p>
 <div class="admonition example">
 <p class="admonition-title">Example of model creation error</p>
-<div class="language-python highlight"><pre><span></span><code><span id="__span-2-1"><a id="__codelineno-2-1" name="__codelineno-2-1" href="#__codelineno-2-1"></a><span class="kn">from</span> <span class="nn">sibila</span> <span class="kn">import</span> <span class="n">LlamaCppModel</span>
-</span><span id="__span-2-2"><a id="__codelineno-2-2" name="__codelineno-2-2" href="#__codelineno-2-2"></a>
-</span><span id="__span-2-3"><a id="__codelineno-2-3" name="__codelineno-2-3" href="#__codelineno-2-3"></a><span class="n">model</span> <span class="o">=</span> <span class="n">LlamaCppModel</span><span class="p">(</span><span class="s2">&quot;peculiar-model-7b.gguf&quot;</span><span class="p">)</span>
+<div class="language-python highlight"><pre><span></span><code><span id="__span-3-1"><a id="__codelineno-3-1" name="__codelineno-3-1" href="#__codelineno-3-1"></a><span class="kn">from</span> <span class="nn">sibila</span> <span class="kn">import</span> <span class="n">LlamaCppModel</span>
+</span><span id="__span-3-2"><a id="__codelineno-3-2" name="__codelineno-3-2" href="#__codelineno-3-2"></a>
+</span><span id="__span-3-3"><a id="__codelineno-3-3" name="__codelineno-3-3" href="#__codelineno-3-3"></a><span class="n">model</span> <span class="o">=</span> <span class="n">LlamaCppModel</span><span class="p">(</span><span class="s2">&quot;peculiar-model-7b.gguf&quot;</span><span class="p">)</span>
 </span></code></pre></div>
 <div class="admonition failure">
 <p class="admonition-title">Error</p>
-<div class="language-text highlight"><pre><span></span><code><span id="__span-3-1"><a id="__codelineno-3-1" name="__codelineno-3-1" href="#__codelineno-3-1"></a>...
-</span><span id="__span-3-2"><a id="__codelineno-3-2" name="__codelineno-3-2" href="#__codelineno-3-2"></a>
-</span><span id="__span-3-3"><a id="__codelineno-3-3" name="__codelineno-3-3" href="#__codelineno-3-3"></a>ValueError: Could not find a suitable format (chat template) for this model.
-</span><span id="__span-3-4"><a id="__codelineno-3-4" name="__codelineno-3-4" href="#__codelineno-3-4"></a>Without a format, fine-tuned models cannot function properly.
-</span><span id="__span-3-5"><a id="__codelineno-3-5" name="__codelineno-3-5" href="#__codelineno-3-5"></a>See the docs on how you can fix this: pass the template in the format arg or 
-</span><span id="__span-3-6"><a id="__codelineno-3-6" name="__codelineno-3-6" href="#__codelineno-3-6"></a>create a &#39;formats.json&#39; file.
+<div class="language-text highlight"><pre><span></span><code><span id="__span-4-1"><a id="__codelineno-4-1" name="__codelineno-4-1" href="#__codelineno-4-1"></a>...
+</span><span id="__span-4-2"><a id="__codelineno-4-2" name="__codelineno-4-2" href="#__codelineno-4-2"></a>
+</span><span id="__span-4-3"><a id="__codelineno-4-3" name="__codelineno-4-3" href="#__codelineno-4-3"></a>ValueError: Could not find a suitable format (chat template) for this model.
+</span><span id="__span-4-4"><a id="__codelineno-4-4" name="__codelineno-4-4" href="#__codelineno-4-4"></a>Without a format, fine-tuned models cannot function properly.
+</span><span id="__span-4-5"><a id="__codelineno-4-5" name="__codelineno-4-5" href="#__codelineno-4-5"></a>See the docs on how you can fix this: pass the template in the format arg or 
+</span><span id="__span-4-6"><a id="__codelineno-4-6" name="__codelineno-4-6" href="#__codelineno-4-6"></a>create a &#39;formats.json&#39; file.
 </span></code></pre></div>
 </div>
 </div>
 <p>But if you get an error such as above, you'll need to provide a chat template. It's quite easy - let's see how to do it.</p>
 <h2 id="find-the-chat-template-format">Find the chat template format<a class="headerlink" href="#find-the-chat-template-format" title="Permanent link">#</a></h2>
 <p>So, how to find the chat template for a new model that you intend to use? </p>
-<p>This is normally listed in the model's page, search in that page for "template" and copy the listed Jinja template text.</p>
+<p>This is normally listed in the model's page: search in that page for "template" and copy the listed Jinja template text.</p>
 <p>If the template isn't directly listed in the model's page, you can look for a file named "tokenizer_config.json" in the main model files. This file should include an entry named "chat_template" which is what we want.</p>
 <div class="admonition info">
 <p class="admonition-title">Example of a tokenizer_config.json file</p>
 <p>For example, in OpenChat's file "tokenizer_config.json":</p>
 <p><a href="https://huggingface.co/openchat/openchat-3.5-1210/blob/main/tokenizer_config.json">https://huggingface.co/openchat/openchat-3.5-1210/blob/main/tokenizer_config.json</a></p>
 <p>You'll find this line with the template:</p>
-<div class="language-json highlight"><pre><span></span><code><span id="__span-4-1"><a id="__codelineno-4-1" name="__codelineno-4-1" href="#__codelineno-4-1"></a><span class="p">{</span>
-</span><span id="__span-4-2"><a id="__codelineno-4-2" name="__codelineno-4-2" href="#__codelineno-4-2"></a><span class="w">    </span><span class="nt">&quot;...&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;...&quot;</span><span class="p">,</span>
-</span><span id="__span-4-3"><a id="__codelineno-4-3" name="__codelineno-4-3" href="#__codelineno-4-3"></a>
-</span><span id="__span-4-4"><a id="__codelineno-4-4" name="__codelineno-4-4" href="#__codelineno-4-4"></a><span class="w">    </span><span class="nt">&quot;chat_template&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;{{ bos_token }}...{% endif %}&quot;</span><span class="p">,</span>
-</span><span id="__span-4-5"><a id="__codelineno-4-5" name="__codelineno-4-5" href="#__codelineno-4-5"></a>
-</span><span id="__span-4-6"><a id="__codelineno-4-6" name="__codelineno-4-6" href="#__codelineno-4-6"></a><span class="w">    </span><span class="nt">&quot;...&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;...&quot;</span>
-</span><span id="__span-4-7"><a id="__codelineno-4-7" name="__codelineno-4-7" href="#__codelineno-4-7"></a><span class="p">}</span>
+<div class="language-json highlight"><pre><span></span><code><span id="__span-5-1"><a id="__codelineno-5-1" name="__codelineno-5-1" href="#__codelineno-5-1"></a><span class="p">{</span>
+</span><span id="__span-5-2"><a id="__codelineno-5-2" name="__codelineno-5-2" href="#__codelineno-5-2"></a><span class="w">    </span><span class="nt">&quot;...&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;...&quot;</span><span class="p">,</span>
+</span><span id="__span-5-3"><a id="__codelineno-5-3" name="__codelineno-5-3" href="#__codelineno-5-3"></a>
+</span><span id="__span-5-4"><a id="__codelineno-5-4" name="__codelineno-5-4" href="#__codelineno-5-4"></a><span class="w">    </span><span class="nt">&quot;chat_template&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;{{ bos_token }}...{% endif %}&quot;</span><span class="p">,</span>
+</span><span id="__span-5-5"><a id="__codelineno-5-5" name="__codelineno-5-5" href="#__codelineno-5-5"></a>
+</span><span id="__span-5-6"><a id="__codelineno-5-6" name="__codelineno-5-6" href="#__codelineno-5-6"></a><span class="w">    </span><span class="nt">&quot;...&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;...&quot;</span>
+</span><span id="__span-5-7"><a id="__codelineno-5-7" name="__codelineno-5-7" href="#__codelineno-5-7"></a><span class="p">}</span>
 </span></code></pre></div>
 <p>The value in the "chat_template" key is the Jinja template that we're looking for.</p>
 </div>
 <p>Another alternative is to search online for the name of the model and "chat template".</p>
 <p>Either way, once you know the template used by the model, you can set and use it.</p>
-<h2 id="option-1-pass-the-chat-template-format-when-creating-the-model">Option 1: pass the chat template format when creating the model<a class="headerlink" href="#option-1-pass-the-chat-template-format-when-creating-the-model" title="Permanent link">#</a></h2>
-<p>Once you know the chat template definition you can create the model and pass it in the format argument. Let's assume you have a model file named "peculiar-model-7b.gguf:</p>
-<div class="language-python highlight"><pre><span></span><code><span id="__span-5-1"><a id="__codelineno-5-1" name="__codelineno-5-1" href="#__codelineno-5-1"></a><span class="n">chat_template</span> <span class="o">=</span> <span class="s2">&quot;{{ bos_token }}...{</span><span class="si">% e</span><span class="s2">ndif %}&quot;</span>
-</span><span id="__span-5-2"><a id="__codelineno-5-2" name="__codelineno-5-2" href="#__codelineno-5-2"></a>
-</span><span id="__span-5-3"><a id="__codelineno-5-3" name="__codelineno-5-3" href="#__codelineno-5-3"></a><span class="n">model</span> <span class="o">=</span> <span class="n">LlamaCppModel</span><span class="p">(</span><span class="s2">&quot;peculiar-model-7b.gguf&quot;</span><span class="p">,</span>
-</span><span id="__span-5-4"><a id="__codelineno-5-4" name="__codelineno-5-4" href="#__codelineno-5-4"></a>                      <span class="nb">format</span><span class="o">=</span><span class="n">chat_template</span><span class="p">)</span>
+<h2 id="option-1-pass-the-chat-template-format-when-creating-the-model">Option 1: Pass the chat template format when creating the model<a class="headerlink" href="#option-1-pass-the-chat-template-format-when-creating-the-model" title="Permanent link">#</a></h2>
+<p>Once you know the chat template definition you can create the model and pass it in the format argument. Let's assume you have a model file named "peculiar-model-7b.gguf":</p>
+<div class="language-python highlight"><pre><span></span><code><span id="__span-6-1"><a id="__codelineno-6-1" name="__codelineno-6-1" href="#__codelineno-6-1"></a><span class="n">chat_template</span> <span class="o">=</span> <span class="s2">&quot;{{ bos_token }}...{</span><span class="si">% e</span><span class="s2">ndif %}&quot;</span>
+</span><span id="__span-6-2"><a id="__codelineno-6-2" name="__codelineno-6-2" href="#__codelineno-6-2"></a>
+</span><span id="__span-6-3"><a id="__codelineno-6-3" name="__codelineno-6-3" href="#__codelineno-6-3"></a><span class="n">model</span> <span class="o">=</span> <span class="n">LlamaCppModel</span><span class="p">(</span><span class="s2">&quot;peculiar-model-7b.gguf&quot;</span><span class="p">,</span>
+</span><span id="__span-6-4"><a id="__codelineno-6-4" name="__codelineno-6-4" href="#__codelineno-6-4"></a>                      <span class="nb">format</span><span class="o">=</span><span class="n">chat_template</span><span class="p">)</span>
 </span></code></pre></div>
 <p>And the model should now work without problems.</p>
-<h2 id="option-2-add-the-chat-template-to-formatsjson">Option 2: add the chat template to formats.json<a class="headerlink" href="#option-2-add-the-chat-template-to-formatsjson" title="Permanent link">#</a></h2>
-<p>If you plan to use the model many times, a more convenient solution is to create an entry in a "formats.json" file so that all further models with this name will use the template.</p>
-<p>An empty "formats.json" configuration file is available in the "models" folder. You can add the chat template format by creating an entry with these fields:</p>
-<div class="language-json highlight"><pre><span></span><code><span id="__span-6-1"><a id="__codelineno-6-1" name="__codelineno-6-1" href="#__codelineno-6-1"></a><span class="p">{</span>
-</span><span id="__span-6-2"><a id="__codelineno-6-2" name="__codelineno-6-2" href="#__codelineno-6-2"></a><span class="w">    </span><span class="nt">&quot;peculiar&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">{</span>
-</span><span id="__span-6-3"><a id="__codelineno-6-3" name="__codelineno-6-3" href="#__codelineno-6-3"></a><span class="w">        </span><span class="nt">&quot;match&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;peculiar-model&quot;</span><span class="p">,</span>
-</span><span id="__span-6-4"><a id="__codelineno-6-4" name="__codelineno-6-4" href="#__codelineno-6-4"></a><span class="w">        </span><span class="nt">&quot;template&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;{{ bos_token }}...{% endif %}&quot;</span>
-</span><span id="__span-6-5"><a id="__codelineno-6-5" name="__codelineno-6-5" href="#__codelineno-6-5"></a><span class="w">    </span><span class="p">}</span>
-</span><span id="__span-6-6"><a id="__codelineno-6-6" name="__codelineno-6-6" href="#__codelineno-6-6"></a><span class="p">}</span>
+<h2 id="option-2-add-the-chat-template-to-the-models-factory">Option 2: Add the chat template to the Models factory<a class="headerlink" href="#option-2-add-the-chat-template-to-the-models-factory" title="Permanent link">#</a></h2>
+<p>If you plan to use the model many times, a more convenient solution is to create an entry in the "formats.json" file so that all further models with this name will use the template.</p>
+<h3 id="with-sibila-formats-cli-tool">With "sibila formats" CLI tool<a class="headerlink" href="#with-sibila-formats-cli-tool" title="Permanent link">#</a></h3>
+<p>Run the sibila CLI tool in the "models" folder:</p>
+<div class="language-text highlight"><pre><span></span><code><span id="__span-7-1"><a id="__codelineno-7-1" name="__codelineno-7-1" href="#__codelineno-7-1"></a>&gt; sibila formats -s peculiar peculiar-model &quot;{{ bos_token }}...{% endif %}&quot;
+</span><span id="__span-7-2"><a id="__codelineno-7-2" name="__codelineno-7-2" href="#__codelineno-7-2"></a>
+</span><span id="__span-7-3"><a id="__codelineno-7-3" name="__codelineno-7-3" href="#__codelineno-7-3"></a>Using models directory &#39;.&#39;
+</span><span id="__span-7-4"><a id="__codelineno-7-4" name="__codelineno-7-4" href="#__codelineno-7-4"></a>Set format &#39;peculiar&#39; with match=&#39;peculiar-model&#39;, template=&#39;{{ bos_token }}...&#39;
+</span></code></pre></div>
+<p>First argument after -s is the format entry name, second the match regular expression (to identify the model filename) and finally the template. Help is available with "sibila formats --help".</p>
+<h3 id="manually-edit-formatsjson">Manually edit "formats.json"<a class="headerlink" href="#manually-edit-formatsjson" title="Permanent link">#</a></h3>
+<p>In alternative to using the sibila CLI tool, you can add the chat template format by creating an entry in a "formats.json" file, in the same folder as the model, with these fields:</p>
+<div class="language-json highlight"><pre><span></span><code><span id="__span-8-1"><a id="__codelineno-8-1" name="__codelineno-8-1" href="#__codelineno-8-1"></a><span class="p">{</span>
+</span><span id="__span-8-2"><a id="__codelineno-8-2" name="__codelineno-8-2" href="#__codelineno-8-2"></a><span class="w">    </span><span class="nt">&quot;peculiar&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">{</span>
+</span><span id="__span-8-3"><a id="__codelineno-8-3" name="__codelineno-8-3" href="#__codelineno-8-3"></a><span class="w">        </span><span class="nt">&quot;match&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;peculiar-model&quot;</span><span class="p">,</span>
+</span><span id="__span-8-4"><a id="__codelineno-8-4" name="__codelineno-8-4" href="#__codelineno-8-4"></a><span class="w">        </span><span class="nt">&quot;template&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;{{ bos_token }}...{% endif %}&quot;</span>
+</span><span id="__span-8-5"><a id="__codelineno-8-5" name="__codelineno-8-5" href="#__codelineno-8-5"></a><span class="w">    </span><span class="p">}</span>
+</span><span id="__span-8-6"><a id="__codelineno-8-6" name="__codelineno-8-6" href="#__codelineno-8-6"></a><span class="p">}</span>
 </span></code></pre></div>
 <p>The "match" field is regular expression that will be used to match the model name or filename. Field "template" is the chat template in Jinja format.</p>
 <p>After configuring the template as we've seen above, all you need to do is to create a LlamaCppModel object and pass the model file path.</p>
-<div class="language-python highlight"><pre><span></span><code><span id="__span-7-1"><a id="__codelineno-7-1" name="__codelineno-7-1" href="#__codelineno-7-1"></a><span class="n">model</span> <span class="o">=</span> <span class="n">LlamaCppModel</span><span class="p">(</span><span class="s2">&quot;peculiar-model-7b.gguf&quot;</span><span class="p">)</span>
+<div class="language-python highlight"><pre><span></span><code><span id="__span-9-1"><a id="__codelineno-9-1" name="__codelineno-9-1" href="#__codelineno-9-1"></a><span class="n">model</span> <span class="o">=</span> <span class="n">LlamaCppModel</span><span class="p">(</span><span class="s2">&quot;peculiar-model-7b.gguf&quot;</span><span class="p">)</span>
 </span></code></pre></div>
 <p>Note that we're not passing the format argument anymore when creating the model. The "match" regular expression we defined above will recognize the model from the filename and use the given chat template format.</p>
 <div class="admonition info">
 <p class="admonition-title">Base format definitions</p>
-<p>Sibila includes by default the definitions of several well-known chat template formats. These definitions are available in "sibila/base_formats.json", and are automatically loaded when Models factory is created.</p>
+<p>Sibila includes by default the definitions of several well-known chat template formats. These definitions are available in "<a href="https://github.com/jndiogo/sibila/blob/main/sibila/base_formats.json">sibila/base_formats.json</a>", and are automatically loaded when Models factory is created.</p>
 <p>You can add any chat template formats into your own "formats.json" files, but please never change the "sibila/base_formats.json" file, to avoid potential errors.</p>
 </div>
 
