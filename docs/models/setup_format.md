@@ -6,7 +6,7 @@ title: Chat template format
 
 ## What are chat templates?
 
-Because these models were fine-tuned for chat or instruct interaction, they use a chat template, which is just a Jinja2 template that converts a list of messages into a text prompt, which should follow the format that the model was trained on.
+Because these models were fine-tuned for chat or instruct interaction, they use a chat template, which is a Jinja template that converts a list of messages into a text prompt. This template must follow the original format that the model was trained on - this is very important or you won't get good results.
 
 Chat template definitions are Jinja templates like the following one, which is in ChatML format:
 
@@ -35,7 +35,22 @@ Sibila tries to automatically detect which template to use with a model, either 
 
 ## Does the model have a built-in chat template format?
 
-Before you even worry about the model's chat template, try creating a LlamaCppModel with the model file. Most models have built-in chat template information in their metadata information. If no exception is raised, the model GGUF file contains the template definition and should work fine.
+Some GGUF models include the chat template in their metadata, unfortunately this is not standard.
+
+You can quickly check if the model has a chat template by running the sibila CLI in the same folder as the model file:
+
+```
+> sibila models -t "llamacpp:openchat-3.5-1210.Q4_K_M.gguf"
+
+Using models directory '.'
+Testing model 'llamacpp:openchat-3.5-1210.Q4_K_M.gguf'...
+Model 'llamacpp:openchat-3.5-1210.Q4_K_M.gguf' was properly created and should run fine.
+
+```
+
+In this case the chat template format is included with the model and nothing else is needed.
+
+Another way to test this is to try creating the model in python. If no exception is raised, the model GGUF file contains the template definition and should work fine.
 
 !!! example "Example of model creation error"
     ``` python
@@ -67,7 +82,7 @@ But if you get an error such as above, you'll need to provide a chat template. I
 
 So, how to find the chat template for a new model that you intend to use? 
 
-This is normally listed in the model's page, search in that page for "template" and copy the listed Jinja template text.
+This is normally listed in the model's page: search in that page for "template" and copy the listed Jinja template text.
 
 If the template isn't directly listed in the model's page, you can look for a file named "tokenizer_config.json" in the main model files. This file should include an entry named "chat_template" which is what we want.
 
@@ -100,9 +115,9 @@ Either way, once you know the template used by the model, you can set and use it
 
 
 
-## Option 1: pass the chat template format when creating the model
+## Option 1: Pass the chat template format when creating the model
 
-Once you know the chat template definition you can create the model and pass it in the format argument. Let's assume you have a model file named "peculiar-model-7b.gguf:
+Once you know the chat template definition you can create the model and pass it in the format argument. Let's assume you have a model file named "peculiar-model-7b.gguf":
 
 ``` python
 
@@ -117,11 +132,29 @@ And the model should now work without problems.
 
 
 
-## Option 2: add the chat template to formats.json
+## Option 2: Add the chat template to the Models factory
 
-If you plan to use the model many times, a more convenient solution is to create an entry in a "formats.json" file so that all further models with this name will use the template.
 
-An empty "formats.json" configuration file is available in the "models" folder. You can add the chat template format by creating an entry with these fields:
+If you plan to use the model many times, a more convenient solution is to create an entry in the "formats.json" file so that all further models with this name will use the template.
+
+
+### With "sibila formats" CLI tool
+
+Run the sibila CLI tool in the "models" folder:
+
+```
+> sibila formats -s peculiar peculiar-model "{{ bos_token }}...{% endif %}"
+
+Using models directory '.'
+Set format 'peculiar' with match='peculiar-model', template='{{ bos_token }}...'
+```
+
+First argument after -s is the format entry name, second the match regular expression (to identify the model filename) and finally the template. Help is available with "sibila formats --help".
+
+
+### Manually edit "formats.json"
+
+In alternative to using the sibila CLI tool, you can add the chat template format by creating an entry in a "formats.json" file, in the same folder as the model, with these fields:
 
 ``` json
 {
@@ -145,7 +178,7 @@ Note that we're not passing the format argument anymore when creating the model.
 
 !!! info "Base format definitions"
 
-    Sibila includes by default the definitions of several well-known chat template formats. These definitions are available in "sibila/base_formats.json", and are automatically loaded when Models factory is created.
+    Sibila includes by default the definitions of several well-known chat template formats. These definitions are available in "[sibila/base_formats.json](https://github.com/jndiogo/sibila/blob/main/sibila/base_formats.json)", and are automatically loaded when Models factory is created.
     
      You can add any chat template formats into your own "formats.json" files, but please never change the "sibila/base_formats.json" file, to avoid potential errors.
 

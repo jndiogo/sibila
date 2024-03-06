@@ -4,7 +4,7 @@ Extract structured data from remote or local file LLM models.
 
 - Extract data into Pydantic objects, dataclasses or simple types.
 - Same API for local file models and remote OpenAI models.
-- Model management: store model files, configuration and chat templates and quickly switch between models.
+- Model management: download models, manage configuration and quickly switch between models.
 - Tools for evaluating output across local/remote models, for chat-like interaction and more.
 
 See [What can you do with Sibila?](https://jndiogo.github.io/sibila/what/)
@@ -52,7 +52,7 @@ If Pydantic BaseModel objects are too much for your project, Sibila supports sim
 
 ## Docs
 
-The docs explain the main concepts, include examples and an API reference: [https://jndiogo.github.io/sibila/](https://jndiogo.github.io/sibila/)
+[The docs explain](https://jndiogo.github.io/sibila/) the main concepts, include examples and an API reference.
 
 
 ## Installation
@@ -69,13 +69,24 @@ See [Getting started](https://jndiogo.github.io/sibila/installing/) for more inf
 
 ## Examples
 
-The [examples](https://jndiogo.github.io/sibila/examples/) show what you can do with local or remote models in Sibila: structured data extraction, classification, summarization, etc.
+The [Examples](https://jndiogo.github.io/sibila/examples/) show what you can do with local or remote models in Sibila: structured data extraction, classification, summarization, etc.
 
 
 
 ## License
 
 This project is licensed under the MIT License - see the [LICENSE](https://github.com/jndiogo/sibila/blob/main/LICENSE) file for details.
+
+
+## Acknowledgements
+
+Sibila wouldn't be be possible without the help of great software:
+
+- [llama.cpp](https://github.com/ggerganov/llama.cpp)
+- [llama-cpp-python](https://github.com/abetlen/llama-cpp-python)
+- [OpenAI Python API](https://github.com/openai/openai-python)
+
+Thank you!
 
 
 ## Sibila?

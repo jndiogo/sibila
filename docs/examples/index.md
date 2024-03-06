@@ -12,6 +12,7 @@ title: "Examples"
 | [Tough meeting](tough_meeting.md) | Extracting information from a long and complex transcript. |
 | [Compare model output](compare.md) | Compare sentiment analyses of customer reviews done by two models. |
 | [Chat interaction](interact.md) | Interact with the model as in a back-and-forth chat session. |
+| [Model management with CLI](cli.md) | Download and manage models with the command-line sibila. |
 
 Each example is explained in a Read Me and usually include a Jupyter notebook and/or a .py script version.
 

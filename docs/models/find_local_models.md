@@ -44,8 +44,6 @@ And a good model that we'll be using for the examples is a 4 bit quantization of
 
 ## Download the file into the "models" folder
 
-From HuggingFace, you can download the GGUF file (in this and any other quantized models in HuggingFace) by scrolling down to the "Provided files" section and clicking one of the links. Usually the files ending in "Q4_K_M" are very reasonable 4-bit quantizations.
+See the [OpenChat model section](local_model.md#openchat-model) on how to download models with the sibila CLI tool or manually in your browser.
 
-In this case you'd download the file "openchat-3.5-1210.Q4_K_M.gguf" - save it into the "models" folder inside Sibila.
-
-Because these models use a chat template format, we need to make sure it's the right one - see the [Setup chat template format](setup_format.md) section on how to handle this.
+The OpenChat model already includes the chat template format in its metadada, but for some other models we'll need to set the format - see the [Setup chat template format](setup_format.md) section on how to handle this.

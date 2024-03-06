@@ -14,7 +14,7 @@ nav:
     - Creating Models:
       - models/remote_model.md
       
-      - Local model:
+      - Local models:
         - models/local_model.md
         - models/find_local_models.md
         - models/setup_format.md
@@ -23,6 +23,7 @@ nav:
         - models/models_factory.md
         - models/models_json.md
         - models/formats_json.md
+        - models/sibila_cli.md
 
     - Extracting Structured Data:
       - extract/simple_types.md
@@ -46,6 +47,7 @@ nav:
     - examples/tough_meeting.md
     - examples/compare.md
     - examples/interact.md
+    - "Sibila CLI": examples/cli.md
 
   - API Reference:
     - api-reference/model.md

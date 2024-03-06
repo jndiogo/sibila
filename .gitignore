@@ -17,6 +17,7 @@ models/*.gguf
 # build/distribution
 /dist
 /build
+/cleanup.sh
 
 # examples
 examples/compare/sentiment.csv

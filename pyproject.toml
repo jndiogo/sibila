@@ -37,6 +37,7 @@ dependencies = [
     "openai",
     "tiktoken",
     "pydantic",
+    "tqdm",
 ]
 dynamic = ["version"]
 
@@ -46,6 +47,9 @@ packages = ["sibila"]
 
 [tool.setuptools.dynamic]
 version = {attr = "sibila.__version__"}
+
+[project.scripts]
+sibila = "sibila.cli:main"
 
 [project.urls]
 Homepage = "https://github.com/jndiogo/sibila"

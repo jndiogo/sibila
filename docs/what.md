@@ -47,7 +47,7 @@ You can use any paid OpenAI model, as well as any model that llama.cpp can run, 
 
 ## With model management
 
-Create models from simple names instead of having to track model configurations, filenames or chat templates.
+Includes a Models factory that creates models from simple names instead of having to track model configurations, filenames or chat templates.
 
 ``` python
 local_model = Models.create("llamacpp:openchat")
@@ -57,4 +57,5 @@ remote_model = Models.create("openai:gpt-4")
 
 This makes the switch to newer models much easier, and makes it simpler to compare model outputs.
 
+Sibila includes a CLI tool to download GGUF models from [Hugging Face model hub](https://www.huggingface.co), and to manage its Models factory.
 

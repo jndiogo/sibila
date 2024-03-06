@@ -1,12 +1,12 @@
 {
   "llamacpp": {
-    "default": {
+    "_default": {
         "ctx_len": 2048
     }      
   },
     
   "openai": {
-    "default": {
+    "_default": {
     },
 
     "gpt-3.5": {

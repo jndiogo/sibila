@@ -15,6 +15,7 @@ jupyter nbconvert --to markdown --output=readme examples/compare/compare.ipynb
 
 jupyter nbconvert --to markdown --output=readme examples/interact/interact.ipynb
 
+jupyter nbconvert --to markdown --output=readme examples/cli/cli.ipynb
 
 if [[ "$1" -ne "nb" ]]; then
     mkdocs build

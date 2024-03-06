@@ -116,5 +116,5 @@ If you get an error, please see [llama-cpp-python's Installation configuration](
 You can always install llama-cpp-python without acceleration by running:
 
 ```
-pip install llama-cpp-python
+pip install llama-cpp-python --upgrade --force-reinstall --no-cache-dir
 ```

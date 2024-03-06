@@ -1,6 +1,6 @@
 {
 "llamacpp": {
-    "default": {
+    "_default": {
         "genconf": {}
     },
       
@@ -41,7 +41,7 @@
 },
 
 "openai": {
-    "default": {
+    "_default": {
         "genconf": {}
     },
     

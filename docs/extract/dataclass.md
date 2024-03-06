@@ -78,9 +78,14 @@ We can extract a list of Person objects by using list[Person]:
         ```
 
 
-As when extracting to simple types, we could also provide instructions by setting the inst argument.
+## Field annotations
 
-Field annotations can also be provided to clarify what we want extracted for each field. This is done with Annotated[type, description"]:
+As when extracting to simple types, we could also provide instructions by setting the inst argument. However, instructions are by nature general and when extracting structured data, it's harder to provide specific instructions for fields.
+
+For this purpose, field annotations are more effective than instructions: they can be provided to clarify what we want extracted for each specific field.
+
+For dataclasses this is done with Annotated[type, "description"] - see the "start" and "end" attributes of the Period class:
+
 
 
 !!! example
@@ -105,6 +110,8 @@ Field annotations can also be provided to clarify what we want extracted for eac
         Period(start='Wednesday', end='Sunday')
         ```
 
+
+In this manner, the model can be informed of what is wanted for each specific field.
 
 Check the [Extract dataclass example](../examples/extract_dataclass.md).
 

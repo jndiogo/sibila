@@ -861,8 +861,8 @@ class Model(ABC):
         """Sibila version + provider version
         Ex: sibila='0.2.3' provider='llama-cpp-python 0.2.44'        
         """        
-        from .__init__ import __version__  # type: ignore[import-not-found]
-        return f"sibila='{__version__}' provider='{cls.provider_version()}'"
+        from .__init__ import __version__ as version  # type: ignore[import-not-found]
+        return f"sibila='{version}' provider='{cls.provider_version()}'"
         
     @classmethod
     @abstractmethod
@@ -1082,7 +1082,7 @@ from .models import Models
 class FormattedTextModel(TextModel, ABC):
     """Model that uses formatted text (chat templates) for input/output."""
     
-    format: Union[dict,None]
+    format_template: Union[str,None]
     _jinja_compiled_template: Union[Any,None]
 
     def __init__(self,
@@ -1096,12 +1096,12 @@ class FormattedTextModel(TextModel, ABC):
                          schemaconf,
                          tokenizer)
 
-        self.format = None
+        self.format_template = None
         self._jinja_compiled_template = None
         
     
     def init_format(self,
-                    format: Union[str,dict,None],
+                    format: Union[str,None],
                     format_search_order: list,
                     info: dict):
         """
@@ -1119,12 +1119,12 @@ class FormattedTextModel(TextModel, ABC):
         """
 
         # handle chat template format
-        def search_format() -> dict:
+        def search_format() -> str:
 
             for order in format_search_order:
 
                 if order == "name":
-                    fmt = Models.search_format(info["name"])
+                    fmt = Models.match_format_template(info["name"])
                     if fmt is not None:
                         return fmt
                         
@@ -1133,13 +1133,11 @@ class FormattedTextModel(TextModel, ABC):
                     key_name = info["meta_template_name"]
                     if key_name in md:
                         logger.debug(f"Format from model file metadata ('{key_name}') template='{md[key_name]}'")
-                        fmt = {
-                            "template": md[key_name]
-                        }
-                        return fmt
+                        fmt = md[key_name]
+                        return fmt # type: ignore[return-value]
                     
                 elif order == "formats_json":
-                    fmt = Models.folder_search_format(info["path"])
+                    fmt = Models.folder_match_format_template(info["path"])
                     if fmt is not None:
                         return fmt
 
@@ -1147,32 +1145,24 @@ class FormattedTextModel(TextModel, ABC):
             raise ValueError("Could not find a suitable chat template format for this model. "
                              "Without a format, fine-tuned models cannot function properly. "
                              "See the docs on how you can fix this: "
-                             "pass the template in the format arg or create a 'formats.json' file.")
+                             "either setup the format in Models factory, or provide the chat template in the 'format' arg.")
 
         
         if format is not None:
-            if isinstance(format, str):
-                if '{{' in format: # an str with a jinja template
-                    self.format = {"template": format}
-                    
-                else: # a format name
-                    self.format = Models.get_format(format)
+            if '{{' in format: # an str with a jinja template
+                self.format_template = format
+                
+            else: # a format name
+                self.format_template = Models.get_format_template(format)
 
-            elif (isinstance(format, dict) and
-                  "template" in format and 
-                  '{{' in format["template"]): # a dict with at least a template key with a jinja template
-                self.format = format.copy()
                 
-            else:
-                raise TypeError("format arg can only be str, dict or None")
-                
-        if self.format is None:
-            self.format = search_format() # will raise if unable to find
+        if self.format_template is None:
+            self.format_template = search_format() # will raise if unable to find
 
         # setup jinja template
         jinja_env = ImmutableSandboxedEnvironment(trim_blocks=True, lstrip_blocks=True)
         jinja_env.globals["raise_exception"] = jinja_raise_exception
-        self._jinja_compiled_template = jinja_env.from_string(self.format["template"])
+        self._jinja_compiled_template = jinja_env.from_string(self.format_template)
 
 
 

@@ -66,7 +66,7 @@ class LlamaCppModel(FormattedTextModel):
     def __init__(self,
                  path: str,
 
-                 format: Optional[Union[str,dict]] = None,                 
+                 format: Optional[str] = None,                 
                  format_search_order: list[str] = ["name","meta_template", "formats_json"],
 
                  *,
@@ -165,10 +165,11 @@ class LlamaCppModel(FormattedTextModel):
     
 
     def __del__(self):
-        if self.tokenizer:
+        if hasattr(self, "tokenizer"):
             del self.tokenizer
-        if self._llama:
-            del self._llama
+        if hasattr(self, "_llama"):
+            if self._llama:
+                del self._llama
 
     
     

@@ -3,7 +3,7 @@ title: Using a local model
 ---
 
 
-Sibila uses llama.cpp to run local models, which are ordinary files in the GGUF format. You can download local models from places like the [HuggingFace model hub](https://huggingface.co/models).
+Sibila uses llama.cpp to run local models, which are ordinary files in the GGUF format. You can download local models from places like the [Hugging Face model hub](https://huggingface.co/models).
 
 Most current 7B quantized models are very capable for common data extraction tasks (and getting better all the time). We'll see how to find and setup local models for use with Sibila. If you only plan to use OpenAI remote models, you can skip this section.
 
@@ -13,10 +13,32 @@ Most current 7B quantized models are very capable for common data extraction tas
 
 <a id="examples"></a>
 
-## OpenChat GGUF
+## OpenChat model
 
 
-By default, most of the examples included with Sibila use OpenChat, a very good 7B parameters quantized model, that you can download from:
+By default, most of the examples included with Sibila use OpenChat, a very good 7B parameters quantized model:
+[https://huggingface.co/TheBloke/openchat-3.5-1210-GGUF](https://huggingface.co/TheBloke/openchat-3.5-1210-GGUF)
+
+You can download this model with the sibila CLI tool or manually in your browser.
+
+
+### Download with "sibila hub"
+
+Open a command line prompt in the "models" folder if you downloaded the GitHub repository, or create a folder named "models".
+
+Run this command:
+
+```
+sibila hub -d TheBloke/openchat-3.5-1210-GGUF -f openchat-3.5-1210.Q4_K_M.gguf
+```
+
+After downloading the 4.4Gb, the file "openchat-3.5-1210.Q4_K_M.gguf" will be available in your "models" folder and you can run the examples. You can do the same to download any other GGUF models.
+
+
+
+### Manual download
+
+Alternatively, you can download in your browser from this URL:
 
 [https://huggingface.co/TheBloke/openchat-3.5-1210-GGUF/blob/main/openchat-3.5-1210.Q4_K_M.gguf](https://huggingface.co/TheBloke/openchat-3.5-1210-GGUF/blob/main/openchat-3.5-1210.Q4_K_M.gguf)
 
@@ -25,9 +47,12 @@ In the linked page, click "download" and save this file into a "models" folder. 
 Once the file "openchat-3.5-1210.Q4_K_M.gguf" is placed in the "models" folder, you should be able to run the examples.
 
 
+
+
+
 ## LlamaCppModel class
 
-Local llama.cpp models can be used with the [LlamaCppModel](../api-reference/model.md#sibila.LlamaCppModel) class. Let's generate some text:
+Local llama.cpp models can be used with the [LlamaCppModel](../api-reference/model.md#sibila.LlamaCppModel) class. Let's generate text after our prompt:
 
 !!! example
     ``` python

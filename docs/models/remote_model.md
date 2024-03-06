@@ -1,5 +1,5 @@
 ---
-title: Remote model
+title: Remote models
 ---
 
 Sibila can use OpenAI remote models, for which you'll need a paid OpenAI account and its API key. Although you can pass this key when you create the model object, it's more secure to define an env variable with this information:

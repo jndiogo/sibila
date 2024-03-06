@@ -1,6 +1,7 @@
-Sibila uses or adapts the following software (MIT license):
-https://github.com/abetlen/llama-cpp-python
+Sibila adapts or uses the following software:
 https://github.com/ggerganov/llama.cpp
+https://github.com/abetlen/llama-cpp-python
+https://github.com/openai/openai-python
 
 Some Jinja chat templates adapted from:
 https://huggingface.co/

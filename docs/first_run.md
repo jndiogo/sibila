@@ -56,14 +56,13 @@ You're all set if you only plan to use remote OpenAI models.
 
 ## With a local model
 
-You'll need to download a GGUF model file: we suggest OpenChat 3.5 - an excellent 7B parameters quantized model that will run in less thant 7Gb of memory.
+Local models run from files in GGUF format which are loaded run by the llama.cpp component.
 
-Most of the examples included with Sibila use OpenChat. You can download the model file (4.4Gb) from:
+You'll need to download a GGUF model file: we suggest OpenChat 3.5 - an excellent 7B parameters quantized model that will run in less thant 7Gb of memory. 
 
-[https://huggingface.co/TheBloke/openchat-3.5-1210-GGUF/blob/main/openchat-3.5-1210.Q4_K_M.gguf](https://huggingface.co/TheBloke/openchat-3.5-1210-GGUF/blob/main/openchat-3.5-1210.Q4_K_M.gguf)
+To download the OpenChat model file, please see [Download OpenChat model](models/local_model.md#openchat-model).
 
-In the above page, click "download" and save this file into the "models" folder. If you downloaded the the repository from GitHub, it already includes a "models" folder. Otherwise, just create a "models" folder, where you'll store your local model files.
-
+After downloading the file, you can run this "Hello Model" script:
 
 
 

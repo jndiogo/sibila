@@ -8,6 +8,14 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+
+## [0.3.2]
+- feat: Added sibila CLI for models and formats management.
+- feat: Added methods in Models class for CLI functionality.
+- fix: Blacklisting character control set in JSON strings grammar.
+- docs: Improved docs and added section about sibila CLI.
+- docs: Added CLI example.
+
 ## [0.3.1]
 - feat: Improved documentation.
 - feat: Model.known_models() returns a list of fixed known models or None if unlimited.

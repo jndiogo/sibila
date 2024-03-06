@@ -3,7 +3,9 @@ title: Models factory
 ---
 
 
-There's a more flexible way to create models, than creating OpenAIModel or LlamaCppModel objects. The [Models factory class](../api-reference/models.md) can create a model based on a given name, for example:
+The Models factory is based in a "models" folder that contains two configuration files: "models.json" and "formats.json" and the actual files for local models. 
+
+The [Models factory class](../api-reference/models.md) is a more flexible way to create models, for example:
 
 ``` python
 Models.setup("../../models")
@@ -11,30 +13,24 @@ Models.setup("../../models")
 model = Models.create("openai:gpt-4")
 ```
 
-The first line calls [Models.setup()](../api-reference/models.md#sibila.Models.setup) to initialize it the folder where model files and configs ("models.json" and "formats.json") are located.
+The first line calls [Models.setup()](../api-reference/models.md#sibila.Models.setup) to initialize the factory with the folder where model files and configs ("models.json" and "formats.json") are located.
 
-The second line calls [Models.create()](../api-reference/models.md#sibila.Models.create) to create a model from the name "openai:gpt-4". The names should be in the format "provider:model_name" and Sibila currently supports two providers:
+The second line calls [Models.create()](../api-reference/models.md#sibila.Models.create) to create a model from the name "openai:gpt-4". In this case we created a remote model, but we could as well create a local model based in a GGUF file.
 
-| Provider | Name | Creates object of type |
-|----------|------|---------------------|
-| llamacpp | filename or a "models.json" name | LlamaCppModel |
-| openai | remote model name or a "models.json" name | OpenAIModel |
+The names should be in the format "provider:model_name" and Sibila currently supports two providers:
+
+| Provider | Type | Creates object of type |
+|----------|------|------------------------|
+| llamacpp | Local GGUF model | LlamaCppModel |
+| openai   | Remote model | OpenAIModel   |
 
 
-The name part, after the ":" must be either an existing filename or a remote model name. It cal also be a name that has been defined in a JSON file named "models.json", located in the "models" folder.
+The name part, after the "provider:" must either be:
 
-Some examples of valid identifiers with local filenames or remote model names are:
+- A remote model name, like "gpt-4": "openai:gpt-4"
+- A local model name, like "openchat": "llamacpp:openchat"
+- The actual filename of a model in the "models" folder: "llamacpp:openchat-3.5-1210.Q4_K_M.gguf"
 
-- llamacpp:openchat-3.5-1210.Q4_K_M.gguf
-- llamacpp:zephyr-7b-beta.Q4_K_M.gguf
-- openai:openai:gpt-3.5-turbo-1106
+Although you can use filenames as model names, it's generally a better idea, for continued use, to create an entry in the "models.json" file  - this allows future model replacement to be much easier.
 
-In this case, there's no need to define the names in models.json. But for continued use, it's generally a good idea to create an entry in the models.json file  - this allows future model changing to be much easier.
-
-Examples of using names defined in models.json:
-
-- llamacpp:openchat
-- llamacpp:zephyr
-- openai:gpt-3.5
-
-See [models.json](models_json.md) to learn how to create model names.
+See [Managing models](models_json.md) to learn how to register these model names.

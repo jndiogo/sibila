@@ -4,7 +4,7 @@ Extract structured data from remote or local file LLM models.
 
 - Extract data into Pydantic objects, dataclasses or simple types.
 - Same API for local file models and remote OpenAI models.
-- Model management: store model files, configuration and chat templates and quickly switch between models.
+- Model management: download models, manage configuration and quickly switch between models.
 - Tools for evaluating output across local/remote models, for chat-like interaction and more.
 
 See [What can you do with Sibila?](what.md)
