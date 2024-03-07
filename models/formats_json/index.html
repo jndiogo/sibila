@@ -1694,7 +1694,7 @@
   <h1>Managing formats</h1>
 
 <p>A "formats.json" file stores the <a href="../setup_format/">chat template definitions</a> used in models. This allows for models that don't have a chat template in their metadata to be detected and get the right format so they can function well.</p>
-<p>If you downloaded the GitHub repository, you'll find a file named "<a href="https://github.com/jndiogo/sibila/blob/main/sibila/base_formats.json">base_formats.json</a>", which is the default base configuration that will be used, with many known chat template formats. </p>
+<p>If you downloaded the GitHub repository, you'll find a file named "<a href="https://github.com/jndiogo/sibila/blob/main/sibila/res/base_formats.json">sibila/res/base_formats.json</a>", which is the default base configuration that will be used, with many known chat template formats. </p>
 <p>When you call <a href="../../api-reference/models/#sibila.Models.setup">Models.setup()</a>, any "formats.json" file found in the folder will be loaded and its definitions will be merged with the ones from "base_formats.json" which are loaded on initialization. Any entries with the same name will be replaced by freshly loaded ones.</p>
 <p>How to add a new format entry that can be used when creating a model? You can do it with the sibila CLI tool or by manually editing the formats.json file.</p>
 <h2 id="with-sibila-formats-cli-tool">With "sibila formats" CLI tool<a class="headerlink" href="#with-sibila-formats-cli-tool" title="Permanent link">#</a></h2>
@@ -1741,7 +1741,7 @@
 </span><span id="__span-3-3"><a id="__codelineno-3-3" name="__codelineno-3-3" href="#__codelineno-3-3"></a><span class="w">    </span><span class="nt">&quot;format&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;openchat&quot;</span><span class="w"> </span><span class="err">#</span><span class="w"> </span><span class="err">cha</span><span class="kc">t</span><span class="w"> </span><span class="kc">te</span><span class="err">mpla</span><span class="kc">te</span><span class="w"> </span><span class="kc">f</span><span class="err">orma</span><span class="kc">t</span><span class="w"> </span><span class="err">used</span><span class="w"> </span><span class="err">by</span><span class="w"> </span><span class="kc">t</span><span class="err">his</span><span class="w"> </span><span class="err">model</span>
 </span><span id="__span-3-4"><a id="__codelineno-3-4" name="__codelineno-3-4" href="#__codelineno-3-4"></a><span class="p">},</span>
 </span></code></pre></div>
-<p>See the "<a href="https://github.com/jndiogo/sibila/blob/main/sibila/base_formats.json">base_formats.json</a>" file for all the default base formats.</p>
+<p>See the "<a href="https://github.com/jndiogo/sibila/blob/main/sibila/res/base_formats.json">base_formats.json</a>" file for all the default base formats.</p>
 
 
 

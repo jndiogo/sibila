@@ -1808,11 +1808,12 @@
 </span></code></pre></div>
 </details>
 <h2 id="enabling-llamacpp-hardware-acceleration">Enabling llama.cpp hardware acceleration<a class="headerlink" href="#enabling-llamacpp-hardware-acceleration" title="Permanent link">#</a></h2>
-<p>If you intend to run local models, they can run without hardware acceleration but that will be slower.</p>
+<p>You can run local models without hardware acceleration but they will run slower.</p>
 <p>Sibila uses llama-cpp-python, a python wrapper for llama.cpp and it's a good idea to make sure it was installed with the best optimization your computer can offer. </p>
-<p>Run one of the following lines in the command prompt, depending on which hardware you have:</p>
+<p>See the following sections, depending on which hardware you have, to install with hardware acceleration:</p>
 <h3 id="for-cuda-nvidia-gpus">For CUDA - NVIDIA GPUs<a class="headerlink" href="#for-cuda-nvidia-gpus" title="Permanent link">#</a></h3>
-<div class="tabbed-set tabbed-alternate" data-tabs="1:2"><input checked="checked" id="__tabbed_1_1" name="__tabbed_1" type="radio" /><input id="__tabbed_1_2" name="__tabbed_1" type="radio" /><div class="tabbed-labels"><label for="__tabbed_1_1">Linux and Mac</label><label for="__tabbed_1_2">Windows</label></div>
+<p>For CUDA acceleration in NVIDA GPUs, you'll need to <a href="https://developer.nvidia.com/cuda-toolkit-archive">Install the NVIDIA CUDA Toolkit</a>.</p>
+<div class="tabbed-set tabbed-alternate" data-tabs="1:2"><input checked="checked" id="__tabbed_1_1" name="__tabbed_1" type="radio" /><input id="__tabbed_1_2" name="__tabbed_1" type="radio" /><div class="tabbed-labels"><label for="__tabbed_1_1">Linux</label><label for="__tabbed_1_2">Windows</label></div>
 <div class="tabbed-content">
 <div class="tabbed-block">
 <div class="language-text highlight"><pre><span></span><code><span id="__span-2-1"><a id="__codelineno-2-1" name="__codelineno-2-1" href="#__codelineno-2-1"></a>CMAKE_ARGS=&quot;-DLLAMA_CUBLAS=on&quot; \
@@ -1820,12 +1821,14 @@
 </span></code></pre></div>
 </div>
 <div class="tabbed-block">
-<div class="language-text highlight"><pre><span></span><code><span id="__span-3-1"><a id="__codelineno-3-1" name="__codelineno-3-1" href="#__codelineno-3-1"></a>$env:CMAKE_ARGS = &quot;-DLLAMA_CUBLAS=on&quot;
+<p><div class="language-text highlight"><pre><span></span><code><span id="__span-3-1"><a id="__codelineno-3-1" name="__codelineno-3-1" href="#__codelineno-3-1"></a>$env:CMAKE_ARGS = &quot;-DLLAMA_CUBLAS=on&quot;
 </span><span id="__span-3-2"><a id="__codelineno-3-2" name="__codelineno-3-2" href="#__codelineno-3-2"></a>pip install llama-cpp-python --upgrade --force-reinstall --no-cache-dir
 </span></code></pre></div>
+<a href="https://medium.com/@piyushbatra1999/installing-llama-cpp-python-with-nvidia-gpu-acceleration-on-windows-a-short-guide-0dfac475002d">Installing llama-cpp-python with NVIDIA GPU Acceleration on Windows: A Short Guide</a></p>
 </div>
 </div>
 </div>
+<p>More info: <a href="https://michaelriedl.com/2023/09/10/llama2-install-gpu.html">Installing llama-cpp-python with GPU Support</a>.</p>
 <h3 id="for-metal-apple-silicon-macs">For Metal - Apple silicon macs<a class="headerlink" href="#for-metal-apple-silicon-macs" title="Permanent link">#</a></h3>
 <div class="tabbed-set tabbed-alternate" data-tabs="2:1"><input checked="checked" id="__tabbed_2_1" name="__tabbed_2" type="radio" /><div class="tabbed-labels"><label for="__tabbed_2_1">Mac</label></div>
 <div class="tabbed-content">
@@ -1881,8 +1884,8 @@
 </div>
 </div>
 </div>
-<p>If you get an error, please see <a href="https://github.com/abetlen/llama-cpp-python?tab=readme-ov-file#installation-configuration">llama-cpp-python's Installation configuration</a>.</p>
-<p>You can always install llama-cpp-python without acceleration by running:</p>
+<p>If you get an error installin llama-cpp-python, please see <a href="https://github.com/abetlen/llama-cpp-python?tab=readme-ov-file#installation-configuration">llama-cpp-python's Installation configuration</a>.</p>
+<p>In any case, you can always install llama-cpp-python without acceleration by running:</p>
 <div class="language-text highlight"><pre><span></span><code><span id="__span-11-1"><a id="__codelineno-11-1" name="__codelineno-11-1" href="#__codelineno-11-1"></a>pip install llama-cpp-python --upgrade --force-reinstall --no-cache-dir
 </span></code></pre></div>
 
