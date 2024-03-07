@@ -9,6 +9,12 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [Unreleased]
 
 
+## [0.3.3]
+- fix: Move base_models.json and base_formats.json to sibila/res folder.
+- fix: Add base_models.json and base_formats.json to project build.
+- fix: Correct .gitignore skipping valid files.
+- docs: Update installation help and mentions to base_models/formats.json.
+
 ## [0.3.2]
 - feat: Added sibila CLI for models and formats management.
 - feat: Added methods in Models class for CLI functionality.

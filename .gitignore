@@ -5,11 +5,16 @@ __pycache__/
 *.egg-info
 *.swp
 
-_*
+/_*
 .env*
+
+
+# examples
+examples/_try
 
 # model files
 models/*.gguf
+models/_original_*
 
 # mkdocs documentation
 /site
@@ -18,6 +23,3 @@ models/*.gguf
 /dist
 /build
 /cleanup.sh
-
-# examples
-examples/compare/sentiment.csv

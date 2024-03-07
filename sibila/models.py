@@ -5,6 +5,8 @@ from typing import Any, Optional, Union, Callable
 import os, json, re
 from copy import copy
 
+from importlib_resources import files, as_file
+
 from pprint import pformat
 
 import logging
@@ -20,7 +22,7 @@ from .utils import (
     expand_path
 )
 
-
+import sibila.res
 
 
 class Models:
@@ -38,8 +40,8 @@ class Models:
     User can add new entries from script or with JSON filenames, via the add() call.
     New directory entries with the same name are merged into existing ones for each added config.
 
-    Uses file base_models.json in this script's directory for the initial defaults, 
-    which the user can augment by calling setup() with own config files or directly adding model config with set_model().
+    Uses file "sibila/res/base_models.json" for the initial defaults, which the user can augment 
+    by calling setup() with own config files or directly adding model config with set_model().
 
     An example of a model directory JSON config file:
 
@@ -100,7 +102,7 @@ class Models:
 
     Any new entries with the same name replace previous ones on each new call.
     
-    Initializes from file base_formats.json in this module's directory.
+    Initializes from file "sibila/res/base_formats.json".
 
 
     Example of a "formats.json" file:
@@ -205,7 +207,7 @@ class Models:
             path: Path to a folder or to "models.json" or "formats.json" configuration files. Defaults to None which tries to initialize from defaults and env variable.
             clear: Set to clear existing directories before loading from path arg.
             add_cwd: Add current working directory to search path.
-            load_base: Whether to load "base_models.json" and "base_formats.json".
+            load_base: Whether to load "base_models.json" and "base_formats.json" from "sibila/res" folder.
             load_from_env: Load from SIBILA_MODELS env variable?
         """
         
@@ -1037,24 +1039,26 @@ class Models:
             # add "." to search path, so that paths relative paths work
             cls.add_models_search_path(".")
 
+
         path: Union[str, None]
 
         if load_base:
-            # read base models and formats in same folder as this script file
-            base_path: str = os.path.abspath(__file__)
-            base_path = os.path.dirname(base_path)
+            # read base_models.json from res folder
+            source = files(sibila.res).joinpath(cls.MODELS_BASE_CONF_FILENAME)
+            with as_file(source) as src_path:
+                path = str(src_path)
+                if os.path.isfile(path):
+                    cls._read_models(path,
+                                     add_folder_to_search_path=False)
 
-            # read base_models.json
-            path = os.path.join(base_path, cls.MODELS_BASE_CONF_FILENAME)
-            if os.path.isfile(path):
-                cls._read_models(path,
-                                 add_folder_to_search_path=False)
+            # read base_formats.json from res folder
+            source = files(sibila.res).joinpath(cls.FORMATS_BASE_CONF_FILENAME)
+            with as_file(source) as src_path:
+                path = str(src_path)
+                if os.path.isfile(path):
+                    cls._read_formats(path)
 
-            # read base_formats.json
-            path = os.path.join(base_path, cls.FORMATS_BASE_CONF_FILENAME)
-            if os.path.isfile(path):
-                cls._read_formats(path)
-
+ 
         # check env var
         if load_from_env:
             path = os.environ.get(cls.ENV_VAR_NAME)

@@ -4,7 +4,7 @@ title: Managing formats
 
 A "formats.json" file stores the [chat template definitions](setup_format.md) used in models. This allows for models that don't have a chat template in their metadata to be detected and get the right format so they can function well.
 
-If you downloaded the GitHub repository, you'll find a file named "[base_formats.json](https://github.com/jndiogo/sibila/blob/main/sibila/base_formats.json)", which is the default base configuration that will be used, with many known chat template formats. 
+If you downloaded the GitHub repository, you'll find a file named "[sibila/res/base_formats.json](https://github.com/jndiogo/sibila/blob/main/sibila/res/base_formats.json)", which is the default base configuration that will be used, with many known chat template formats. 
 
 When you call [Models.setup()](../api-reference/models.md#sibila.Models.setup), any "formats.json" file found in the folder will be loaded and its definitions will be merged with the ones from "base_formats.json" which are loaded on initialization. Any entries with the same name will be replaced by freshly loaded ones.
 
@@ -65,5 +65,5 @@ or to be more practical: "openchat" is also the format name you would use when c
 
 
 
-See the "[base_formats.json](https://github.com/jndiogo/sibila/blob/main/sibila/base_formats.json)" file for all the default base formats.
+See the "[base_formats.json](https://github.com/jndiogo/sibila/blob/main/sibila/res/base_formats.json)" file for all the default base formats.
 

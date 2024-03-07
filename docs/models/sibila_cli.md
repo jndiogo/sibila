@@ -99,7 +99,7 @@ sibila formats -d format_name
 ```
 
 
-Update the local "formats.json" file by merging with with the "[sibila/base_formats.json](https://github.com/jndiogo/sibila/blob/main/sibila/base_formats.json)" file, preserving all existing local entries.
+Update the local "formats.json" file by merging with with GitHub's "[sibila/res/base_formats.json](https://github.com/jndiogo/sibila/blob/main/sibila/res/base_formats.json)" file, preserving all existing local entries.
 
 ```
 sibila formats -u

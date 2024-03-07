@@ -24,7 +24,7 @@ class Info(BaseModel):
 
 model = Models.create("llamacpp:openchat")
 
-model.extract(Info, "Who was the first man in the moon?)
+model.extract(Info, "Who was the first man in the moon?")
 ```
 
 Returns an instance of class Info, created from the model's output:

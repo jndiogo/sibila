@@ -15,7 +15,8 @@ keywords = [
     "llama.cpp",
     "AI",
     "Transformers",
-    "GPT"
+    "GPT",
+    "LLM"
 ]
 classifiers = [
     "Programming Language :: Python :: 3",
@@ -42,11 +43,15 @@ dependencies = [
 dynamic = ["version"]
 
 
-[tool.setuptools]
-packages = ["sibila"]
-
 [tool.setuptools.dynamic]
 version = {attr = "sibila.__version__"}
+
+[tool.setuptools]
+packages = ["sibila", "sibila.res"]
+
+[tool.setuptools.package-data]
+"sibila.res" = ["*.json"]
+
 
 [project.scripts]
 sibila = "sibila.cli:main"

@@ -41,7 +41,7 @@ HF_MODEL_DOWNLOAD_URL = "https://huggingface.co/{model_id}/resolve/main/{filenam
 HF_ABOUT = "For information about this and other models, please visit https://huggingface.co"
 
 
-BASE_FORMATS_URL = "https://raw.githubusercontent.com/jndiogo/sibila/main/sibila/base_formats.json"
+BASE_FORMATS_URL = "https://raw.githubusercontent.com/jndiogo/sibila/main/sibila/res/base_formats.json"
 
 DOWNLOAD_TIMEOUT = 30
 INDENT = " " * 2
@@ -504,7 +504,7 @@ def formats(args):
         path = Models.save_formats()
 
         print(f"""\
-Updated '{path}' from GitHubs 'sibila/base_formats.json', any existing local entries were preserved.
+Updated '{path}' from GitHub's 'sibila/res/base_formats.json', any existing local entries were preserved.
 Total entries: {len(Models.format_dir)}""")
 
 
@@ -796,7 +796,7 @@ def main():
 
     exclusive_formats.add_argument('-u', '--update', 
                                    action="store_true",
-                                   help="Update formats.json from GitHub's 'sibila/base_formats.json', preserving existing local entries.")
+                                   help="Update formats.json from GitHub's 'sibila/res/base_formats.json', preserving existing local entries.")
     
     add_common(parser_formats)
     parser_formats.set_defaults(func=formats)
