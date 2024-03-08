@@ -1716,7 +1716,7 @@
 <p>This not only simplifies handling the model responses but can also open new possibilities: you can now deal with the model in a structured way.</p>
 <h2 id="extract-pydantic-dataclasses-or-simple-types">Extract Pydantic, dataclasses or simple types<a class="headerlink" href="#extract-pydantic-dataclasses-or-simple-types" title="Permanent link">#</a></h2>
 <p>To specify the structured output that you want from the model, you can use Pydantic's BaseModel derived classes, or the lightweight Python dataclasses, if you don't need the whole Pydantic.</p>
-<p>With Sibila, you can also use simple types like bool, int, str, enumerations or lists. 
+<p>With Sibila, you can also use simple data types like bool, int, str, enumerations or lists. 
 For example, need to classify something? </p>
 <div class="admonition example">
 <p class="admonition-title">Example</p>
@@ -1733,6 +1733,7 @@ For example, need to classify something? </p>
 </span></code></pre></div>
 </div>
 </div>
+<p>How does it work? Extraction to the given data types is guaranteed by automatic JSON Schema grammars in local models, or by the Tools functionality of OpenAI API remote models.</p>
 <h2 id="from-your-models-or-openais">From your models or OpenAI's<a class="headerlink" href="#from-your-models-or-openais" title="Permanent link">#</a></h2>
 <p>Small downloadable 7B parameter models are getting better every month and they have reached a level where they are competent enough for most common data extraction or summarization tasks.</p>
 <p>With 8Gb or more of RAM or GPU memory, you can get good structured output from models like OpenChat, Zephyr, Mistral 7B, or any other GGUF file.</p>
