@@ -29,7 +29,7 @@ The name part, after the "provider:" must either be:
 
 - A remote model name, like "gpt-4": "openai:gpt-4"
 - A local model name, like "openchat": "llamacpp:openchat"
-- The actual filename of a model in the "models" folder: "llamacpp:openchat-3.5-1210.Q4_K_M.gguf"
+- The actual filename of a model in the "models" folder: "llamacpp:openchat-3.5-1210.Q4_K_M.gguf" - this is the form we use in the examples, but of course using "openchat" instead of the filename would be better...
 
 Although you can use filenames as model names, it's generally a better idea, for continued use, to create an entry in the "models.json" file  - this allows future model replacement to be much easier.
 

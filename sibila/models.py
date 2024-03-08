@@ -5,7 +5,7 @@ from typing import Any, Optional, Union, Callable
 import os, json, re
 from copy import copy
 
-from importlib_resources import files, as_file
+from importlib.resources import files, as_file
 
 from pprint import pformat
 
@@ -153,7 +153,7 @@ class Models:
     PROVIDER_CONF = {
         "llamacpp": {
             "mandatory": ["name"],
-            "flags": ["name_passthrough"]
+            "flags": ["name_passthrough", "local"]
         },
         "openai": {
             "mandatory": ["name"],
@@ -307,7 +307,7 @@ class Models:
         cls._ensure()        
             
         # resolve "alias:name" res names, or "name": "link_name" links
-        provider,name = cls.resolve_model_urn(res_name)
+        provider,name = resolve_model(cls.models_dir, res_name, cls.ALL_PROVIDER_NAMES)
         # arriving here, prov as a non-link dict entry
         logger.debug(f"Resolved model '{res_name}' to '{provider}','{name}'")
 
@@ -489,7 +489,7 @@ class Models:
         cls._ensure()        
             
         # resolve "alias:name" res names, or "name": "link_name" links
-        provider,name = cls.resolve_model_urn(res_name)
+        provider,name = resolve_model(cls.models_dir, res_name, cls.ALL_PROVIDER_NAMES)
         # arriving here, prov as a non-link dict entry
         logger.debug(f"Resolved model '{res_name}' to '{provider}','{name}'")
 
@@ -645,7 +645,7 @@ class Models:
 
         cls._ensure()
 
-        provider,name = cls.resolve_model_urn(res_name)
+        provider,name = resolve_model(cls.models_dir, res_name, cls.ALL_PROVIDER_NAMES)
 
         prov = cls.models_dir[provider]
 
@@ -654,38 +654,7 @@ class Models:
 
 
 
-
-
-    @classmethod
-    def resolve_model_urn(cls,
-                          res_name: str) -> tuple[str,str]:
-        """
-        Checks format and if provider exists, follows string links until a dict or non-existent name key.
-        res_name must be in format provider:model_name
-        Returns tuple of provider_name, model_name. provider_name must exist, model_name may not
-        """
-
-        while True:
-            provider, name = provider_name_from_urn(res_name, True)
-                
-            if provider not in cls.ALL_PROVIDER_NAMES:
-                raise ValueError(f"Don't know how to handle provider '{provider}'. Can only handle the following providers: {cls.ALL_PROVIDER_NAMES}")
-
-            prov = cls.models_dir[provider]
-
-            if name in prov and isinstance(prov[name], str): # follow string link
-                res_name = prov[name]
-                if ":" not in res_name: # a local provider link
-                    res_name = provider + ":" + res_name
-                    
-            elif provider == "alias" and name not in prov: # no alias with that name
-                raise ValueError(f"Alias not found for '{name}'. Did you mean 'llamacpp:{name}' or 'openai:{name}'?")
-                
-            else: 
-                break
-            
-        return provider, name
-    
+   
 
     @classmethod
     def save_models(cls,
@@ -764,18 +733,9 @@ class Models:
 
         cls._ensure()
 
-        na = name.lower()
-        while na in cls.formats_dir.keys():
-            val = cls.formats_dir[na]
-            if isinstance(val, str): # str means link -> follow it
-                na = val
-            else:
-                logger.debug(f"Format get('{name}'): found '{na}' entry")
-                return na, resolve_format_entry(cls.formats_dir,
-                                                na,
-                                                val)
-        return None
-    
+        return get_format_entry(cls.formats_dir, name)
+
+
     @classmethod
     def has_format_entry(cls,
                          name: str) -> bool:
@@ -856,16 +816,16 @@ class Models:
         if not os.path.isfile(formats_path):
             return None
 
-        logger.info(f"Loading local formats conf from '{formats_path}'")
+        logger.debug(f"Loading *local* formats conf from '{formats_path}'")
 
         formats_dir:dict = {}
         try:
             update_dir_json(formats_dir, formats_path)
-        except Exception:
-            raise ValueError(f"Could not load 'formats.json' at '{formats_path}', while looking for model format. "
-                             "Please verify that he JSON syntax is correct.")
 
-        sanity_check_formats(formats_dir)
+        except Exception:
+            logger.warn(f"Could not load 'formats.json' at '{formats_path}', while looking for model format. "
+                        "Please verify JSON syntax is correct.")
+            return None
 
         model_id = os.path.basename(model_path)
         return search_format(formats_dir, model_id)
@@ -874,7 +834,7 @@ class Models:
     @staticmethod
     def folder_match_format_template(model_path: str) -> Union[str,None]:
         """Locally search for format in a formats.json file located in the same folder as the model.
-        Doesn't add format to class formats directory.
+        Doesn't add read entries to class formats directory.
 
         Args:
             model_path: Model path.
@@ -884,7 +844,106 @@ class Models:
         """
 
         res = Models.folder_match_format_entry(model_path)
+
         return None if res is None else res[1]["template"]
+
+
+    @staticmethod
+    def folder_get_format_template(model_path: str,
+                                   format_name: str) -> Union[str,None]:
+        """Locally get (not search) for format in a formats.json file located in the same folder as the model.
+        Doesn't add format to class formats directory.
+
+        Args:
+            model_path: Model path.
+            format_name: Name of the format we're looking for.
+
+        Returns:
+            Template or None if none found.
+        """
+
+        folder_path = os.path.dirname(model_path)
+        formats_path = os.path.join(folder_path, Models.FORMATS_CONF_FILENAME)
+        if not os.path.isfile(formats_path):
+            return None
+
+        logger.debug(f"Loading *local* formats conf from '{formats_path}'")
+
+        formats_dir:dict = {}
+        try:
+            update_dir_json(formats_dir, formats_path)
+
+        except Exception:
+            logger.warn(f"Could not load 'formats.json' at '{formats_path}', while looking for model format. "
+                        "Please verify JSON syntax is correct.")
+            return None
+
+        res = get_format_entry(formats_dir, format_name)
+        return None if res is None else res[1]["template"]
+
+
+
+    @staticmethod
+    def folder_models_match_format_template(model_path: str) -> Union[str,None]:
+        """Locally search for format in a models.json file located in the same folder as the model.
+        Doesn't add read entries to class models directory.
+
+        Args:
+            model_path: Model path.
+
+        Returns:
+            Format template.
+        """
+
+        folder_path = os.path.dirname(model_path)
+        models_path = os.path.join(folder_path, Models.MODELS_CONF_FILENAME)
+        if not os.path.isfile(models_path):
+            return None
+
+        logger.debug(f"Loading *local* models conf from '{models_path}'")
+
+        models_dir:dict = {}
+        try:
+            merge_dir_json(models_dir, models_path)
+            
+        except Exception:
+            logger.warn(f"Could not load 'models.json' at '{models_path}', while looking for model format. "
+                        "Please verify JSON syntax is correct.")
+            return None
+
+        filename = os.path.basename(model_path)
+
+        for provider, entry in Models.PROVIDER_CONF.items():
+
+            if "local" not in entry["flags"]: # filter local providers
+                continue
+
+            if provider in models_dir:
+                prov = models_dir[provider]
+
+                for mod_name,entry in prov.items():
+
+                    if "name" in entry and entry["name"] == filename:
+                        logger.debug(f"Located model entry {mod_name}: {entry}")
+
+                        if "format" in entry:
+                            format: str = entry["format"] # type: ignore[assignment]
+                            if "{{" in format: # Jinja template
+                                return format
+                            
+                            else: # available in Models?
+                                template = Models.get_format_template(format)
+                                if template is not None:
+                                    logger.debug(f"Found template '{format}' in Models")
+                                    return template
+                                
+                                else: # last chance: look for template in a formats.json in same folder
+                                    fmt = Models.folder_get_format_template(model_path, format)
+                                    if fmt is not None:
+                                        logger.debug(f"Found template '{format}' in 'formats.json' in the same folder")
+                                        return fmt
+
+        return None
 
 
 
@@ -1231,9 +1290,6 @@ def merge_dir_json(dir: dict,
 
 
 
-    
-
-
 
 def provider_name_from_urn(res_name: str,
                            allow_alias_provider: bool) -> tuple[str,str]:
@@ -1250,6 +1306,36 @@ def provider_name_from_urn(res_name: str,
     return provider_name # type: ignore[return-value]
 
 
+
+def resolve_model(models_dir: dict,
+                  res_name: str,
+                  valid_providers: list) -> tuple[str,str]:
+    """
+    Checks if provider exists, follows string links until a dict or non-existent name key.
+    Arg res_name must be in format provider:model_name
+    Returns tuple of provider_name, model_name. provider_name must exist, model_name may not
+    """
+
+    while True:
+        provider, name = provider_name_from_urn(res_name, True)
+            
+        if provider not in valid_providers:
+            raise ValueError(f"Don't know how to handle provider '{provider}'. Can only handle the following providers: {valid_providers}")
+
+        prov = models_dir[provider]
+
+        if name in prov and isinstance(prov[name], str): # follow string link
+            res_name = prov[name]
+            if ":" not in res_name: # a local provider link
+                res_name = provider + ":" + res_name
+                
+        elif provider == "alias" and name not in prov: # no alias with that name
+            raise ValueError(f"Alias not found for '{name}'. Did you mean 'llamacpp:{name}' or 'openai:{name}'?")
+            
+        else: 
+            break
+        
+    return provider, name
 
 
 
@@ -1276,6 +1362,29 @@ def resolve_format_entry(formats_dir: dict,
         
     return val
 
+
+def get_format_entry(formats_dir: dict,
+                     name: str) -> Union[tuple[str,dict],None]:
+    """Get a resolved format entry by name, following links if required.
+
+    Args:
+        name: Format name.
+
+    Returns:
+        Tuple of (resolved_name, format_entry).
+    """
+
+    na = name.lower()
+    while na in formats_dir.keys():
+        val = formats_dir[na]
+        if isinstance(val, str): # str means link -> follow it
+            na = val
+        else:
+            logger.debug(f"Format get('{name}'): found '{na}' entry")
+            return na, resolve_format_entry(formats_dir,
+                                            na,
+                                            val)
+    return None
 
 
 

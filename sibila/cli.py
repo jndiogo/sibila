@@ -74,8 +74,8 @@ def resolve_models_dir(models_dir: Union[str,None],
             models_dir = "./"
 
         else:
-            die(f"Could not find a 'models' folder in {Models.ENV_VAR_NAME} env variable and can only default to current folder if 'models.json' or 'formats.json' is present.\n"
-                f"Please provide the location of a 'models' folder.")
+            die("Could not find a 'models' folder and can only default to current folder if 'models.json' or 'formats.json' is present.\n"
+                "Please provide the location of a 'models' folder with option -m.")
 
 
     models_dir = expand_path(models_dir) # type: ignore[arg-type]
@@ -710,7 +710,7 @@ def main():
                                   nargs="?",
                                   default="",
                                   dest="list_query",
-                                  help="List models filtering by model name substring or res_name in the form provider:query. Examples: 'gpt', 'llamacpp:', 'llamacpp:open'.")
+                                  help="List models filtering by model name substring or res_name in the form 'provider:query'. Examples: 'gpt', 'llamacpp:', 'llamacpp:open'.")
 
     exclusive_models.add_argument('-t', '--test', 
                                   metavar="NAME",
@@ -777,14 +777,14 @@ def main():
                                    type=str,
                                    nargs=3,
                                    dest="set_name_match_template",
-                                   help="Set format entry with 3 args: name, match_regex, template. Arg template can be a Jinja2 template string or filename, or a name of an existing format entry to use as template.")
+                                   help="Set format entry with 3 args: name match_regex template. Arg template can be a Jinja2 template string or filename, or a name of an existing format entry to use as template.")
     
     exclusive_formats.add_argument('-sl', '--setlink',
                                    metavar="NAME",
                                    type=str,
                                    nargs=2,
                                    dest="set_name_link",
-                                   help="Set format link with 2 args: name, linked_name.")
+                                   help="Set format link with 2 args: name linked_name.")
 
 
     exclusive_formats.add_argument('-d', '--delete', 

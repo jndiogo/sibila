@@ -46,4 +46,3 @@ model.extract(Info, "Who was the first man in the moon?")
 ```
 
 If Pydantic BaseModel objects are too much for your project, Sibila supports similar functionality with Python dataclass.
-

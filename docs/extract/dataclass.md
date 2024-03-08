@@ -113,5 +113,5 @@ For dataclasses this is done with Annotated[type, "description"] - see the "star
 
 In this manner, the model can be informed of what is wanted for each specific field.
 
-Check the [Extract dataclass example](../examples/extract_dataclass.md).
+Check the [Extract dataclass example](../examples/extract_dataclass.md) to see this in action.
 

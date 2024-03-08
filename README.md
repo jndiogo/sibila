@@ -49,7 +49,6 @@ If Pydantic BaseModel objects are too much for your project, Sibila supports sim
 
 
 
-
 ## Docs
 
 [The docs explain](https://jndiogo.github.io/sibila/) the main concepts, include examples and an API reference.

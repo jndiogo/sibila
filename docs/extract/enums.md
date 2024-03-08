@@ -75,6 +75,8 @@ class Light(Enum):
     GREEN = 'go'
 ```
 
+See the [Tag classification example](../examples/tag.md) to see how Enum is used to tag support queries.
+
 
 
 ## Classify

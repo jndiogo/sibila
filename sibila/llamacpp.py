@@ -67,7 +67,7 @@ class LlamaCppModel(FormattedTextModel):
                  path: str,
 
                  format: Optional[str] = None,                 
-                 format_search_order: list[str] = ["name","meta_template", "formats_json"],
+                 format_search_order: list[str] = ["name","meta_template", "models_json", "formats_json"],
 
                  *,
 
@@ -91,7 +91,7 @@ class LlamaCppModel(FormattedTextModel):
         Args:
             path: File path to the GGUF file.
             format: Chat template format to use with model. Leave as None for auto-detection.
-            format_search_order: Search order for auto-detecting format, "name" searches in the filename, "meta_template" looks in the model's metadata. Defaults to ["name","meta_template"].
+            format_search_order: Search order for auto-detecting format, "name" searches in the filename, "meta_template" looks in the model's metadata, "models_json", "formats_json" looks for these configs in file's folder. Defaults to ["name","meta_template", "models_json", "formats_json"].
             genconf: Default generation configuration, which can be used in gen() and related. Defaults to None.
             tokenizer: An external initialized tokenizer to use instead of the created from the GGUF file. Defaults to None.
             ctx_len: Maximum context length to be used (shared for input and output). Defaults to 2048.

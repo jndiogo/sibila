@@ -4,7 +4,7 @@ title: Simple types
 
 Sibila can constrain model generation to output simple python types. This is helpful for situations where you want to extract a specific data type. 
 
-To get a response from the model in a certain type, you can use the extract() method of [OpenAIModel](../api-reference/model.md#sibila.OpenAIModel.extract) or [LlamaCppModel](../api-reference/model.md#sibila.LlamaCppModel.extract):
+To get a response from the model in a certain type, you can use the [extract()](../api-reference/model.md#sibila.LlamaCppModel.extract) method:
 
 !!! example
     ``` python

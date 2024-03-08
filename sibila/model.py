@@ -1108,6 +1108,7 @@ class FormattedTextModel(TextModel, ABC):
         format_search_order is a list of str flags:
             "name: match by name
             "meta_template": use model file metadata's template
+            "models_json": look for a "models.json" file in the same folder
             "formats_json": look for a "formats.json" file in the same folder
             ex: ["name", "meta_template", "formats_json"]
         
@@ -1136,6 +1137,11 @@ class FormattedTextModel(TextModel, ABC):
                         fmt = md[key_name]
                         return fmt # type: ignore[return-value]
                     
+                elif order == "models_json":
+                    fmt = Models.folder_models_match_format_template(info["path"])
+                    if fmt is not None:
+                        return fmt
+
                 elif order == "formats_json":
                     fmt = Models.folder_match_format_template(info["path"])
                     if fmt is not None:

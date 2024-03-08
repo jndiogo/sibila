@@ -111,4 +111,4 @@ For Pydantic this is done with Field(description="description") - see the "start
 In this manner, the model can be informed of what is wanted for each specific field.
 
 
-Check the [Extract Pydantic example](../examples/extract.md).
+Check the [Extract Pydantic example](../examples/extract.md) to see this kind of extraction.

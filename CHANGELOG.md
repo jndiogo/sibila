@@ -8,6 +8,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [0.3.4]
+- feat: Improve template format discovery by looking in same folder for models/formats.json.
+- fix: Update legacy importlib_resources reference.
+- docs: Improve text.
 
 ## [0.3.3]
 - fix: Move base_models.json and base_formats.json to sibila/res folder.

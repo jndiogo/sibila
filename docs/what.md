@@ -15,7 +15,7 @@ This not only simplifies handling the model responses but can also open new poss
 
 To specify the structured output that you want from the model, you can use Pydantic's BaseModel derived classes, or the lightweight Python dataclasses, if you don't need the whole Pydantic.
 
-With Sibila, you can also use simple types like bool, int, str, enumerations or lists. 
+With Sibila, you can also use simple data types like bool, int, str, enumerations or lists. 
 For example, need to classify something? 
 
 !!! example
@@ -32,6 +32,9 @@ For example, need to classify something?
         ```
         'bad'
         ```
+
+How does it work? Extraction to the given data types is guaranteed by automatic JSON Schema grammars in local models, or by the Tools functionality of OpenAI API remote models.
+
 
 
 ## From your models or OpenAI's
