@@ -576,6 +576,15 @@
   
 </li>
         
+          <li class="md-nav__item">
+  <a href="#non-accelerated" class="md-nav__link">
+    <span class="md-ellipsis">
+      Non-accelerated
+    </span>
+  </a>
+  
+</li>
+        
       </ul>
     </nav>
   
@@ -1770,6 +1779,15 @@
   
 </li>
         
+          <li class="md-nav__item">
+  <a href="#non-accelerated" class="md-nav__link">
+    <span class="md-ellipsis">
+      Non-accelerated
+    </span>
+  </a>
+  
+</li>
+        
       </ul>
     </nav>
   
@@ -1808,9 +1826,8 @@
 </span></code></pre></div>
 </details>
 <h2 id="enabling-llamacpp-hardware-acceleration">Enabling llama.cpp hardware acceleration<a class="headerlink" href="#enabling-llamacpp-hardware-acceleration" title="Permanent link">#</a></h2>
-<p>You can run local models without hardware acceleration but they will run slower.</p>
-<p>Sibila uses llama-cpp-python, a python wrapper for llama.cpp and it's a good idea to make sure it was installed with the best optimization your computer can offer. </p>
-<p>See the following sections, depending on which hardware you have, to install with hardware acceleration:</p>
+<p>Local models will run faster with hardware acceleration enabled. Sibila uses llama-cpp-python, a python wrapper for llama.cpp and it's a good idea to make sure it was installed with the best optimization your computer can offer. </p>
+<p>See the following sections: depending on which hardware you have, you can run the listed command which will reinstall llama-cpp-python with the selected optimization. If any error occurs you can always install the non-accelerated version, as listed at the end. </p>
 <h3 id="for-cuda-nvidia-gpus">For CUDA - NVIDIA GPUs<a class="headerlink" href="#for-cuda-nvidia-gpus" title="Permanent link">#</a></h3>
 <p>For CUDA acceleration in NVIDA GPUs, you'll need to <a href="https://developer.nvidia.com/cuda-toolkit-archive">Install the NVIDIA CUDA Toolkit</a>.</p>
 <div class="tabbed-set tabbed-alternate" data-tabs="1:2"><input checked="checked" id="__tabbed_1_1" name="__tabbed_1" type="radio" /><input id="__tabbed_1_2" name="__tabbed_1" type="radio" /><div class="tabbed-labels"><label for="__tabbed_1_1">Linux</label><label for="__tabbed_1_2">Windows</label></div>
@@ -1884,7 +1901,8 @@
 </div>
 </div>
 </div>
-<p>If you get an error installin llama-cpp-python, please see <a href="https://github.com/abetlen/llama-cpp-python?tab=readme-ov-file#installation-configuration">llama-cpp-python's Installation configuration</a>.</p>
+<p>If you get an error running the above commands, please see <a href="https://github.com/abetlen/llama-cpp-python?tab=readme-ov-file#installation-configuration">llama-cpp-python's Installation configuration</a>.</p>
+<h3 id="non-accelerated">Non-accelerated<a class="headerlink" href="#non-accelerated" title="Permanent link">#</a></h3>
 <p>In any case, you can always install llama-cpp-python without acceleration by running:</p>
 <div class="language-text highlight"><pre><span></span><code><span id="__span-11-1"><a id="__codelineno-11-1" name="__codelineno-11-1" href="#__codelineno-11-1"></a>pip install llama-cpp-python --upgrade --force-reinstall --no-cache-dir
 </span></code></pre></div>
