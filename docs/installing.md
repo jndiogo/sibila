@@ -28,11 +28,9 @@ If you only plan to use remote models (OpenAI), there's nothing else you need to
 
 ## Enabling llama.cpp hardware acceleration
 
-You can run local models without hardware acceleration but they will run slower.
+Local models will run faster with hardware acceleration enabled. Sibila uses llama-cpp-python, a python wrapper for llama.cpp and it's a good idea to make sure it was installed with the best optimization your computer can offer. 
 
-Sibila uses llama-cpp-python, a python wrapper for llama.cpp and it's a good idea to make sure it was installed with the best optimization your computer can offer. 
-
-See the following sections, depending on which hardware you have, to install with hardware acceleration:
+See the following sections: depending on which hardware you have, you can run the listed command which will reinstall llama-cpp-python with the selected optimization. If any error occurs you can always install the non-accelerated version, as listed at the end. 
 
 
 ### For CUDA - NVIDIA GPUs
@@ -118,8 +116,10 @@ More info: [Installing llama-cpp-python with GPU Support](https://michaelriedl.c
 
 
 
-If you get an error installin llama-cpp-python, please see [llama-cpp-python's Installation configuration](https://github.com/abetlen/llama-cpp-python?tab=readme-ov-file#installation-configuration).
+If you get an error running the above commands, please see [llama-cpp-python's Installation configuration](https://github.com/abetlen/llama-cpp-python?tab=readme-ov-file#installation-configuration).
 
+
+### Non-accelerated
 
 In any case, you can always install llama-cpp-python without acceleration by running:
 

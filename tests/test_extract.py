@@ -19,33 +19,44 @@ from sibila.json_schema import (
 from sibila.null import NullModel
 
 
-model = NullModel()
+
+model = None
+
+@pytest.fixture(autouse=True, scope="module")
+def module_setup_teardown():
+    global model
+
+    model = NullModel()
+    
+    yield
+
+    del model
 
 
 def extract(target: Any,
              text: str,
              response: str,
-             result: Any,
+             expected: Any,
              *,
              inst: Optional[str]=None):
     model.set_response(response)
-    assert model.extract(target, text, inst=inst) == result
+    assert model.extract(target, text, inst=inst) == expected
 
 def classify(target: Any,
              text: str,
              response: str,
-             result: Any,
+             expected: Any,
              *,
              inst: Optional[str]=None):
     model.set_response(response)
-    assert model.classify(target, text, inst=inst) == result
+    assert model.classify(target, text, inst=inst) == expected
 
 
 
 
 
 
-def test_extract_root_types():
+def test_extract_simple_types():
 
     extract(bool,
             "It's a great time to surf",
@@ -84,10 +95,6 @@ def test_extract_root_types():
             [21, 10, 5],
             inst="Extract numbers")
 
-
-
-
-
     extract(datetime, 
             "Eleven of May, 1984, 10 past 15 AM.", 
             '{"output":"1984-05-11T15:10:00+00:00"}',
@@ -96,7 +103,8 @@ def test_extract_root_types():
 
 
 
-
+def test_dataclass():
+    
     @dataclass
     class Inv:
         """Class for keeping track of an item in inventory."""
@@ -114,6 +122,8 @@ def test_extract_root_types():
 
 
 
+
+def test_pydantic():
 
     class UserDetail(BaseModel):
         """ Details about a user """

@@ -140,7 +140,10 @@ class Models:
 
     # ======================================================== Model directory
     models_dir: Any = None # model directory configuration => Union[dict[str,Any],None]
-    """Model directory dict."""
+    """Local models directory dict: loaded in setup()."""
+
+    base_models_dir: Any = None
+    """Base models directory dict: loaded at init from res/base_models.json."""
 
     models_search_path: list[str] = [] 
     """Model search path: list of folders with models."""
@@ -162,11 +165,13 @@ class Models:
     }
     ALL_PROVIDER_NAMES = list(PROVIDER_CONF.keys()) + ["alias"] # providers + "alias"
 
-    EMPTY_MODELS_DIR: dict = {
-        "llamacpp": {},
-        "openai": {},
-        "alias": {}
-    }
+    @classmethod
+    def EMPTY_MODELS_DIR(_) -> dict:
+        return {
+            "llamacpp": {},
+            "openai": {},
+            "alias": {}
+        }
 
     MODELS_CONF_FILENAME = "models.json"
     MODELS_BASE_CONF_FILENAME = "base_" + MODELS_CONF_FILENAME
@@ -175,10 +180,15 @@ class Models:
 
 
     # ======================================================== Format directory    
-    formats_dir: Any = None # model directory configuration => Union[dict[str,Any],None]
-    """Format directory dict."""
+    formats_dir: Any = None # loaded models directory configuration => Union[dict[str,Any],None]
+    """Loaded/local formats directory dict: loaded in setup()."""
 
-    EMPTY_FORMATS_DIR: dict = {}
+    base_formats_dir: Any = None # base models directory configuration => Union[dict[str,Any],None]
+    """Base formats directory dict: loaded at init from res/base_formats.json."""
+
+    @classmethod
+    def EMPTY_FORMATS_DIR(_) -> dict:
+        return {}
 
     FORMATS_CONF_FILENAME = "formats.json"
     FORMATS_BASE_CONF_FILENAME = "base_" + FORMATS_CONF_FILENAME
@@ -198,7 +208,6 @@ class Models:
               path: Optional[Union[str,list[str]]] = None,
               clear: bool = False,
               add_cwd: bool = True,
-              load_base: bool = True,
               load_from_env: bool = True):
         """Initialize models and formats directory from given model files folder and/or contained configuration files.
         Path can start with "~/" current account's home directory.
@@ -207,7 +216,6 @@ class Models:
             path: Path to a folder or to "models.json" or "formats.json" configuration files. Defaults to None which tries to initialize from defaults and env variable.
             clear: Set to clear existing directories before loading from path arg.
             add_cwd: Add current working directory to search path.
-            load_base: Whether to load "base_models.json" and "base_formats.json" from "sibila/res" folder.
             load_from_env: Load from SIBILA_MODELS env variable?
         """
         
@@ -215,7 +223,6 @@ class Models:
             cls.clear()
 
         cls._ensure(add_cwd, 
-                    load_base,
                     load_from_env)
 
         if path is not None:
@@ -231,7 +238,7 @@ class Models:
 
     @classmethod
     def clear(cls):
-        """Clear directories. Member genconf is not cleared."""
+        """Clear directories. Members base_models_dir and base_formats_dir and genconf are not cleared."""
         cls.models_dir = None
         cls.models_search_path = []
         cls.formats_dir = None
@@ -243,6 +250,7 @@ class Models:
     
     @classmethod
     def info(cls,
+             include_base: bool = True,
              verbose: bool = False) -> str:
         """Return information about current setup.
 
@@ -256,19 +264,24 @@ class Models:
         cls._ensure()
 
         out = ""
-        
+                
         out += f"Models search path: {cls.models_search_path}\n"
-        out += f"Models directory:\n{pformat(cls.models_dir, sort_dicts=False)}\n"
+
+        models_dir = cls.fused_models_dir() if include_base else cls.models_dir
+        out += f"Models directory:\n{pformat(models_dir, sort_dicts=False)}\n"
+
         out += f"Model Genconf:\n{cls.genconf}\n"
+
+        formats_dir = cls.fused_formats_dir() if include_base else cls.formats_dir
 
         if not verbose:
             fordir = {}
-            for key in cls.formats_dir:
-                fordir[key] = copy(cls.formats_dir[key])
+            for key in formats_dir:
+                fordir[key] = copy(formats_dir[key])
                 if isinstance(fordir[key], dict) and "template" in fordir[key]:
                     fordir[key]["template"] = fordir[key]["template"][:14] + "..."
         else:
-            fordir = cls.formats_dir
+            fordir = formats_dir
 
         out += f"Formats directory:\n{pformat(fordir)}"
 
@@ -306,12 +319,14 @@ class Models:
                
         cls._ensure()        
             
+        models_dir = cls.fused_models_dir()
+
         # resolve "alias:name" res names, or "name": "link_name" links
-        provider,name = resolve_model(cls.models_dir, res_name, cls.ALL_PROVIDER_NAMES)
+        provider,name = resolve_model(models_dir, res_name, cls.ALL_PROVIDER_NAMES)
         # arriving here, prov as a non-link dict entry
         logger.debug(f"Resolved model '{res_name}' to '{provider}','{name}'")
 
-        prov = cls.models_dir[provider]
+        prov = models_dir[provider]
         
         if name in prov:
             model_args = prov[name]
@@ -422,12 +437,14 @@ class Models:
     def list_models(cls,
                     name_query: str,
                     providers: list[str],
+                    include_base: bool,
                     resolved_values: bool) -> dict:
         """List format entries matching query.
 
         Args:
             name_query: Case-insensitive substring to match model names. Empty string for all.
             providers: Filter by these exact provider names. Empty list for all.
+            include_base: Also list fused values from base_models_dir.
             resolved_values: Return resolved entries or raw ones.
 
         Returns:
@@ -436,16 +453,18 @@ class Models:
 
         cls._ensure()
 
+        models_dir = cls.fused_models_dir() if include_base else cls.models_dir
+
         out = {}
 
         name_query = name_query.lower()
 
-        for prov_name in cls.models_dir:
+        for prov_name in models_dir:
 
             if providers and prov_name not in providers:
                 continue
 
-            prov_dic = cls.models_dir[prov_name]
+            prov_dic = models_dir[prov_name]
 
             for name in prov_dic:
 
@@ -458,6 +477,7 @@ class Models:
                 entry_res_name = prov_name + ":" + name
 
                 if resolved_values:
+                    # okay to use get_model_entry() because it resolves to fused
                     res = cls.get_model_entry(entry_res_name) # type: ignore[assignment]
                     if res is None:
                         continue
@@ -488,12 +508,14 @@ class Models:
                
         cls._ensure()        
             
+        models_dir = cls.fused_models_dir()
+
         # resolve "alias:name" res names, or "name": "link_name" links
-        provider,name = resolve_model(cls.models_dir, res_name, cls.ALL_PROVIDER_NAMES)
+        provider,name = resolve_model(models_dir, res_name, cls.ALL_PROVIDER_NAMES)
         # arriving here, prov as a non-link dict entry
         logger.debug(f"Resolved model '{res_name}' to '{provider}','{name}'")
 
-        prov = cls.models_dir[provider]
+        prov = models_dir[provider]
         
         if name in prov:
             return provider + ":" + name, prov[name]
@@ -645,9 +667,32 @@ class Models:
 
         cls._ensure()
 
-        provider,name = resolve_model(cls.models_dir, res_name, cls.ALL_PROVIDER_NAMES)
+        provider, name = provider_name_from_urn(res_name,
+                                                allow_alias_provider=False)
 
-        prov = cls.models_dir[provider]
+        if provider not in cls.ALL_PROVIDER_NAMES:
+            raise ValueError(f"Unknown provider '{provider}', must be one of: {cls.ALL_PROVIDER_NAMES}")
+
+        prov = cls.models_dir[provider]        
+        if name not in prov:
+            raise ValueError(f"Model '{res_name}' not found")
+
+        # verify if any entry links to name:
+        def check_link_to(link_to_name: str, 
+                          provider: str) -> Union[str, None]:
+            
+            for name,entry in cls.models_dir[provider].items():
+                if isinstance(entry,str) and entry == link_to_name:
+                    return name
+            return None
+        
+        offender = check_link_to(name, provider)
+        if offender is not None:
+            raise ValueError(f"Cannot delete '{res_name}', as entry '{provider}:{offender}' links to it")
+
+        offender = check_link_to(name, "alias")
+        if offender is not None:
+            raise ValueError(f"Cannot delete '{res_name}', as entry 'alias:{offender}' links to it")
 
         del prov[name]
 
@@ -658,7 +703,11 @@ class Models:
 
     @classmethod
     def save_models(cls,
-                    path: Optional[str] = None):
+                    path: Optional[str] = None,
+                    include_base: bool = False):
+
+        cls._ensure()
+
         if path is None:
             if len(cls.models_search_path) != 1:
                 raise ValueError("No path arg provided and multiple path in cls.search_path. Don't know where to save.")
@@ -666,9 +715,25 @@ class Models:
             path = os.path.join(cls.models_search_path[0], "models.json")
 
         with open(path, "w", encoding="utf-8") as f:
-            json.dump(cls.models_dir, f, indent=4)
+            models_dir = cls.fused_models_dir() if include_base else cls.models_dir
+            
+            # clear providers with no models:
+            for provider in cls.ALL_PROVIDER_NAMES:
+                if provider in models_dir and not models_dir[provider]:
+                    del models_dir[provider]
+            
+            json.dump(models_dir, f, indent=4)
 
         return path
+
+
+
+
+    @classmethod
+    def fused_models_dir(cls) -> dict:
+        dir = cls.base_models_dir.copy()
+        dict_merge(dir, cls.models_dir)
+        return dir
 
 
 
@@ -681,11 +746,13 @@ class Models:
     @classmethod
     def list_formats(cls,
                      name_query: str,
+                     include_base: bool,
                      resolved_values: bool) -> dict:
         """List format entries matching query.
 
         Args:
             name_query: Case-insensitive substring to match format names. Empty string for all.
+            include_base: Also list base_formats_dir.
             resolved_values: Return resolved entries or raw ones.
 
         Returns:
@@ -698,12 +765,14 @@ class Models:
 
         name_query = name_query.lower()
 
-        for name in cls.formats_dir.keys():
+        formats_dir = cls.fused_formats_dir() if include_base else cls.formats_dir
+
+        for name in formats_dir.keys():
 
             if name_query and name_query not in name.lower():
                 continue
 
-            val = cls.formats_dir[name]
+            val = formats_dir[name]
 
             if resolved_values:
                 res = cls.get_format_entry(name)
@@ -733,13 +802,13 @@ class Models:
 
         cls._ensure()
 
-        return get_format_entry(cls.formats_dir, name)
-
+        return get_format_entry(cls.fused_formats_dir(), name)
 
     @classmethod
     def has_format_entry(cls,
                          name: str) -> bool:
         return cls.get_format_entry(name) is not None
+
 
 
 
@@ -775,7 +844,7 @@ class Models:
 
         cls._ensure()
 
-        return search_format(cls.formats_dir, name)
+        return search_format(cls.fused_formats_dir(), name)
 
 
     @classmethod
@@ -797,94 +866,9 @@ class Models:
 
 
 
-
-
-    @staticmethod
-    def folder_match_format_entry(model_path: str) -> Union[tuple[str,dict],None]:
-        """Locally search for format in a formats.json file located in the same folder as the model.
-        Doesn't add format to class formats directory.
-
-        Args:
-            model_path: Model path.
-
-        Returns:
-            Tuple (name, format_entry) where name is a resolved name. Or None if none found.
-        """
-
-        folder_path = os.path.dirname(model_path)
-        formats_path = os.path.join(folder_path, Models.FORMATS_CONF_FILENAME)
-        if not os.path.isfile(formats_path):
-            return None
-
-        logger.debug(f"Loading *local* formats conf from '{formats_path}'")
-
-        formats_dir:dict = {}
-        try:
-            update_dir_json(formats_dir, formats_path)
-
-        except Exception:
-            logger.warn(f"Could not load 'formats.json' at '{formats_path}', while looking for model format. "
-                        "Please verify JSON syntax is correct.")
-            return None
-
-        model_id = os.path.basename(model_path)
-        return search_format(formats_dir, model_id)
-
-
-    @staticmethod
-    def folder_match_format_template(model_path: str) -> Union[str,None]:
-        """Locally search for format in a formats.json file located in the same folder as the model.
-        Doesn't add read entries to class formats directory.
-
-        Args:
-            model_path: Model path.
-
-        Returns:
-            Format template.
-        """
-
-        res = Models.folder_match_format_entry(model_path)
-
-        return None if res is None else res[1]["template"]
-
-
-    @staticmethod
-    def folder_get_format_template(model_path: str,
-                                   format_name: str) -> Union[str,None]:
-        """Locally get (not search) for format in a formats.json file located in the same folder as the model.
-        Doesn't add format to class formats directory.
-
-        Args:
-            model_path: Model path.
-            format_name: Name of the format we're looking for.
-
-        Returns:
-            Template or None if none found.
-        """
-
-        folder_path = os.path.dirname(model_path)
-        formats_path = os.path.join(folder_path, Models.FORMATS_CONF_FILENAME)
-        if not os.path.isfile(formats_path):
-            return None
-
-        logger.debug(f"Loading *local* formats conf from '{formats_path}'")
-
-        formats_dir:dict = {}
-        try:
-            update_dir_json(formats_dir, formats_path)
-
-        except Exception:
-            logger.warn(f"Could not load 'formats.json' at '{formats_path}', while looking for model format. "
-                        "Please verify JSON syntax is correct.")
-            return None
-
-        res = get_format_entry(formats_dir, format_name)
-        return None if res is None else res[1]["template"]
-
-
-
-    @staticmethod
-    def folder_models_match_format_template(model_path: str) -> Union[str,None]:
+    @classmethod
+    def folder_match_format_template(cls,
+                                     model_path: str) -> Union[str,None]:
         """Locally search for format in a models.json file located in the same folder as the model.
         Doesn't add read entries to class models directory.
 
@@ -895,25 +879,52 @@ class Models:
             Format template.
         """
 
-        folder_path = os.path.dirname(model_path)
-        models_path = os.path.join(folder_path, Models.MODELS_CONF_FILENAME)
-        if not os.path.isfile(models_path):
-            return None
-
-        logger.debug(f"Loading *local* models conf from '{models_path}'")
+        cls._ensure()
 
         models_dir:dict = {}
-        try:
-            merge_dir_json(models_dir, models_path)
-            
-        except Exception:
-            logger.warn(f"Could not load 'models.json' at '{models_path}', while looking for model format. "
-                        "Please verify JSON syntax is correct.")
+        formats_dir:dict = {}
+
+        folder_path = os.path.dirname(model_path)
+
+        models_path = os.path.join(folder_path, cls.MODELS_CONF_FILENAME)
+        if os.path.isfile(models_path):
+            logger.debug(f"Loading *local* models conf from '{models_path}'")
+            try:
+                merge_dir_json(models_dir, models_path)
+                
+            except Exception:
+                logger.warn(f"Could not load 'models.json' at '{models_path}', while looking for model format. "
+                            "Please verify JSON syntax is correct.")
+                models_dir = {}
+
+        formats_path = os.path.join(folder_path, cls.FORMATS_CONF_FILENAME)
+        if os.path.isfile(formats_path):
+            logger.debug(f"Loading *local* formats conf from '{formats_path}'")
+            try:
+                update_dir_json(formats_dir, formats_path)
+
+            except Exception:
+                logger.warn(f"Could not load 'formats.json' at '{formats_path}', while looking for model format. "
+                            "Please verify JSON syntax is correct.")
+                formats_dir = {}
+                
+        if not models_dir and not formats_dir: # nothing to do
             return None
+
+
+        # fuse: folder_dirs <- models_folder_dirs <- base_dirs
+        dir = cls.fused_models_dir()
+        dict_merge(dir, models_dir)
+        models_dir = dir
+        dir = cls.fused_formats_dir()
+        dir.update(formats_dir)
+        formats_dir = dir
+
 
         filename = os.path.basename(model_path)
 
-        for provider, entry in Models.PROVIDER_CONF.items():
+        # 1: check models_dir
+        for provider, entry in cls.PROVIDER_CONF.items():
 
             if "local" not in entry["flags"]: # filter local providers
                 continue
@@ -924,43 +935,29 @@ class Models:
                 for mod_name,entry in prov.items():
 
                     if "name" in entry and entry["name"] == filename:
-                        logger.debug(f"Located model entry {mod_name}: {entry}")
+                        logger.debug(f"Located model '{mod_name}': {entry}")
 
                         if "format" in entry:
                             format: str = entry["format"] # type: ignore[assignment]
                             if "{{" in format: # Jinja template
                                 return format
                             
-                            else: # available in Models?
-                                template = Models.get_format_template(format)
+                            else: # format name available in formats_dir?
+                                template = get_format_entry(formats_dir, format)
                                 if template is not None:
-                                    logger.debug(f"Found template '{format}' in Models")
-                                    return template
-                                
-                                else: # last chance: look for template in a formats.json in same folder
-                                    fmt = Models.folder_get_format_template(model_path, format)
-                                    if fmt is not None:
-                                        logger.debug(f"Found template '{format}' in 'formats.json' in the same folder")
-                                        return fmt
+                                    logger.debug(f"Found format '{format}'")
+                                    return template[1]["template"]
 
+        # 2: check in formats_dir
+        res = search_format(formats_dir, filename)
+        if res is not None:
+            logger.debug(f"Found format '{res[0]}'")
+            return res[1]["template"]
+        
         return None
 
 
 
-
-    @classmethod
-    def is_format_supported(cls,
-                            model_id: str) -> bool:
-        """Checks if there's template support for a model with this name.
-
-        Args:
-            model_id: Model filename or general name.
-
-        Returns:
-            True if Models knows the format.
-        """
-
-        return cls.match_format_entry(model_id) is not None
 
 
 
@@ -971,14 +968,14 @@ class Models:
     @classmethod
     def set_format(cls,
                    name: str,
-                   match: str,
-                   template: str):
+                   template: str,
+                   match: Optional[str] = None):
         """Add a format entry to the format directory.
 
         Args:
             name: Format entry name.
-            match: Regex that matches names/filenames that use this format.
             template: The Chat template format in Jinja2 format
+            match: Regex that matches names/filenames that use this format. Default is None.
         """
 
         cls._ensure()
@@ -988,9 +985,11 @@ class Models:
                 raise ValueError(f"Could not find linked template entry '{template}'.")
 
         entry = {
-            "match": match,
             "template": template
         }
+        if match is not None:
+            entry["match"] = match
+
         cls.formats_dir[name] = entry        
         
 
@@ -1028,36 +1027,27 @@ class Models:
 
         cls._ensure()
 
-        if not cls.has_format_entry(name):
+        if name not in cls.formats_dir:
             raise ValueError(f"Format name '{name}' not found.")
         
+        for check_name,entry in cls.formats_dir.items():
+            if isinstance(entry,str) and entry == name:
+                raise ValueError(f"Cannot delete '{name}', as entry '{check_name}' links to it")
+
         del cls.formats_dir[name]
 
 
 
 
 
-    @classmethod
-    def merge_from(cls,
-                   path: str,
-                   preserve_current: bool = True):
-        path = expand_path(path)
-
-        if preserve_current:
-            with open(path, "r", encoding="utf-8") as f:
-                new_dir = json.load(f)
-            new_dir.update(cls.formats_dir)
-            cls.formats_dir = new_dir
-
-        else: # normal update: new with the same name will override current
-            update_dir_json(cls.formats_dir, path)
-
-        sanity_check_formats(cls.formats_dir)
-
 
     @classmethod
     def save_formats(cls,
-                     path: Optional[str] = None):
+                     path: Optional[str] = None,
+                     include_base: bool = False):
+        
+        cls._ensure()
+
         if path is None:
             if len(cls.models_search_path) != 1:
                 raise ValueError("No path arg provided and multiple path in cls.search_path. Don't know where to save.")
@@ -1065,9 +1055,19 @@ class Models:
             path = os.path.join(cls.models_search_path[0], "formats.json")
 
         with open(path, "w", encoding="utf-8") as f:
-            json.dump(cls.formats_dir, f, indent=4)
+            formats_dir = cls.fused_formats_dir() if include_base else cls.formats_dir
+            json.dump(formats_dir, f, indent=4)
 
         return path
+
+
+    @classmethod
+    def fused_formats_dir(cls) -> dict:
+        dir = cls.base_formats_dir.copy()
+        dir.update(cls.formats_dir)
+        return dir
+
+
 
 
 
@@ -1079,7 +1079,6 @@ class Models:
     @classmethod
     def _ensure(cls,
                 add_cwd: bool = True,
-                load_base: bool = True,
                 load_from_env: bool = True):
         """Make sure class is initialized.
 
@@ -1091,8 +1090,8 @@ class Models:
             return
             
         # model and format dirs
-        cls.models_dir = cls.EMPTY_MODELS_DIR
-        cls.formats_dir = cls.EMPTY_FORMATS_DIR
+        cls.models_dir = cls.EMPTY_MODELS_DIR()
+        cls.formats_dir = cls.EMPTY_FORMATS_DIR()
 
         if add_cwd:
             # add "." to search path, so that paths relative paths work
@@ -1101,21 +1100,26 @@ class Models:
 
         path: Union[str, None]
 
-        if load_base:
-            # read base_models.json from res folder
-            source = files(sibila.res).joinpath(cls.MODELS_BASE_CONF_FILENAME)
-            with as_file(source) as src_path:
-                path = str(src_path)
-                if os.path.isfile(path):
-                    cls._read_models(path,
-                                     add_folder_to_search_path=False)
+        cls.base_models_dir = cls.EMPTY_MODELS_DIR()
+        cls.base_formats_dir = cls.EMPTY_FORMATS_DIR()
 
-            # read base_formats.json from res folder
-            source = files(sibila.res).joinpath(cls.FORMATS_BASE_CONF_FILENAME)
-            with as_file(source) as src_path:
-                path = str(src_path)
-                if os.path.isfile(path):
-                    cls._read_formats(path)
+        # read base_models.json from res folder
+        source = files(sibila.res).joinpath(cls.MODELS_BASE_CONF_FILENAME)
+        with as_file(source) as src_path:
+            path = str(src_path)
+            if os.path.isfile(path):
+                read_models(cls.base_models_dir, path)
+                sanity_check_models(cls.base_models_dir,
+                                    cls.PROVIDER_CONF,
+                                    cls.DEFAULT_ENTRY_NAME)
+
+        # read base_formats.json from res folder
+        source = files(sibila.res).joinpath(cls.FORMATS_BASE_CONF_FILENAME)
+        with as_file(source) as src_path:
+            path = str(src_path)
+            if os.path.isfile(path):
+                read_formats(cls.base_formats_dir, path)
+                sanity_check_formats(cls.base_formats_dir)
 
  
         # check env var
@@ -1128,55 +1132,6 @@ class Models:
 
 
 
-
-    @classmethod
-    def _read_models(cls,
-                     models_path: str,
-                     add_folder_to_search_path: bool = True):
- 
-        logger.info(f"Loading models conf from: '{models_path}'")
-        merge_dir_json(cls.models_dir,
-                       models_path)
-
-        cls._sanity_check_models()
-
-        if add_folder_to_search_path:
-            dir_path = os.path.dirname(models_path)
-            cls.add_models_search_path(dir_path)
-
-
-    @classmethod
-    def _read_formats(cls,
-                      formats_path: str):
-        
-        logger.info(f"Loading formats conf from '{formats_path}'")
-        update_dir_json(cls.formats_dir, formats_path)
-
-        sanity_check_formats(cls.formats_dir)
-        
-
-
-    @classmethod
-    def _read_folder(cls,
-                     path: str):
-
-        if not os.path.isdir(path):
-            raise OSError(f"Directory not found: '{path}'")
-        
-        cls.add_models_search_path(path)
-
-        # read models
-        models_path = os.path.join(path, cls.MODELS_CONF_FILENAME)
-        if os.path.isfile(models_path):
-            cls._read_models(models_path)
-
-        # read formats
-        formats_path = os.path.join(path, cls.FORMATS_CONF_FILENAME)
-        if os.path.isfile(formats_path):
-            cls._read_formats(formats_path)
-           
-
-
     @classmethod
     def _read_any(cls,
                   path: Union[str,list[str]]):
@@ -1185,18 +1140,50 @@ class Models:
             path_list = [path]
         else:
             path_list = path
-        
+
+        models_loaded = False
+        formats_loaded = False
+
         for path in path_list:
             path = expand_path(path)
 
             if os.path.isdir(path):
-                cls._read_folder(path)
 
-            elif path.find(cls.MODELS_CONF_FILENAME) >= 0:
-                cls._read_models(path)
+                cls.add_models_search_path(path)
 
-            elif path.find(cls.FORMATS_CONF_FILENAME) >= 0:
-                cls._read_formats(path)
+                # read models
+                models_path = os.path.join(path, cls.MODELS_CONF_FILENAME)
+                if os.path.isfile(models_path):
+                    read_models(cls.models_dir, models_path)
+                    models_loaded = True
+
+                # read formats
+                formats_path = os.path.join(path, cls.FORMATS_CONF_FILENAME)
+                if os.path.isfile(formats_path):
+                    read_formats(cls.formats_dir, formats_path)
+                    formats_loaded = True
+
+            else:
+                dir_path = os.path.dirname(path)
+                cls.add_models_search_path(dir_path)
+
+                if path.endswith(cls.MODELS_CONF_FILENAME):
+                    read_models(cls.models_dir, path)
+                    models_loaded = True
+
+                elif path.endswith(cls.FORMATS_CONF_FILENAME):
+                    read_formats(cls.formats_dir, path)
+                    formats_loaded = True
+
+        if models_loaded:
+            sanity_check_models(cls.fused_models_dir(),
+                                cls.PROVIDER_CONF,
+                                cls.DEFAULT_ENTRY_NAME)
+                    
+        if formats_loaded:
+            sanity_check_formats(cls.fused_formats_dir())
+
+
 
 
 
@@ -1220,40 +1207,6 @@ class Models:
         
 
 
-    @classmethod
-    def _sanity_check_models(cls):
-        
-        for prov in cls.models_dir.keys():
-            if prov == "alias":
-                for name,link_name in cls.models_dir[prov].items():
-                    if not isinstance(link_name, str):
-                        raise ValueError(f"Alias entries must be strings at alias:{name}")
-                        
-            else: # real providers
-                if prov not in cls.PROVIDER_CONF.keys():
-                    raise ValueError(f"Don't know how to handle provider '{prov}'. Can only handle the following providers: {cls.PROVIDER_CONF.keys()}")
-    
-                # check if mandatory keys are in each model entry
-                mandatory_keys = cls.PROVIDER_CONF[prov]["mandatory"]
-                prov_models = cls.models_dir[prov]
-                for model_name in prov_models.keys():
-                    if model_name == cls.DEFAULT_ENTRY_NAME or isinstance(prov_models[model_name], str):
-                        continue # skip "_default" args entry and string links
-                    
-                    model_entry = prov_models[model_name]
-                    if not all(mand in model_entry for mand in mandatory_keys):
-                        raise ValueError(f"Models entry '{prov}:{model_name}' doesn't have all mandatory keys for this provider ({mandatory_keys})") 
-                               
-                
-        # ensure all providers have their own entry
-        for p in cls.PROVIDER_CONF.keys():
-            if p not in cls.models_dir.keys():
-                cls.models_dir[p] = {}
-
-        if "alias" not in cls.models_dir:
-            cls.models_dir["alias"] = {}
-            
-
 
 
 
@@ -1261,6 +1214,8 @@ class Models:
 # ======================================================================== Utils
 
 
+# ====================== models utils
+            
 def prepend_path(base_list: list[str],
                  path: Union[str,list[str]]):
     
@@ -1274,6 +1229,14 @@ def prepend_path(base_list: list[str],
         while p in base_list:
             base_list.remove(p)            
         base_list.insert(0,p)
+
+
+
+def read_models(models_dir: dict,
+                models_path: str):
+
+    logger.info(f"Loading models conf from: '{models_path}'")
+    merge_dir_json(models_dir, models_path)
 
 
 
@@ -1336,6 +1299,57 @@ def resolve_model(models_dir: dict,
             break
         
     return provider, name
+
+
+
+def sanity_check_models(models_dir: dict,
+                        provider_conf: dict,
+                        default_entry_name: str):
+    
+    for prov in models_dir.keys():
+        if prov == "alias":
+            for name,link_name in models_dir[prov].items():
+                if not isinstance(link_name, str):
+                    raise ValueError(f"Alias entries must be strings at alias:{name}")
+                    
+        else: # real providers
+            if prov not in provider_conf.keys():
+                raise ValueError(f"Don't know how to handle provider '{prov}'. Can only handle the following providers: {provider_conf.keys()}")
+
+            # check if mandatory keys are in each model entry
+            mandatory_keys = provider_conf[prov]["mandatory"]
+            prov_models = models_dir[prov]
+            for model_name in prov_models.keys():
+                if model_name == default_entry_name or isinstance(prov_models[model_name], str):
+                    continue # skip "_default" args entry and string links
+                
+                model_entry = prov_models[model_name]
+                if not all(mand in model_entry for mand in mandatory_keys):
+                    raise ValueError(f"Models entry '{prov}:{model_name}' doesn't have all mandatory keys for this provider ({mandatory_keys})") 
+                            
+            
+    # ensure all providers have their own entry
+    for p in provider_conf.keys():
+        if p not in models_dir.keys():
+            models_dir[p] = {}
+
+    if "alias" not in models_dir:
+        models_dir["alias"] = {}
+        
+
+
+
+
+
+
+
+# ======================== formats utils
+
+
+def read_formats(formats_dir: dict,
+                 formats_path: str):
+    logger.info(f"Loading formats conf from '{formats_path}'")
+    update_dir_json(formats_dir, formats_path)
 
 
 

@@ -2,11 +2,20 @@
 
 All notable changes to this project will be documented in this file.
 
-The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
-and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
+The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
+The project does not yet adhere to [Semantic Versioning](https://semver.org/spec/v2.0.0.html). Hope this can happen in 0.4.
 
 
 ## [Unreleased]
+
+## [0.3.5]
+- feat: Split Models factory config in two levels: base definitions in sibila/res and Models.setup() loaded definitions from user folders. These levels never mix, but a fusion of the two is used for models/formats resolution. Only in this manner can "models" folder definitions be kept clean.
+- fix: Option sibila formats -u is removed as result of the two-level Models factory.
+- fix: Correct delete of link entries in models.json and formats.json, which was resolving to targets (and deleting them).
+- fix: Raise ValueError when trying to generate from an empty prompt in LLamaCppModel.
+- fix: Update Models to check linked entries when deleting.
+- fix: Update template format discovery to work in more edge cases.
+- test: Add test cases for sibila CLI and LlamaCppModel.
 
 ## [0.3.4]
 - feat: Improve template format discovery by looking in same folder for models/formats.json.

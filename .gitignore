@@ -15,6 +15,7 @@ examples/_try
 # model files
 models/*.gguf
 models/_original_*
+tests/res/*.gguf
 
 # mkdocs documentation
 /site

@@ -23,7 +23,6 @@ title: Models factory
             - get_format_template
             - match_format_entry
             - match_format_template
-            - is_format_supported
             - set_format
             - set_format_link
             - delete_format

@@ -79,11 +79,12 @@ This project is licensed under the MIT License - see the [LICENSE](https://githu
 
 ## Acknowledgements
 
-Sibila wouldn't be be possible without the help of great software:
+Sibila wouldn't be be possible without the help of great software and people:
 
 - [llama.cpp](https://github.com/ggerganov/llama.cpp)
 - [llama-cpp-python](https://github.com/abetlen/llama-cpp-python)
 - [OpenAI Python API](https://github.com/openai/openai-python)
+- [TheBloke (Tom Jobbins)](https://huggingface.co/TheBloke) and [Hugging Face model hub](https://huggingface.co/)
 
 Thank you!
 

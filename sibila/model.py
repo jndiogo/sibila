@@ -1108,9 +1108,8 @@ class FormattedTextModel(TextModel, ABC):
         format_search_order is a list of str flags:
             "name: match by name
             "meta_template": use model file metadata's template
-            "models_json": look for a "models.json" file in the same folder
-            "formats_json": look for a "formats.json" file in the same folder
-            ex: ["name", "meta_template", "formats_json"]
+            "folder_json": search from "models.json" and/or "formats.json" in the same folder
+            ex: ["name", "meta_template", "folder_json"]
         
         info fields: {
             "name": "filename.gguf"
@@ -1137,24 +1136,19 @@ class FormattedTextModel(TextModel, ABC):
                         fmt = md[key_name]
                         return fmt # type: ignore[return-value]
                     
-                elif order == "models_json":
-                    fmt = Models.folder_models_match_format_template(info["path"])
-                    if fmt is not None:
-                        return fmt
-
-                elif order == "formats_json":
+                elif order == "folder_json":
                     fmt = Models.folder_match_format_template(info["path"])
                     if fmt is not None:
                         return fmt
 
             
             raise ValueError("Could not find a suitable chat template format for this model. "
-                             "Without a format, fine-tuned models cannot function properly. "
+                             "Fine-tuned models cannot work well without the right format. "
                              "See the docs on how you can fix this: "
                              "either setup the format in Models factory, or provide the chat template in the 'format' arg.")
 
         
-        if format is not None:
+        if format is not None: # format was passed (call or Models' model entry)
             if '{{' in format: # an str with a jinja template
                 self.format_template = format
                 
@@ -1162,8 +1156,9 @@ class FormattedTextModel(TextModel, ABC):
                 self.format_template = Models.get_format_template(format)
 
                 
-        if self.format_template is None:
+        if self.format_template is None: # attempt to find format by other means
             self.format_template = search_format() # will raise if unable to find
+
 
         # setup jinja template
         jinja_env = ImmutableSandboxedEnvironment(trim_blocks=True, lstrip_blocks=True)
@@ -1184,6 +1179,9 @@ class FormattedTextModel(TextModel, ABC):
             thread: The Thread object to use as model input.
             genconf: Model generation configuration. Defaults to None, which uses model's default.
 
+        Raises:
+            ValueError: If trying to generate from an empty prompt.
+
         Returns:
             A GenOut object with result, generated text, etc. 
         """
@@ -1194,6 +1192,9 @@ class FormattedTextModel(TextModel, ABC):
         thread = self._prepare_gen_in(thread, genconf)
 
         prompt = self.text_from_thread(thread)
+
+        if not prompt:
+            raise ValueError("Cannot generate from an empty prompt")
         
         logger.debug(f"Prompt: █{prompt}█")
 

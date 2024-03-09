@@ -33,7 +33,7 @@ Usage help is available by running "sibila --help" for general help, or "sibila 
 
 ## Sibila models
 
-To register a model entry pointing to a model name or filename:
+To register a model entry pointing to a model name or filename, and optional format_name is a format name:
 
 ```
 sibila models -s res_name model_name_or_filename [format_name]
@@ -77,10 +77,10 @@ Check if a model filename has any format defined in the Models factory:
 sibila formats -q filename
 ```
 
-To register a chat template format, where match is a regexp that matches the model filename, template is the Jinja chat template:
+To register a chat template format, where template is the Jinja chat template and optional match is a regexp that matches model filename:
 
 ```
-sibila formats -s format_name match template
+sibila formats -s format_name template [match_regex]
 ```
 
 
@@ -91,19 +91,12 @@ sibila models -l [query]
 ```
 
 
-
 Delete a format entry:
 
 ```
 sibila formats -d format_name
 ```
 
-
-Update the local "formats.json" file by merging with with GitHub's "[sibila/res/base_formats.json](https://github.com/jndiogo/sibila/blob/main/sibila/res/base_formats.json)" file, preserving all existing local entries.
-
-```
-sibila formats -u
-```
 
 
 

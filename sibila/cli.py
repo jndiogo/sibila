@@ -277,7 +277,6 @@ def models(args):
     Models.setup(models_dir,
                  clear=True,
                  add_cwd=False,
-                 load_base=True,
                  load_from_env=False)
 
 
@@ -382,10 +381,16 @@ def models(args):
             name = list_query
 
         dic = Models.list_models(name,
-                                 [prov] if prov else [],
-                                 False)
+                                 providers=[prov] if prov else [],
+                                 include_base=args.base,
+                                 resolved_values=False)
         
         if dic:
+            if args.base:
+                print("Listing local and base models:")
+            else:
+                print("Listing only local models (without base models):")
+
             last_prov = None
             for res_name,val in dic.items():
 
@@ -411,6 +416,7 @@ def models(args):
 
 
 
+
 # ========================================================================= formats
 
 def formats(args):
@@ -422,7 +428,6 @@ def formats(args):
     Models.setup(models_dir,
                  clear=True,
                  add_cwd=False,
-                 load_base=True,
                  load_from_env=False)
 
 
@@ -440,27 +445,34 @@ def formats(args):
             print(INDENT + f"template: █{template}█")
 
 
-    elif args.set_name_match_template: # sibila formats -s entry_name match template
+    elif args.set_name_template_match: # sibila formats -s entry_name template [match_regex]
+
+        if len(args.set_name_template_match) < 2 or len(args.set_name_template_match) > 3:
+            die("Option -s requires 2 or 3 arguments: -s name template [match_regex]")
 
         try:
-            name = args.set_name_match_template[0]
-            match = args.set_name_match_template[1]
-            template = args.set_name_match_template[2]
+            name = args.set_name_template_match[0]
+            template = args.set_name_template_match[1]
+            match = args.set_name_template_match[2] if len(args.set_name_template_match) == 3 else None
 
             if '{{' not in template: # filename or link
                 if os.path.isfile(template):
                     with open(template, "r", encoding="utf-8") as f:
                         template = f.read()
                 elif Models.get_format_entry(template) is None:
-                    raise ValueError("Can't understand template arg. It can be a Jinja2 text template, its filename or a link to an existing format entry (whose template will be used).")
+                    raise ValueError("Can't understand template arg. It can be a Jinja2 text template, its filename or the name to an existing format entry (whose template will be used).")
                 
             Models.set_format(name,
-                              match,
-                              template)
+                              template,
+                              match)
             
             path = Models.save_formats()
             template_disp = template if len(template) <= 24 else template[:24] + "..."
-            print(f"Set format '{name}' with match='{match}', template='{template_disp}'")
+            print(f"Set format '{name}', template='{template_disp}'", end='')
+            if match:
+                print(f", match='{match}'")
+            else:
+                print()
 
         except Exception as e:
             die(f"Error: {e}")
@@ -489,35 +501,22 @@ def formats(args):
             die(f"Error: {e}")
 
 
-    elif args.update: # sibila formats -u
-        with tempfile.TemporaryDirectory() as tmp:
-
-            tmp_path = os.path.join(tmp, "formats.json")
-            
-            download_file(BASE_FORMATS_URL, 
-                          tmp_path,
-                          progress_bar=False)
-            
-            Models.merge_from(tmp_path,
-                              preserve_current=True)
-
-        path = Models.save_formats()
-
-        print(f"""\
-Updated '{path}' from GitHub's 'sibila/res/base_formats.json', any existing local entries were preserved.
-Total entries: {len(Models.format_dir)}""")
-
-
     elif args.list_query or ( # horrible but necessary hack follows:
         "-l" in sys.argv or 
         "--list" in sys.argv): # sibila formats -l [query]
 
         dic = Models.list_formats(args.list_query if args.list_query is not None else "", 
-                                  False)
+                                  include_base=args.base,
+                                  resolved_values=False)
         if dic:
+            if args.base:
+                print("Listing local and base formats:")
+            else:
+                print("Listing only local formats (without base formats):")
+
             for name,val in dic.items():
 
-                print(f"{name}: ", end="")
+                print(f"\n{name}: ", end="")
 
                 if isinstance(val, dict):
                     print(val)
@@ -606,7 +605,6 @@ def hub(args):
             Models.setup(models_dir,
                          clear=True,
                          add_cwd=False,
-                         load_base=True,
                          load_from_env=False)
 
             name = args.set_resname_format[0]
@@ -712,6 +710,11 @@ def main():
                                   dest="list_query",
                                   help="List models filtering by model name substring or res_name in the form 'provider:query'. Examples: 'gpt', 'llamacpp:', 'llamacpp:open'.")
 
+    parser_models.add_argument('-b', '--base', 
+                               action="store_true",
+                               default=False,
+                               help="Also list base models. Use only with option -l/--list.")
+
     exclusive_models.add_argument('-t', '--test', 
                                   metavar="NAME",
                                   type=str,
@@ -723,7 +726,7 @@ def main():
                                   type=str,
                                   nargs='+',
                                   dest="set_resname_name_format",
-                                  help="Set model entry with 2 args: res_name name_or_filename [format].")
+                                  help="Set model entry with 2 or 3 args: res_name name_or_filename [format].")
     
     exclusive_models.add_argument('-sl', '--setlink',
                                   metavar="NAME",
@@ -745,7 +748,6 @@ def main():
                                   dest="delete_name",
                                   help="Delete model res_name entry.")
 
-
     add_common(parser_models)
     parser_models.set_defaults(func=models)
 
@@ -766,6 +768,11 @@ def main():
                                    dest="list_query",
                                    help="List formats filtering by name substring.")
 
+    parser_formats.add_argument('-b', '--base', 
+                                action="store_true",
+                                default=False,
+                                help="Also list base formats. Use only with option -l/--list.")
+
     exclusive_formats.add_argument('-q', '--query',
                                    metavar="QUERY",
                                    type=str,
@@ -775,9 +782,9 @@ def main():
     exclusive_formats.add_argument('-s', '--set',
                                    metavar="NAME",
                                    type=str,
-                                   nargs=3,
-                                   dest="set_name_match_template",
-                                   help="Set format entry with 3 args: name match_regex template. Arg template can be a Jinja2 template string or filename, or a name of an existing format entry to use as template.")
+                                   nargs='+',
+                                   dest="set_name_template_match",
+                                   help="Set format entry with 2 or 3 args: name template match_regex. Arg template can be a Jinja2 template string or filename, or the name of an existing template format entry.")
     
     exclusive_formats.add_argument('-sl', '--setlink',
                                    metavar="NAME",
@@ -793,11 +800,7 @@ def main():
                                    dest="delete_name",
                                    help="Delete format entry.")
 
-
-    exclusive_formats.add_argument('-u', '--update', 
-                                   action="store_true",
-                                   help="Update formats.json from GitHub's 'sibila/res/base_formats.json', preserving existing local entries.")
-    
+   
     add_common(parser_formats)
     parser_formats.set_defaults(func=formats)
 
