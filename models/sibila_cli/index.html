@@ -1762,7 +1762,7 @@
 </table>
 <p>Usage help is available by running "sibila --help" for general help, or "sibila action --help", where action is one of "models", "formats" or "hub".</p>
 <h2 id="sibila-models">Sibila models<a class="headerlink" href="#sibila-models" title="Permanent link">#</a></h2>
-<p>To register a model entry pointing to a model name or filename:</p>
+<p>To register a model entry pointing to a model name or filename, and optional format_name is a format name:</p>
 <div class="language-text highlight"><pre><span></span><code><span id="__span-0-1"><a id="__codelineno-0-1" name="__codelineno-0-1" href="#__codelineno-0-1"></a>sibila models -s res_name model_name_or_filename [format_name]
 </span></code></pre></div>
 <p>To set the format_name for an existing model entry:</p>
@@ -1781,8 +1781,8 @@
 <p>Check if a model filename has any format defined in the Models factory:</p>
 <div class="language-text highlight"><pre><span></span><code><span id="__span-5-1"><a id="__codelineno-5-1" name="__codelineno-5-1" href="#__codelineno-5-1"></a>sibila formats -q filename
 </span></code></pre></div>
-<p>To register a chat template format, where match is a regexp that matches the model filename, template is the Jinja chat template:</p>
-<div class="language-text highlight"><pre><span></span><code><span id="__span-6-1"><a id="__codelineno-6-1" name="__codelineno-6-1" href="#__codelineno-6-1"></a>sibila formats -s format_name match template
+<p>To register a chat template format, where template is the Jinja chat template and optional match is a regexp that matches model filename:</p>
+<div class="language-text highlight"><pre><span></span><code><span id="__span-6-1"><a id="__codelineno-6-1" name="__codelineno-6-1" href="#__codelineno-6-1"></a>sibila formats -s format_name template [match_regex]
 </span></code></pre></div>
 <p>List all formats with optional case-insensitive substring query:</p>
 <div class="language-text highlight"><pre><span></span><code><span id="__span-7-1"><a id="__codelineno-7-1" name="__codelineno-7-1" href="#__codelineno-7-1"></a>sibila models -l [query]
@@ -1790,17 +1790,14 @@
 <p>Delete a format entry:</p>
 <div class="language-text highlight"><pre><span></span><code><span id="__span-8-1"><a id="__codelineno-8-1" name="__codelineno-8-1" href="#__codelineno-8-1"></a>sibila formats -d format_name
 </span></code></pre></div>
-<p>Update the local "formats.json" file by merging with with GitHub's "<a href="https://github.com/jndiogo/sibila/blob/main/sibila/res/base_formats.json">sibila/res/base_formats.json</a>" file, preserving all existing local entries.</p>
-<div class="language-text highlight"><pre><span></span><code><span id="__span-9-1"><a id="__codelineno-9-1" name="__codelineno-9-1" href="#__codelineno-9-1"></a>sibila formats -u
-</span></code></pre></div>
 <h2 id="sibila-hub">Sibila hub<a class="headerlink" href="#sibila-hub" title="Permanent link">#</a></h2>
 <p>List models in the Hugging Face model hub that match the given queries. Argument query can be a list of strings to match, separated by a space character.</p>
 <p>Arg Filename is case-insensitive for substring matching.</p>
 <p>Arg exact_author is an exact and case-sensitive author name from Hugging Face model hub.</p>
-<div class="language-text highlight"><pre><span></span><code><span id="__span-10-1"><a id="__codelineno-10-1" name="__codelineno-10-1" href="#__codelineno-10-1"></a>sibila hub -l query [-f filename] [-a exact_author]
+<div class="language-text highlight"><pre><span></span><code><span id="__span-9-1"><a id="__codelineno-9-1" name="__codelineno-9-1" href="#__codelineno-9-1"></a>sibila hub -l query [-f filename] [-a exact_author]
 </span></code></pre></div>
 <p>To download a model, where model_id is a string like "TheBloke/openchat-3.5-1210-GGUF". Args filename and author_name same as above:</p>
-<div class="language-text highlight"><pre><span></span><code><span id="__span-11-1"><a id="__codelineno-11-1" name="__codelineno-11-1" href="#__codelineno-11-1"></a>sibila hub -d model_id -f filename -a exact_author -s set name
+<div class="language-text highlight"><pre><span></span><code><span id="__span-10-1"><a id="__codelineno-10-1" name="__codelineno-10-1" href="#__codelineno-10-1"></a>sibila hub -d model_id -f filename -a exact_author -s set name
 </span></code></pre></div>
 
 

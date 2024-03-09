@@ -2389,21 +2389,20 @@
 </span><span id="__span-0-4"><a id="__codelineno-0-4" name="__codelineno-0-4" href="#__codelineno-0-4"></a>    <span class="n">format_search_order</span><span class="o">=</span><span class="p">[</span>
 </span><span id="__span-0-5"><a id="__codelineno-0-5" name="__codelineno-0-5" href="#__codelineno-0-5"></a>        <span class="s2">&quot;name&quot;</span><span class="p">,</span>
 </span><span id="__span-0-6"><a id="__codelineno-0-6" name="__codelineno-0-6" href="#__codelineno-0-6"></a>        <span class="s2">&quot;meta_template&quot;</span><span class="p">,</span>
-</span><span id="__span-0-7"><a id="__codelineno-0-7" name="__codelineno-0-7" href="#__codelineno-0-7"></a>        <span class="s2">&quot;models_json&quot;</span><span class="p">,</span>
-</span><span id="__span-0-8"><a id="__codelineno-0-8" name="__codelineno-0-8" href="#__codelineno-0-8"></a>        <span class="s2">&quot;formats_json&quot;</span><span class="p">,</span>
-</span><span id="__span-0-9"><a id="__codelineno-0-9" name="__codelineno-0-9" href="#__codelineno-0-9"></a>    <span class="p">],</span>
-</span><span id="__span-0-10"><a id="__codelineno-0-10" name="__codelineno-0-10" href="#__codelineno-0-10"></a>    <span class="o">*</span><span class="p">,</span>
-</span><span id="__span-0-11"><a id="__codelineno-0-11" name="__codelineno-0-11" href="#__codelineno-0-11"></a>    <span class="n">genconf</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
-</span><span id="__span-0-12"><a id="__codelineno-0-12" name="__codelineno-0-12" href="#__codelineno-0-12"></a>    <span class="n">schemaconf</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
-</span><span id="__span-0-13"><a id="__codelineno-0-13" name="__codelineno-0-13" href="#__codelineno-0-13"></a>    <span class="n">tokenizer</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
-</span><span id="__span-0-14"><a id="__codelineno-0-14" name="__codelineno-0-14" href="#__codelineno-0-14"></a>    <span class="n">ctx_len</span><span class="o">=</span><span class="mi">2048</span><span class="p">,</span>
-</span><span id="__span-0-15"><a id="__codelineno-0-15" name="__codelineno-0-15" href="#__codelineno-0-15"></a>    <span class="n">n_gpu_layers</span><span class="o">=-</span><span class="mi">1</span><span class="p">,</span>
-</span><span id="__span-0-16"><a id="__codelineno-0-16" name="__codelineno-0-16" href="#__codelineno-0-16"></a>    <span class="n">main_gpu</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span>
-</span><span id="__span-0-17"><a id="__codelineno-0-17" name="__codelineno-0-17" href="#__codelineno-0-17"></a>    <span class="n">n_batch</span><span class="o">=</span><span class="mi">512</span><span class="p">,</span>
-</span><span id="__span-0-18"><a id="__codelineno-0-18" name="__codelineno-0-18" href="#__codelineno-0-18"></a>    <span class="n">seed</span><span class="o">=</span><span class="mi">4294967295</span><span class="p">,</span>
-</span><span id="__span-0-19"><a id="__codelineno-0-19" name="__codelineno-0-19" href="#__codelineno-0-19"></a>    <span class="n">verbose</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
-</span><span id="__span-0-20"><a id="__codelineno-0-20" name="__codelineno-0-20" href="#__codelineno-0-20"></a>    <span class="o">**</span><span class="n">llamacpp_kwargs</span>
-</span><span id="__span-0-21"><a id="__codelineno-0-21" name="__codelineno-0-21" href="#__codelineno-0-21"></a><span class="p">)</span>
+</span><span id="__span-0-7"><a id="__codelineno-0-7" name="__codelineno-0-7" href="#__codelineno-0-7"></a>        <span class="s2">&quot;folder_json&quot;</span><span class="p">,</span>
+</span><span id="__span-0-8"><a id="__codelineno-0-8" name="__codelineno-0-8" href="#__codelineno-0-8"></a>    <span class="p">],</span>
+</span><span id="__span-0-9"><a id="__codelineno-0-9" name="__codelineno-0-9" href="#__codelineno-0-9"></a>    <span class="o">*</span><span class="p">,</span>
+</span><span id="__span-0-10"><a id="__codelineno-0-10" name="__codelineno-0-10" href="#__codelineno-0-10"></a>    <span class="n">genconf</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+</span><span id="__span-0-11"><a id="__codelineno-0-11" name="__codelineno-0-11" href="#__codelineno-0-11"></a>    <span class="n">schemaconf</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+</span><span id="__span-0-12"><a id="__codelineno-0-12" name="__codelineno-0-12" href="#__codelineno-0-12"></a>    <span class="n">tokenizer</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+</span><span id="__span-0-13"><a id="__codelineno-0-13" name="__codelineno-0-13" href="#__codelineno-0-13"></a>    <span class="n">ctx_len</span><span class="o">=</span><span class="mi">2048</span><span class="p">,</span>
+</span><span id="__span-0-14"><a id="__codelineno-0-14" name="__codelineno-0-14" href="#__codelineno-0-14"></a>    <span class="n">n_gpu_layers</span><span class="o">=-</span><span class="mi">1</span><span class="p">,</span>
+</span><span id="__span-0-15"><a id="__codelineno-0-15" name="__codelineno-0-15" href="#__codelineno-0-15"></a>    <span class="n">main_gpu</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span>
+</span><span id="__span-0-16"><a id="__codelineno-0-16" name="__codelineno-0-16" href="#__codelineno-0-16"></a>    <span class="n">n_batch</span><span class="o">=</span><span class="mi">512</span><span class="p">,</span>
+</span><span id="__span-0-17"><a id="__codelineno-0-17" name="__codelineno-0-17" href="#__codelineno-0-17"></a>    <span class="n">seed</span><span class="o">=</span><span class="mi">4294967295</span><span class="p">,</span>
+</span><span id="__span-0-18"><a id="__codelineno-0-18" name="__codelineno-0-18" href="#__codelineno-0-18"></a>    <span class="n">verbose</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
+</span><span id="__span-0-19"><a id="__codelineno-0-19" name="__codelineno-0-19" href="#__codelineno-0-19"></a>    <span class="o">**</span><span class="n">llamacpp_kwargs</span>
+</span><span id="__span-0-20"><a id="__codelineno-0-20" name="__codelineno-0-20" href="#__codelineno-0-20"></a><span class="p">)</span>
 </span></code></pre></div>
 
   <div class="doc doc-contents first">
@@ -2461,11 +2460,11 @@
           </td>
           <td>
             <div class="doc-md-description">
-              <p>Search order for auto-detecting format, "name" searches in the filename, "meta_template" looks in the model's metadata, "models_json", "formats_json" looks for these configs in file's folder. Defaults to ["name","meta_template", "models_json", "formats_json"].</p>
+              <p>Search order for auto-detecting format, "name" searches in the filename, "meta_template" looks in the model's metadata, "folder_json" looks for configs in file's folder. Defaults to ["name","meta_template", "folder_json"].</p>
             </div>
           </td>
           <td>
-                <code>[&#39;name&#39;, &#39;meta_template&#39;, &#39;models_json&#39;, &#39;formats_json&#39;]</code>
+                <code>[&#39;name&#39;, &#39;meta_template&#39;, &#39;folder_json&#39;]</code>
           </td>
         </tr>
         <tr>
@@ -2718,7 +2717,7 @@
 </span><span id="__span-0-67"><a id="__codelineno-0-67" name="__codelineno-0-67"></a>             <span class="n">path</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
 </span><span id="__span-0-68"><a id="__codelineno-0-68" name="__codelineno-0-68"></a>
 </span><span id="__span-0-69"><a id="__codelineno-0-69" name="__codelineno-0-69"></a>             <span class="nb">format</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>                 
-</span><span id="__span-0-70"><a id="__codelineno-0-70" name="__codelineno-0-70"></a>             <span class="n">format_search_order</span><span class="p">:</span> <span class="nb">list</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="p">[</span><span class="s2">&quot;name&quot;</span><span class="p">,</span><span class="s2">&quot;meta_template&quot;</span><span class="p">,</span> <span class="s2">&quot;models_json&quot;</span><span class="p">,</span> <span class="s2">&quot;formats_json&quot;</span><span class="p">],</span>
+</span><span id="__span-0-70"><a id="__codelineno-0-70" name="__codelineno-0-70"></a>             <span class="n">format_search_order</span><span class="p">:</span> <span class="nb">list</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="p">[</span><span class="s2">&quot;name&quot;</span><span class="p">,</span> <span class="s2">&quot;meta_template&quot;</span><span class="p">,</span> <span class="s2">&quot;folder_json&quot;</span><span class="p">],</span>
 </span><span id="__span-0-71"><a id="__codelineno-0-71" name="__codelineno-0-71"></a>
 </span><span id="__span-0-72"><a id="__codelineno-0-72" name="__codelineno-0-72"></a>             <span class="o">*</span><span class="p">,</span>
 </span><span id="__span-0-73"><a id="__codelineno-0-73" name="__codelineno-0-73"></a>
@@ -2742,7 +2741,7 @@
 </span><span id="__span-0-91"><a id="__codelineno-0-91" name="__codelineno-0-91"></a><span class="sd">    Args:</span>
 </span><span id="__span-0-92"><a id="__codelineno-0-92" name="__codelineno-0-92"></a><span class="sd">        path: File path to the GGUF file.</span>
 </span><span id="__span-0-93"><a id="__codelineno-0-93" name="__codelineno-0-93"></a><span class="sd">        format: Chat template format to use with model. Leave as None for auto-detection.</span>
-</span><span id="__span-0-94"><a id="__codelineno-0-94" name="__codelineno-0-94"></a><span class="sd">        format_search_order: Search order for auto-detecting format, &quot;name&quot; searches in the filename, &quot;meta_template&quot; looks in the model&#39;s metadata, &quot;models_json&quot;, &quot;formats_json&quot; looks for these configs in file&#39;s folder. Defaults to [&quot;name&quot;,&quot;meta_template&quot;, &quot;models_json&quot;, &quot;formats_json&quot;].</span>
+</span><span id="__span-0-94"><a id="__codelineno-0-94" name="__codelineno-0-94"></a><span class="sd">        format_search_order: Search order for auto-detecting format, &quot;name&quot; searches in the filename, &quot;meta_template&quot; looks in the model&#39;s metadata, &quot;folder_json&quot; looks for configs in file&#39;s folder. Defaults to [&quot;name&quot;,&quot;meta_template&quot;, &quot;folder_json&quot;].</span>
 </span><span id="__span-0-95"><a id="__codelineno-0-95" name="__codelineno-0-95"></a><span class="sd">        genconf: Default generation configuration, which can be used in gen() and related. Defaults to None.</span>
 </span><span id="__span-0-96"><a id="__codelineno-0-96" name="__codelineno-0-96"></a><span class="sd">        tokenizer: An external initialized tokenizer to use instead of the created from the GGUF file. Defaults to None.</span>
 </span><span id="__span-0-97"><a id="__codelineno-0-97" name="__codelineno-0-97"></a><span class="sd">        ctx_len: Maximum context length to be used (shared for input and output). Defaults to 2048.</span>
@@ -4476,6 +4475,30 @@ Doesn't raise an exception if an error occurs, always returns GenOut.</p>
 
 
 
+  <p><strong>Raises:</strong></p>
+  <table>
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+        <tr>
+          <td>
+                <code><a class="autorefs autorefs-external" href="https://docs.python.org/3/library/exceptions.html#ValueError">ValueError</a></code>
+          </td>
+          <td>
+            <div class="doc-md-description">
+              <p>If trying to generate from an empty prompt.</p>
+            </div>
+          </td>
+        </tr>
+    </tbody>
+  </table>
+
+
+
   <p><strong>Returns:</strong></p>
   <table>
     <thead>
@@ -4500,7 +4523,12 @@ Doesn't raise an exception if an error occurs, always returns GenOut.</p>
 
           <details class="quote">
             <summary>Source code in <code>sibila/model.py</code></summary>
-            <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal"><a href="#__codelineno-0-1176">1176</a></span>
+            <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal"><a href="#__codelineno-0-1171">1171</a></span>
+<span class="normal"><a href="#__codelineno-0-1172">1172</a></span>
+<span class="normal"><a href="#__codelineno-0-1173">1173</a></span>
+<span class="normal"><a href="#__codelineno-0-1174">1174</a></span>
+<span class="normal"><a href="#__codelineno-0-1175">1175</a></span>
+<span class="normal"><a href="#__codelineno-0-1176">1176</a></span>
 <span class="normal"><a href="#__codelineno-0-1177">1177</a></span>
 <span class="normal"><a href="#__codelineno-0-1178">1178</a></span>
 <span class="normal"><a href="#__codelineno-0-1179">1179</a></span>
@@ -4528,35 +4556,42 @@ Doesn't raise an exception if an error occurs, always returns GenOut.</p>
 <span class="normal"><a href="#__codelineno-0-1201">1201</a></span>
 <span class="normal"><a href="#__codelineno-0-1202">1202</a></span>
 <span class="normal"><a href="#__codelineno-0-1203">1203</a></span>
-<span class="normal"><a href="#__codelineno-0-1204">1204</a></span></pre></div></td><td class="code"><div><pre><span></span><code><span id="__span-0-1176"><a id="__codelineno-0-1176" name="__codelineno-0-1176"></a><span class="k">def</span> <span class="nf">gen</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> 
-</span><span id="__span-0-1177"><a id="__codelineno-0-1177" name="__codelineno-0-1177"></a>        <span class="n">thread</span><span class="p">:</span> <span class="n">Thread</span><span class="p">,</span>
-</span><span id="__span-0-1178"><a id="__codelineno-0-1178" name="__codelineno-0-1178"></a>        <span class="n">genconf</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">GenConf</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
-</span><span id="__span-0-1179"><a id="__codelineno-0-1179" name="__codelineno-0-1179"></a>        <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">GenOut</span><span class="p">:</span>
-</span><span id="__span-0-1180"><a id="__codelineno-0-1180" name="__codelineno-0-1180"></a><span class="w">    </span><span class="sd">&quot;&quot;&quot;Text generation from a Thread, used by the other model generation methods.</span>
-</span><span id="__span-0-1181"><a id="__codelineno-0-1181" name="__codelineno-0-1181"></a><span class="sd">    Doesn&#39;t raise an exception if an error occurs, always returns GenOut.</span>
-</span><span id="__span-0-1182"><a id="__codelineno-0-1182" name="__codelineno-0-1182"></a>
-</span><span id="__span-0-1183"><a id="__codelineno-0-1183" name="__codelineno-0-1183"></a><span class="sd">    Args:</span>
-</span><span id="__span-0-1184"><a id="__codelineno-0-1184" name="__codelineno-0-1184"></a><span class="sd">        thread: The Thread object to use as model input.</span>
-</span><span id="__span-0-1185"><a id="__codelineno-0-1185" name="__codelineno-0-1185"></a><span class="sd">        genconf: Model generation configuration. Defaults to None, which uses model&#39;s default.</span>
-</span><span id="__span-0-1186"><a id="__codelineno-0-1186" name="__codelineno-0-1186"></a>
-</span><span id="__span-0-1187"><a id="__codelineno-0-1187" name="__codelineno-0-1187"></a><span class="sd">    Returns:</span>
-</span><span id="__span-0-1188"><a id="__codelineno-0-1188" name="__codelineno-0-1188"></a><span class="sd">        A GenOut object with result, generated text, etc. </span>
-</span><span id="__span-0-1189"><a id="__codelineno-0-1189" name="__codelineno-0-1189"></a><span class="sd">    &quot;&quot;&quot;</span>
-</span><span id="__span-0-1190"><a id="__codelineno-0-1190" name="__codelineno-0-1190"></a>
-</span><span id="__span-0-1191"><a id="__codelineno-0-1191" name="__codelineno-0-1191"></a>    <span class="k">if</span> <span class="n">genconf</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
-</span><span id="__span-0-1192"><a id="__codelineno-0-1192" name="__codelineno-0-1192"></a>        <span class="n">genconf</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">genconf</span>
+<span class="normal"><a href="#__codelineno-0-1204">1204</a></span>
+<span class="normal"><a href="#__codelineno-0-1205">1205</a></span></pre></div></td><td class="code"><div><pre><span></span><code><span id="__span-0-1171"><a id="__codelineno-0-1171" name="__codelineno-0-1171"></a><span class="k">def</span> <span class="nf">gen</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> 
+</span><span id="__span-0-1172"><a id="__codelineno-0-1172" name="__codelineno-0-1172"></a>        <span class="n">thread</span><span class="p">:</span> <span class="n">Thread</span><span class="p">,</span>
+</span><span id="__span-0-1173"><a id="__codelineno-0-1173" name="__codelineno-0-1173"></a>        <span class="n">genconf</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">GenConf</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+</span><span id="__span-0-1174"><a id="__codelineno-0-1174" name="__codelineno-0-1174"></a>        <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">GenOut</span><span class="p">:</span>
+</span><span id="__span-0-1175"><a id="__codelineno-0-1175" name="__codelineno-0-1175"></a><span class="w">    </span><span class="sd">&quot;&quot;&quot;Text generation from a Thread, used by the other model generation methods.</span>
+</span><span id="__span-0-1176"><a id="__codelineno-0-1176" name="__codelineno-0-1176"></a><span class="sd">    Doesn&#39;t raise an exception if an error occurs, always returns GenOut.</span>
+</span><span id="__span-0-1177"><a id="__codelineno-0-1177" name="__codelineno-0-1177"></a>
+</span><span id="__span-0-1178"><a id="__codelineno-0-1178" name="__codelineno-0-1178"></a><span class="sd">    Args:</span>
+</span><span id="__span-0-1179"><a id="__codelineno-0-1179" name="__codelineno-0-1179"></a><span class="sd">        thread: The Thread object to use as model input.</span>
+</span><span id="__span-0-1180"><a id="__codelineno-0-1180" name="__codelineno-0-1180"></a><span class="sd">        genconf: Model generation configuration. Defaults to None, which uses model&#39;s default.</span>
+</span><span id="__span-0-1181"><a id="__codelineno-0-1181" name="__codelineno-0-1181"></a>
+</span><span id="__span-0-1182"><a id="__codelineno-0-1182" name="__codelineno-0-1182"></a><span class="sd">    Raises:</span>
+</span><span id="__span-0-1183"><a id="__codelineno-0-1183" name="__codelineno-0-1183"></a><span class="sd">        ValueError: If trying to generate from an empty prompt.</span>
+</span><span id="__span-0-1184"><a id="__codelineno-0-1184" name="__codelineno-0-1184"></a>
+</span><span id="__span-0-1185"><a id="__codelineno-0-1185" name="__codelineno-0-1185"></a><span class="sd">    Returns:</span>
+</span><span id="__span-0-1186"><a id="__codelineno-0-1186" name="__codelineno-0-1186"></a><span class="sd">        A GenOut object with result, generated text, etc. </span>
+</span><span id="__span-0-1187"><a id="__codelineno-0-1187" name="__codelineno-0-1187"></a><span class="sd">    &quot;&quot;&quot;</span>
+</span><span id="__span-0-1188"><a id="__codelineno-0-1188" name="__codelineno-0-1188"></a>
+</span><span id="__span-0-1189"><a id="__codelineno-0-1189" name="__codelineno-0-1189"></a>    <span class="k">if</span> <span class="n">genconf</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+</span><span id="__span-0-1190"><a id="__codelineno-0-1190" name="__codelineno-0-1190"></a>        <span class="n">genconf</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">genconf</span>
+</span><span id="__span-0-1191"><a id="__codelineno-0-1191" name="__codelineno-0-1191"></a>
+</span><span id="__span-0-1192"><a id="__codelineno-0-1192" name="__codelineno-0-1192"></a>    <span class="n">thread</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_prepare_gen_in</span><span class="p">(</span><span class="n">thread</span><span class="p">,</span> <span class="n">genconf</span><span class="p">)</span>
 </span><span id="__span-0-1193"><a id="__codelineno-0-1193" name="__codelineno-0-1193"></a>
-</span><span id="__span-0-1194"><a id="__codelineno-0-1194" name="__codelineno-0-1194"></a>    <span class="n">thread</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_prepare_gen_in</span><span class="p">(</span><span class="n">thread</span><span class="p">,</span> <span class="n">genconf</span><span class="p">)</span>
+</span><span id="__span-0-1194"><a id="__codelineno-0-1194" name="__codelineno-0-1194"></a>    <span class="n">prompt</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">text_from_thread</span><span class="p">(</span><span class="n">thread</span><span class="p">)</span>
 </span><span id="__span-0-1195"><a id="__codelineno-0-1195" name="__codelineno-0-1195"></a>
-</span><span id="__span-0-1196"><a id="__codelineno-0-1196" name="__codelineno-0-1196"></a>    <span class="n">prompt</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">text_from_thread</span><span class="p">(</span><span class="n">thread</span><span class="p">)</span>
-</span><span id="__span-0-1197"><a id="__codelineno-0-1197" name="__codelineno-0-1197"></a>
-</span><span id="__span-0-1198"><a id="__codelineno-0-1198" name="__codelineno-0-1198"></a>    <span class="n">logger</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Prompt: █</span><span class="si">{</span><span class="n">prompt</span><span class="si">}</span><span class="s2">█&quot;</span><span class="p">)</span>
-</span><span id="__span-0-1199"><a id="__codelineno-0-1199" name="__codelineno-0-1199"></a>
-</span><span id="__span-0-1200"><a id="__codelineno-0-1200" name="__codelineno-0-1200"></a>    <span class="n">text</span><span class="p">,</span><span class="n">finish</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_gen_text</span><span class="p">(</span><span class="n">prompt</span><span class="p">,</span> <span class="n">genconf</span><span class="p">)</span>
-</span><span id="__span-0-1201"><a id="__codelineno-0-1201" name="__codelineno-0-1201"></a>
-</span><span id="__span-0-1202"><a id="__codelineno-0-1202" name="__codelineno-0-1202"></a>    <span class="n">out</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_prepare_gen_out</span><span class="p">(</span><span class="n">text</span><span class="p">,</span> <span class="n">finish</span><span class="p">,</span> <span class="n">genconf</span><span class="p">)</span>
-</span><span id="__span-0-1203"><a id="__codelineno-0-1203" name="__codelineno-0-1203"></a>
-</span><span id="__span-0-1204"><a id="__codelineno-0-1204" name="__codelineno-0-1204"></a>    <span class="k">return</span> <span class="n">out</span>
+</span><span id="__span-0-1196"><a id="__codelineno-0-1196" name="__codelineno-0-1196"></a>    <span class="k">if</span> <span class="ow">not</span> <span class="n">prompt</span><span class="p">:</span>
+</span><span id="__span-0-1197"><a id="__codelineno-0-1197" name="__codelineno-0-1197"></a>        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;Cannot generate from an empty prompt&quot;</span><span class="p">)</span>
+</span><span id="__span-0-1198"><a id="__codelineno-0-1198" name="__codelineno-0-1198"></a>
+</span><span id="__span-0-1199"><a id="__codelineno-0-1199" name="__codelineno-0-1199"></a>    <span class="n">logger</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Prompt: █</span><span class="si">{</span><span class="n">prompt</span><span class="si">}</span><span class="s2">█&quot;</span><span class="p">)</span>
+</span><span id="__span-0-1200"><a id="__codelineno-0-1200" name="__codelineno-0-1200"></a>
+</span><span id="__span-0-1201"><a id="__codelineno-0-1201" name="__codelineno-0-1201"></a>    <span class="n">text</span><span class="p">,</span><span class="n">finish</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_gen_text</span><span class="p">(</span><span class="n">prompt</span><span class="p">,</span> <span class="n">genconf</span><span class="p">)</span>
+</span><span id="__span-0-1202"><a id="__codelineno-0-1202" name="__codelineno-0-1202"></a>
+</span><span id="__span-0-1203"><a id="__codelineno-0-1203" name="__codelineno-0-1203"></a>    <span class="n">out</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_prepare_gen_out</span><span class="p">(</span><span class="n">text</span><span class="p">,</span> <span class="n">finish</span><span class="p">,</span> <span class="n">genconf</span><span class="p">)</span>
+</span><span id="__span-0-1204"><a id="__codelineno-0-1204" name="__codelineno-0-1204"></a>
+</span><span id="__span-0-1205"><a id="__codelineno-0-1205" name="__codelineno-0-1205"></a>    <span class="k">return</span> <span class="n">out</span>
 </span></code></pre></div></td></tr></table></div>
           </details>
   </div>
