@@ -12,7 +12,9 @@ from sibila import (
 )
 
 
-
+"""
+clear; pytest -s test_llamacpp_models.py --models_dir ../../models/
+"""
 
 LIMIT = 9999
 
