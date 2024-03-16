@@ -51,6 +51,7 @@ def loop(callback: Callable[[Union[GenOut,None], Context, Model, GenConf], bool]
          in_text: Optional[str] = None,
 
          trim_flags: Trim = TRIM_DEFAULT,
+         max_token_len: Optional[int] = None,
          ctx: Optional[Context] = None,
 
          genconf: Optional[GenConf] = None,
@@ -67,8 +68,9 @@ def loop(callback: Callable[[Union[GenOut,None], Context, Model, GenConf], bool]
         inst_text: text for Thread instructions. Defaults to None.
         in_text: Text for Thread's initial MsgKind.IN. Defaults to None.
         trim_flags: Context trimming flags, when Thread is too long. Defaults to TRIM_DEFAULT.
+        max_token_len: Maximum token count to use when trimming. Defaults to None.
         ctx: Optional input Context. Defaults to None.
-        genconf: Model generation configuration. Defaults to None, defaults to model's.
+        genconf: Model generation configuration. Defaults to None, which uses to model's genconf.
     """
     
     if ctx is None:
@@ -84,21 +86,25 @@ def loop(callback: Callable[[Union[GenOut,None], Context, Model, GenConf], bool]
     if genconf is None:
         genconf = model.genconf
 
-    if ctx.max_token_len is not None: # use from ctx
-        max_token_len = ctx.max_token_len
-    else: # assume max possible for model context and genconf
-        max_token_len = model.ctx_len - genconf.max_tokens
+    if max_token_len is None:
+        if ctx.max_token_len is not None: # use from ctx
+            max_token_len = ctx.max_token_len
+        else: # use from genconf?
+            if genconf.max_tokens == 0:
+                raise ValueError("Unable to calc max_token_len: either pass the value to this function, in a Context object, or set GenConf.max_tokens to a non-zero value")
 
-    
+            resolved_max_tokens = genconf.resolve_max_tokens(model.ctx_len, model.max_tokens_limit)
+
+            max_token_len = model.ctx_len - resolved_max_tokens
+            ctx.max_token_len = max_token_len
+
     while True:
 
         if len(ctx) and ctx.last_kind == MsgKind.IN:
             # last is an IN message: we can trim and generate
         
             ctx.trim(trim_flags,
-                     model,
-                     max_token_len=max_token_len
-                     )
+                     model)
        
             out = model.gen(ctx, genconf)
         else:
@@ -124,6 +130,7 @@ def interact(model: Model,
              trim_flags: Trim = TRIM_DEFAULT,
              
              genconf: Optional[GenConf] = None,
+             max_tokens_default: int = -20
              ) -> Context:
     """Interact with model as in a chat, using input().
 
@@ -134,7 +141,8 @@ def interact(model: Model,
         ctx: Optional input Context. Defaults to None.
         inst_text: text for Thread instructions. Defaults to None.
         trim_flags: Context trimming flags, when Thread is too long. Defaults to TRIM_DEFAULT.
-        genconf: Model generation configuration. Defaults to None, defaults to model's.    
+        genconf: Model generation configuration. Defaults to None, which uses to model's genconf.
+        max_tokens_default: Used if a non-zero genconf.max_tokens is not found.
 
     Returns:
         Context after all the interactions.
@@ -160,13 +168,8 @@ def interact(model: Model,
 
         
         def print_thread_info():
-            if ctx.max_token_len is not None: # use from ctx
-                max_token_len = ctx.max_token_len
-            else: # assume max possible for model context and genconf
-                max_token_len = model.ctx_len - genconf.max_tokens
-
             length = model.token_len(ctx, genconf)
-            print(f"Thread token len={length}, max len before next gen={max_token_len}")
+            print(f"Thread token len={length}, max len before next gen={ctx.max_token_len}")
             
 
         
@@ -285,8 +288,14 @@ def interact(model: Model,
         ctx.add_IN(user)
         
         return True # continue looping
-            
 
+
+
+    if genconf is None:
+        genconf = model.genconf
+
+    if genconf.max_tokens == 0:
+        genconf = genconf(max_tokens=max_tokens_default)
 
     # start prompt loop
     ctx = loop(callback,
@@ -295,7 +304,8 @@ def interact(model: Model,
                ctx=ctx,
                inst_text=inst_text,
                in_text=None, # call callback for first prompt
-               trim_flags=trim_flags)
+               trim_flags=trim_flags,
+               genconf=genconf)
 
     return ctx
 
@@ -308,7 +318,10 @@ def interact(model: Model,
 def recursive_summarize(model: Model,
                         text: Optional[str] = None,
                         path: Optional[str] = None,
-                        overlap_size: int = 20) -> str:
+                        overlap_size: int = 20,
+                        max_token_len: Optional[int] = None,
+                        genconf: Optional[GenConf] = None) -> str:
+    
     """Recursively summarize a (large) text or text file.
      
     Works by:
@@ -338,8 +351,21 @@ def recursive_summarize(model: Model,
     in_text = "Summarize the following text:\n"
     ctx = Context(pinned_inst_text=inst_text)
 
+    if genconf is None:
+        genconf = model.genconf
+
+    if max_token_len is None:
+        if model.genconf.max_tokens == 0:
+            raise ValueError("Unable to calc max_token_len: make sure genconf.max_tokens is not zero")
+
+        resolved_max_tokens = genconf.resolve_max_tokens(model.ctx_len, model.max_tokens_limit)
+
+        thread = Thread.make_INST_IN(inst_text, in_text)
+        token_len = model.token_len(thread)
+        max_token_len = model.ctx_len - resolved_max_tokens - (token_len + 16) 
+    
+
     # split initial text
-    max_token_len = model.ctx_len - model.genconf.max_tokens - (model.tokenizer.token_len(inst_text + in_text) + 16) 
     logger.debug(f"Max ctx token len {max_token_len}")
     
     token_len_fn = model.tokenizer.token_len_lambda

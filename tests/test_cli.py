@@ -8,112 +8,41 @@ logging.basicConfig(level=logging.DEBUG)
 
 from sibila import Models
 
+from .utils import setup_env_models, teardown_env_models, setup_model, teardown_model
+from .utils import run_cmd, run_text, run_json
 
-FOLDER = "cli"
+
+
 DO_TEARDOWN = True
 
 @pytest.fixture(autouse=True, scope="module")
-def dir():
+def env():
 
-    base_dir = os.path.dirname(__file__)
-    base_dir = os.path.join(base_dir, FOLDER)
+    base_dir, models_dir = setup_env_models("cli", 
+                                            change_cwd=True,
+                                            full_clean=True)
 
-    if os.path.isdir(base_dir):
-        assert base_dir.endswith(FOLDER) # the paranoid
-        shutil.rmtree(base_dir)
-
-    os.mkdir(base_dir)    
-
-    models_dir = os.path.join(base_dir, "models")
-    os.mkdir(models_dir)
-
-    old_cwd = os.getcwd()
-    os.chdir(base_dir)
-
-    ret = base_dir, models_dir
-    print("setup --->", ret)
+    print("---> setup", base_dir)
     
-    yield ret
+    yield base_dir, models_dir
 
+    # --------------------------- teardown
     if DO_TEARDOWN == False:
         return
 
-    print("teardown")
+    print("---> teardown", base_dir)
 
-    if os.path.isdir(base_dir):
-        assert base_dir.endswith(FOLDER) # the paranoid
-        shutil.rmtree(base_dir)
-
-    os.chdir(old_cwd)
+    teardown_env_models(base_dir)
     
 
-def run_cmd(cmd: str, 
-            expected_exit: Optional[int] = None) -> tuple:
-    res = subprocess.run(cmd,
-                         shell=True,
-                         capture_output=True,
-                         encoding="utf-8")
-    exit_code = res.returncode
-    if expected_exit is not None:
-        assert exit_code == expected_exit
-    
-    return exit_code, res.stdout, res.stderr
-
-
-def run_text(cmd: str,
-             *,
-             path: Optional[str] = None,
-             expected_stripped_text: Optional[str] = None,
-             expected_text: Optional[list[str]] = None, 
-             not_expected_text: Optional[list[str]] = None,
-             expected_exit: int = 0) -> str:
-    
-    res = run_cmd(cmd, expected_exit=expected_exit)
-    
-    if path is not None:
-        with open(path, "r", encoding="utf-8") as f:
-            out_text = f.read()
-    else:
-        out_text = "[stdout]\n" + res[1] + "[stderr]\n" + res[2]
-
-    if expected_stripped_text is not None:
-        assert out_text.strip() == expected_stripped_text
-
-    if expected_text is not None:
-        for text in expected_text:
-            assert text in out_text
-
-    if not_expected_text is not None:
-        for text in not_expected_text:
-            assert text not in out_text
-
-    return out_text
-
-
-def run_json(cmd: str, 
-             *,
-             path: Optional[str] = None,
-             expected_json: Optional[dict] = None,
-             expected_exit: int = 0) -> dict:
-
-    text = run_text(cmd, 
-                    path=path,
-                    expected_exit=expected_exit)
-    
-    res = json.loads(text)
-
-    if expected_json is not None:
-        assert res == expected_json
-
-    return res
 
 
 
 
 
-def test_models(dir):
+def test_models(env):
 
-    models_path = os.path.join(dir[1], Models.MODELS_CONF_FILENAME)
+    models_path = os.path.join(env[1], Models.MODELS_CONF_FILENAME)
 
     cmd = "sibila models -m models/ -s llamacpp:local-model local-model.gguf"
     run_json(cmd, 
@@ -232,9 +161,9 @@ def test_models(dir):
 
 
 
-def test_formats(dir):
+def test_formats(env):
 
-    formats_path = os.path.join(dir[1], Models.FORMATS_CONF_FILENAME)
+    formats_path = os.path.join(env[1], Models.FORMATS_CONF_FILENAME)
 
     cmd = """sibila formats -m models -s test-format "{% for message in messages %}{{'<|im_start|>' + message['role'] + '\n' + message['content'] + '<|im_end|>' + '\n'}}{% endfor %}{% if add_generation_prompt %}{{ '<|im_start|>assistant \n' }}{% endif %}" """
     run_json(cmd, 

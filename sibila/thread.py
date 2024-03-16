@@ -2,7 +2,7 @@
 For a quick extraction or classification, a thread with a simple IN message and possibly model instructions can be used.
 For more sophisticated queries that depend on previous interactions, IN (user or input) and OUT (model response) messages can be added.
 
-- Msg: A message of type IN (user query), OUT (assistant answer) or SYS (initial assistant instructions).
+- Msg: A message of type IN (user query), OUT (assistant answer) or INST (initial assistant instructions).
 - Thread: A sequence of Msgs alternating between user and model.
 """
 

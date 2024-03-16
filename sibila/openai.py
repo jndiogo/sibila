@@ -7,6 +7,7 @@
 
 from typing import Any, Optional, Union
 import sys, json
+from time import time 
 from copy import copy
 
 import logging
@@ -44,106 +45,6 @@ except ImportError:
 
 
 
-"""
-Locate model and token counting data.
-More recent models inside each family (GPT-4, GPT-3.5) first
-Str values are links to a versioned model.
-https://platform.openai.com/docs/models
-"""
-KNOWN_MODELS: dict = { # name: link | (ctx_len, n_msg_tokens, n_name_tokens)
-
-    # ------------------------------ GPT 4
-    "gpt-4-0613":     (8192, 3, 1),
-    "gpt-4-32k-0613": (32768, 3, 1),
-    "gpt-4-0314":     (8192, 3, 1),
-    "gpt-4-32k-0314": (32768, 3, 1),
-    
-    "gpt-4-1106-preview": (4096, 3, 1), # aka gpt-4-turbo max input: 128000
-    
-    "gpt-4": "gpt-4-0613",
-    "gpt-4-32k": "gpt-4-32k-0613",
-
-    # ------------------------------ GPT 3.5
-    "gpt-3.5-turbo-1106": (4096, 3, 1), # max input: 16385
-    "gpt-3.5-turbo-0613": (4096, 3, 1),
-    "gpt-3.5-turbo-16k-0613": (16385, 3, 1),
-    "gpt-3.5-turbo-0301":  (4096, 4, -1),
-
-    "gpt-3.5-turbo": "gpt-3.5-turbo-0613",
-    "gpt-3.5-turbo-16k": "gpt-3.5-turbo-16k-0613",
-
-    "gpt-3": "gpt-3.5-turbo-1106",
-    "gpt-3.5": "gpt-3.5-turbo-1106",
-
-}
-
-def resolve_model(name: str, 
-                  unknown_name_mask: int) -> tuple[str, int, int, int]:
-    """Resolve a name string into an existing model from KNOWN_MODELS.
-     Resolution depends on unknown_name_mask and will keep removing letters 
-     from the end of name and searching existing entries in KNOWN_MODELS.
-     
-    Args:
-        name: The model name to resolve.
-        unknown_name_mask: How to deal with unmatched names in name resolution, a mask of:
-
-            - 2: Raise NameError if exact name not found (no generics)
-            - 1: Only allow versioned names - raise NameError if generic non-versioned model name used
-            - 0: Accept any name that can be resolved from KNOWN_MODELS
-
-    Raises:
-        NameError: If not found, according to unknown_name_mask.
-
-    Returns:
-        Existing model name from KNOWN_MODELS.
-    """
-    
-    if name not in KNOWN_MODELS: # not an exact match
-        
-        if unknown_name_mask & 2:
-            raise NameError(f"Unknown model '{name}'. Please provide a correct model name. "
-                            "Call OpenAIModel.known_models() for a list of supported model names.")
-        
-        # 1) search first entry that starts with name
-        nam = name
-        found = None        
-
-        while nam:
-            for k in KNOWN_MODELS:
-                if k.startswith(nam):
-                    found = k
-                    break
-            if found is not None:
-                break
-
-            nam = nam[:-1] # remove last letter and try again
-            
-        if found is None: # 2) pick first entry in list
-            raise NameError(f"Unknown model '{name}'. Please provide an existing model name. "
-                            "Call OpenAIModel.known_models() for a list of supported model names.")
-
-        logger.warn(f"Exact match '{name}' not found: using '{found}' model")
-        name = found
-            
-    v = KNOWN_MODELS[name]
-    if isinstance(v, str):
-        
-        if unknown_name_mask & 1:
-            raise NameError(f"Unknown model '{name}' (would use '{v}' but unknown_name_mask doesn't allow). "
-                            "Please provide a versioned model name or use a more permissive unknown_name_mask. "
-                            "Call OpenAIModel.known_models() for a list of supported model names.")
-            
-        logger.warn(f"'{name}' is a generic name that may be updated over time: resolved as '{v}' model")
-        name = v
-
-    t = KNOWN_MODELS[name]
-    return name, t[0], t[1], t[2]
-
-
-
-
-
-
 
 class OpenAIModel(MessagesModel):
     """Access an OpenAI model.
@@ -163,18 +64,19 @@ class OpenAIModel(MessagesModel):
 
     def __init__(self,
                  name: str,
-                 unknown_name_mask: int = 2,
                  *,
                  
                  # common base model args
                  genconf: Optional[GenConf] = None,
                  schemaconf: Optional[JSchemaConf] = None,
                  tokenizer: Optional[Tokenizer] = None,
-                 ctx_len: int = 0,
+                 ctx_len: Optional[int] = None,
+                 max_tokens_limit: Optional[int] = None,
                 
                  # most important OpenAI-specific args
                  api_key: Optional[str] = None,
                  base_url: Optional[str] = None,
+                 overhead_per_msg: Optional[int] = None,
                  
                  # OpenAI-specific args
                  openai_init_kwargs: dict = {},
@@ -185,62 +87,100 @@ class OpenAIModel(MessagesModel):
 
         Args:
             name: Model name to resolve into an existing model.
-            unknown_name_mask: How to deal with unmatched names in name resolution, a mask of:
-
-                - 2: Raise NameError if exact name not found (no generics)
-                - 1: Only allow versioned names - raise NameError if generic non-versioned model name used
-                - 0: Accept any name that can be resolved from OpenAIModel.known_models()
-
             genconf: Model generation configuration. Defaults to None.
+            schemaconf: Default configuration for JSON schema validation, used if generation call doesn't supply one. Defaults to None.
             tokenizer: An external initialized tokenizer to use instead of the created from the GGUF file. Defaults to None.
-            ctx_len: Maximum context length to be used (shared for input and output). Defaults to 0 which means model's maximum.
+            ctx_len: Maximum context length to be used (shared for input and output). None for model's default.
+            max_tokens_limit: Maximum output tokens limit. None for model's default.
             api_key: OpenAI API key. Defaults to None, which will use env variable OPENAI_API_KEY.
             base_url: Base location for API access. Defaults to None, which will use env variable OPENAI_BASE_URL.
+            overhead_per_msg: Overhead tokens to account for when calculating token length. None for model's default.
             openai_init_kwargs: Extra args for OpenAI.OpenAI() initialization. Defaults to {}.
 
         Raises:
             ImportError: If OpenAI API is not installed.
+            NameError: If model name was not found or there's an API or authentication problem.
         """
 
 
         if not has_openai:
             raise ImportError("Please install openai by running: pip install openai")
 
-        self._model_name, max_ctx_len, self._tokens_per_message, self._tokens_per_name = resolve_model(
-            name,
-            unknown_name_mask
-        )
-
-           
         super().__init__(False,
                          genconf,
                          schemaconf,
                          tokenizer
                          )
 
-        # only check for "json" text presence as json schema is requested with the tools facility.
-        self.json_format_instructors["json_schema"] = self.json_format_instructors["json"]
+        if (ctx_len is not None and
+            max_tokens_limit is not None and
+            overhead_per_msg is not None): # all elements given
+
+            self._model_name = name
+            default_ctx_len = ctx_len
+            default_max_tokens_limit = max_tokens_limit
+            default_overhead_per_msg = overhead_per_msg
         
-        logger.debug(f"Creating inner OpenAI with base_url={base_url}, openai_init_kwargs={openai_init_kwargs}")
+        else: # need to resolve
+            (self._model_name, 
+             default_ctx_len, default_max_tokens_limit,
+             default_overhead_per_msg) = self.resolve_settings("openai", name) # type: ignore[assignment]
+            
+            # all defaults are conservative values
+            if default_ctx_len is None:
+                default_ctx_len = 4096
+                logger.warning(f"Model '{self._model_name}': unknown ctx_len, assuming {default_ctx_len}")
+            if default_max_tokens_limit is None:
+                default_max_tokens_limit = default_ctx_len
+                logger.warning(f"Model '{self._model_name}': unknown max_tokens_limit, assuming {default_max_tokens_limit}")
+            if default_overhead_per_msg is None:
+                default_overhead_per_msg = 3
+                logger.warning(f"Model '{self._model_name}': unknown overhead_per_msg, assuming {default_overhead_per_msg}")
 
-        self._client = openai.OpenAI(api_key=api_key,
-                                     base_url=base_url,
-                        
-                                     **openai_init_kwargs
-                                     )
 
-        
-        # correct super __init__ values
-        if self.tokenizer is None:
-            self.tokenizer = OpenAITokenizer(self._model_name)
-
-        if ctx_len == 0:
-            self._ctx_len = max_ctx_len
+        if not ctx_len: # None or 0
+            self.ctx_len = default_ctx_len
         else:
-            self._ctx_len = ctx_len
+            self.ctx_len = ctx_len
         
+        if not max_tokens_limit:
+            self.max_tokens_limit = default_max_tokens_limit
+        else:
+            self.max_tokens_limit = max_tokens_limit
+
+        self.max_tokens_limit = min(self.max_tokens_limit, self.ctx_len)
+
+        if overhead_per_msg is None:
+            self._overhead_per_msg = default_overhead_per_msg
+        else:
+            self._overhead_per_msg = overhead_per_msg
 
         self.TOOLS_TOKEN_LEN_FACTOR = self.DEFAULT_TOOLS_TOKEN_LEN_FACTOR
+
+
+        # only check for "json" text presence as json schema is requested with the tools facility.
+        self.json_format_instructors["json_schema"] = self.json_format_instructors["json"]
+
+
+        logger.debug(f"Creating inner OpenAI with ctx_len={self.ctx_len}, max_tokens_limit={self.max_tokens_limit}, _overhead_per_msg={self._overhead_per_msg}, base_url={base_url}, openai_init_kwargs={openai_init_kwargs}")
+
+
+        try:
+            if self.tokenizer is None:
+                self.tokenizer = OpenAITokenizer(self._model_name)
+        except Exception as e:
+            raise NameError(f"Model not found for '{self._model_name}'. "
+                            f"Internal error: {e}")
+
+
+        try:
+            self._client = openai.OpenAI(api_key=api_key,
+                                         base_url=base_url,
+                                         **openai_init_kwargs)
+        except Exception as e:
+            raise NameError(f"Could not create model '{self._model_name}' with error: {e}")
+    
+
 
 
 
@@ -258,7 +198,7 @@ class OpenAIModel(MessagesModel):
             genconf: Model generation configuration. Defaults to None.
 
         Raises:
-            NotImplementedError: If method was not defined by a derived class.
+            RuntimeError: If unable to generate.
 
         Returns:
             A GenOut object with result, generated text, etc.
@@ -269,16 +209,12 @@ class OpenAIModel(MessagesModel):
             genconf = self.genconf
 
         thread = self._prepare_gen_in(thread, genconf)
-
         token_len = self.token_len(thread, genconf)
-        if genconf.max_tokens == 0:
-            max_tokens = self.ctx_len - token_len            
-            genconf = genconf(max_tokens=max_tokens)
-            
-        elif token_len + genconf.max_tokens > self.ctx_len:
-            # this is not true for all models: 1106 models have 128k max input and 4k max output (in and out ctx are not shared)
-            # so we assume the smaller max ctx length for the model
-            logger.warn(f"Token length + genconf.max_tokens ({token_len + genconf.max_tokens}) is greater than model's context window length ({self.ctx_len})")
+
+
+        # resolve max_tokens size
+        resolved_max_tokens = self.resolve_genconf_max_tokens(token_len, genconf)
+
 
         fn_name = "json_out"
 
@@ -311,23 +247,35 @@ class OpenAIModel(MessagesModel):
                     }
                 ]
 
-        logger.debug(f"OpenAI json args: {json_kwargs}")
+            logger.debug(f"OpenAI json args: {json_kwargs}")
+
+        # seed config is disabled, has remote models and some hardware accelerated local models don't support it.
+        # seed = genconf.seed
+        # if seed == -1:
+        #    seed = int(time())
+        #    logger.debug(f"OpenAI random seed={seed}")
+
         
         msgs = thread.as_chatml()
 
-        # https://platform.openai.com/docs/api-reference/chat/create
-        response = self._client.chat.completions.create(model=self._model_name,
-                                                        messages=msgs, # type: ignore[arg-type]
-                                                        
-                                                        max_tokens=genconf.max_tokens,
-                                                        stop=genconf.stop,
-                                                        temperature=genconf.temperature,
-                                                        top_p=genconf.top_p,
-                                                        **json_kwargs,
-                                            
-                                                        n=1
-                                                        )
-
+        try:
+            # https://platform.openai.com/docs/api-reference/chat/create
+            response = self._client.chat.completions.create(model=self._model_name,
+                                                            messages=msgs, # type: ignore[arg-type]
+                                                            
+                                                            max_tokens=resolved_max_tokens,
+                                                            stop=genconf.stop,
+                                                            temperature=genconf.temperature,
+                                                            top_p=genconf.top_p,
+                                                            # seed=seed,
+                                                            **json_kwargs,
+                                                
+                                                            n=1
+                                                            )
+        except Exception as e:
+            raise RuntimeError(f"Cannot generate. Internal error: {e}")
+        
+            
         logger.debug(f"OpenAI response: {response}")
 
         choice = response.choices[0]
@@ -388,7 +336,7 @@ class OpenAIModel(MessagesModel):
         for index in range(-1, len(thread)): # -1 for system message
             message = thread.msg_as_chatml(index)
             # print(message)
-            num_tokens += self._tokens_per_message
+            num_tokens += self._overhead_per_msg
             for key, value in message.items():
                 num_tokens += len(self.tokenizer.encode(value))
                 # if key == "name":
@@ -445,7 +393,7 @@ class OpenAIModel(MessagesModel):
         Returns:
             Returns a list of known models or None if it can accept any model.
         """
-        return list(KNOWN_MODELS.keys())
+        return None
 
 
 

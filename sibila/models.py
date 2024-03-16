@@ -3,7 +3,7 @@
 from typing import Any, Optional, Union, Callable
 
 import os, json, re
-from copy import copy
+from copy import copy, deepcopy
 
 from importlib.resources import files, as_file
 
@@ -94,6 +94,16 @@ class Models:
     }
     ```
 
+    Rules for entry inheritance/overriding
+    
+    Entries in the '_default' key of each provider will serve as defaults for models of that provider.
+    Model entries in base_models_dir (automatically loaded from 'res/base_models.json') are overridden 
+    by any entries of the same name loaded from a local 'models.json' file with Models.setup(). Here,
+    overridden means local keys of the same name replace base keys (as a dict.update()).
+    However '_default' entries only apply separately to either base_models_dir or 'local models.json', 
+    as in a lexical scope.
+
+
     = Format Directory =
 
     Detects chat templates from model name/filename or uses from metadata if possible.
@@ -159,7 +169,7 @@ class Models:
             "flags": ["name_passthrough", "local"]
         },
         "openai": {
-            "mandatory": ["name"],
+            "mandatory": [],
             "flags": ["name_passthrough"]
         }
     }
@@ -277,7 +287,7 @@ class Models:
         if not verbose:
             fordir = {}
             for key in formats_dir:
-                fordir[key] = copy(formats_dir[key])
+                fordir[key] = deepcopy(formats_dir[key])
                 if isinstance(fordir[key], dict) and "template" in fordir[key]:
                     fordir[key]["template"] = fordir[key]["template"][:14] + "..."
         else:
@@ -317,40 +327,11 @@ class Models:
             Model: the initialized model.
         """
                
-        cls._ensure()        
-            
-        models_dir = cls.fused_models_dir()
-
-        # resolve "alias:name" res names, or "name": "link_name" links
-        provider,name = resolve_model(models_dir, res_name, cls.ALL_PROVIDER_NAMES)
-        # arriving here, prov as a non-link dict entry
-        logger.debug(f"Resolved model '{res_name}' to '{provider}','{name}'")
-
-        prov = models_dir[provider]
+        try:
+            provider, name, args = cls.resolve_model_entry(res_name, **over_args)
+        except ValueError as e:
+            raise NameError(str({e}))
         
-        if name in prov:
-            model_args = prov[name]
-    
-            # _default(if any) <- model_args <- over_args
-            args = (prov.get(cls.DEFAULT_ENTRY_NAME)).copy() or {}
-            args.update(model_args)        
-            args.update(over_args)
-    
-        else:                
-            prov_conf = cls.PROVIDER_CONF[provider]    
-
-            if "name_passthrough" in prov_conf["flags"]:
-                model_args = {
-                    "name": name                
-                }
-            else:
-                raise ValueError(f"Model '{name}' not found in provider '{provider}'")
-            
-            args = {}
-            args.update(model_args)
-            args.update(over_args)
-
-
         # override genconf, ctx_len
         if genconf is None:
             genconf = cls.genconf
@@ -365,7 +346,8 @@ class Models:
         if ctx_len is not None:
             args["ctx_len"] = ctx_len
 
-        logger.debug(f"Creating model '{provider}:{name}' with resolved args: {args}")
+
+        logger.debug(f"Resolved '{res_name}' to '{provider}:{name}' with args: {args}")
 
 
         model: Model
@@ -374,10 +356,11 @@ class Models:
             # resolve filename -> path
             path = cls._locate_file(args["name"])
             if path is None:
-                raise FileNotFoundError(f"File not found in '{res_name}' while looking for file '{args['name']}'. Make sure you called Models.setup() with a path to the file's folder")
+                path = args["name"] # LlamaCppModel should raise the exception, not us
+            else:
+                logger.debug(f"Resolved llamacpp model '{args['name']}' to '{path}'")
 
-            logger.debug(f"Resolved llamacpp model '{args['name']}' to '{path}'")
-            
+            # rename "name" -> "path" which LlamaCppModel is expecting
             del args["name"]
             args["path"] = path
                         
@@ -526,6 +509,72 @@ class Models:
     def has_model_entry(cls,
                         res_name: str) -> bool:
         return cls.get_model_entry(res_name) is not None
+
+
+
+    @classmethod
+    def resolve_model_entry(cls,
+                            res_name: str,
+
+                            # model-specific overriding:
+                            **over_args: Union[Any]) -> tuple[str,str,dict]:
+        """Resolve a name (provider:name) into the known dict for that model.
+
+        Args:
+            res_name: Resource name in the format: provider:model_name, for example "llamacpp:openchat".
+            genconf: Optional model generation configuration. Overrides set_genconf() value and any directory defaults. Defaults to None.
+            ctx_len: Maximum context length to be used. Overrides directory defaults. Defaults to None.
+            over_args: Model-specific creation args, which will override default args set in model directory.
+
+        Returns:
+            Tuple of resolved provider, name, dict of creation/config values.
+        """
+               
+        cls._ensure()        
+            
+        models_dir = cls.fused_models_dir()
+
+        # resolve "alias:name" res names, or "name": "link_name" links
+        provider,name = resolve_model(models_dir, res_name, cls.ALL_PROVIDER_NAMES)
+        # arriving here, prov as a non-link dict entry
+
+        prov = models_dir[provider]
+        
+        if name in prov:
+
+            # which _default to use? local or base?
+            if name in cls.models_dir[provider]: # in local: get fused _default
+                default_args = prov.get(cls.DEFAULT_ENTRY_NAME, {})
+            else: # not in local: get base_models _default, without values from fused
+                base_prov = cls.base_models_dir[provider]
+                default_args = base_prov.get(cls.DEFAULT_ENTRY_NAME, {})
+
+            args = deepcopy(default_args)
+            if "name" not in args:
+                args["name"] = name
+    
+            # _default <- model_args <- over_args
+            args.update(prov[name])        
+            args.update(over_args)
+    
+        else:
+            prov_conf: dict = cls.PROVIDER_CONF[provider] # type: ignore[assignment]
+            if "name_passthrough" in prov_conf["flags"]:
+                model_args = {
+                    "name": name                
+                }
+            else:
+                raise ValueError(f"Model '{name}' not found in provider '{provider}'")
+
+            # fused _default <- model_args(only name) <- over_args
+            args = deepcopy(prov.get(cls.DEFAULT_ENTRY_NAME, {}))
+            args.update(model_args)        
+            args.update(over_args)
+
+        return provider,name, args
+    
+
+
 
 
 
@@ -730,8 +779,43 @@ class Models:
 
 
     @classmethod
+    def resolve_provider_defaults(cls,
+                                  provider: str,
+                                  key_list: list,
+                                  origin: int) -> dict:
+        """Resolve _default values for provider. Model classes like LlamaCppModel use this to get defaults for ctx_len, for example
+
+        Args:
+            provider: Provider name.
+            key_list: List of keys for which we want default values.
+            origin: Which _default to use - 0=base_models_dir, 1=models_dir, 2=fused
+
+        Returns:
+            Dictionary of values for each key in key_list, or None if such key is not found.
+        """
+               
+        cls._ensure()        
+
+        if origin == 0:
+            models_dir = cls.base_models_dir
+        elif origin == 1:
+            models_dir = cls.models_dir
+        else:
+            models_dir = cls.fused_models_dir()
+
+        prov = models_dir[provider]
+        defaults = prov.get(cls.DEFAULT_ENTRY_NAME, {})
+
+        out = {}
+        for key in key_list:
+            out[key] = defaults.get(key)
+
+        return out
+    
+
+    @classmethod
     def fused_models_dir(cls) -> dict:
-        dir = cls.base_models_dir.copy()
+        dir = deepcopy(cls.base_models_dir)
         dict_merge(dir, cls.models_dir)
         return dir
 
@@ -893,8 +977,8 @@ class Models:
                 merge_dir_json(models_dir, models_path)
                 
             except Exception:
-                logger.warn(f"Could not load 'models.json' at '{models_path}', while looking for model format. "
-                            "Please verify JSON syntax is correct.")
+                logger.warning(f"Could not load 'models.json' at '{models_path}', while looking for model format. "
+                               "Please verify JSON syntax is correct.")
                 models_dir = {}
 
         formats_path = os.path.join(folder_path, cls.FORMATS_CONF_FILENAME)
@@ -904,8 +988,8 @@ class Models:
                 update_dir_json(formats_dir, formats_path)
 
             except Exception:
-                logger.warn(f"Could not load 'formats.json' at '{formats_path}', while looking for model format. "
-                            "Please verify JSON syntax is correct.")
+                logger.warning(f"Could not load 'formats.json' at '{formats_path}', while looking for model format. "
+                               "Please verify JSON syntax is correct.")
                 formats_dir = {}
                 
         if not models_dir and not formats_dir: # nothing to do
@@ -924,9 +1008,9 @@ class Models:
         filename = os.path.basename(model_path)
 
         # 1: check models_dir
-        for provider, entry in cls.PROVIDER_CONF.items():
+        for provider, conf_entry in cls.PROVIDER_CONF.items():
 
-            if "local" not in entry["flags"]: # filter local providers
+            if "local" not in conf_entry["flags"]: # type: ignore[index] # filter local providers
                 continue
 
             if provider in models_dir:
@@ -1063,7 +1147,7 @@ class Models:
 
     @classmethod
     def fused_formats_dir(cls) -> dict:
-        dir = cls.base_formats_dir.copy()
+        dir = deepcopy(cls.base_formats_dir)
         dir.update(cls.formats_dir)
         return dir
 
@@ -1132,6 +1216,8 @@ class Models:
 
 
 
+
+
     @classmethod
     def _read_any(cls,
                   path: Union[str,list[str]]):
@@ -1175,6 +1261,7 @@ class Models:
                     read_formats(cls.formats_dir, path)
                     formats_loaded = True
 
+
         if models_loaded:
             sanity_check_models(cls.fused_models_dir(),
                                 cls.PROVIDER_CONF,
@@ -1182,7 +1269,6 @@ class Models:
                     
         if formats_loaded:
             sanity_check_formats(cls.fused_formats_dir())
-
 
 
 
@@ -1235,7 +1321,7 @@ def prepend_path(base_list: list[str],
 def read_models(models_dir: dict,
                 models_path: str):
 
-    logger.info(f"Loading models conf from: '{models_path}'")
+    logger.debug(f"Loading models conf from: '{models_path}'")
     merge_dir_json(models_dir, models_path)
 
 
@@ -1348,7 +1434,7 @@ def sanity_check_models(models_dir: dict,
 
 def read_formats(formats_dir: dict,
                  formats_path: str):
-    logger.info(f"Loading formats conf from '{formats_path}'")
+    logger.debug(f"Loading formats conf from '{formats_path}'")
     update_dir_json(formats_dir, formats_path)
 
 
@@ -1365,7 +1451,7 @@ def update_dir_json(dir: dict,
 def resolve_format_entry(formats_dir: dict,
                          name: str,
                          val: Union[dict,str]):
-    val = copy(val)
+    val = deepcopy(val)
     
     if "{{" not in val["template"]: # type: ignore[index] # a link to another template entry
         linked_name = val["template"] # type: ignore[index]
@@ -1419,11 +1505,10 @@ def search_format(formats_dir: dict,
             
         for pat in patterns:
             if re.search(pat, model_id, flags=re.IGNORECASE):
-                logger.debug(f"Format search for '{model_id}' found '{name}' entry")
+                logger.info(f"Format search for '{model_id}' found '{name}' entry")
                 return name, resolve_format_entry(formats_dir,
                                                   name,
                                                   val)
-                            
     return None
 
 

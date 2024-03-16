@@ -25,7 +25,7 @@ class GenConf:
     """Model generation configuration, used in Model.gen() and variants."""
     
     max_tokens: int = 0 
-    """Max generated token length. 0 means all available up to output context size (which equals: model.ctx_len - in_prompt_len)"""
+    """Maximum output token length. Special value of 0 means all available context length, special values between -1 and -100 mean a -percentage of ctx_len. For example -20 allows output up to 20% of ctx_len."""
     
     stop: Union[str, list[str]] = field(default_factory=list)
     """List of generation stop text sequences"""
@@ -35,6 +35,10 @@ class GenConf:
 
     top_p: float = 0.9
     """Nucleus sampling top_p value. Only applies if temperature > 0."""
+
+    # seed config is disabled, has remote models and some hardware accelerated local models don't support it.
+    # seed: Union[int,None] = None
+    # """Numeric seed for token sampling. Special values: None for not setting it, -1 to pick a random seed. Only applies if temperature > 0."""
 
     format: str = "text"
     """Output format: "text" or "json". For JSON output, text is validated as in json.loads().
@@ -83,6 +87,33 @@ class GenConf:
     @staticmethod
     def from_dict(dic: dict) -> Any: # Any = GenConf
         return GenConf(**dic)
+
+    def resolve_max_tokens(self,
+                           ctx_len: int,
+                           max_tokens_limit: Optional[int] = None) -> int:
+        """Calculate actual max_tokens value for cases where it's zero or a percentage of model's ctx_len)
+
+        Args:
+            ctx_len: Model's context length.
+            max_tokens_limit: Optional model's limit for max_tokens. Defaults to None.
+
+        Returns:
+            An actual model maximum number of output tokens.
+        """
+
+        max_tokens = self.max_tokens
+        if max_tokens <= 0:
+            if max_tokens == 0:
+                max_tokens = ctx_len
+            else:
+                max_tokens = min(-max_tokens, 100)
+                max_tokens = int(max_tokens / 100.0 * ctx_len)
+                max_tokens = max(1,max_tokens)
+        if max_tokens_limit is not None:
+            max_tokens = min(max_tokens, max_tokens_limit)
+
+        return max_tokens
+
 
 
 

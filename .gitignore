@@ -24,3 +24,6 @@ tests/res/*.gguf
 /dist
 /build
 /cleanup.sh
+
+# tests
+/tests/setup.sh

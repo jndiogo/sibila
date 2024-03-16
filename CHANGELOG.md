@@ -7,6 +7,20 @@ The project does not yet adhere to [Semantic Versioning](https://semver.org/spec
 
 
 ## [Unreleased]
+- feat: Add seed setting to GenConf. Commented-out because of lack of support in OpenAI models and certain llama.cpp hardware accelerations.
+
+
+## [0.3.6]
+- feat: Migrate hardcoded OpenAI model entries from OpenAIModel to 'res/base_models.json'.
+- feat: OpenAI now accepts unknown models using defaults from 'openai:_default' key in  'res/base_models.json'.
+- feat: Support OpenAI models with a limit on max_tokens output values, like "gpt-4-turbo-preview" (input ctx_len of 128k but only up to 4k output tokens).
+- feat: Auto-discover maximum ctx_len in LlamaCppModel loaded files, when 0 is passed.
+- feat: Add negative int factor mode to GenConf.max_tokens setting, allowing for a percentage of model's context length.
+- fix: Add coherent error exceptions when loading local and remote models.
+- fix: Correct interact() error when GenConf.max_tokens=0.
+- fix: Correct several chat template formats.
+- test: Add many new tests for gpt-3.5/4 and llama.cpp models.
+- docs: Update tips section.
 
 ## [0.3.5]
 - feat: Split Models factory config in two levels: base definitions in sibila/res and Models.setup() loaded definitions from user folders. These levels never mix, but a fusion of the two is used for models/formats resolution. Only in this manner can "models" folder definitions be kept clean.

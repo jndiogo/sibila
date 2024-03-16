@@ -60,3 +60,10 @@ sibila = "sibila.cli:main"
 Homepage = "https://github.com/jndiogo/sibila"
 Documentation = "https://jndiogo.github.io/sibila"
 Issues = "https://github.com/jndiogo/sibila/issues"
+
+
+
+[tool.pytest.ini_options]
+minversion = "6.0"
+# addopts = "-ra -q"
+# testpaths = ["tests"]

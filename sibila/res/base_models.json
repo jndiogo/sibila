@@ -1,22 +1,77 @@
 {
   "llamacpp": {
     "_default": {
-        "ctx_len": 2048
+      "ctx_len": 2048
     }      
   },
     
   "openai": {
     "_default": {
+      "ctx_len": 4096,
+      "overhead_per_msg": 3
     },
 
-    "gpt-3.5": {
-      "name": "gpt-3.5"
-    },
-    "gpt-4": {
-      "name": "gpt-4"
-    }
-  },
 
-  "alias": {
-  }  
+    "gpt-4-0125-preview": {
+      "ctx_len": 128000,
+      "max_tokens_limit": 4096
+    }, 
+
+    "gpt-4-1106-preview": {
+      "ctx_len": 128000,
+      "max_tokens_limit": 4096
+    }, 
+
+    "gpt-4-0613": {
+      "ctx_len": 8192
+    }, 
+
+    "gpt-4-0314": {
+      "ctx_len": 8192
+    }, 
+
+    "gpt-4-32k-0613": {
+      "ctx_len": 32768
+    }, 
+
+    "gpt-4-32k-0314": {
+      "ctx_len": 32768
+    }, 
+
+    "gpt-4": "gpt-4-0613",
+    "gpt-4-32k": "gpt-4-32k-0613",
+    "gpt-4-turbo-preview" : "gpt-4-0125-preview",
+
+
+
+    "gpt-3.5-turbo-0125": {
+      "ctx_len": 16385,
+      "max_tokens_limit": 4096
+    }, 
+
+    "gpt-3.5-turbo-1106": {
+      "ctx_len": 16385,
+      "max_tokens_limit": 4096
+    }, 
+
+    "gpt-3.5-turbo-0613": {
+      "ctx_len": 4096
+    }, 
+
+    "gpt-3.5-turbo-0301": {
+      "ctx_len": 4096,
+      "overhead_per_msg": 4
+    }, 
+
+    "gpt-3.5-turbo-16k-0613": {
+      "ctx_len": 16385
+    }, 
+
+    "gpt-3.5-turbo": "gpt-3.5-turbo-0125",
+    "gpt-3.5-turbo-16k": "gpt-3.5-turbo-16k-0613",
+
+    "gpt-3.5": "gpt-3.5-turbo-1106",
+    "gpt-3": "gpt-3.5-turbo-1106"
+  }
+
 }

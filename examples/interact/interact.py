@@ -24,5 +24,5 @@ if __name__ == "__main__":
 
     interact(model,
             inst_text="Be helpful.", # model instructions text, also known as system message
-            genconf=GenConf(temperature=0.9))
+            genconf=GenConf(temperature=0.9, max_tokens=600))
     

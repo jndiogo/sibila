@@ -95,6 +95,7 @@ class Context(Thread):
             max_token_len: Cut messages until size is lower than this number. Defaults to None.
 
         Raises:
+            ValueError: If no max_token_len value is known: it must be passed to this function or set when creating Context
             RuntimeError: If unable to trim anything.
 
         Returns:
@@ -105,12 +106,8 @@ class Context(Thread):
             max_token_len = self.max_token_len
             
         if max_token_len is None:
-            max_token_len = model.ctx_len
+            raise ValueError("A value for max_token_len must be passed to this function or set when creating Context")
 
-        # if genconf is None:
-        #     genconf = model.genconf            
-        # assert max_token_len < model.ctx_len, f"max_token_len ({max_token_len}) must be < model's context size ({model.ctx_len}) - genconf.max_new_tokens"
-        
         if trim_flags == Trim.NONE: # no trimming
             return False
         
