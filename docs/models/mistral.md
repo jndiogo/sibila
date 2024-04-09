@@ -2,7 +2,7 @@
 title: Mistral AI
 ---
 
-With Sibila you can access [Mistral AI](https://mistral.com) remote models, for which you'll need an API key. Although you can pass this key when you create the model object, it's more secure to define an env variable with this information:
+With Sibila you can access [Mistral AI](https://mistral.ai) remote models, for which you'll need an API key. Although you can pass this key when you create the model object, it's more secure to define an env variable with this information:
 
 === "Linux and Mac"
     ```
