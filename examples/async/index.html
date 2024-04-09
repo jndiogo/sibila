@@ -8,13 +8,13 @@
       
       
       
-        <link rel="canonical" href="https://jndiogo.github.io/sibila/examples/from_text_to_object/">
+        <link rel="canonical" href="https://jndiogo.github.io/sibila/examples/async/">
       
       
-        <link rel="prev" href="../hello_model/">
+        <link rel="prev" href="../interact/">
       
       
-        <link rel="next" href="../extract/">
+        <link rel="next" href="../cli/">
       
       
       <link rel="icon" href="../../assets/images/favicon.png">
@@ -22,7 +22,7 @@
     
     
       
-        <title>From text to object - Sibila</title>
+        <title>Async - Sibila</title>
       
     
     
@@ -109,7 +109,7 @@
         <div class="md-header__topic" data-md-component="header-topic">
           <span class="md-ellipsis">
             
-              From text to object
+              Async
             
           </span>
         </div>
@@ -1409,17 +1409,10 @@
                 
   
   
-    
   
   
-  
-    <li class="md-nav__item md-nav__item--active">
-      
-      <input class="md-nav__toggle md-toggle" type="checkbox" id="__toc">
-      
-      
-      
-      <a href="./" class="md-nav__link md-nav__link--active">
+    <li class="md-nav__item">
+      <a href="../from_text_to_object/" class="md-nav__link">
         
   
   <span class="md-ellipsis">
@@ -1428,7 +1421,6 @@
   
 
       </a>
-      
     </li>
   
 
@@ -1585,10 +1577,17 @@
                 
   
   
+    
   
   
-    <li class="md-nav__item">
-      <a href="../async/" class="md-nav__link">
+  
+    <li class="md-nav__item md-nav__item--active">
+      
+      <input class="md-nav__toggle md-toggle" type="checkbox" id="__toc">
+      
+      
+      
+      <a href="./" class="md-nav__link md-nav__link--active">
         
   
   <span class="md-ellipsis">
@@ -1597,6 +1596,7 @@
   
 
       </a>
+      
     </li>
   
 
@@ -1924,181 +1924,138 @@
   
 
 
-  <h1>From text to object</h1>
+  <h1>Async</h1>
 
-<p>In this example we'll ask the model to extract keypoints from a text:
-- First in plain text format
-- Then free JSON output (with fields selected by the model)
-- Later constrained by a JSON schema (so that we can specify which fields)
-- And finally by generating to a Pydantic object (from a class definition)</p>
-<p>All the queries will be made at temperature=0, which is the default GenConf setting.
-This means that the model is giving it's best (as in most probable) answer and that it will always output the same results, given the same inputs.</p>
-<p>Also available as a Jupyter notebook or a Python script in the example's folder.</p>
-<p>We'll start by creating either a local model or a GPT-4 model.</p>
-<p>To use a local model, make sure you have its file in the folder "../../models". You can use any GGUF format model - <a href="https://jndiogo.github.io/sibila/models/local_model/#examples">see here how to download the OpenChat model used below</a>. If you use a different one, don't forget to set its filename in the name variable below, after the text "llamacpp:".</p>
-<p>To use an OpenAI model, make sure you defined the env variable OPENAI_API_KEY with a valid token and uncomment the line after "# to use an OpenAI model:".
-For an OpenAI model, make sure you defined the env variable OPENAI_API_KEY with a valid token and uncomment the line after "# to use an OpenAI model:".</p>
+<p>In this example we'll look at how to do multiple parallel requests to remote models by using Python's asyncio capabilities.</p>
+<p>Generating from local llama.cpp models does not benefit from async functionality, because the local models must already be loaded in memory and can't benefit from asynchronous IO loading. When the async methods are used with a LlamaCppModel, inference will end up being made sequentially.</p>
+<p>So we'll be using a remote OpenAI model. Make sure you defined the env variable OPENAI_API_KEY with a valid token.</p>
+<p>This example is available as a Jupyter notebook or a Python script in this folder.</p>
+<p>As usual, let's start by creating the model:</p>
 <div class="language-python highlight"><pre><span></span><code><span id="__span-0-1"><a id="__codelineno-0-1" name="__codelineno-0-1" href="#__codelineno-0-1"></a><span class="c1"># load env variables like OPENAI_API_KEY from a .env file (if available)</span>
 </span><span id="__span-0-2"><a id="__codelineno-0-2" name="__codelineno-0-2" href="#__codelineno-0-2"></a><span class="k">try</span><span class="p">:</span> <span class="kn">from</span> <span class="nn">dotenv</span> <span class="kn">import</span> <span class="n">load_dotenv</span><span class="p">;</span> <span class="n">load_dotenv</span><span class="p">()</span>
 </span><span id="__span-0-3"><a id="__codelineno-0-3" name="__codelineno-0-3" href="#__codelineno-0-3"></a><span class="k">except</span><span class="p">:</span> <span class="o">...</span>
 </span><span id="__span-0-4"><a id="__codelineno-0-4" name="__codelineno-0-4" href="#__codelineno-0-4"></a>
-</span><span id="__span-0-5"><a id="__codelineno-0-5" name="__codelineno-0-5" href="#__codelineno-0-5"></a><span class="kn">from</span> <span class="nn">sibila</span> <span class="kn">import</span> <span class="n">Models</span>
+</span><span id="__span-0-5"><a id="__codelineno-0-5" name="__codelineno-0-5" href="#__codelineno-0-5"></a><span class="kn">import</span> <span class="nn">time</span><span class="o">,</span> <span class="nn">asyncio</span>
 </span><span id="__span-0-6"><a id="__codelineno-0-6" name="__codelineno-0-6" href="#__codelineno-0-6"></a>
-</span><span id="__span-0-7"><a id="__codelineno-0-7" name="__codelineno-0-7" href="#__codelineno-0-7"></a><span class="c1"># delete any previous model</span>
-</span><span id="__span-0-8"><a id="__codelineno-0-8" name="__codelineno-0-8" href="#__codelineno-0-8"></a><span class="k">try</span><span class="p">:</span> <span class="k">del</span> <span class="n">model</span>
-</span><span id="__span-0-9"><a id="__codelineno-0-9" name="__codelineno-0-9" href="#__codelineno-0-9"></a><span class="k">except</span><span class="p">:</span> <span class="o">...</span>
-</span><span id="__span-0-10"><a id="__codelineno-0-10" name="__codelineno-0-10" href="#__codelineno-0-10"></a>
-</span><span id="__span-0-11"><a id="__codelineno-0-11" name="__codelineno-0-11" href="#__codelineno-0-11"></a><span class="c1"># to use a local model, assuming it&#39;s in ../../models:</span>
-</span><span id="__span-0-12"><a id="__codelineno-0-12" name="__codelineno-0-12" href="#__codelineno-0-12"></a><span class="c1"># setup models folder:</span>
-</span><span id="__span-0-13"><a id="__codelineno-0-13" name="__codelineno-0-13" href="#__codelineno-0-13"></a><span class="n">Models</span><span class="o">.</span><span class="n">setup</span><span class="p">(</span><span class="s2">&quot;../../models&quot;</span><span class="p">)</span>
-</span><span id="__span-0-14"><a id="__codelineno-0-14" name="__codelineno-0-14" href="#__codelineno-0-14"></a><span class="c1"># set the model&#39;s filename - change to your own model</span>
-</span><span id="__span-0-15"><a id="__codelineno-0-15" name="__codelineno-0-15" href="#__codelineno-0-15"></a><span class="n">model</span> <span class="o">=</span> <span class="n">Models</span><span class="o">.</span><span class="n">create</span><span class="p">(</span><span class="s2">&quot;llamacpp:openchat-3.5-1210.Q4_K_M.gguf&quot;</span><span class="p">)</span>
-</span><span id="__span-0-16"><a id="__codelineno-0-16" name="__codelineno-0-16" href="#__codelineno-0-16"></a>
-</span><span id="__span-0-17"><a id="__codelineno-0-17" name="__codelineno-0-17" href="#__codelineno-0-17"></a><span class="c1"># to use an OpenAI model:</span>
-</span><span id="__span-0-18"><a id="__codelineno-0-18" name="__codelineno-0-18" href="#__codelineno-0-18"></a><span class="c1"># model = Models.create(&quot;openai:gpt-4&quot;)</span>
+</span><span id="__span-0-7"><a id="__codelineno-0-7" name="__codelineno-0-7" href="#__codelineno-0-7"></a><span class="kn">from</span> <span class="nn">sibila</span> <span class="kn">import</span> <span class="n">Models</span>
+</span><span id="__span-0-8"><a id="__codelineno-0-8" name="__codelineno-0-8" href="#__codelineno-0-8"></a>
+</span><span id="__span-0-9"><a id="__codelineno-0-9" name="__codelineno-0-9" href="#__codelineno-0-9"></a><span class="c1"># delete any previous model</span>
+</span><span id="__span-0-10"><a id="__codelineno-0-10" name="__codelineno-0-10" href="#__codelineno-0-10"></a><span class="k">try</span><span class="p">:</span> <span class="k">del</span> <span class="n">model</span>
+</span><span id="__span-0-11"><a id="__codelineno-0-11" name="__codelineno-0-11" href="#__codelineno-0-11"></a><span class="k">except</span><span class="p">:</span> <span class="o">...</span>
+</span><span id="__span-0-12"><a id="__codelineno-0-12" name="__codelineno-0-12" href="#__codelineno-0-12"></a>
+</span><span id="__span-0-13"><a id="__codelineno-0-13" name="__codelineno-0-13" href="#__codelineno-0-13"></a><span class="c1"># to use a local model, assuming it&#39;s in ../../models:</span>
+</span><span id="__span-0-14"><a id="__codelineno-0-14" name="__codelineno-0-14" href="#__codelineno-0-14"></a><span class="c1"># setup models folder:</span>
+</span><span id="__span-0-15"><a id="__codelineno-0-15" name="__codelineno-0-15" href="#__codelineno-0-15"></a><span class="c1"># Models.setup(&quot;../../models&quot;)</span>
+</span><span id="__span-0-16"><a id="__codelineno-0-16" name="__codelineno-0-16" href="#__codelineno-0-16"></a><span class="c1"># model = Models.create(&quot;llamacpp:openchat-3.5-1210.Q4_K_M.gguf&quot;, ctx_len=3072)</span>
+</span><span id="__span-0-17"><a id="__codelineno-0-17" name="__codelineno-0-17" href="#__codelineno-0-17"></a>
+</span><span id="__span-0-18"><a id="__codelineno-0-18" name="__codelineno-0-18" href="#__codelineno-0-18"></a><span class="c1"># to use an OpenAI model:</span>
+</span><span id="__span-0-19"><a id="__codelineno-0-19" name="__codelineno-0-19" href="#__codelineno-0-19"></a><span class="n">model</span> <span class="o">=</span> <span class="n">Models</span><span class="o">.</span><span class="n">create</span><span class="p">(</span><span class="s2">&quot;openai:gpt-4&quot;</span><span class="p">)</span>
+</span><span id="__span-0-20"><a id="__codelineno-0-20" name="__codelineno-0-20" href="#__codelineno-0-20"></a>
+</span><span id="__span-0-21"><a id="__codelineno-0-21" name="__codelineno-0-21" href="#__codelineno-0-21"></a><span class="c1"># convenience time-counting functions:</span>
+</span><span id="__span-0-22"><a id="__codelineno-0-22" name="__codelineno-0-22" href="#__codelineno-0-22"></a><span class="n">start_time</span> <span class="o">=</span> <span class="kc">None</span>
+</span><span id="__span-0-23"><a id="__codelineno-0-23" name="__codelineno-0-23" href="#__codelineno-0-23"></a><span class="k">def</span> <span class="nf">start_secs</span><span class="p">():</span>
+</span><span id="__span-0-24"><a id="__codelineno-0-24" name="__codelineno-0-24" href="#__codelineno-0-24"></a>    <span class="k">global</span> <span class="n">start_time</span>
+</span><span id="__span-0-25"><a id="__codelineno-0-25" name="__codelineno-0-25" href="#__codelineno-0-25"></a>    <span class="n">start_time</span> <span class="o">=</span> <span class="n">time</span><span class="o">.</span><span class="n">time</span><span class="p">()</span>
+</span><span id="__span-0-26"><a id="__codelineno-0-26" name="__codelineno-0-26" href="#__codelineno-0-26"></a><span class="k">def</span> <span class="nf">secs</span><span class="p">():</span> 
+</span><span id="__span-0-27"><a id="__codelineno-0-27" name="__codelineno-0-27" href="#__codelineno-0-27"></a>    <span class="k">return</span> <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">time</span><span class="o">.</span><span class="n">time</span><span class="p">()</span><span class="w"> </span><span class="o">-</span><span class="w"> </span><span class="n">start_time</span><span class="si">:</span><span class="s2">.1f</span><span class="si">}</span><span class="s2">&quot;</span>
 </span></code></pre></div>
-<p>Let's use this fragment from Wikipedia's entry on the Fiji islands: https://en.wikipedia.org/wiki/</p>
-<div class="language-python highlight"><pre><span></span><code><span id="__span-1-1"><a id="__codelineno-1-1" name="__codelineno-1-1" href="#__codelineno-1-1"></a><span class="n">doc</span> <span class="o">=</span> <span class="s2">&quot;&quot;&quot;</span><span class="se">\</span>
-</span><span id="__span-1-2"><a id="__codelineno-1-2" name="__codelineno-1-2" href="#__codelineno-1-2"></a><span class="s2">Fiji, officially the Republic of Fiji,[n 2] is an island country in Melanesia,</span>
-</span><span id="__span-1-3"><a id="__codelineno-1-3" name="__codelineno-1-3" href="#__codelineno-1-3"></a><span class="s2">part of Oceania in the South Pacific Ocean. It lies about 1,100 nautical miles </span>
-</span><span id="__span-1-4"><a id="__codelineno-1-4" name="__codelineno-1-4" href="#__codelineno-1-4"></a><span class="s2">(2,000 km; 1,300 mi) north-northeast of New Zealand. Fiji consists of </span>
-</span><span id="__span-1-5"><a id="__codelineno-1-5" name="__codelineno-1-5" href="#__codelineno-1-5"></a><span class="s2">an archipelago of more than 330 islands—of which about 110 are permanently </span>
-</span><span id="__span-1-6"><a id="__codelineno-1-6" name="__codelineno-1-6" href="#__codelineno-1-6"></a><span class="s2">inhabited—and more than 500 islets, amounting to a total land area of about </span>
-</span><span id="__span-1-7"><a id="__codelineno-1-7" name="__codelineno-1-7" href="#__codelineno-1-7"></a><span class="s2">18,300 square kilometres (7,100 sq mi). The most outlying island group is </span>
-</span><span id="__span-1-8"><a id="__codelineno-1-8" name="__codelineno-1-8" href="#__codelineno-1-8"></a><span class="s2">Ono-i-Lau. About 87</span><span class="si">% o</span><span class="s2">f the total population of 924,610 live on the two major </span>
-</span><span id="__span-1-9"><a id="__codelineno-1-9" name="__codelineno-1-9" href="#__codelineno-1-9"></a><span class="s2">islands, Viti Levu and Vanua Levu. About three-quarters of Fijians live on </span>
-</span><span id="__span-1-10"><a id="__codelineno-1-10" name="__codelineno-1-10" href="#__codelineno-1-10"></a><span class="s2">Viti Levu&#39;s coasts, either in the capital city of Suva, or in smaller </span>
-</span><span id="__span-1-11"><a id="__codelineno-1-11" name="__codelineno-1-11" href="#__codelineno-1-11"></a><span class="s2">urban centres such as Nadi (where tourism is the major local industry) or </span>
-</span><span id="__span-1-12"><a id="__codelineno-1-12" name="__codelineno-1-12" href="#__codelineno-1-12"></a><span class="s2">Lautoka (where the sugar-cane industry is dominant). The interior of Viti Levu </span>
-</span><span id="__span-1-13"><a id="__codelineno-1-13" name="__codelineno-1-13" href="#__codelineno-1-13"></a><span class="s2">is sparsely inhabited because of its terrain.[13]</span>
-</span><span id="__span-1-14"><a id="__codelineno-1-14" name="__codelineno-1-14" href="#__codelineno-1-14"></a>
-</span><span id="__span-1-15"><a id="__codelineno-1-15" name="__codelineno-1-15" href="#__codelineno-1-15"></a><span class="s2">The majority of Fiji&#39;s islands were formed by volcanic activity starting around </span>
-</span><span id="__span-1-16"><a id="__codelineno-1-16" name="__codelineno-1-16" href="#__codelineno-1-16"></a><span class="s2">150 million years ago. Some geothermal activity still occurs today on the islands </span>
-</span><span id="__span-1-17"><a id="__codelineno-1-17" name="__codelineno-1-17" href="#__codelineno-1-17"></a><span class="s2">of Vanua Levu and Taveuni.[14] The geothermal systems on Viti Levu are </span>
-</span><span id="__span-1-18"><a id="__codelineno-1-18" name="__codelineno-1-18" href="#__codelineno-1-18"></a><span class="s2">non-volcanic in origin and have low-temperature surface discharges (of between </span>
-</span><span id="__span-1-19"><a id="__codelineno-1-19" name="__codelineno-1-19" href="#__codelineno-1-19"></a><span class="s2">roughly 35 and 60 degrees Celsius (95 and 140 °F)).</span>
-</span><span id="__span-1-20"><a id="__codelineno-1-20" name="__codelineno-1-20" href="#__codelineno-1-20"></a>
-</span><span id="__span-1-21"><a id="__codelineno-1-21" name="__codelineno-1-21" href="#__codelineno-1-21"></a><span class="s2">Humans have lived in Fiji since the second millennium BC—first Austronesians and </span>
-</span><span id="__span-1-22"><a id="__codelineno-1-22" name="__codelineno-1-22" href="#__codelineno-1-22"></a><span class="s2">later Melanesians, with some Polynesian influences. Europeans first visited Fiji </span>
-</span><span id="__span-1-23"><a id="__codelineno-1-23" name="__codelineno-1-23" href="#__codelineno-1-23"></a><span class="s2">in the 17th century.[15] In 1874, after a brief period in which Fiji was an </span>
-</span><span id="__span-1-24"><a id="__codelineno-1-24" name="__codelineno-1-24" href="#__codelineno-1-24"></a><span class="s2">independent kingdom, the British established the Colony of Fiji. Fiji operated as </span>
-</span><span id="__span-1-25"><a id="__codelineno-1-25" name="__codelineno-1-25" href="#__codelineno-1-25"></a><span class="s2">a Crown colony until 1970, when it gained independence and became known as </span>
-</span><span id="__span-1-26"><a id="__codelineno-1-26" name="__codelineno-1-26" href="#__codelineno-1-26"></a><span class="s2">the Dominion of Fiji. In 1987, following a series of coups d&#39;état, the military </span>
-</span><span id="__span-1-27"><a id="__codelineno-1-27" name="__codelineno-1-27" href="#__codelineno-1-27"></a><span class="s2">government that had taken power declared it a republic. In a 2006 coup, Commodore </span>
-</span><span id="__span-1-28"><a id="__codelineno-1-28" name="__codelineno-1-28" href="#__codelineno-1-28"></a><span class="s2">Frank Bainimarama seized power. In 2009, the Fijian High Court ruled that the </span>
-</span><span id="__span-1-29"><a id="__codelineno-1-29" name="__codelineno-1-29" href="#__codelineno-1-29"></a><span class="s2">military leadership was unlawful. At that point, President Ratu Josefa Iloilo, </span>
-</span><span id="__span-1-30"><a id="__codelineno-1-30" name="__codelineno-1-30" href="#__codelineno-1-30"></a><span class="s2">whom the military had retained as the nominal head of state, formally abrogated </span>
-</span><span id="__span-1-31"><a id="__codelineno-1-31" name="__codelineno-1-31" href="#__codelineno-1-31"></a><span class="s2">the 1997 Constitution and re-appointed Bainimarama as interim prime minister. </span>
-</span><span id="__span-1-32"><a id="__codelineno-1-32" name="__codelineno-1-32" href="#__codelineno-1-32"></a><span class="s2">Later in 2009, Ratu Epeli Nailatikau succeeded Iloilo as president.[16] On 17 </span>
-</span><span id="__span-1-33"><a id="__codelineno-1-33" name="__codelineno-1-33" href="#__codelineno-1-33"></a><span class="s2">September 2014, after years of delays, a democratic election took place. </span>
-</span><span id="__span-1-34"><a id="__codelineno-1-34" name="__codelineno-1-34" href="#__codelineno-1-34"></a><span class="s2">Bainimarama&#39;s FijiFirst party won 59.2</span><span class="si">% o</span><span class="s2">f the vote, and international observers </span>
-</span><span id="__span-1-35"><a id="__codelineno-1-35" name="__codelineno-1-35" href="#__codelineno-1-35"></a><span class="s2">deemed the election credible.[17] </span>
-</span><span id="__span-1-36"><a id="__codelineno-1-36" name="__codelineno-1-36" href="#__codelineno-1-36"></a><span class="s2">&quot;&quot;&quot;</span>
-</span><span id="__span-1-37"><a id="__codelineno-1-37" name="__codelineno-1-37" href="#__codelineno-1-37"></a>
-</span><span id="__span-1-38"><a id="__codelineno-1-38" name="__codelineno-1-38" href="#__codelineno-1-38"></a><span class="c1"># model instructions text, also known as system message</span>
-</span><span id="__span-1-39"><a id="__codelineno-1-39" name="__codelineno-1-39" href="#__codelineno-1-39"></a><span class="n">inst_text</span> <span class="o">=</span> <span class="s2">&quot;Be helpful and provide concise answers.&quot;</span>
+<p>We'll create two tasks that will run in parallel:
+1. Ask the model to generate 20 names
+2. Classify a phrase as spam</p>
+<p>This example is running in a Jupyter notebook, so we can directly call the function with an await. In a python script we'd use asyncio.run() instead.</p>
+<p>Note that we're using the _async suffix methods: extract_async() and classify_async(), instead of the normal functions.</p>
+<p>The first task, generate 20 names:</p>
+<div class="language-python highlight"><pre><span></span><code><span id="__span-1-1"><a id="__codelineno-1-1" name="__codelineno-1-1" href="#__codelineno-1-1"></a><span class="k">async</span> <span class="k">def</span> <span class="nf">extract_names</span><span class="p">():</span>    
+</span><span id="__span-1-2"><a id="__codelineno-1-2" name="__codelineno-1-2" href="#__codelineno-1-2"></a>    <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;extract_names begin...&quot;</span><span class="p">,</span> <span class="n">secs</span><span class="p">())</span>
+</span><span id="__span-1-3"><a id="__codelineno-1-3" name="__codelineno-1-3" href="#__codelineno-1-3"></a>
+</span><span id="__span-1-4"><a id="__codelineno-1-4" name="__codelineno-1-4" href="#__codelineno-1-4"></a>    <span class="n">names</span> <span class="o">=</span> <span class="k">await</span> <span class="n">model</span><span class="o">.</span><span class="n">extract_async</span><span class="p">(</span><span class="nb">list</span><span class="p">[</span><span class="nb">str</span><span class="p">],</span>
+</span><span id="__span-1-5"><a id="__codelineno-1-5" name="__codelineno-1-5" href="#__codelineno-1-5"></a>                                      <span class="s2">&quot;Generate 20 English names with first name and surname&quot;</span><span class="p">)</span>
+</span><span id="__span-1-6"><a id="__codelineno-1-6" name="__codelineno-1-6" href="#__codelineno-1-6"></a>
+</span><span id="__span-1-7"><a id="__codelineno-1-7" name="__codelineno-1-7" href="#__codelineno-1-7"></a>    <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;...extract_names done&quot;</span><span class="p">,</span> <span class="n">secs</span><span class="p">())</span>
+</span><span id="__span-1-8"><a id="__codelineno-1-8" name="__codelineno-1-8" href="#__codelineno-1-8"></a>
+</span><span id="__span-1-9"><a id="__codelineno-1-9" name="__codelineno-1-9" href="#__codelineno-1-9"></a>    <span class="k">return</span> <span class="n">names</span>
+</span><span id="__span-1-10"><a id="__codelineno-1-10" name="__codelineno-1-10" href="#__codelineno-1-10"></a>
+</span><span id="__span-1-11"><a id="__codelineno-1-11" name="__codelineno-1-11" href="#__codelineno-1-11"></a><span class="n">start_secs</span><span class="p">()</span>
+</span><span id="__span-1-12"><a id="__codelineno-1-12" name="__codelineno-1-12" href="#__codelineno-1-12"></a><span class="k">await</span> <span class="n">extract_names</span><span class="p">()</span>
 </span></code></pre></div>
-<p>Let's start with a free text query by calling model().</p>
-<div class="language-python highlight"><pre><span></span><code><span id="__span-2-1"><a id="__codelineno-2-1" name="__codelineno-2-1" href="#__codelineno-2-1"></a><span class="n">in_text</span> <span class="o">=</span> <span class="s2">&quot;Extract 5 keypoints of the following text:</span><span class="se">\n</span><span class="s2">&quot;</span> <span class="o">+</span> <span class="n">doc</span>
-</span><span id="__span-2-2"><a id="__codelineno-2-2" name="__codelineno-2-2" href="#__codelineno-2-2"></a>
-</span><span id="__span-2-3"><a id="__codelineno-2-3" name="__codelineno-2-3" href="#__codelineno-2-3"></a><span class="n">out</span> <span class="o">=</span> <span class="n">model</span><span class="p">(</span><span class="n">in_text</span><span class="p">,</span> <span class="n">inst</span><span class="o">=</span><span class="n">inst_text</span><span class="p">)</span>
-</span><span id="__span-2-4"><a id="__codelineno-2-4" name="__codelineno-2-4" href="#__codelineno-2-4"></a><span class="nb">print</span><span class="p">(</span><span class="n">out</span><span class="p">)</span>
-</span></code></pre></div>
-<div class="language-text highlight"><pre><span></span><code>1. Fiji is an island country located in Melanesia, part of Oceania in the South Pacific Ocean. It lies approximately 1,100 nautical miles north-northeast of New Zealand.
-2. The country consists of more than 330 islands with about 110 permanently inhabited islands and over 500 islets, totaling a land area of about 18,300 square kilometers.
-3. Approximately 87% of Fiji&#39;s total population of 924,610 live on the two major islands, Viti Levu and Vanua Levu, with a majority living on Viti Levu&#39;s coasts.
-4. The majority of Fiji&#39;s islands were formed by volcanic activity starting around 150 million years ago, with some geothermal activity still occurring on certain islands.
-5. Fiji has a complex history, transitioning from an independent kingdom to a British colony, then a Dominion, and finally a republic after a series of coups and constitutional changes. In 2014, a democratic election took place, marking a significant milestone in the country&#39;s political history.
-</code></pre></div>
-<p>These are quite reasonable keypoints!</p>
-<p>Let's now ask for JSON output, taking care to explicitly request it in the query (in_text variable).</p>
-<p>Instead of model() we now use json() which returns a Python dict.</p>
-<div class="language-python highlight"><pre><span></span><code><span id="__span-3-1"><a id="__codelineno-3-1" name="__codelineno-3-1" href="#__codelineno-3-1"></a><span class="kn">import</span> <span class="nn">pprint</span>
-</span><span id="__span-3-2"><a id="__codelineno-3-2" name="__codelineno-3-2" href="#__codelineno-3-2"></a><span class="n">pp</span> <span class="o">=</span> <span class="n">pprint</span><span class="o">.</span><span class="n">PrettyPrinter</span><span class="p">(</span><span class="n">width</span><span class="o">=</span><span class="mi">300</span><span class="p">,</span> <span class="n">sort_dicts</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
-</span><span id="__span-3-3"><a id="__codelineno-3-3" name="__codelineno-3-3" href="#__codelineno-3-3"></a>
-</span><span id="__span-3-4"><a id="__codelineno-3-4" name="__codelineno-3-4" href="#__codelineno-3-4"></a><span class="n">in_text</span> <span class="o">=</span> <span class="s2">&quot;Extract 5 keypoints of the following text in JSON format:</span><span class="se">\n\n</span><span class="s2">&quot;</span> <span class="o">+</span> <span class="n">doc</span>
-</span><span id="__span-3-5"><a id="__codelineno-3-5" name="__codelineno-3-5" href="#__codelineno-3-5"></a>
-</span><span id="__span-3-6"><a id="__codelineno-3-6" name="__codelineno-3-6" href="#__codelineno-3-6"></a><span class="n">out</span> <span class="o">=</span> <span class="n">model</span><span class="o">.</span><span class="n">json</span><span class="p">(</span><span class="n">in_text</span><span class="p">,</span>
-</span><span id="__span-3-7"><a id="__codelineno-3-7" name="__codelineno-3-7" href="#__codelineno-3-7"></a>                 <span class="n">inst</span><span class="o">=</span><span class="n">inst_text</span><span class="p">)</span>
-</span><span id="__span-3-8"><a id="__codelineno-3-8" name="__codelineno-3-8" href="#__codelineno-3-8"></a><span class="n">pp</span><span class="o">.</span><span class="n">pprint</span><span class="p">(</span><span class="n">out</span><span class="p">)</span>
-</span></code></pre></div>
-<div class="language-text highlight"><pre><span></span><code>{&#39;keypoints&#39;: [{&#39;title&#39;: &#39;Location&#39;, &#39;description&#39;: &#39;Fiji is an island country in Melanesia, part of Oceania in the South Pacific Ocean.&#39;},
-               {&#39;title&#39;: &#39;Geography&#39;, &#39;description&#39;: &#39;Consists of more than 330 islands with about 110 permanently inhabited islands.&#39;},
-               {&#39;title&#39;: &#39;Population&#39;, &#39;description&#39;: &#39;Total population of 924,610 live on the two major islands, Viti Levu and Vanua Levu.&#39;},
-               {&#39;title&#39;: &#39;History&#39;, &#39;description&#39;: &#39;Humans have lived in Fiji since the second millennium BC with Austronesians, Melanesians, and Polynesian influences.&#39;},
-               {&#39;title&#39;: &#39;Political Status&#39;, &#39;description&#39;: &#39;Officially known as the Republic of Fiji, gained independence from British rule in 1970.&#39;}]}
-</code></pre></div>
-<p>Note how the model chose to return different fields like "title" or "description".</p>
-<p>Because we didn't specify which fields we want, each model will generate different ones.</p>
-<p>To specify a fixed format, let's now generate by setting a JSON schema that defines which fields and types we want:</p>
-<div class="language-python highlight"><pre><span></span><code><span id="__span-4-1"><a id="__codelineno-4-1" name="__codelineno-4-1" href="#__codelineno-4-1"></a><span class="n">json_schema</span> <span class="o">=</span> <span class="p">{</span>
-</span><span id="__span-4-2"><a id="__codelineno-4-2" name="__codelineno-4-2" href="#__codelineno-4-2"></a>  <span class="s2">&quot;properties&quot;</span><span class="p">:</span> <span class="p">{</span>
-</span><span id="__span-4-3"><a id="__codelineno-4-3" name="__codelineno-4-3" href="#__codelineno-4-3"></a>    <span class="s2">&quot;keypoint_list&quot;</span><span class="p">:</span> <span class="p">{</span>
-</span><span id="__span-4-4"><a id="__codelineno-4-4" name="__codelineno-4-4" href="#__codelineno-4-4"></a>      <span class="s2">&quot;description&quot;</span><span class="p">:</span> <span class="s2">&quot;Keypoint list&quot;</span><span class="p">,</span>
-</span><span id="__span-4-5"><a id="__codelineno-4-5" name="__codelineno-4-5" href="#__codelineno-4-5"></a>      <span class="s2">&quot;items&quot;</span><span class="p">:</span> <span class="p">{</span>
-</span><span id="__span-4-6"><a id="__codelineno-4-6" name="__codelineno-4-6" href="#__codelineno-4-6"></a>        <span class="s2">&quot;type&quot;</span><span class="p">:</span> <span class="s2">&quot;string&quot;</span><span class="p">,</span>
-</span><span id="__span-4-7"><a id="__codelineno-4-7" name="__codelineno-4-7" href="#__codelineno-4-7"></a>        <span class="s2">&quot;description&quot;</span><span class="p">:</span> <span class="s2">&quot;Keypoint&quot;</span>
-</span><span id="__span-4-8"><a id="__codelineno-4-8" name="__codelineno-4-8" href="#__codelineno-4-8"></a>      <span class="p">},</span>
-</span><span id="__span-4-9"><a id="__codelineno-4-9" name="__codelineno-4-9" href="#__codelineno-4-9"></a>      <span class="s2">&quot;type&quot;</span><span class="p">:</span> <span class="s2">&quot;array&quot;</span>
-</span><span id="__span-4-10"><a id="__codelineno-4-10" name="__codelineno-4-10" href="#__codelineno-4-10"></a>    <span class="p">}</span>
-</span><span id="__span-4-11"><a id="__codelineno-4-11" name="__codelineno-4-11" href="#__codelineno-4-11"></a>  <span class="p">},</span>
-</span><span id="__span-4-12"><a id="__codelineno-4-12" name="__codelineno-4-12" href="#__codelineno-4-12"></a>  <span class="s2">&quot;required&quot;</span><span class="p">:</span> <span class="p">[</span>
-</span><span id="__span-4-13"><a id="__codelineno-4-13" name="__codelineno-4-13" href="#__codelineno-4-13"></a>    <span class="s2">&quot;keypoint_list&quot;</span>
-</span><span id="__span-4-14"><a id="__codelineno-4-14" name="__codelineno-4-14" href="#__codelineno-4-14"></a>  <span class="p">],</span>
-</span><span id="__span-4-15"><a id="__codelineno-4-15" name="__codelineno-4-15" href="#__codelineno-4-15"></a>  <span class="s2">&quot;type&quot;</span><span class="p">:</span> <span class="s2">&quot;object&quot;</span>
-</span><span id="__span-4-16"><a id="__codelineno-4-16" name="__codelineno-4-16" href="#__codelineno-4-16"></a><span class="p">}</span>
-</span></code></pre></div>
-<p>This JSON schema requests that the generated dict constains a "keypoint_list" with a list of strings.</p>
-<p>We'll also use json(), now passing the json_schema:</p>
-<div class="language-python highlight"><pre><span></span><code><span id="__span-5-1"><a id="__codelineno-5-1" name="__codelineno-5-1" href="#__codelineno-5-1"></a><span class="n">out</span> <span class="o">=</span> <span class="n">model</span><span class="o">.</span><span class="n">json</span><span class="p">(</span><span class="n">in_text</span><span class="p">,</span>
-</span><span id="__span-5-2"><a id="__codelineno-5-2" name="__codelineno-5-2" href="#__codelineno-5-2"></a>                 <span class="n">inst</span><span class="o">=</span><span class="n">inst_text</span><span class="p">,</span>
-</span><span id="__span-5-3"><a id="__codelineno-5-3" name="__codelineno-5-3" href="#__codelineno-5-3"></a>                 <span class="n">json_schema</span><span class="o">=</span><span class="n">json_schema</span><span class="p">)</span>
-</span><span id="__span-5-4"><a id="__codelineno-5-4" name="__codelineno-5-4" href="#__codelineno-5-4"></a>
-</span><span id="__span-5-5"><a id="__codelineno-5-5" name="__codelineno-5-5" href="#__codelineno-5-5"></a><span class="nb">print</span><span class="p">(</span><span class="n">out</span><span class="p">)</span>
-</span></code></pre></div>
-<div class="language-text highlight"><pre><span></span><code>{&#39;keypoint_list&#39;: [&#39;Fiji is an island country in Melanesia, part of Oceania in the South Pacific Ocean.&#39;, &#39;About 87% of the total population of 924,610 live on the two major islands, Viti Levu and Vanua Levu.&#39;, &quot;The majority of Fiji&#39;s islands were formed by volcanic activity starting around 150 million years ago.&quot;, &#39;Humans have lived in Fiji since the second millennium BC—first Austronesians and later Melanesians, with some Polynesian influences.&#39;, &quot;In 2014, a democratic election took place, with Bainimarama&#39;s FijiFirst party winning 59.2% of the vote.&quot;]}
-</code></pre></div>
-<div class="language-python highlight"><pre><span></span><code><span id="__span-6-1"><a id="__codelineno-6-1" name="__codelineno-6-1" href="#__codelineno-6-1"></a><span class="k">for</span> <span class="n">kpoint</span> <span class="ow">in</span> <span class="n">out</span><span class="p">[</span><span class="s2">&quot;keypoint_list&quot;</span><span class="p">]:</span>
-</span><span id="__span-6-2"><a id="__codelineno-6-2" name="__codelineno-6-2" href="#__codelineno-6-2"></a>    <span class="nb">print</span><span class="p">(</span><span class="n">kpoint</span><span class="p">)</span>
-</span></code></pre></div>
-<div class="language-text highlight"><pre><span></span><code>Fiji is an island country in Melanesia, part of Oceania in the South Pacific Ocean.
-About 87% of the total population of 924,610 live on the two major islands, Viti Levu and Vanua Levu.
-The majority of Fiji&#39;s islands were formed by volcanic activity starting around 150 million years ago.
-Humans have lived in Fiji since the second millennium BC—first Austronesians and later Melanesians, with some Polynesian influences.
-In 2014, a democratic election took place, with Bainimarama&#39;s FijiFirst party winning 59.2% of the vote.
-</code></pre></div>
-<p>It has generated a string list in the "keypoint_list" field, as we specified in the JSON schema.</p>
-<p>This is better, but the problem with JSON schemas is that they can be quite hard to work with.</p>
-<p>Let's use an easier way to specify the fields we want returned: Pydantic classes derived from BaseModel. This is way simpler to use than JSON schemas.</p>
-<div class="language-python highlight"><pre><span></span><code><span id="__span-7-1"><a id="__codelineno-7-1" name="__codelineno-7-1" href="#__codelineno-7-1"></a><span class="kn">from</span> <span class="nn">pydantic</span> <span class="kn">import</span> <span class="n">BaseModel</span><span class="p">,</span> <span class="n">Field</span>
-</span><span id="__span-7-2"><a id="__codelineno-7-2" name="__codelineno-7-2" href="#__codelineno-7-2"></a>
-</span><span id="__span-7-3"><a id="__codelineno-7-3" name="__codelineno-7-3" href="#__codelineno-7-3"></a><span class="c1"># this class definition will be used to constrain the model output and initialize an instance object</span>
-</span><span id="__span-7-4"><a id="__codelineno-7-4" name="__codelineno-7-4" href="#__codelineno-7-4"></a><span class="k">class</span> <span class="nc">Keypoints</span><span class="p">(</span><span class="n">BaseModel</span><span class="p">):</span>
-</span><span id="__span-7-5"><a id="__codelineno-7-5" name="__codelineno-7-5" href="#__codelineno-7-5"></a>    <span class="n">keypoint_list</span><span class="p">:</span> <span class="nb">list</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span>
-</span><span id="__span-7-6"><a id="__codelineno-7-6" name="__codelineno-7-6" href="#__codelineno-7-6"></a>
-</span><span id="__span-7-7"><a id="__codelineno-7-7" name="__codelineno-7-7" href="#__codelineno-7-7"></a><span class="n">out</span> <span class="o">=</span> <span class="n">model</span><span class="o">.</span><span class="n">pydantic</span><span class="p">(</span><span class="n">Keypoints</span><span class="p">,</span>
-</span><span id="__span-7-8"><a id="__codelineno-7-8" name="__codelineno-7-8" href="#__codelineno-7-8"></a>                     <span class="n">in_text</span><span class="p">,</span>
-</span><span id="__span-7-9"><a id="__codelineno-7-9" name="__codelineno-7-9" href="#__codelineno-7-9"></a>                     <span class="n">inst</span><span class="o">=</span><span class="n">inst_text</span><span class="p">)</span>
-</span><span id="__span-7-10"><a id="__codelineno-7-10" name="__codelineno-7-10" href="#__codelineno-7-10"></a><span class="nb">print</span><span class="p">(</span><span class="n">out</span><span class="p">)</span>
-</span></code></pre></div>
-<div class="language-text highlight"><pre><span></span><code>keypoint_list=[&#39;Fiji is an island country in Melanesia, part of Oceania in the South Pacific Ocean.&#39;, &#39;About 87% of the total population of 924,610 live on the two major islands, Viti Levu and Vanua Levu.&#39;, &quot;The majority of Fiji&#39;s islands were formed by volcanic activity starting around 150 million years ago.&quot;, &#39;Humans have lived in Fiji since the second millennium BC—first Austronesians and later Melanesians, with some Polynesian influences.&#39;, &quot;In 2014, a democratic election took place, with Bainimarama&#39;s FijiFirst party winning 59.2% of the vote.&quot;]
-</code></pre></div>
-<div class="language-python highlight"><pre><span></span><code><span id="__span-8-1"><a id="__codelineno-8-1" name="__codelineno-8-1" href="#__codelineno-8-1"></a><span class="k">for</span> <span class="n">kpoint</span> <span class="ow">in</span> <span class="n">out</span><span class="o">.</span><span class="n">keypoint_list</span><span class="p">:</span>
-</span><span id="__span-8-2"><a id="__codelineno-8-2" name="__codelineno-8-2" href="#__codelineno-8-2"></a>    <span class="nb">print</span><span class="p">(</span><span class="n">kpoint</span><span class="p">)</span>
-</span></code></pre></div>
-<div class="language-text highlight"><pre><span></span><code>Fiji is an island country in Melanesia, part of Oceania in the South Pacific Ocean.
-About 87% of the total population of 924,610 live on the two major islands, Viti Levu and Vanua Levu.
-The majority of Fiji&#39;s islands were formed by volcanic activity starting around 150 million years ago.
-Humans have lived in Fiji since the second millennium BC—first Austronesians and later Melanesians, with some Polynesian influences.
-In 2014, a democratic election took place, with Bainimarama&#39;s FijiFirst party winning 59.2% of the vote.
-</code></pre></div>
-<p>The pydantic() method returns an object of class Keypoints, instantiated with the model output.</p>
-<p>This is a much simpler way to extract structured data from model.</p>
-<p>Please see other examples for more interesting objects. In particular, we did not add descriptions to the fields, which are important clues to help the model understand what we want.</p>
-<p>Besides Pydantic classes, Sibila can also use Python's dataclass to extract structured data. This is a lighter and easier alternative to using Pydantic.</p>
-<!-- TODO: link to dataclass in concepts -->
+<div class="language-text highlight"><pre><span></span><code>extract_names begin... 0.0
+...extract_names done 4.1
 
-<p><a href="https://github.com/jndiogo/sibila/tree/main/examples/from_text_to_object">Example's assets at GitHub</a>.</p>
+
+
+
+
+[&#39;John Smith&#39;,
+ &#39;Emily Johnson&#39;,
+ &#39;Michael Brown&#39;,
+ &#39;Jessica Williams&#39;,
+ &#39;David Jones&#39;,
+ &#39;Sarah Davis&#39;,
+ &#39;Daniel Miller&#39;,
+ &#39;Laura Wilson&#39;,
+ &#39;James Taylor&#39;,
+ &#39;Sophia Anderson&#39;,
+ &#39;Christopher Thomas&#39;,
+ &#39;Emma Moore&#39;,
+ &#39;Joseph Jackson&#39;,
+ &#39;Olivia Martin&#39;,
+ &#39;Andrew White&#39;,
+ &#39;Isabella Thompson&#39;,
+ &#39;Matthew Harris&#39;,
+ &#39;Ava Garcia&#39;,
+ &#39;Ethan Martin&#39;,
+ &#39;Mia Clark&#39;]
+</code></pre></div>
+<p>The second task will classify a phrase as "spam"/"not spam":</p>
+<div class="language-python highlight"><pre><span></span><code><span id="__span-2-1"><a id="__codelineno-2-1" name="__codelineno-2-1" href="#__codelineno-2-1"></a><span class="k">async</span> <span class="k">def</span> <span class="nf">classify_spam</span><span class="p">():</span>
+</span><span id="__span-2-2"><a id="__codelineno-2-2" name="__codelineno-2-2" href="#__codelineno-2-2"></a>    <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;classify_spam begin...&quot;</span><span class="p">,</span> <span class="n">secs</span><span class="p">())</span>
+</span><span id="__span-2-3"><a id="__codelineno-2-3" name="__codelineno-2-3" href="#__codelineno-2-3"></a>
+</span><span id="__span-2-4"><a id="__codelineno-2-4" name="__codelineno-2-4" href="#__codelineno-2-4"></a>    <span class="n">classification</span> <span class="o">=</span> <span class="k">await</span> <span class="n">model</span><span class="o">.</span><span class="n">classify_async</span><span class="p">([</span><span class="s2">&quot;spam&quot;</span><span class="p">,</span> <span class="s2">&quot;not spam&quot;</span><span class="p">],</span>
+</span><span id="__span-2-5"><a id="__codelineno-2-5" name="__codelineno-2-5" href="#__codelineno-2-5"></a>                                                <span class="s2">&quot;I am a Nigerian prince and will make you very rich!&quot;</span><span class="p">)</span>
+</span><span id="__span-2-6"><a id="__codelineno-2-6" name="__codelineno-2-6" href="#__codelineno-2-6"></a>
+</span><span id="__span-2-7"><a id="__codelineno-2-7" name="__codelineno-2-7" href="#__codelineno-2-7"></a>    <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;...classify_spam done&quot;</span><span class="p">,</span> <span class="n">secs</span><span class="p">())</span>
+</span><span id="__span-2-8"><a id="__codelineno-2-8" name="__codelineno-2-8" href="#__codelineno-2-8"></a>
+</span><span id="__span-2-9"><a id="__codelineno-2-9" name="__codelineno-2-9" href="#__codelineno-2-9"></a>    <span class="k">return</span> <span class="n">classification</span>
+</span><span id="__span-2-10"><a id="__codelineno-2-10" name="__codelineno-2-10" href="#__codelineno-2-10"></a>
+</span><span id="__span-2-11"><a id="__codelineno-2-11" name="__codelineno-2-11" href="#__codelineno-2-11"></a><span class="n">start_secs</span><span class="p">()</span>
+</span><span id="__span-2-12"><a id="__codelineno-2-12" name="__codelineno-2-12" href="#__codelineno-2-12"></a><span class="k">await</span> <span class="n">classify_spam</span><span class="p">()</span>
+</span></code></pre></div>
+<div class="language-text highlight"><pre><span></span><code>classify_spam begin... 0.0
+...classify_spam done 1.5
+
+
+
+
+
+&#39;spam&#39;
+</code></pre></div>
+<p>Let's use asyncio.as_completed(), to receive each task output, as soon as it's ready:</p>
+<div class="language-python highlight"><pre><span></span><code><span id="__span-3-1"><a id="__codelineno-3-1" name="__codelineno-3-1" href="#__codelineno-3-1"></a><span class="k">async</span> <span class="k">def</span> <span class="nf">run_tasks</span><span class="p">():</span>
+</span><span id="__span-3-2"><a id="__codelineno-3-2" name="__codelineno-3-2" href="#__codelineno-3-2"></a>    <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;as_complete begin---&quot;</span><span class="p">,</span> <span class="n">secs</span><span class="p">())</span>
+</span><span id="__span-3-3"><a id="__codelineno-3-3" name="__codelineno-3-3" href="#__codelineno-3-3"></a>
+</span><span id="__span-3-4"><a id="__codelineno-3-4" name="__codelineno-3-4" href="#__codelineno-3-4"></a>    <span class="n">tasks</span> <span class="o">=</span> <span class="p">[</span><span class="n">extract_names</span><span class="p">(),</span> <span class="n">classify_spam</span><span class="p">()]</span>
+</span><span id="__span-3-5"><a id="__codelineno-3-5" name="__codelineno-3-5" href="#__codelineno-3-5"></a>    <span class="k">for</span> <span class="n">task</span> <span class="ow">in</span> <span class="n">asyncio</span><span class="o">.</span><span class="n">as_completed</span><span class="p">(</span><span class="n">tasks</span><span class="p">):</span>
+</span><span id="__span-3-6"><a id="__codelineno-3-6" name="__codelineno-3-6" href="#__codelineno-3-6"></a>        <span class="n">res</span> <span class="o">=</span> <span class="k">await</span> <span class="n">task</span>
+</span><span id="__span-3-7"><a id="__codelineno-3-7" name="__codelineno-3-7" href="#__codelineno-3-7"></a>        <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Result:&quot;</span><span class="p">,</span> <span class="n">res</span><span class="p">)</span>
+</span><span id="__span-3-8"><a id="__codelineno-3-8" name="__codelineno-3-8" href="#__codelineno-3-8"></a>
+</span><span id="__span-3-9"><a id="__codelineno-3-9" name="__codelineno-3-9" href="#__codelineno-3-9"></a>    <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;---as_complete done&quot;</span><span class="p">,</span> <span class="n">secs</span><span class="p">())</span>
+</span><span id="__span-3-10"><a id="__codelineno-3-10" name="__codelineno-3-10" href="#__codelineno-3-10"></a>
+</span><span id="__span-3-11"><a id="__codelineno-3-11" name="__codelineno-3-11" href="#__codelineno-3-11"></a><span class="n">start_secs</span><span class="p">()</span>
+</span><span id="__span-3-12"><a id="__codelineno-3-12" name="__codelineno-3-12" href="#__codelineno-3-12"></a><span class="k">await</span> <span class="n">run_tasks</span><span class="p">()</span>
+</span></code></pre></div>
+<div class="language-text highlight"><pre><span></span><code>as_complete begin--- 0.0
+extract_names begin... 0.0
+classify_spam begin... 0.0
+...classify_spam done 1.0
+Result: spam
+...extract_names done 4.8
+Result: [&#39;John Smith&#39;, &#39;Emily Johnson&#39;, &#39;Michael Brown&#39;, &#39;Jessica Williams&#39;, &#39;David Jones&#39;, &#39;Sarah Davis&#39;, &#39;Daniel Miller&#39;, &#39;Laura Wilson&#39;, &#39;James Taylor&#39;, &#39;Sophia Anderson&#39;, &#39;Christopher Thomas&#39;, &#39;Emma Moore&#39;, &#39;Joseph Jackson&#39;, &#39;Olivia Martin&#39;, &#39;Andrew White&#39;, &#39;Isabella Thompson&#39;, &#39;Matthew Harris&#39;, &#39;Ava Garcia&#39;, &#39;Ethan Martin&#39;, &#39;Mia Clark&#39;]
+---as_complete done 4.8
+</code></pre></div>
+<p>Follow the above begin/done print statements and the listed time in seconds, as they are printed.</p>
+<p>Both tasks were started at the same time and classify_spam() terminated first (at the 1.0s mark), because it's a shorter task that simply outputs "spam"/"not spam".</p>
+<p>On the meanwhile, the model worked on generating the 20 names that we requested with extract_names(), a longer operation which terminates later (at 4.8s).</p>
+<p>In the same manner any other tasks could be run in parallel by using the *_async() methods of the model classes.</p>
 
 
 
