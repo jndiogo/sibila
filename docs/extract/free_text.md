@@ -2,7 +2,7 @@
 title: Free text
 ---
 
-You can also generate free text by calling [model()](../api-reference/model.md#sibila.LlamaCppModel.__call__):
+You can also generate free text by calling [model()](../api-reference/local_model.md#sibila.Model.__call__) or [model.call()](../api-reference/local_model.md#sibila.Model.call):
 
 
 !!! example

@@ -9,5 +9,8 @@ cp models/_original_formats.json models/formats.json
 ./build_docs.sh
 mkdocs build
 
-tests/setup.sh
+cd tests
+./setup.sh
 pytest
+
+cd ..

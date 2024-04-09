@@ -32,7 +32,7 @@ class Models:
         SIBILA_MODELS: ';'-delimited list of folders where to find: models.json, formats.json and model files.
 
 
-    = Model Directory =
+    = Models Directory =
 
     Useful to create models from resource names like "llamacpp:openchat" or "openai:gpt-4". 
     This makes it simple to change a model, store model settings, to compare model outputs, etc.
@@ -171,7 +171,19 @@ class Models:
         "openai": {
             "mandatory": [],
             "flags": ["name_passthrough"]
-        }
+        },
+        "together": {
+            "mandatory": [],
+            "flags": ["name_passthrough"]
+        },
+        "fireworks": {
+            "mandatory": [],
+            "flags": ["name_passthrough"]
+        },
+        "mistral": {
+            "mandatory": [],
+            "flags": ["name_passthrough"]
+        },
     }
     ALL_PROVIDER_NAMES = list(PROVIDER_CONF.keys()) + ["alias"] # providers + "alias"
 
@@ -180,7 +192,10 @@ class Models:
         return {
             "llamacpp": {},
             "openai": {},
-            "alias": {}
+            "together": {},
+            "fireworks": {},
+            "mistral": {},
+            "alias": {},
         }
 
     MODELS_CONF_FILENAME = "models.json"
@@ -374,6 +389,24 @@ class Models:
             from .openai import OpenAIModel
                     
             model = OpenAIModel(**args)
+            
+        elif provider == "together":
+
+            from .schema_format_openai import TogetherModel
+                    
+            model = TogetherModel(**args)
+            
+        elif provider == "fireworks":
+
+            from .schema_format_openai import FireworksModel
+                    
+            model = FireworksModel(**args)
+            
+        elif provider == "mistral":
+
+            from .mistral import MistralModel
+                    
+            model = MistralModel(**args)
             
         """
         elif provider == "hf":

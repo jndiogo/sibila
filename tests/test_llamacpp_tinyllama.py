@@ -1,6 +1,6 @@
 import pytest
 
-import os, subprocess, shutil, json
+import os, subprocess, shutil, json, asyncio
 from typing import Any, Optional, Union, Literal, Annotated, get_origin, get_args
 
 import logging
@@ -237,6 +237,10 @@ def test_prompt(env_model):
 
 
 
+INT_PROMPT = "extract a number from the following text: there are 12 bananas"
+TRUE_PROMPT = "extract a True/False value from the following text: Yes I got it!"
+
+
 
 def test_extract(env_model):
 
@@ -245,11 +249,69 @@ def test_extract(env_model):
     model = LlamaCppModel(rel_model_path, format="zephyr")
 
 
-    res = model.extract(int, "twelve bananas")
+    res = model.extract(int, INT_PROMPT)
     assert res == 12
 
-    res = model.extract(bool, "Yes I got it!")
+    res = model.extract(bool, TRUE_PROMPT)
     assert res == True
 
     del model
 
+
+
+
+
+
+
+def test_extract_async(env_model):
+
+    rel_model_path = os.path.join("models", MODEL_FILENAME)
+
+    model = LlamaCppModel(rel_model_path, format="zephyr")
+
+    async def run_async():
+        print("run_async begin")
+
+        res = await model.extract_async(int, INT_PROMPT)
+        assert res == 12
+
+        res = await model.extract_async(bool, TRUE_PROMPT)
+        assert res == True
+        print("run_async done")
+        
+    asyncio.run(run_async())
+
+
+
+    async def run1_async():        
+        res = await model.extract_async(int, INT_PROMPT)
+        assert res == 12
+        print("run1 done")
+
+    async def run2_async():
+        res = await model.extract_async(bool, TRUE_PROMPT)
+        assert res == True
+        print("run2 done")
+
+
+    async def as_completed():
+        print("as_complete begin")
+        tasks = [run1_async(), run2_async()]
+        for task in asyncio.as_completed(tasks):
+            await task
+        print("as_complete done")
+            
+    asyncio.run(as_completed())    
+
+
+
+    async def gather():
+        print("gather begin")
+        tasks = [run1_async(), run2_async()]
+        await asyncio.gather(*tasks)
+        print("gather done")
+            
+    asyncio.run(gather())    
+
+
+    del model

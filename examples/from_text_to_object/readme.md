@@ -105,7 +105,6 @@ These are quite reasonable keypoints!
 Let's now ask for JSON output, taking care to explicitly request it in the query (in_text variable).
 
 Instead of model() we now use json() which returns a Python dict.
-We'll pass None as the first parameter because we're not using a JSON schema.
 
 
 ```python
@@ -114,8 +113,7 @@ pp = pprint.PrettyPrinter(width=300, sort_dicts=False)
 
 in_text = "Extract 5 keypoints of the following text in JSON format:\n\n" + doc
 
-out = model.json(None,
-                 in_text,
+out = model.json(in_text,
                  inst=inst_text)
 pp.pprint(out)
 ```
@@ -155,13 +153,13 @@ json_schema = {
 
 This JSON schema requests that the generated dict constains a "keypoint_list" with a list of strings.
 
-We'll also use json(), now passing the json_schema as first argument:
+We'll also use json(), now passing the json_schema:
 
 
 ```python
-out = model.json(json_schema,
-                 in_text,
-                 inst=inst_text)
+out = model.json(in_text,
+                 inst=inst_text,
+                 json_schema=json_schema)
 
 print(out)
 ```

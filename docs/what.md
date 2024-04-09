@@ -33,17 +33,17 @@ For example, need to classify something?
         'bad'
         ```
 
-How does it work? Extraction to the given data types is guaranteed by automatic JSON Schema grammars in local models, or by the Tools functionality of OpenAI API remote models.
+How does it work? Extraction to the given data types is guaranteed by automatic JSON Schema grammars in local models, or by the Tools functionality of OpenAI API (or the equivalent in other remote models).
 
 
 
-## From your models or OpenAI's
+## From your models or remote models
 
 Small downloadable 7B parameter models are getting better every month and they have reached a level where they are competent enough for most common data extraction or summarization tasks.
 
 With 8Gb or more of RAM or GPU memory, you can get good structured output from models like OpenChat, Zephyr, Mistral 7B, or any other GGUF file.
 
-You can use any paid OpenAI model, as well as any model that llama.cpp can run, with the same API. Choose the best model for each use, allowing you the freedom of choice.
+You can use remote models from OpenAI, Mistral AI and others, as well as any model that llama.cpp can run, with the same API. Choose the best model for each use, allowing you the freedom of choice.
 
 
 

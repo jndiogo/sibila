@@ -3,12 +3,24 @@
 All notable changes to this project will be documented in this file.
 
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
-The project does not yet adhere to [Semantic Versioning](https://semver.org/spec/v2.0.0.html). Hope this can happen in 0.4.
+The project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 
 ## [Unreleased]
-- feat: Add seed setting to GenConf. Commented-out because of lack of support in OpenAI models and certain llama.cpp hardware accelerations.
+- feat: Add seed setting to GenConf. Commented-out because of lack of support in OpenAI models and some llama.cpp hardware accelerations.
 
+## [0.4.0]
+- feat: New providers: Mistral AI, Together.ai and Fireworks AI allowing access to all their chat-based models.
+- feat: Model classes now support async calls with the '_async' prefix, for example extract_async(). This requires model API support: only remote models will benefit. Local models (via llama.cpp) can still be called with _async methods but do not have async IO that can run concurrently.
+- feat: Add 'special' field to GenConf, allowing provider or model specific generation arguments.
+- feat: All models now also accept model path/name starting with their provider names as in Models.create().
+- feat: Change Model.json() to stop requiring a JSON Schema as first argument.
+- fix: More robust JSON extraction for misbehaved remote models.
+- fix: LlamaCppModel no longer outputting debug info when created in Jupyter notebook environment with verbose=False.
+- fix: Default "gpt-4" model in 'sibila/res/base:models.json' now points to gpt-4-1106-preview, the first GPT-4 model that accepts json-object output.
+- docs: Add API references for new classes and _async() methods.
+- docs: Add new async example.
+- test: Add new tests for new providers/model classes.
 
 ## [0.3.6]
 - feat: Migrate hardcoded OpenAI model entries from OpenAIModel to 'res/base_models.json'.

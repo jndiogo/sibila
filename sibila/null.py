@@ -6,7 +6,7 @@ Created later if  needed: NullFormattedTextModel, NullMessagesModel
 
 from typing import Any, Optional, Union
 
-import sys, os, json, ctypes
+import sys, os, json, ctypes, time, asyncio
 from copy import copy
 
 import logging
@@ -82,12 +82,20 @@ class NullModel(Model):
 
         return out
 
+    async def gen_async(self, 
+                        thread: Thread,
+                        genconf: Optional[GenConf] = None,
+                        ) -> GenOut:
+        
+        await asyncio.sleep(0.5)
+        return self.gen(thread, genconf)
+        
 
 
     def token_len(self,
-                  thread: Thread,
+                  thread_or_text: Union[Thread,str],
                   _: Optional[GenConf] = None) -> int:
-        assert False, "NullModel doesn't use tokens"
+        assert False, "NullModel won't use tokens"
 
 
     @classmethod

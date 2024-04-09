@@ -368,7 +368,7 @@ def recursive_summarize(model: Model,
     # split initial text
     logger.debug(f"Max ctx token len {max_token_len}")
     
-    token_len_fn = model.tokenizer.token_len_lambda
+    token_len_fn = model.token_len_lambda
     logger.debug(f"Initial text token_len {token_len_fn(text)}") # type: ignore[arg-type]
     
     spl = RecursiveTextSplitter(max_token_len, overlap_size, len_fn=token_len_fn)

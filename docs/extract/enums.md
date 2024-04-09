@@ -81,7 +81,7 @@ See the [Tag classification example](../examples/tag.md) to see how Enum is used
 
 ## Classify
 
-You can also use the [classify()](../api-reference/model.md#sibila.LlamaCppModel.classify) method to extract enumerations, which accepts the enum types we've seen above. It calls extract() internally and its only justification is to make things more readable:
+You can also use the [classify()](../api-reference/local_model.md#sibila.Model.classify) method to extract enumerations, which accepts the enum types we've seen above. It calls extract() internally and its only justification is to make things more readable:
 
 
 !!! example

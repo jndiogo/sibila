@@ -114,10 +114,18 @@ def test_dataclass():
         anno: Annotated[str, "This is anno"] = "30"
         quantity_on_hand: int = 0
 
-    extract(Inv,
-            "A lot of nice things but no meaning at all",
-            '{ "name": "Item", "unit_price": 0, "alistia": [], "anno": "30", "quantity_on_hand": 0}',
-            Inv(name='Item', unit_price=0, alistia=[], anno='30', quantity_on_hand=0))
+    target = Inv
+    text = "A lot of nice things but no meaning at all"
+    response = '{ "name": "Item", "unit_price": 0, "alistia": [], "anno": "30", "quantity_on_hand": 0}'
+    expected = Inv(name='Item', unit_price=0, alistia=[], anno='30', quantity_on_hand=0)
+    extract(target,
+            text,
+            response,
+            expected)
+
+    model.set_response(response)
+    assert model.dataclass(target, text) == expected
+
 
 
 
@@ -140,12 +148,23 @@ def test_pydantic():
         name: str = Field(..., description="The name for the user")
         age: int = Field(..., description="The user's age")
 
+    target = UserDetail
+    text = "Jane's 99 years old."
+    response = '{"name": "Jane", "age": 99}'
+    expected = UserDetail(name='Jane', age=99)
+    extract(target,
+            text,
+            response,
+            expected)
+
+    model.set_response(response)
+    assert model.pydantic(target, text) == expected
+
+
     extract(list[UserDetail],
             "Jane's 99 years old, Paul is 75.",
             '{"output": [{"name": "Jane", "age": 99}, {"name": "Paul", "age": 75}]}',
             [UserDetail(name='Jane', age=99), UserDetail(name='Paul', age=75)])
-
-
 
 
 

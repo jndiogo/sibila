@@ -12,7 +12,7 @@ from dataclasses import dataclass, field, asdict
 from enum import IntEnum
 
 import json
-from copy import copy
+from copy import deepcopy
 
 import logging
 logger = logging.getLogger(__name__)
@@ -51,10 +51,16 @@ class GenConf:
     Thread msgs must list the JSON schema and request its use; must also set the format to "json".
     """
     
+    special: Union[dict,None] = None
+    """Special model or provider-specific generation arguments. Args in the base dict are included unconditionally
+    for a model, while args in sub-keys with the model's provider name are only used for models from 
+    that provider, for example "openai": {...} values are only used in OpenAI models."""
+
     
     def __call__(self,
                  **kwargs: Any) -> Self:
         """Return a copy of the current GenConf updated with values in kwargs. Doesn't modify object.
+        Key 'special' is updated element-wise.
 
         Args:
             **kwargs: update settings of the same names in the returned copy.
@@ -66,23 +72,33 @@ class GenConf:
             A copy of the current object with kwargs values updated. Doesn't modify object.
         """
 
-        ret = copy(self)
+        ret = deepcopy(self)
 
         for k,v in kwargs.items():
             if not hasattr(ret, k):
                 raise KeyError(f"No such key '{k}'")
-            setattr(ret, k,v)
+            if k == "special":
+                if ret.special is None:
+                    ret.special = {}
+                if v is None:
+                    v = {}
+                ret.special.update(v)
+                if not ret.special:
+                    ret.special = None
+            else:
+                setattr(ret, k,v)
 
         return ret
 
 
     def clone(self) -> Self:
-        """Return a copy of this configuration."""
-        return copy(self)
+        """Return a deep copy of this configuration."""
+        return deepcopy(self)
         
     def as_dict(self) -> dict:
         """Return GenConf as a dict."""
         return asdict(self)
+
 
     @staticmethod
     def from_dict(dic: dict) -> Any: # Any = GenConf
@@ -113,6 +129,35 @@ class GenConf:
             max_tokens = min(max_tokens, max_tokens_limit)
 
         return max_tokens
+
+
+    def resolve_special(self, 
+                        provider: Optional[str] = None) -> dict:
+        """Compiles settings from the 'special' field, for model and provider.
+
+        Args:
+            provider: If set will include any 'special' settings specified for that provider, inside a key named after the provider. If not given, only base keys are added.
+
+        Returns:
+            _description_
+        """
+
+        if self.special is None:
+            return {}
+
+        from .models import Models
+
+        out = {}
+        for k,v in self.special.items():
+            if k == provider: # provider-specific
+                if not isinstance(v,dict):
+                    raise ValueError(f"Config 'special' for provider '{provider}' must be a dict.")
+                out.update(v)
+            else: # common args
+                if isinstance(v,dict) and k in Models.ALL_PROVIDER_NAMES: # skip other provider entries
+                    continue
+                out[k] = v
+        return out
 
 
 

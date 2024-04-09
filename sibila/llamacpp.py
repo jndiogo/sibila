@@ -64,6 +64,9 @@ class LlamaCppModel(FormattedTextModel):
         desc: Model information.
     """
 
+    PROVIDER_NAME:str = "llamacpp"
+    """Provider prefix that this class handles."""
+
     _llama: Llama
     """LlamaCpp instance"""
 
@@ -78,9 +81,9 @@ class LlamaCppModel(FormattedTextModel):
                  # common base model args
                  genconf: Optional[GenConf] = None,
                  schemaconf: Optional[JSchemaConf] = None,
-                 tokenizer: Optional[Tokenizer] = None,
                  ctx_len: Optional[int] = None,
                  max_tokens_limit: Optional[int] = None,
+                 tokenizer: Optional[Tokenizer] = None,
 
                  # important LlamaCpp-specific args
                  n_gpu_layers: int = -1,
@@ -99,9 +102,9 @@ class LlamaCppModel(FormattedTextModel):
             format_search_order: Search order for auto-detecting format, "name" searches in the filename, "meta_template" looks in the model's metadata, "folder_json" looks for configs in file's folder. Defaults to ["name","meta_template", "folder_json"].
             genconf: Default generation configuration, which can be used in gen() and related. Defaults to None.
             schemaconf: Default configuration for JSON schema validation, used if generation call doesn't supply one. Defaults to None.
-            tokenizer: An external initialized tokenizer to use instead of the created from the GGUF file. Defaults to None.
             ctx_len: Maximum context length to be used. Use 0 for maximum possible size, which may raise an out of memory error. None will use a default from the 'llamacpp' provider's '_default' entry at 'res/base_models.json'.
             max_tokens_limit: Maximum output tokens limit. None for no limit.
+            tokenizer: An external initialized tokenizer to use instead of the created from the GGUF file. Defaults to None.
             n_gpu_layers: Number of model layers to run in a GPU. Defaults to -1 for all.
             main_gpu: Index of the GPU to use. Defaults to 0.
             n_batch: Prompt processing batch size. Defaults to 512.
@@ -123,6 +126,10 @@ class LlamaCppModel(FormattedTextModel):
         if not has_llama_cpp:
             raise ImportError("Please install llama-cpp-python by running: pip install llama-cpp-python")
 
+        # also accept "provider:path" for ease of use
+        provider_name = self.PROVIDER_NAME + ":"
+        if path.startswith(provider_name):
+            path = path[len(provider_name):]
 
         if not os.path.isfile(path):
             raise NameError(f"Model file not found at '{path}'")
@@ -177,8 +184,8 @@ class LlamaCppModel(FormattedTextModel):
 
 
         try:
-            # with llamacpp_verbosity_manager(verbose):
-            self._llama = Llama(model_path=path, **llamacpp_kwargs)
+            with llamacpp_verbosity_manager(verbose):
+                self._llama = Llama(model_path=path, **llamacpp_kwargs)
 
         except Exception as e:
             raise MemoryError(f"Could not load model file '{path}'. "
@@ -246,6 +253,9 @@ class LlamaCppModel(FormattedTextModel):
             Tuple of strings: generated_text, finish_reason.
         """
 
+        if self.tokenizer is None:
+            raise ValueError("A LlamaCppModel object requires a tokenizer")
+
         token_ids = self.tokenizer.encode(text)
         token_len = len(token_ids)
 
@@ -273,13 +283,19 @@ class LlamaCppModel(FormattedTextModel):
 
             genconf_kwargs["grammar"] = grammar
             
+        # clean keys unknown to llama.cpp
+        genconf_kwargs.pop("json_schema")
+
+        # inject model-specific args, if any
+        genconf_kwargs.update(genconf.resolve_special(self.PROVIDER_NAME))
+        genconf_kwargs.pop("special")
+
+
         # seed config is disabled, has remote models and some hardware accelerated local models don't support it.
         # if "seed" in genconf_kwargs:
         #    if genconf_kwargs["seed"] == -1:
         #        genconf_kwargs["seed"] = int(time())
 
-
-        genconf_kwargs.pop("json_schema")
 
         logger.debug(f"LlamaCpp args: {genconf_kwargs}")
 
@@ -300,6 +316,32 @@ class LlamaCppModel(FormattedTextModel):
         return choice["text"], choice["finish_reason"] # type: ignore[return-value]
 
 
+
+    async def _gen_text_async(self,
+                              text: str,
+                              genconf: GenConf) -> tuple[str,str]:
+        """Generate from formatted text. Please note that the llama.cpp engine 
+        cannot currently benefit from async: calls will be generated sequentially.
+
+        Args:
+            text: Formatted text (from input Thread).
+            genconf: Model generation configuration.
+
+        Raises:
+            RuntimeError: If unable to generate.
+
+        Returns:
+            Tuple of strings: generated_text, finish_reason.
+        """
+
+        return self._gen_text(text, genconf)
+
+
+
+
+
+
+
         
     @classmethod
     def provider_version(_) -> str:
@@ -318,8 +360,7 @@ class LlamaCppModel(FormattedTextModel):
     @property
     def desc(self) -> str:
         """Model description."""
-        return f"LlamaCppModel: {self._model_path} - '{self._llama._model.desc()}'"
-
+        return f"{type(self).__name__}: {self._model_path} - '{self._llama._model.desc()}'"
     
     @property
     def n_embd(self) -> int:

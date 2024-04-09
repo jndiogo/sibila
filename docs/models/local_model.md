@@ -52,7 +52,7 @@ Once the file "openchat-3.5-1210.Q4_K_M.gguf" is placed in the "models" folder, 
 
 ## LlamaCppModel class
 
-Local llama.cpp models can be used with the [LlamaCppModel](../api-reference/model.md#sibila.LlamaCppModel) class. Let's generate text after our prompt:
+Local llama.cpp models can be used with the [LlamaCppModel](../api-reference/local_model.md#sibila.LlamaCppModel) class. Let's generate text after our prompt:
 
 !!! example
     ``` python

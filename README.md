@@ -1,11 +1,13 @@
 # Sibila
 
-Extract structured data from remote or local file LLM models.
+Extract structured data from remote or local LLM models. Predictable output is essential for any serious use of LLMs.
 
 - Extract data into Pydantic objects, dataclasses or simple types.
-- Same API for local file models and remote OpenAI models.
-- Model management: download models, manage configuration and quickly switch between models.
+- Same API for local file models and remote OpenAI, Mistral AI and other models.
+- Model management: download models, manage configuration, quickly switch between models.
 - Tools for evaluating output across local/remote models, for chat-like interaction and more.
+
+No matter how well you craft a prompt begging a model for the output you need, it can always respond something else. Extracting structured data can be a big step into getting predictable behavior from your models.
 
 See [What can you do with Sibila?](https://jndiogo.github.io/sibila/what/)
 
@@ -45,7 +47,8 @@ model = Models.create("openai:gpt-4")
 model.extract(Info, "Who was the first man in the moon?")
 ```
 
-If Pydantic BaseModel objects are too much for your project, Sibila supports similar functionality with Python dataclass.
+If Pydantic BaseModel objects are too much for your project, Sibila supports similar functionality with Python dataclass. Also includes asynchronous access to remote models.
+
 
 
 
@@ -59,7 +62,7 @@ If Pydantic BaseModel objects are too much for your project, Sibila supports sim
 Sibila can be installed from PyPI by doing:
 
 ```
-pip install sibila
+pip install --upgrade sibila
 ```
 
 See [Getting started](https://jndiogo.github.io/sibila/installing/) for more information.
@@ -91,7 +94,7 @@ Thank you!
 
 ## Sibila?
 
-Sibila is the Portuguese word for Sibyl. [The Sibyls](https://en.wikipedia.org/wiki/Sibyl) were wise oracular women in ancient Greece. Their mysterious words puzzled people throughout the centuries, providing insight or prophetic predictions.
+Sibila is the Portuguese word for Sibyl. [The Sibyls](https://en.wikipedia.org/wiki/Sibyl) were wise oracular women in ancient Greece. Their mysterious words puzzled people throughout the centuries, providing insight or prophetic predictions, "uttering things not to be laughed at".
 
 ![Michelangelo's Delphic Sibyl, Sistine Chapel ceiling](https://upload.wikimedia.org/wikipedia/commons/thumb/1/19/DelphicSibylByMichelangelo.jpg/471px-DelphicSibylByMichelangelo.jpg)
 

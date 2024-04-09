@@ -118,7 +118,7 @@ You can have the following keys in a model entry:
 | name | The filename to use when loading a model (or remote model name) |
 | format | Identifies the chat template format that it should use, from the ["formats.json"](formats_json.md) file. Some local models include the chat template format in their metadata, so this key is optional. |
 | genconf | Default [GenConf (generation config settings)](../api-reference/generation.md#sibila.GenConf) used to create the model, which will default to use them in each generation. These config settings are merged element-wise from any specified in the "_defaults" entry for the provider. |
-| other | Any other keys will be passed during model creation as its arguments. You can learn which arguments are possible in the API reference for [LlamaCppModel](../api-reference/model.md#sibila.LlamaCppModel) or [OpenAIModel](../api-reference/model.md#sibila.OpenAIModel). For example you can pass "ctx_len": 2048 to define the context length to use. As genconf, these keys are merged element-wise from any specified in the "_defaults" entry for the provider. |
+| other | Any other keys will be passed during model creation as its arguments. You can learn which arguments are possible in the API reference for [LlamaCppModel](../api-reference/local_model.md#sibila.LlamaCppModel) or [OpenAIModel](../api-reference/remote_model.md#sibila.OpenAIModel). For example you can pass "ctx_len": 2048 to define the context length to use. As genconf, these keys are merged element-wise from any specified in the "_defaults" entry for the provider. |
 
 <!-- add links to LlamaCppModel and OpenAI API ref -->
 

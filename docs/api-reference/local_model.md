@@ -1,18 +1,24 @@
 ---
-title: Model classes
+title: Local model classes
 ---
 
-## Local models
 ::: sibila.LlamaCppModel
     options:
         members:
             - __init__
             - extract
             - classify
-            - __call__
             - json
             - dataclass
             - pydantic
+            - call
+            - __call__
+            - extract_async
+            - classify_async
+            - json_async
+            - dataclass_async
+            - pydantic_async
+            - call_async
             - gen
             - gen_json
             - gen_dataclass
@@ -27,18 +33,24 @@ title: Model classes
             - get_metadata
 
 
-## Remote models
-::: sibila.OpenAIModel
+::: sibila.Model
     options:
         members:
             - __init__
             - extract
             - classify
-            - gen
             - json
             - dataclass
             - pydantic
+            - call
             - __call__
+            - extract_async
+            - classify_async
+            - json_async
+            - dataclass_async
+            - pydantic_async
+            - call_async
+            - gen
             - gen_json
             - gen_dataclass
             - gen_pydantic
@@ -47,6 +59,6 @@ title: Model classes
             - ctx_len
             - known_models
             - desc
+            - n_embd
+            - n_params
             - get_metadata
-
-

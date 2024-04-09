@@ -1,6 +1,11 @@
+"""
+Requires a defined env variable OPENAI_API_KEY with a valid OpenAI API key.
+"""
+
+
 import pytest
 
-import os, subprocess, shutil, json
+import os, subprocess, shutil, json, asyncio
 from typing import Any, Optional, Union, Literal, Annotated, get_origin, get_args
 
 import logging
@@ -65,9 +70,10 @@ def test_create_openai(env_model):
     model = OpenAIModel(MODEL_NAME)
     del model
 
-    with pytest.raises(NameError):
-        model = OpenAIModel(MODEL_NAME + "NOT_THERE")
-        del model
+    # no longer raises: inner OpenAI object is created in first call:
+    # with pytest.raises(NameError):
+    #    model = OpenAIModel(MODEL_NAME + "NOT_THERE")
+    #    del model
 
 
 
@@ -80,16 +86,17 @@ def test_models(env_model):
         model = Models.create(res_name)
         del model
 
+    # no longer raises: inner OpenAI object is created in first call:
+    # with pytest.raises(NameError):
+    #    res_name = "openai:NOT_THERE"
+    #    model = Models.create(res_name)
+    #    del model
 
-    with pytest.raises(NameError):
-        res_name = "openai:NOT_THERE"
-        model = Models.create(res_name)
-        del model
-
-    with pytest.raises(NameError):
-        res_name = "NOT_THERE"
-        model = Models.create(res_name)
-        del model
+    # no longer raises: inner OpenAI object is created in first call:
+    # with pytest.raises(NameError):
+    #    res_name = "NOT_THERE"
+    #    model = Models.create(res_name)
+    #    del model
 
 
 
@@ -184,15 +191,91 @@ def test_prompt(env_model):
 
 
 
+INT_PROMPT = "there are twelve bananas"
+TRUE_PROMPT = "Yes I got it!"
+
+
 def test_extract(env_model):
 
     model = OpenAIModel(MODEL_NAME)
 
-    res = model.extract(int, "twelve bananas")
+    res = model.extract(int, INT_PROMPT)
     assert res == 12
 
-    res = model.extract(bool, "Yes I got it!")
+    res = model.extract(bool, TRUE_PROMPT)
     assert res == True
 
     del model
 
+
+
+def test_extract_async1(env_model):
+
+    model = OpenAIModel(MODEL_NAME)
+
+
+    async def run_async():
+        print("run_async begin")
+
+        res = await model.extract_async(int, INT_PROMPT)
+        assert res == 12
+
+        res = await model.extract_async(bool, TRUE_PROMPT)
+        assert res == True
+        print("run_async done")
+        
+    asyncio.run(run_async())
+
+
+
+def test_extract_async2(env_model):
+
+    model = OpenAIModel(MODEL_NAME)
+
+    async def run1_async():        
+        print("run1 begin")
+        res = await model.extract_async(int, INT_PROMPT)
+        assert res == 12
+        print("run1 done")
+
+    async def run2_async():
+        print("run2 begin")
+        res = await model.extract_async(bool, TRUE_PROMPT)
+        assert res == True
+        print("run2 done")
+
+
+    async def as_completed():
+        print("as_complete begin")
+        tasks = [run1_async(), run2_async()]
+        for task in asyncio.as_completed(tasks):
+            await task
+        print("as_complete done")
+            
+    asyncio.run(as_completed())    
+
+
+
+def test_extract_async3(env_model):
+
+    model = OpenAIModel(MODEL_NAME)
+
+    async def run1_async():        
+        print("run1 begin")
+        res = await model.extract_async(int, INT_PROMPT)
+        assert res == 12
+        print("run1 done")
+
+    async def run2_async():
+        print("run2 begin")
+        res = await model.extract_async(bool, TRUE_PROMPT)
+        assert res == True
+        print("run2 done")
+
+    async def gather():
+        print("gather begin")
+        tasks = [run1_async(), run2_async()]
+        await asyncio.gather(*tasks)
+        print("gather done")
+            
+    asyncio.run(gather())    

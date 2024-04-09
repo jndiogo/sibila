@@ -12,7 +12,12 @@ nav:
       - first_run.md
 
     - Creating Models:
-      - models/remote_model.md
+      - Remote models:
+        - models/remote_model.md
+        - models/openai.md
+        - models/mistral.md
+        - models/together.md
+        - models/fireworks.md
       
       - Local models:
         - models/local_model.md
@@ -30,11 +35,14 @@ nav:
       - extract/enums.md
       - extract/dataclass.md
       - extract/pydantic.md
+      - extract/free_json.md
       - extract/free_text.md
 
-    - tools.md
+    - Other Stuff:
+      - async.md
+      - tools.md
+      - tips.md
 
-    - tips.md
 
   - Examples:
     - examples/index.md
@@ -47,17 +55,20 @@ nav:
     - examples/tough_meeting.md
     - examples/compare.md
     - examples/interact.md
+    - examples/async.md
     - "Sibila CLI": examples/cli.md
 
+
   - API Reference:
-    - api-reference/model.md
+    - api-reference/local_model.md
+    - api-reference/remote_model.md
     - api-reference/models.md
     - api-reference/generation.md
     - api-reference/thread.md
     - api-reference/multigen.md
     - api-reference/tools.md
     - api-reference/tokenizer.md
-
+    - api-reference/changelog.md
 
 
 
@@ -158,7 +169,7 @@ markdown_extensions:
 
   - pymdownx.snippets:
       check_paths: true
-      base_path: ["examples"]
+      base_path: ["examples", "."]
 
   - pymdownx.highlight:
       anchor_linenums: true
