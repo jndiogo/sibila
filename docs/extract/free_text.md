@@ -2,7 +2,7 @@
 title: Free text
 ---
 
-You can also generate free text by calling [model()](../api-reference/local_model.md#sibila.Model.__call__) or [model.call()](../api-reference/local_model.md#sibila.Model.call):
+You can also generate plain text by calling [Model()](../api-reference/local_model.md#sibila.Model.__call__) or [Model.call()](../api-reference/local_model.md#sibila.Model.call):
 
 
 !!! example

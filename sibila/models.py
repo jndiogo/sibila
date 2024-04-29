@@ -164,9 +164,21 @@ class Models:
     ENV_VAR_NAME = "SIBILA_MODELS"
 
     PROVIDER_CONF = {
+        "anthropic": {
+            "mandatory": [],
+            "flags": ["name_passthrough"]
+        },
+        "fireworks": {
+            "mandatory": [],
+            "flags": ["name_passthrough"]
+        },
         "llamacpp": {
             "mandatory": ["name"],
             "flags": ["name_passthrough", "local"]
+        },
+        "mistral": {
+            "mandatory": [],
+            "flags": ["name_passthrough"]
         },
         "openai": {
             "mandatory": [],
@@ -176,25 +188,18 @@ class Models:
             "mandatory": [],
             "flags": ["name_passthrough"]
         },
-        "fireworks": {
-            "mandatory": [],
-            "flags": ["name_passthrough"]
-        },
-        "mistral": {
-            "mandatory": [],
-            "flags": ["name_passthrough"]
-        },
     }
     ALL_PROVIDER_NAMES = list(PROVIDER_CONF.keys()) + ["alias"] # providers + "alias"
 
     @classmethod
     def EMPTY_MODELS_DIR(_) -> dict:
         return {
+            "anthropic": {},
+            "fireworks": {},
             "llamacpp": {},
+            "mistral": {},
             "openai": {},
             "together": {},
-            "fireworks": {},
-            "mistral": {},
             "alias": {},
         }
 
@@ -366,7 +371,17 @@ class Models:
 
 
         model: Model
-        if provider == "llamacpp":
+        if provider == "anthropic":
+
+            from .anthropic import AnthropicModel
+            model = AnthropicModel(**args)
+            
+        elif provider == "fireworks":
+
+            from .schema_format_openai import FireworksModel
+            model = FireworksModel(**args)
+            
+        elif provider == "llamacpp":
 
             # resolve filename -> path
             path = cls._locate_file(args["name"])
@@ -382,31 +397,21 @@ class Models:
             from .llamacpp import LlamaCppModel
 
             model = LlamaCppModel(**args)
-
         
+        elif provider == "mistral":
+
+            from .mistral import MistralModel
+            model = MistralModel(**args)
+            
         elif provider == "openai":
 
             from .openai import OpenAIModel
-                    
             model = OpenAIModel(**args)
             
         elif provider == "together":
 
             from .schema_format_openai import TogetherModel
-                    
             model = TogetherModel(**args)
-            
-        elif provider == "fireworks":
-
-            from .schema_format_openai import FireworksModel
-                    
-            model = FireworksModel(**args)
-            
-        elif provider == "mistral":
-
-            from .mistral import MistralModel
-                    
-            model = MistralModel(**args)
             
         """
         elif provider == "hf":
@@ -1211,9 +1216,13 @@ class Models:
         cls.formats_dir = cls.EMPTY_FORMATS_DIR()
 
         if add_cwd:
-            # add "." to search path, so that paths relative paths work
-            cls.add_models_search_path(".")
-
+            # add CWD to search path, so that relative paths work
+            try: # try but don't add a deleted dir
+                cwd_path = os.getcwd()
+                if os.path.isdir(cwd_path):
+                    cls.add_models_search_path(cwd_path)
+            except FileNotFoundError:
+                ...
 
         path: Union[str, None]
 

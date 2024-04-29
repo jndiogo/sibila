@@ -39,7 +39,7 @@ def synth_desc(flags: int,
 
 
 def expand_path(path: str) -> str:
-    if '~' in path:
+    if path.startswith("~"):
         path = os.path.expanduser(path)
 
     path = os.path.abspath(path)

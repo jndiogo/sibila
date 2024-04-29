@@ -43,6 +43,10 @@ def teardown_env_models(base_dir: str):
 
     print("teardown")
 
+    # as we're deleting base_dir, change CWD to a folder below it, 
+    # or all sorts of errors will happen with os.path.*() calls
+    os.chdir(os.path.join(base_dir, ".."))
+
     if os.path.isdir(base_dir):
         shutil.rmtree(base_dir)
   

@@ -1,7 +1,6 @@
 """
-Requires a defined env variable OPENAI_API_KEY with a valid OpenAI API key.
+Requires a defined env variable ANTHROPIC_API_KEY with a valid key.
 """
-
 
 import pytest
 
@@ -14,9 +13,10 @@ logger = logging.getLogger(__name__)
 
 from dotenv import load_dotenv
 
+
 from sibila import (
     Models,
-    OpenAIModel,
+    AnthropicModel,
     GenConf
 )
 
@@ -26,8 +26,8 @@ from .utils import setup_env_models, teardown_env_models, setup_model, teardown_
 from .utils import run_cmd, run_text, run_json
 
 
-MODEL_NAME = "gpt-3.5"
-IN_CTX_LEN = 16385
+MODEL_NAME = "claude-3-haiku-20240307"
+IN_CTX_LEN = 200000
 OUT_MAX_TOKENS = 4096
 
 
@@ -36,9 +36,9 @@ DO_TEARDOWN = True
 @pytest.fixture(autouse=True, scope="module")
 def env_model():
 
-    load_dotenv()
+    load_dotenv(override=True, verbose=True)
 
-    base_dir, models_dir = setup_env_models("openai-" + MODEL_NAME, 
+    base_dir, models_dir = setup_env_models("mistral-" + MODEL_NAME, 
                                             change_cwd=True,
                                             full_clean=False)
 
@@ -61,19 +61,15 @@ def env_model():
 
 
 
+def test_create_anthropic(env_model):
 
-
-
-
-def test_create_openai(env_model):
-
-    model = OpenAIModel(MODEL_NAME)
+    model = AnthropicModel(MODEL_NAME)
     del model
 
-    # no longer raises: inner OpenAI object is created in first call:
+    # models are only checked when used, so no NameError
     # with pytest.raises(NameError):
-    #    model = OpenAIModel(MODEL_NAME + "NOT_THERE")
-    #    del model
+    model = AnthropicModel(MODEL_NAME + "NOT_THERE")
+    del model
 
 
 
@@ -86,30 +82,29 @@ def test_models(env_model):
         model = Models.create(res_name)
         del model
 
-    # no longer raises: inner OpenAI object is created in first call:
+    # models are only checked when used, so no NameError
     # with pytest.raises(NameError):
-    #    res_name = "openai:NOT_THERE"
-    #    model = Models.create(res_name)
-    #    del model
+    res_name = "anthropic:NOT_THERE"
+    model = Models.create(res_name)
+    del model
 
-    # no longer raises: inner OpenAI object is created in first call:
-    # with pytest.raises(NameError):
-    #    res_name = "NOT_THERE"
-    #    model = Models.create(res_name)
-    #    del model
+    with pytest.raises(NameError):
+        res_name = "NOT_THERE"
+        model = Models.create(res_name)
+        del model
 
 
 
     Models.setup("models")
 
-    res_name = "openai:" + MODEL_NAME
+    res_name = "anthropic:" + MODEL_NAME
     model = Models.create(res_name)
     del model
 
 
     Models.setup("models", clear=True)
 
-    res_name = "openai:" + MODEL_NAME
+    res_name = "anthropic:" + MODEL_NAME
     model = Models.create(res_name)
     del model
 
@@ -120,21 +115,21 @@ def test_models(env_model):
 
 def test_ctx_len(env_model):
     
-    model = OpenAIModel(MODEL_NAME)
+    model = AnthropicModel(MODEL_NAME)
     # print(model.ctx_len, model.max_tokens_limit)
     assert model.ctx_len == IN_CTX_LEN
     assert model.max_tokens_limit == OUT_MAX_TOKENS
     del model
 
 
-    model = OpenAIModel(MODEL_NAME,
-                        ctx_len=0)
+    model = AnthropicModel(MODEL_NAME,
+                           ctx_len=0)
     assert model.ctx_len == IN_CTX_LEN
     assert model.max_tokens_limit == OUT_MAX_TOKENS
     del model
 
-    model = OpenAIModel(MODEL_NAME,
-                        ctx_len=1024)
+    model = AnthropicModel(MODEL_NAME,
+                           ctx_len=1024)
     assert model.ctx_len == 1024
     assert model.max_tokens_limit == 1024
     del model
@@ -146,12 +141,12 @@ def test_ctx_len(env_model):
 
 def test_max_tokens(env_model):
     
-    model = OpenAIModel(MODEL_NAME)
+    model = AnthropicModel(MODEL_NAME)
 
     assert model.calc_max_max_tokens(0) == OUT_MAX_TOKENS
     assert model.calc_max_max_tokens(500) == OUT_MAX_TOKENS
     assert model.calc_max_max_tokens(3000) == OUT_MAX_TOKENS
-    assert model.calc_max_max_tokens(16000) == IN_CTX_LEN-16000
+    assert model.calc_max_max_tokens(16000) == OUT_MAX_TOKENS
 
     genconf=GenConf(max_tokens=1000)    
     assert genconf.resolve_max_tokens(model.ctx_len, model.max_tokens_limit) == 1000
@@ -159,17 +154,20 @@ def test_max_tokens(env_model):
     assert model.resolve_genconf_max_tokens(1500, genconf) == 1000
 
     genconf=GenConf(max_tokens=-20)
-    assert genconf.resolve_max_tokens(model.ctx_len, model.max_tokens_limit) == int(IN_CTX_LEN * 20/100)
-    assert model.resolve_genconf_max_tokens(100, genconf) == int(model.ctx_len * 20/100)
-    assert model.resolve_genconf_max_tokens(1900, genconf) == int(IN_CTX_LEN * 20/100)
+    assert genconf.resolve_max_tokens(model.ctx_len, model.max_tokens_limit) == OUT_MAX_TOKENS
+    assert model.resolve_genconf_max_tokens(100, genconf) == OUT_MAX_TOKENS
+    assert model.resolve_genconf_max_tokens(1900, genconf) == OUT_MAX_TOKENS
 
     genconf=GenConf(max_tokens=0)    
     assert genconf.resolve_max_tokens(model.ctx_len, model.max_tokens_limit) == OUT_MAX_TOKENS
     assert model.resolve_genconf_max_tokens(100, genconf) == OUT_MAX_TOKENS
     assert model.resolve_genconf_max_tokens(1900, genconf) == OUT_MAX_TOKENS
-    assert model.resolve_genconf_max_tokens(16000, genconf) == IN_CTX_LEN - 16000
+    
+    with pytest.raises(ValueError):
+        assert model.resolve_genconf_max_tokens(999*1000, genconf)
 
     del model
+
 
 
 

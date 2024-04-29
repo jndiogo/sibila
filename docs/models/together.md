@@ -57,6 +57,7 @@ You can also create a Together.ai model in the [Models factory](models_factory.m
 
 ``` python
 from sibila import Models
+
 model = Models.create("together:mistralai/Mixtral-8x7B-Instruct-v0.1")
 ```
 
@@ -65,7 +66,9 @@ model = Models.create("together:mistralai/Mixtral-8x7B-Instruct-v0.1")
 
 ## Model list
 
-The available Together.ai text inference models models are listed [here](https://docs.together.ai/docs/inference-models). Unfortunately Together.ai doesn't provide an API to list the models, so TogetherModel.known_models() will return None.
+The available Together.ai text inference models models are listed [here](https://docs.together.ai/docs/inference-models).
+
+Unfortunately Together.ai doesn't provide an API to list the models, so TogetherModel.known_models() will return None.
 
 
 
@@ -77,4 +80,4 @@ At the time of writing, only the following Together.ai models support JSON Schem
 - mistralai/Mistral-7B-Instruct-v0.1
 - togethercomputer/CodeLlama-34b-Instruct
 
-You can still use any of the other models for plain text generation, for example with the model.call() method.
+You can still use any of the other models for plain text or schema-free JSON generation, for example with the [Model.call()](../api-reference/remote_model.md#sibila.TogetherModel.call) or [Model.json()](../api-reference/remote_model.md#sibila.TogetherModel.json) methods.

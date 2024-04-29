@@ -666,6 +666,8 @@ def build_dataclass_object_json_schema(type_: Any) -> dict:
     """Build a JSON schema for a dataclass type."""
 
     desc = type_.__doc__
+    if desc.startswith(type_.__name__ + "(") and desc[-1] == ")": # ignore automatic doc from dataclass params
+        desc = None        
 
     props = {}
     required = []

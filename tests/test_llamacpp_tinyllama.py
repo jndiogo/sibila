@@ -263,7 +263,7 @@ def test_extract(env_model):
 
 
 
-def test_extract_async(env_model):
+def test_extract_async1(env_model):
 
     rel_model_path = os.path.join("models", MODEL_FILENAME)
 
@@ -315,3 +315,24 @@ def test_extract_async(env_model):
 
 
     del model
+
+
+
+
+
+
+async def test_extract_async2(env_model):
+
+    rel_model_path = os.path.join("models", MODEL_FILENAME)
+
+    model = LlamaCppModel(rel_model_path, format="zephyr")
+
+    print("run_async begin")
+
+    res = await model.extract_async(int, INT_PROMPT)
+    assert res == 12
+
+    res = await model.extract_async(bool, TRUE_PROMPT)
+    assert res == True
+    print("run_async done")
+        

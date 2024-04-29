@@ -20,31 +20,42 @@ LIMIT = 9999
 
 @pytest.fixture(scope="module")
 def models_list(pytestconfig):
+
     models_dir = pytestconfig.getoption("models_dir")
+    if not models_dir:
+        models_dir = "res"
 
     if not os.path.isabs(models_dir):
         base_dir = os.path.dirname(__file__)
         models_dir = os.path.normpath(os.path.join(base_dir, models_dir))
 
-    print (models_dir)
-
-    file_list = os.listdir(models_dir)
-    # print(file_list)
+    print("models_dir:", models_dir)
 
     filenames = []
-    for filename in file_list:
-        if not filename.endswith(".gguf"):
-            continue
-        if filename.startswith("--"):
-            continue
 
-        path = os.path.join(models_dir, filename)
-        if not os.path.isfile(path):
-            continue
-        filenames.append(path)
+    if os.path.isdir(models_dir):
+        file_list = os.listdir(models_dir)
+        # print(file_list)
 
-    # print(filenames)
-    return sorted(filenames[:LIMIT])
+        for filename in file_list:
+            if not filename.endswith(".gguf"):
+                continue
+            if filename.startswith("--"):
+                continue
+
+            path = os.path.join(models_dir, filename)
+            if not os.path.isfile(path):
+                continue
+            filenames.append(path)
+
+        filenames = sorted(filenames[:LIMIT])
+
+    if not filenames:
+        print("No models found")
+    else:
+        print("Found models:", "\n".join(filenames), sep="\n")
+        
+    return filenames
 
 
 def test_extract(models_list):

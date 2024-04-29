@@ -104,6 +104,7 @@ class GenConf:
     def from_dict(dic: dict) -> Any: # Any = GenConf
         return GenConf(**dic)
 
+
     def resolve_max_tokens(self,
                            ctx_len: int,
                            max_tokens_limit: Optional[int] = None) -> int:
@@ -125,6 +126,7 @@ class GenConf:
                 max_tokens = min(-max_tokens, 100)
                 max_tokens = int(max_tokens / 100.0 * ctx_len)
                 max_tokens = max(1,max_tokens)
+                
         if max_tokens_limit is not None:
             max_tokens = min(max_tokens, max_tokens_limit)
 

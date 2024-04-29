@@ -1,10 +1,32 @@
 {
+  "anthropic": {
+    "_default": {
+      "ctx_len": 200000,
+      "max_tokens_limit": 4096,
+      "token_estimation_factor": 0.4
+    }
+  },
+
+  "fireworks": {
+    "_default": {
+      "ctx_len": 4096,
+      "token_estimation_factor": 0.4
+    }
+  },
+
   "llamacpp": {
     "_default": {
       "ctx_len": 2048
     }      
   },
     
+  "mistral": {
+    "_default": {
+      "ctx_len": 32768,
+      "token_estimation_factor": 0.4
+    }
+  },
+
   "openai": {
     "_default": {
       "ctx_len": 4096,
@@ -12,6 +34,9 @@
       "token_estimation_factor": 0.4
     },
 
+    "gpt-4-turbo-2024-04-09": {
+      "ctx_len": 128000
+    }, 
 
     "gpt-4-0125-preview": {
       "ctx_len": 128000,
@@ -39,9 +64,10 @@
       "ctx_len": 32768
     }, 
 
-    "gpt-4": "gpt-4-1106-preview",
+    "gpt-4-turbo": "gpt-4-turbo-2024-04-09",
+    "gpt-4-turbo-preview": "gpt-4-0125-preview",
     "gpt-4-32k": "gpt-4-32k-0613",
-    "gpt-4-turbo-preview" : "gpt-4-0125-preview",
+    "gpt-4": "gpt-4-1106-preview",
 
 
 
@@ -78,20 +104,6 @@
   "together": {
     "_default": {
       "ctx_len": 4096,
-      "token_estimation_factor": 0.4
-    }
-  },
-
-  "fireworks": {
-    "_default": {
-      "ctx_len": 4096,
-      "token_estimation_factor": 0.4
-    }
-  },
-
-  "mistral": {
-    "_default": {
-      "ctx_len": 32768,
       "token_estimation_factor": 0.4
     }
   }

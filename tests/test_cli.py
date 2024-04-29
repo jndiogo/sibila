@@ -38,8 +38,6 @@ def env():
 
 
 
-
-
 def test_models(env):
 
     models_path = os.path.join(env[1], Models.MODELS_CONF_FILENAME)
@@ -156,7 +154,6 @@ def test_models(env):
     run_json(cmd, 
              path=models_path,
              expected_json={})
-
 
 
 

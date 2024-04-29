@@ -43,6 +43,7 @@ You can also create a Fireworks AI model in the [Models factory](models_factory.
 
 ``` python
 from sibila import Models
+
 model = Models.create("fireworks:accounts/fireworks/models/gemma-7b-it")
 ```
 
@@ -51,7 +52,9 @@ model = Models.create("fireworks:accounts/fireworks/models/gemma-7b-it")
 
 ## Model list
 
-The available Fireworks text inference models models are listed [here](https://fireworks.ai/models). Unfortunately Fireworks AI doesn't provide an API to list the models, so FireworksModel.known_models() will return None.
+The available Fireworks text inference models models are listed [here](https://fireworks.ai/models). 
+
+Unfortunately Fireworks AI doesn't provide an API to list the models, so FireworksModel.known_models() will return None.
 
 
 

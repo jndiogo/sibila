@@ -1,15 +1,17 @@
 """Structured data from local or remote LLM models."""
 
-__version__ = "0.4.0"
+__version__ = "0.4.1"
 
 __all__ = [
     "Models",
     "Model", "TextModel", "MessagesModel", "Tokenizer",
     "GenConf", "GenRes", "GenError", "GenOut",
+    "AnthropicModel",
+    "FireworksModel",
     "LlamaCppModel", "LlamaCppTokenizer",
-    "OpenAIModel", "OpenAITokenizer",
-    "TogetherModel", "FireworksModel",
     "MistralModel",
+    "OpenAIModel", "OpenAITokenizer",
+    "TogetherModel",
     "Thread", "MsgKind",
     "Context", "Trim",
     "JSchemaConf",
@@ -39,10 +41,15 @@ from .model import (
     Tokenizer
 )
 
+
+from .anthropic import AnthropicModel
+
 from .llamacpp import (
     LlamaCppModel,
     LlamaCppTokenizer
 )
+
+from .mistral import MistralModel
 
 from .openai import (
     OpenAIModel,
@@ -54,9 +61,6 @@ from .schema_format_openai import (
     FireworksModel
 )
 
-from .mistral import (
-    MistralModel
-)
 
 from .context import (
     Context,

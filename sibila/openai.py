@@ -55,10 +55,6 @@ class OpenAIModel(MessagesModel):
 
     Ref:
         https://platform.openai.com/docs/api-reference/chat/create
-
-    Attributes:
-        ctx_len: Maximum context length.
-        desc: Model information.
     """
 
     PROVIDER_NAME:str = "openai"
@@ -185,7 +181,7 @@ class OpenAIModel(MessagesModel):
         self._token_estimation_factor = token_estimation_factor or default_token_estimation_factor
 
 
-        # only check for "json" text presence as json schema is requested with the tools facility.
+        # only check for "json" text presence as json schema (including field descriptions) is requested with the tools facility.
         self.json_format_instructors["json_schema"] = self.json_format_instructors["json"]
 
 
@@ -250,10 +246,8 @@ class OpenAIModel(MessagesModel):
         token_len = self.token_len(thread, genconf)
         resolved_max_tokens = self.resolve_genconf_max_tokens(token_len, genconf)
 
-        # for reference: this is a bad idea as endpoint will error on larger than possible max_tokens:
+        # for reference: next commented-out line is a bad idea, as endpoint will error if max_tokens is greater than limit:
         # resolved_max_tokens = self.resolve_genconf_max_tokens(0, genconf)
-
-        fn_name = "json_out"
 
         json_kwargs: dict = {}
         if genconf.format == "json":
@@ -264,7 +258,7 @@ class OpenAIModel(MessagesModel):
                 # use json_schema in OpenAi's tool API
                 json_kwargs["tool_choice"] = {
                     "type": "function",
-                    "function": {"name": fn_name},
+                    "function": {"name": self.output_fn_name},
                 }
 
                 if isinstance(genconf.json_schema, str):
@@ -276,7 +270,7 @@ class OpenAIModel(MessagesModel):
                     {
                         "type": "function",
                         "function": {
-                            "name": fn_name,
+                            "name": self.output_fn_name,
                             "parameters": params
                         }
                     }
@@ -306,15 +300,12 @@ class OpenAIModel(MessagesModel):
 
         logger.debug(f"{type(self).__name__} gen args: {kwargs}")
 
-        return (kwargs,
-                fn_name,
-                genconf)
+        return (kwargs, genconf)
         
 
     def _gen_post(self, 
                   response: Any,
                   pre_kwargs: dict,
-                  fn_name: str,
                   genconf: GenConf
                   ) -> GenOut:
             
@@ -334,8 +325,8 @@ class OpenAIModel(MessagesModel):
                     logger.warn(f"OpenAIModel: expecting single message.tool_calls, but received {len(message.tool_calls)} - using first.")
 
                 fn = message.tool_calls[0].function
-                if fn.name != fn_name:
-                    logger.warn(f"OpenAIModel: expecting '{fn_name}' function name, received ({fn.name})")
+                if fn.name != self.output_fn_name:
+                    logger.warn(f"OpenAIModel: expecting '{self.output_fn_name}' function name, received ({fn.name})")
 
                 text = fn.arguments
 
@@ -376,7 +367,7 @@ class OpenAIModel(MessagesModel):
         """
 
         genconf2: GenConf
-        kwargs, fn_name, genconf2 = self._gen_pre(thread, genconf)
+        kwargs, genconf2 = self._gen_pre(thread, genconf)
 
         self._ensure_client(False)
 
@@ -390,7 +381,6 @@ class OpenAIModel(MessagesModel):
 
         return self._gen_post(response,
                               kwargs,
-                              fn_name,
                               genconf2)
     
 
@@ -416,7 +406,7 @@ class OpenAIModel(MessagesModel):
         """
 
         genconf2: GenConf
-        kwargs, fn_name, genconf2 = self._gen_pre(thread, genconf)
+        kwargs, genconf2 = self._gen_pre(thread, genconf)
 
         self._ensure_client(True)
 
@@ -429,7 +419,6 @@ class OpenAIModel(MessagesModel):
 
         return self._gen_post(response,
                               kwargs,
-                              fn_name,
                               genconf2)
     
 
@@ -486,7 +475,6 @@ class OpenAIModel(MessagesModel):
                 num_tokens += int(tools_num_tokens)
                 # print("tools_num_tokens", tools_num_tokens)
 
-
         else: # do an "informed" token estimation from what is known of the OpenAI model's tokenization
             
             for index in range(-1, len(thread)): # -1 for system message
@@ -522,27 +510,6 @@ class OpenAIModel(MessagesModel):
 
 
 
-    
-    @property
-    def desc(self) -> str:
-        """Model description."""
-        return f"{type(self).__name__}: '{self._model_name}'"
-
-
-    @classmethod
-    def provider_version(_) -> str:
-        """Provider library version: provider x.y.z
-        Ex. openai 1.3.6
-        """
-        try:        
-            import openai
-            ver = openai.__version__
-        except Exception:
-            raise ImportError("Please install openai by running: pip install openai")
-            
-        return f"openai {ver}"
-    
-    
     @classmethod
     def known_models(cls,
                      api_key: Optional[str] = None) -> Union[list[str], None]:
@@ -563,6 +530,36 @@ class OpenAIModel(MessagesModel):
         for model in model_list.data:
             out.append(model.id)
         return sorted(out)
+
+
+
+
+
+    def name(self) -> str:
+        """Model (short) name."""
+        return self._model_name
+    
+    def desc(self) -> str:
+        """Model description."""
+        return f"{type(self).__name__}: '{self._model_name}'"
+
+
+    @classmethod
+    def provider_version(_) -> str:
+        """Provider library version: provider x.y.z
+        Ex. openai 1.3.6
+        """
+        try:        
+            import openai
+            ver = openai.__version__
+        except Exception:
+            raise ImportError("Please install openai by running: pip install openai")
+            
+        return f"openai {ver}"
+    
+    
+
+
 
 
 

@@ -182,14 +182,17 @@ class Model(ABC):
     """Object to string formatting options for json.dumps() calls. See initialization below."""
 
     ctx_len: int
-    """Maximum context token length that can be passed to model as input. There can be a limit for output tokens in the max_tokens_limit."""
+    """Maximum context token length, including input and model output. There can be a limit for output tokens in the max_tokens_limit."""
 
     max_tokens_limit: int
-    """Some models limit the size of emitted output tokens, which is stored in this property."""
+    """Some models limit the size of emitted output tokens."""
 
     output_key_name: str
     """Name used when an output key needs to be created for JSON output."""
 
+    output_fn_name: str
+    """Function name for models that return JSON with a Tools/Functions-style API."""
+    
     PROVIDER_NAME: str = NotImplemented
     """Provider prefix that this class handles."""
 
@@ -213,6 +216,7 @@ class Model(ABC):
         self.ctx_len = 0
         self.max_tokens_limit = sys.maxsize
         self.output_key_name = "output"
+        self.output_fn_name = "json_out"
 
         self.tokenizer = tokenizer # type: ignore[assignment]
 
@@ -641,7 +645,6 @@ class Model(ABC):
 
         schema, created_output_key = build_root_json_schema(target, 
                                                             self.output_key_name)
-        
         final_type, is_list = get_final_type(target)
 
         if schemaconf is None:
@@ -1573,14 +1576,27 @@ class Model(ABC):
         """
         return None
 
-    @classmethod
-    def version(cls) -> str:
-        """Sibila version + provider version
-        Ex: sibila='0.2.3' provider='llama-cpp-python 0.2.44'        
-        """        
-        from .__init__ import __version__ as version  # type: ignore[import-not-found]
-        return f"sibila='{version}' provider='{cls.provider_version()}'"
-        
+
+
+
+
+    @abstractmethod
+    def name(self) -> str:
+        """Model (short) name."""
+        ...
+
+    @abstractmethod
+    def desc(self) -> str:
+        """Model description."""
+        ...
+    
+    def info(self) -> str:
+        """Model description and config information."""
+        return f"desc='{self.desc()}',\n" \
+               f"ctx_len={self.ctx_len}, max_tokens_limit={self.max_tokens_limit},\n" \
+               f"genconf={self.genconf}"
+               
+
     @classmethod
     @abstractmethod
     def provider_version(cls) -> str:
@@ -1589,21 +1605,18 @@ class Model(ABC):
         """
         ...
 
+    @classmethod
+    def version(cls) -> str:
+        """Sibila version + provider version
+        Ex: sibila='0.2.3' provider='llama-cpp-python 0.2.44'        
+        """        
+        from .__init__ import __version__ as version  # type: ignore[import-not-found]
+        return f"sibila='{version}' provider='{cls.provider_version()}'"
+        
 
-    @property
-    def desc(self) -> str:
-        """Model description."""
-        return "Unknown model desc"
-    
-    def info(self) -> str:
-        """Model object information."""
-        return f"desc='{self.desc}',\n" \
-               f"ctx_len={self.ctx_len}, max_tokens_limit={self.max_tokens_limit},\n" \
-               f"genconf={self.genconf}"
-               
-    
+
     def __str__(self):
-        return self.info()
+        return self.desc_info()
 
 
 
@@ -1673,42 +1686,46 @@ class Model(ABC):
     
     
     def _prepare_gen_out(self,
-                         text: str, 
+                         response: Union[str,dict, None],
                          finish: str,
                          genconf: GenConf) -> GenOut:
         """Perform common operations over the generated model response.
 
         Args:
-            text: Text obtained from model.
+            response: Text or a JSON object obtained from model.
             finish: Model finish reason - only "stop", "length" are used, others will map as GenRes.ERROR_MODEL.
 
         Returns:
             A GenOut object with result, generated text, etc. 
         """
 
-        logger.debug(f"Response finish='{finish}': █{text}█")
+        logger.debug(f"Response finish='{finish}': █{response}█")
         
-        if text is None:
-            text = ''
-        else:
-            text = text.strip()
+        if response is None:
+            response = ''
 
         if genconf.format == "json":
-            if "\\u" in text:
-                # dumps(with default ensure_ascii=False) -> ascii (subset of utf-8) -> text.encode("latin1") -> latin1 ->
-                #   decode("unicode-escape") -> utf-8
-                text = text.encode("latin1").decode("unicode-escape")
+            if isinstance(response, str):
+                response = response.strip()
 
-            # some troubled remote models may include chit-chat after the JSON
-            begin = text.find("{")
-            if begin > 0:
-                text = text[begin:]
-            end = text.rfind("}")
-            if end > 0:
-                text = text[:end + 1]
-                
+                if "\\u" in response:
+                    # dumps(with default ensure_ascii=False) -> ascii (subset of utf-8) -> text.encode("latin1") -> latin1 ->
+                    #   decode("unicode-escape") -> utf-8
+                    response = response.encode("latin1").decode("unicode-escape")
+
+                # some troubled remote models may include chit-chat after the JSON
+                begin = response.find("{")
+                if begin > 0:
+                    response = response[begin:]
+                end = response.rfind("}")
+                if end > 0:
+                    response = response[:end + 1]
+
             try:
-                dic = json.loads(text)
+                if isinstance(response, str):
+                    dic = json.loads(response)
+                else:
+                    dic = response
 
                 if genconf.json_schema is not None:
                     if isinstance(genconf.json_schema, str):
@@ -1719,28 +1736,33 @@ class Model(ABC):
                     json_schema_validate(dic, schema_dic)
 
                 out = GenOut(res=GenRes.from_finish_reason(finish),
-                             text=text,
+                             text=str(response),
                              dic=dic)
             
-            except json.JSONDecodeError:
+            except json.JSONDecodeError as err:
                 out = GenOut(res=GenRes.from_finish_reason("!json"),
-                             text=text)
+                             text=f"'{err}' {response}")
                 
             except json_schema_ValidationError as err:
                 logger.info(f"JSON schema validation error: {err.message}")
                 out = GenOut(res=GenRes.from_finish_reason("!json_schema_val"),
-                             text=text,
+                             text=f"'{err.message}' {response}",
                              dic=dic)
                 
             except json_schema_SchemaError as err:
                 logger.info(f"JSON schema error: {err.message}")
                 out = GenOut(res=GenRes.from_finish_reason("!json_schema_error"),
-                             text=text,
+                             text=f"'{err.message}' {response}",
                              dic=dic)
 
         else:
+            if isinstance(response, str):
+                response = response.strip()
+            else:
+                response = str(response)
+
             out = GenOut(res=GenRes.from_finish_reason(finish),
-                         text=text)
+                         text=response)
             
        
         return out

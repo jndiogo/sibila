@@ -15,6 +15,7 @@ nav:
       - Remote models:
         - models/remote_model.md
         - models/openai.md
+        - models/anthropic.md
         - models/mistral.md
         - models/together.md
         - models/fireworks.md

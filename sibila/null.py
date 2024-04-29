@@ -98,6 +98,15 @@ class NullModel(Model):
         assert False, "NullModel won't use tokens"
 
 
+
+    def name(self) -> str:
+        """Model (short) name."""
+        return 'null_model'
+    
+    def desc(self) -> str:
+        """Model description."""
+        return f"{type(self).__name__}: {self.name}"
+
     @classmethod
     def provider_version(_) -> str:
         """Provider library version: provider x.y.z

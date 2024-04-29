@@ -9,6 +9,19 @@ The project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html
 ## [Unreleased]
 - feat: Add seed setting to GenConf. Commented-out because of lack of support in OpenAI models and some llama.cpp hardware accelerations.
 
+
+## [0.4.1]
+- feat: Add Anthropic provider.
+- feat: Add chat template formats for Llama3 and Phi-3 instruct models, StableLM-2, Command-R/Plus.
+- feat: Add output_fn_name property to Model, for changing the output function name in models that use a Tools/Functions API.
+- feat: Better JSON/Schema decoding errors.
+- fix: Don't use a string representation of the dataclass when its doc string is unset, during JSON Schema creation, to keep equivalence with Pydantic-based generation.
+- fix: Workaround for MistralModel, where the Mistral API misses api_key argument/env variable when run from pytest.
+- fix: Consolidate all Model class info as methods to avoid property/method() calling confusion.
+- docs: Update installation instructions and include info on new Anthropic provider.
+- test: Better parametrized tests for remote and local models.
+- test: Add tests for new provider.
+
 ## [0.4.0]
 - feat: New providers: Mistral AI, Together.ai and Fireworks AI allowing access to all their chat-based models.
 - feat: Model classes now support async calls with the '_async' prefix, for example extract_async(). This requires model API support: only remote models will benefit. Local models (via llama.cpp) can still be called with _async methods but do not have async IO that can run concurrently.

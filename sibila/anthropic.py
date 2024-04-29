@@ -1,6 +1,6 @@
-"""Mistral remote model access.
+"""Anthropic remote model access.
 
-- MistralModel: Access Mistral AI models.
+- AnthropicModel: Access Anthropic models.
 """
 
 
@@ -31,24 +31,23 @@ from .model import (
 from .json_schema import JSchemaConf
 
 try:
-    from mistralai.client import MistralClient
-    from mistralai.async_client import MistralAsyncClient    
-    has_mistral = True
+    from anthropic import Anthropic, AsyncAnthropic
+    has_anthropic = True
 except ImportError:
-    has_mistral = False
+    has_anthropic = False
 
 
 
 
-class MistralModel(MessagesModel):
-    """Access a Mistral AI model.
-    Supports constrained JSON output, via the Mistral API function calling mechanism.
+class AnthropicModel(MessagesModel):
+    """Access an Anthropic model.
+    Supports constrained JSON output, via the Anthropic API function calling mechanism.
 
     Ref:
-        https://docs.mistral.ai/guides/function-calling/
+        https://docs.anthropic.com/claude/docs/intro-to-claude
     """
 
-    PROVIDER_NAME:str = "mistral"
+    PROVIDER_NAME:str = "anthropic"
     """Provider prefix that this class handles."""
 
     _token_estimation_factor: float
@@ -69,14 +68,14 @@ class MistralModel(MessagesModel):
                  ctx_len: Optional[int] = None,
                  max_tokens_limit: Optional[int] = None,
                 
-                 # most important Mistral-specific args
+                 # most important Anthropic-specific args
                  api_key: Optional[str] = None,
                  token_estimation_factor: Optional[float] = None,
                  
-                 # other Mistral-specific args
-                 mistral_init_kwargs: dict = {},
+                 # other Anthropic-specific args
+                 anthropic_init_kwargs: dict = {},
                  ):
-        """Create a Mistral AI remote model.
+        """Create an Anthropic remote model.
 
         Args:
             name: Model name to resolve into an existing model.
@@ -84,18 +83,18 @@ class MistralModel(MessagesModel):
             schemaconf: Default configuration for JSON schema validation, used if generation call doesn't supply one. Defaults to None.
             ctx_len: Maximum context length to be used (shared for input and output). None for model's default.
             max_tokens_limit: Maximum output tokens limit. None for model's default.
-            api_key: Mistral API key. Defaults to None, which will use env variable MISTRAL_API_KEY.
+            api_key: Anthropic API key. Defaults to None, which will use env variable ANTHROPIC_API_KEY.
             token_estimation_factor: Multiplication factor to estimate token usage: multiplies total text length to obtain token length.
-            mistral_init_kwargs: Extra args for mistral.MistralClient() initialization. Defaults to {}.
+            anthropic_init_kwargs: Extra args for Anthropic() initialization. Defaults to {}.
 
         Raises:
-            ImportError: If Mistral API is not installed.
+            ImportError: If Anthropic API is not installed.
             NameError: If model name was not found or there's an API or authentication problem.
         """
 
 
-        if not has_mistral:
-            raise ImportError("Please install mistral by running: pip install mistralai")
+        if not has_anthropic:
+            raise ImportError("Please install anthropic API by running: pip install anthropic")
 
         self._client = self._client_async = None
 
@@ -134,7 +133,7 @@ class MistralModel(MessagesModel):
 
             # all defaults are conservative values
             if default_ctx_len is None:
-                default_ctx_len = 32768
+                default_ctx_len = 200000
                 logger.warning(f"Model '{self._model_name}': unknown ctx_len, assuming {default_ctx_len}")
             if default_max_tokens_limit is None:
                 default_max_tokens_limit = default_ctx_len
@@ -156,15 +155,10 @@ class MistralModel(MessagesModel):
         # only check for "json" text presence as json schema (including field descriptions) is requested with the tools facility.
         self.json_format_instructors["json_schema"] = self.json_format_instructors["json"]
 
-        self._client_init_kwargs = mistral_init_kwargs
+        self._client_init_kwargs = anthropic_init_kwargs
 
         if api_key is not None:
             self._client_init_kwargs["api_key"] = api_key    
-        elif "api_key" not in self._client_init_kwargs and "MISTRAL_API_KEY" in os.environ:
-            # "MISTRAL_API_KEY" env key is ignored in pytest?
-            self._client_init_kwargs["api_key"] = os.environ["MISTRAL_API_KEY"]
-
-
 
 
 
@@ -178,13 +172,13 @@ class MistralModel(MessagesModel):
             return
             
         try:
-            logger.debug(f"Creating inner MistralClient with ctx_len={self.ctx_len}, max_tokens_limit={self.max_tokens_limit}, "
+            logger.debug(f"Creating inner Anthropic client with ctx_len={self.ctx_len}, max_tokens_limit={self.max_tokens_limit}, "
                          f"_token_estimation_factor={self._token_estimation_factor}, init_kwargs={self._client_init_kwargs}")
 
             if is_async:
-                self._client_async = MistralAsyncClient(**self._client_init_kwargs) # type: ignore[assignment]
+                self._client_async = AsyncAnthropic(**self._client_init_kwargs) # type: ignore[assignment]
             else:
-                self._client = MistralClient(**self._client_init_kwargs) # type: ignore[assignment]
+                self._client = Anthropic(**self._client_init_kwargs) # type: ignore[assignment]
 
         except Exception as e:
             raise NameError(f"Could not create {'async' if is_async else ''} model '{self._model_name}' with error: {e}")
@@ -217,52 +211,47 @@ class MistralModel(MessagesModel):
         resolved_max_tokens = self.resolve_genconf_max_tokens(0, genconf)
 
 
-        # https://docs.mistral.ai/api/#operation/createChatCompletion
+        # https://docs.anthropic.com/claude/docs/tool-use
 
         json_kwargs: dict = {}
         format = genconf.format
         if format == "json":
             
-            if genconf.json_schema is None:
-                json_kwargs["response_format"] = {"type": "json_object"}
-
-            else:
-                # use json_schema in Mistral's functions API
+            if genconf.json_schema is not None:
+                # use json_schema in Anthropic's functions API
                 if isinstance(genconf.json_schema, str):
                     params = json.loads(genconf.json_schema)
                 else:
                     params = genconf.json_schema
                 
-                json_kwargs["tools"] = [
+                json_kwargs["tools"] = [ # description is optional
                     {
-                        "type": "function",
-                        "function": {
-                            "name": self.output_fn_name,
-                            "parameters": params
-                        }
+                        "name": self.output_fn_name,
+                        "input_schema": params
                     }
                 ]
 
-                json_kwargs["tool_choice"] = "any"
-
-            logger.debug(f"Mistral json args: {json_kwargs}")
-
-        # seed config is disabled, remote models and some hardware accelerated local models don't support it.
-        # seed = genconf.seed
-        # if seed == -1:
-        #    seed = int(time())
-        #    logger.debug(f"Mistral random seed={seed}")
-
+            logger.debug(f"Anthropic json args: {json_kwargs}")
+            
+        # Anthropic API has no support for seed parameter
         
-        msgs = thread.as_chatml()
+        msgs = thread.as_chatml(include_INST=False)
+
+        if format == "json" and "tools" not in json_kwargs: 
+            # json non-schema request: prefill format as an assistant message
+            msgs.append({"role": "assistant", "content": "{"})
+
 
         kwargs = {"model": self._model_name,
                   "messages": msgs, # type: ignore[arg-type]
+                  "stop_sequences": genconf.stop,
                   "max_tokens": resolved_max_tokens,
                   "temperature": genconf.temperature,
-                  "top_p": 1. if genconf.temperature == 0 else genconf.top_p,
-                  # "random_seed": seed,
+                  "top_p": genconf.top_p,
                   **json_kwargs}
+
+        if thread.inst:
+            kwargs["system"] = thread.inst
 
         # inject model-specific args, if any
         kwargs.update(genconf.resolve_special(self.PROVIDER_NAME))
@@ -276,38 +265,26 @@ class MistralModel(MessagesModel):
                   genconf: GenConf
                   ) -> GenOut:
             
-        logger.debug(f"Mistral response: {response}")
+        logger.debug(f"Anthropic response: {response}")
 
-        choice = response.choices[0]
-        
-        finish = choice.finish_reason
-        if finish == "tool_calls": finish = "stop"
-        elif finish == "model_length": finish = "length"
+        finish = "length" if response.stop_reason == "max_tokens" else "stop"
 
-        message = choice.message
+        for message in response.content:
 
-        if "tool_choice" in pre_kwargs:
-            
-            # json schema generation via the tools API:
-            if message.tool_calls is not None:
-                if len(message.tool_calls) != 1:
-                    logger.warn(f"Mistral: expecting single message.tool_calls, but received {len(message.tool_calls)} - using first.")
+            if "tools" in pre_kwargs:
+                if message.type == "tool_use":                
+                    if message.name != self.output_fn_name:
+                        logger.warn(f"Anthropic: expecting '{self.output_fn_name}' function name, received ({message.name})")
+                    response = message.input # a dict
+                    break
 
-                fn = message.tool_calls[0].function
-                if fn.name != self.output_fn_name:
-                    logger.warn(f"Mistral: expecting '{self.output_fn_name}' function name, received ({fn.name})")
+            elif message.type == "text":
+                response = message.text
+                if genconf.format == "json": # prepend previous prefill
+                    response = "{" + response
+                break
 
-                text = fn.arguments
-
-            else: # use content instead
-                logger.warn("Mistral: expecting message.tool_calls, but none received - using text content")
-                text = message.content # type: ignore[assignment]
-        
-        else:
-            # text or simple json format
-            text = message.content # type: ignore[assignment]
-
-        return self._prepare_gen_out(text, finish, genconf)
+        return self._prepare_gen_out(response, finish, genconf)
 
 
 
@@ -342,7 +319,10 @@ class MistralModel(MessagesModel):
         self._ensure_client(False)
 
         try:
-            response = self._client.chat(**kwargs) # type: ignore[attr-defined]
+            if "tools" in kwargs:
+                response = self._client.beta.tools.messages.create(**kwargs) # type: ignore[attr-defined]
+            else:
+                response = self._client.messages.create(**kwargs) # type: ignore[attr-defined]
 
         except Exception as e:
             raise RuntimeError(f"Cannot generate. Internal error: {e}")
@@ -380,7 +360,10 @@ class MistralModel(MessagesModel):
         self._ensure_client(True)
 
         try:
-            response = await self._client_async.chat(**kwargs) # type: ignore[attr-defined]
+            if "tools" in kwargs:
+                response = await self._client_async.beta.tools.messages.create(**kwargs) # type: ignore[attr-defined]
+            else:
+                response = await self._client_async.messages.create(**kwargs) # type: ignore[attr-defined]
 
         except Exception as e:
             raise RuntimeError(f"Cannot generate. Internal error: {e}")
@@ -434,36 +417,8 @@ class MistralModel(MessagesModel):
         # print(num_tokens)
         return num_tokens
 
-    
-    @classmethod
-    def known_models(cls,
-                     api_key: Optional[str] = None) -> Union[list[str], None]:
-        """If the model can only use a fixed set of models, return their names. Otherwise, return None.
 
-        Args:
-            api_key: If the model provider requires an API key, pass it here or set it in the respective env variable.
-
-        Returns:
-            Returns a list of known models or None if unable to fetch it.
-        """
-
-        args = {}
-        if api_key is not None:
-            args["api_key"] = api_key
-        model = MistralClient(**args) # type: ignore[arg-type]
-
-        model_list = model.list_models()
-        del model
-
-        out = []
-        for mod in model_list.data:
-            out.append(mod.id)
-
-        return sorted(out)
-
-
-
-
+ 
 
     def name(self) -> str:
         """Model (short) name."""
@@ -471,18 +426,20 @@ class MistralModel(MessagesModel):
         
     def desc(self) -> str:
         """Model description."""
-        return f"MistralModel: {self._model_name}"
+        return f"AnthropicModel: {self._model_name}"
 
 
     @classmethod
     def provider_version(_) -> str:
         """Provider library version: provider x.y.z
-        Ex. mistralai 0.1.8
+        Ex. anthropic 0.25.6
         """
         try:
-            ver = MistralClient()._version
+            import anthropic
+            ver = anthropic.__version__
         except Exception:
-            raise ImportError("Please install mistralai by running: pip install mistralai")
+            raise ImportError("Please install anthropic API by running: pip install anthropic")
             
-        return f"mistralai {ver}"
+        return f"anthropic {ver}"
+    
     

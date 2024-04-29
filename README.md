@@ -1,11 +1,12 @@
 # Sibila
 
-Extract structured data from remote or local LLM models. Predictable output is essential for any serious use of LLMs.
+Extract structured data from remote or local LLM models. Predictable output is important for serious use of LLMs.
 
-- Extract data into Pydantic objects, dataclasses or simple types.
-- Same API for local file models and remote OpenAI, Mistral AI and other models.
+- Query structured data into Pydantic objects, dataclasses or simple types.
+- Access remote models from OpenAI, Anthropic, Mistral AI and other providers.
+- Use local models like Llama-3, Phi-3, OpenChat or any other GGUF file model.
+- Besides structured extraction, Sibila is also a general purpose model access library, to generate plain text or free JSON results, with the same API for local and remote models.
 - Model management: download models, manage configuration, quickly switch between models.
-- Tools for evaluating output across local/remote models, for chat-like interaction and more.
 
 No matter how well you craft a prompt begging a model for the output you need, it can always respond something else. Extracting structured data can be a big step into getting predictable behavior from your models.
 
@@ -39,7 +40,7 @@ Info(event_year=1969,
      nationality='American')
 ```
 
-Or to use OpenAI's GPT-4, we would simply replace the model's name:
+Or to use a remote model like OpenAI's GPT-4, we would simply replace the model's name:
 
 ``` python
 model = Models.create("openai:gpt-4")

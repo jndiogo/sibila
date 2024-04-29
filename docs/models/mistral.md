@@ -24,6 +24,8 @@ Mistral AI models can be used by Sibila through the [MistralModel class](../api-
 
 !!! example
     ``` python
+    from sibila import MistralModel
+
     model = MistralModel("mistral-large-latest")
 
     model("I think that I shall never see.")
@@ -62,6 +64,7 @@ You can also create a Mistral model in the [Models factory](models_factory.md) b
 
 ``` python
 from sibila import Models
+
 model = Models.create("mistral:mistral-large-latest")
 ```
 
@@ -69,12 +72,10 @@ model = Models.create("mistral:mistral-large-latest")
 
 ## Model list
 
-To get a list of known model names:
+The models made available by Mistral AI are listed [here](https://mistral.ai/technology/#models). You can also get a list of models with known_models():
 
 !!! example
     ``` python
-    from sibila import MistralModel
-
     MistralModel.known_models()
     ```
 

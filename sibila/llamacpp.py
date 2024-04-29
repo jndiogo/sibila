@@ -58,10 +58,6 @@ class LlamaCppModel(FormattedTextModel):
     """Use local GGUF format models via llama.cpp engine.
     
     Supports grammar-constrained JSON output following a JSON schema.
-
-    Attributes:
-        ctx_len: Maximum context length, shared for input + output.
-        desc: Model information.
     """
 
     PROVIDER_NAME:str = "llamacpp"
@@ -338,9 +334,14 @@ class LlamaCppModel(FormattedTextModel):
 
 
 
+   
+    def name(self) -> str:
+        """Model (short) name."""
+        return os.path.basename(self._model_path)
 
-
-
+    def desc(self) -> str:
+        """Model description."""
+        return f"{type(self).__name__}: {self._model_path} - '{self._llama._model.desc()}'"
 
         
     @classmethod
@@ -356,12 +357,10 @@ class LlamaCppModel(FormattedTextModel):
             
         return f"llama-cpp-python {ver}"
 
-    
-    @property
-    def desc(self) -> str:
-        """Model description."""
-        return f"{type(self).__name__}: {self._model_path} - '{self._llama._model.desc()}'"
-    
+
+
+
+
     @property
     def n_embd(self) -> int:
         """Embedding size of model."""

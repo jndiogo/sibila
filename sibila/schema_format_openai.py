@@ -47,10 +47,6 @@ except ImportError:
 
 class SchemaFormatOpenAIModel(OpenAIModel):
     """Access a model that allows JSON Schema passed in response_format.
-
-    Attributes:
-        ctx_len: Maximum context length.
-        desc: Model information.
     """
 
     PROVIDER_NAME:str = "to be set by derived class"
@@ -179,15 +175,12 @@ class SchemaFormatOpenAIModel(OpenAIModel):
 
         logger.debug(f"{type(self).__name__} gen args: {kwargs}")
 
-        return (kwargs,
-                "__unused",
-                genconf)
+        return (kwargs, genconf)
         
 
     def _gen_post(self, 
                   response: Any,
                   pre_kwargs: dict,
-                  fn_name: str,
                   genconf: GenConf
                   ) -> GenOut:
             
@@ -235,10 +228,6 @@ class TogetherModel(SchemaFormatOpenAIModel):
         https://docs.together.ai/docs/json-mode
         
         https://docs.together.ai/reference/chat-completions
-
-    Attributes:
-        ctx_len: Maximum context length.
-        desc: Model information.
     """
 
     PROVIDER_NAME:str = "together"
@@ -332,10 +321,6 @@ class FireworksModel(SchemaFormatOpenAIModel):
         https://readme.fireworks.ai/docs/structured-response-formatting
 
         https://readme.fireworks.ai/reference/createchatcompletion
-
-    Attributes:
-        ctx_len: Maximum context length.
-        desc: Model information.
     """
 
     PROVIDER_NAME:str = "fireworks"

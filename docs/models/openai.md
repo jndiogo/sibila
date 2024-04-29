@@ -39,6 +39,7 @@ You can also create an OpenAI model in the [Models factory](models_factory.md) b
 
 ``` python
 from sibila import Models
+
 model = Models.create("openai:gpt-3.5-turbo-0125")
 ```
 

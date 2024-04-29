@@ -468,7 +468,8 @@ class Thread(Sequence):
         return {"role": role, "content": text}
     
 
-    def as_chatml(self) -> list[dict]:
+    def as_chatml(self,
+                  include_INST: bool = True) -> list[dict]:
         """Returns Thread as a list of ChatML messages.
 
         Returns:
@@ -477,7 +478,7 @@ class Thread(Sequence):
         msgs = []
 
         for index,msg in enumerate(self._msgs):
-            if index == 0 and self.inst:
+            if index == 0 and self.inst and include_INST:
                 msgs.append(self.msg_as_chatml(-1))
             msgs.append(self.msg_as_chatml(index))
             

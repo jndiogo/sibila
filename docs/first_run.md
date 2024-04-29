@@ -4,7 +4,7 @@ title: First run
 
 ## With a remote model
 
-To use an OpenAI remote model, you'll need a paid OpenAI account and its API key. You can explicitly pass this key in your script but this is a poor security practice. 
+Sibila can use remote models from OpenAI, Anthropic, Mistral and other providers. For example, to use an OpenAI remote model, you'll need a paid OpenAI account and its API key. You can explicitly pass this key in your script but this is a poor security practice. 
 
 A better way is to define an environment variable which the OpenAI API will use when needed:
 
