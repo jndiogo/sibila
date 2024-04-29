@@ -581,6 +581,8 @@
       
         
       
+        
+      
     
     
     
@@ -644,6 +646,27 @@
   
   <span class="md-ellipsis">
     OpenAI
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../anthropic/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Anthropic
   </span>
   
 
@@ -2058,10 +2081,12 @@
 </div>
 <p>You can also create a Fireworks AI model in the <a href="../models_factory/">Models factory</a> by using the "fireworks:" provider prefix:</p>
 <div class="language-python highlight"><pre><span></span><code><span id="__span-4-1"><a id="__codelineno-4-1" name="__codelineno-4-1" href="#__codelineno-4-1"></a><span class="kn">from</span> <span class="nn">sibila</span> <span class="kn">import</span> <span class="n">Models</span>
-</span><span id="__span-4-2"><a id="__codelineno-4-2" name="__codelineno-4-2" href="#__codelineno-4-2"></a><span class="n">model</span> <span class="o">=</span> <span class="n">Models</span><span class="o">.</span><span class="n">create</span><span class="p">(</span><span class="s2">&quot;fireworks:accounts/fireworks/models/gemma-7b-it&quot;</span><span class="p">)</span>
+</span><span id="__span-4-2"><a id="__codelineno-4-2" name="__codelineno-4-2" href="#__codelineno-4-2"></a>
+</span><span id="__span-4-3"><a id="__codelineno-4-3" name="__codelineno-4-3" href="#__codelineno-4-3"></a><span class="n">model</span> <span class="o">=</span> <span class="n">Models</span><span class="o">.</span><span class="n">create</span><span class="p">(</span><span class="s2">&quot;fireworks:accounts/fireworks/models/gemma-7b-it&quot;</span><span class="p">)</span>
 </span></code></pre></div>
 <h2 id="model-list">Model list<a class="headerlink" href="#model-list" title="Permanent link">#</a></h2>
-<p>The available Fireworks text inference models models are listed <a href="https://fireworks.ai/models">here</a>. Unfortunately Fireworks AI doesn't provide an API to list the models, so FireworksModel.known_models() will return None.</p>
+<p>The available Fireworks text inference models models are listed <a href="https://fireworks.ai/models">here</a>. </p>
+<p>Unfortunately Fireworks AI doesn't provide an API to list the models, so FireworksModel.known_models() will return None.</p>
 <h2 id="json-schema-models">JSON Schema models<a class="headerlink" href="#json-schema-models" title="Permanent link">#</a></h2>
 <p>All the Fireworks AI models should support JSON Schema generation, which is required for structured data extraction.</p>
 

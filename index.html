@@ -577,6 +577,8 @@
       
         
       
+        
+      
     
     
     
@@ -642,6 +644,27 @@
   
   <span class="md-ellipsis">
     OpenAI
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="models/anthropic/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Anthropic
   </span>
   
 
@@ -1922,12 +1945,13 @@
 
 
 <h1 id="sibila">Sibila<a class="headerlink" href="#sibila" title="Permanent link">#</a></h1>
-<p>Extract structured data from remote or local LLM models. Predictable output is essential for any serious use of LLMs.</p>
+<p>Extract structured data from remote or local LLM models. Predictable output is important for serious use of LLMs.</p>
 <ul>
-<li>Extract data into Pydantic objects, dataclasses or simple types.</li>
-<li>Same API for local file models and remote OpenAI, Mistral AI and other models.</li>
+<li>Query structured data into Pydantic objects, dataclasses or simple types.</li>
+<li>Access remote models from OpenAI, Anthropic, Mistral AI and other providers.</li>
+<li>Use local models like Llama-3, Phi-3, OpenChat or any other GGUF file model.</li>
+<li>Besides structured extraction, Sibila is also a general purpose model access library, to generate plain text or free JSON results, with the same API for local and remote models.</li>
 <li>Model management: download models, manage configuration, quickly switch between models.</li>
-<li>Tools for evaluating output across local/remote models, for chat-like interaction and more.</li>
 </ul>
 <p>No matter how well you craft a prompt begging a model for the output you need, it can always respond something else. Extracting structured data can be a big step into getting predictable behavior from your models.</p>
 <p>See <a href="https://jndiogo.github.io/sibila/what/">What can you do with Sibila?</a></p>
@@ -1953,7 +1977,7 @@
 </span><span id="__span-1-4"><a id="__codelineno-1-4" name="__codelineno-1-4" href="#__codelineno-1-4"></a>     <span class="n">age_at_the_time</span><span class="o">=</span><span class="mi">38</span><span class="p">,</span>
 </span><span id="__span-1-5"><a id="__codelineno-1-5" name="__codelineno-1-5" href="#__codelineno-1-5"></a>     <span class="n">nationality</span><span class="o">=</span><span class="s1">&#39;American&#39;</span><span class="p">)</span>
 </span></code></pre></div>
-<p>Or to use OpenAI's GPT-4, we would simply replace the model's name:</p>
+<p>Or to use a remote model like OpenAI's GPT-4, we would simply replace the model's name:</p>
 <div class="language-python highlight"><pre><span></span><code><span id="__span-2-1"><a id="__codelineno-2-1" name="__codelineno-2-1" href="#__codelineno-2-1"></a><span class="n">model</span> <span class="o">=</span> <span class="n">Models</span><span class="o">.</span><span class="n">create</span><span class="p">(</span><span class="s2">&quot;openai:gpt-4&quot;</span><span class="p">)</span>
 </span><span id="__span-2-2"><a id="__codelineno-2-2" name="__codelineno-2-2" href="#__codelineno-2-2"></a>
 </span><span id="__span-2-3"><a id="__codelineno-2-3" name="__codelineno-2-3" href="#__codelineno-2-3"></a><span class="n">model</span><span class="o">.</span><span class="n">extract</span><span class="p">(</span><span class="n">Info</span><span class="p">,</span> <span class="s2">&quot;Who was the first man in the moon?&quot;</span><span class="p">)</span>

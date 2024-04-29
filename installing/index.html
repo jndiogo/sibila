@@ -520,13 +520,13 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#enabling-llamacpp-hardware-acceleration" class="md-nav__link">
+  <a href="#enabling-llamacpp-hardware-acceleration-for-local-models" class="md-nav__link">
     <span class="md-ellipsis">
-      Enabling llama.cpp hardware acceleration
+      Enabling llama.cpp hardware acceleration for local models
     </span>
   </a>
   
-    <nav class="md-nav" aria-label="Enabling llama.cpp hardware acceleration">
+    <nav class="md-nav" aria-label="Enabling llama.cpp hardware acceleration for local models">
       <ul class="md-nav__list">
         
           <li class="md-nav__item">
@@ -695,6 +695,8 @@
       
         
       
+        
+      
     
     
     
@@ -760,6 +762,27 @@
   
   <span class="md-ellipsis">
     OpenAI
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../models/anthropic/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Anthropic
   </span>
   
 
@@ -2037,13 +2060,13 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#enabling-llamacpp-hardware-acceleration" class="md-nav__link">
+  <a href="#enabling-llamacpp-hardware-acceleration-for-local-models" class="md-nav__link">
     <span class="md-ellipsis">
-      Enabling llama.cpp hardware acceleration
+      Enabling llama.cpp hardware acceleration for local models
     </span>
   </a>
   
-    <nav class="md-nav" aria-label="Enabling llama.cpp hardware acceleration">
+    <nav class="md-nav" aria-label="Enabling llama.cpp hardware acceleration for local models">
       <ul class="md-nav__list">
         
           <li class="md-nav__item">
@@ -2126,7 +2149,7 @@
   <h1>Installing</h1>
 
 <h2 id="installation">Installation<a class="headerlink" href="#installation" title="Permanent link">#</a></h2>
-<p>Sibila requires Python 3.9+ and uses the llama-cpp-python package for local models and OpenAI's API to access remote models like GPT-4.</p>
+<p>Sibila requires Python 3.9+ and uses the llama-cpp-python package for local models and OpenAI/Mistral/other libraries to access remote models.</p>
 <p>Install Sibila from PyPI by running:</p>
 <div class="language-text highlight"><pre><span></span><code><span id="__span-0-1"><a id="__codelineno-0-1" name="__codelineno-0-1" href="#__codelineno-0-1"></a>pip install --upgrade sibila
 </span></code></pre></div>
@@ -2137,20 +2160,21 @@
 <div class="language-text highlight"><pre><span></span><code><span id="__span-1-1"><a id="__codelineno-1-1" name="__codelineno-1-1" href="#__codelineno-1-1"></a>pip install -e .
 </span></code></pre></div>
 </details>
-<h2 id="enabling-llamacpp-hardware-acceleration">Enabling llama.cpp hardware acceleration<a class="headerlink" href="#enabling-llamacpp-hardware-acceleration" title="Permanent link">#</a></h2>
+<h2 id="enabling-llamacpp-hardware-acceleration-for-local-models">Enabling llama.cpp hardware acceleration for local models<a class="headerlink" href="#enabling-llamacpp-hardware-acceleration-for-local-models" title="Permanent link">#</a></h2>
 <p>Local models will run faster with hardware acceleration enabled. Sibila uses llama-cpp-python, a python wrapper for llama.cpp and it's a good idea to make sure it was installed with the best optimization your computer can offer. </p>
 <p>See the following sections: depending on which hardware you have, you can run the listed command which will reinstall llama-cpp-python with the selected optimization. If any error occurs you can always install the non-accelerated version, as listed at the end. </p>
 <h3 id="for-cuda-nvidia-gpus">For CUDA - NVIDIA GPUs<a class="headerlink" href="#for-cuda-nvidia-gpus" title="Permanent link">#</a></h3>
-<p>For CUDA acceleration in NVIDA GPUs, you'll need to <a href="https://developer.nvidia.com/cuda-toolkit-archive">Install the NVIDIA CUDA Toolkit</a>.</p>
+<p>For CUDA acceleration in NVIDIA GPUs, you'll need to have the <a href="https://developer.nvidia.com/cuda-downloads">NVIDIA CUDA Toolkit</a> installed. If looking for a specific CUDA version, <a href="https://developer.nvidia.com/cuda-toolkit-archive">see here</a>.</p>
 <div class="tabbed-set tabbed-alternate" data-tabs="1:2"><input checked="checked" id="__tabbed_1_1" name="__tabbed_1" type="radio" /><input id="__tabbed_1_2" name="__tabbed_1" type="radio" /><div class="tabbed-labels"><label for="__tabbed_1_1">Linux</label><label for="__tabbed_1_2">Windows</label></div>
 <div class="tabbed-content">
 <div class="tabbed-block">
-<div class="language-text highlight"><pre><span></span><code><span id="__span-2-1"><a id="__codelineno-2-1" name="__codelineno-2-1" href="#__codelineno-2-1"></a>CMAKE_ARGS=&quot;-DLLAMA_CUBLAS=on&quot; \
+<p><div class="language-text highlight"><pre><span></span><code><span id="__span-2-1"><a id="__codelineno-2-1" name="__codelineno-2-1" href="#__codelineno-2-1"></a>CMAKE_ARGS=&quot;-DLLAMA_CUDA=on&quot; \
 </span><span id="__span-2-2"><a id="__codelineno-2-2" name="__codelineno-2-2" href="#__codelineno-2-2"></a>pip install llama-cpp-python --upgrade --force-reinstall --no-cache-dir
 </span></code></pre></div>
+The CUDA toolkit can also be installed from your Linux distro's package manager (e.g. apt install nvidia-cuda-toolkit).</p>
 </div>
 <div class="tabbed-block">
-<p><div class="language-text highlight"><pre><span></span><code><span id="__span-3-1"><a id="__codelineno-3-1" name="__codelineno-3-1" href="#__codelineno-3-1"></a>$env:CMAKE_ARGS = &quot;-DLLAMA_CUBLAS=on&quot;
+<p><div class="language-text highlight"><pre><span></span><code><span id="__span-3-1"><a id="__codelineno-3-1" name="__codelineno-3-1" href="#__codelineno-3-1"></a>$env:CMAKE_ARGS = &quot;-DLLAMA_CUDA=on&quot;
 </span><span id="__span-3-2"><a id="__codelineno-3-2" name="__codelineno-3-2" href="#__codelineno-3-2"></a>pip install llama-cpp-python --upgrade --force-reinstall --no-cache-dir
 </span></code></pre></div>
 <a href="https://medium.com/@piyushbatra1999/installing-llama-cpp-python-with-nvidia-gpu-acceleration-on-windows-a-short-guide-0dfac475002d">Installing llama-cpp-python with NVIDIA GPU Acceleration on Windows: A Short Guide</a></p>
