@@ -333,6 +333,10 @@ class Models:
                genconf: Optional[GenConf] = None,
                ctx_len: Optional[int] = None,
 
+               *,
+               # debug/testing
+               resolved_create_args: Optional[dict] = None,
+
                # model-specific overriding:
                **over_args: Union[Any]) -> Model:
         """Create a model.
@@ -341,6 +345,7 @@ class Models:
             res_name: Resource name in the format: provider:model_name, for example "llamacpp:openchat".
             genconf: Optional model generation configuration. Overrides set_genconf() value and any directory defaults. Defaults to None.
             ctx_len: Maximum context length to be used. Overrides directory defaults. Defaults to None.
+            resolved_create_args: Pass an empty dict to be filled by this method with the resolved args used in model creation. Defaults to None.
             over_args: Model-specific creation args, which will override default args set in model directory.
 
         Returns:
@@ -365,6 +370,9 @@ class Models:
 
         if ctx_len is not None:
             args["ctx_len"] = ctx_len
+
+        if resolved_create_args is not None:
+            resolved_create_args.update(args)
 
 
         logger.debug(f"Resolved '{res_name}' to '{provider}:{name}' with args: {args}")

@@ -1,6 +1,6 @@
 """Structured data from local or remote LLM models."""
 
-__version__ = "0.4.1"
+__version__ = "0.4.2"
 
 __all__ = [
     "Models",

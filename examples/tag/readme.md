@@ -33,13 +33,13 @@ These will be our queries, ten typical customer support questions:
 queries = """\
 1. Do you offer a trial period for your software before purchasing?
 2. I'm experiencing a glitch with your app, it keeps freezing after the latest update.
-3. What are the different pricing plans available for your subscription service?"
-4. Can you provide instructions on how to reset my account password?"
-5. I'm unsure about the compatibility of your product with my device, can you advise?"
-6. How can I track my recent order and estimate its delivery date?"
-7. Is there a customer loyalty program or rewards system for frequent buyers?"
-8. I'm interested in your online courses, but do you offer refunds if I'm not satisfied?"
-9. Could you clarify the coverage and limitations of your product warranty?"
+3. What are the different pricing plans available for your subscription service?
+4. Can you provide instructions on how to reset my account password?
+5. I'm unsure about the compatibility of your product with my device, can you advise?
+6. How can I track my recent order and estimate its delivery date?
+7. Is there a customer loyalty program or rewards system for frequent buyers?
+8. I'm interested in your online courses, but do you offer refunds if I'm not satisfied?
+9. Could you clarify the coverage and limitations of your product warranty?
 10. What are your customer support hours and how can I reach your team in case of emergencies?
 """
 ```

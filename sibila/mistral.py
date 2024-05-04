@@ -477,12 +477,12 @@ class MistralModel(MessagesModel):
     @classmethod
     def provider_version(_) -> str:
         """Provider library version: provider x.y.z
-        Ex. mistralai 0.1.8
+        Ex. mistralai-0.1.8
         """
         try:
             ver = MistralClient()._version
         except Exception:
             raise ImportError("Please install mistralai by running: pip install mistralai")
             
-        return f"mistralai {ver}"
+        return f"mistralai-{ver}"
     

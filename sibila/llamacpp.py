@@ -347,7 +347,7 @@ class LlamaCppModel(FormattedTextModel):
     @classmethod
     def provider_version(_) -> str:
         """Provider library version: provider x.y.z
-        Ex. llama-cpp-python 0.2.44
+        Ex. llama-cpp-python-0.2.44
         """
         try:        
             import llama_cpp
@@ -355,7 +355,7 @@ class LlamaCppModel(FormattedTextModel):
         except Exception:
             raise ImportError("Please install llama-cpp-python by running: pip install llama-cpp-python")
             
-        return f"llama-cpp-python {ver}"
+        return f"llama-cpp-python-{ver}"
 
 
 

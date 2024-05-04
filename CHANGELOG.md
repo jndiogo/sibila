@@ -9,6 +9,10 @@ The project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html
 ## [Unreleased]
 - feat: Add seed setting to GenConf. Commented-out because of lack of support in OpenAI models and some llama.cpp hardware accelerations.
 
+## [0.4.2]
+- feat: Add Model.create() argument to retrieve the actual initialization params used to create the model.
+- fix: Correct OpenAI's "max_tokens_limit" setting to 4096 in base_models.json, a more sensible default value for future models.
+- fix: Update Model.version() formats to be simpler and simplify comparison between versions.
 
 ## [0.4.1]
 - feat: Add Anthropic provider.

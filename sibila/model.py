@@ -1552,7 +1552,7 @@ class Model(ABC):
         
         avail_output_tokens = self.calc_max_max_tokens(input_token_len)
         if avail_output_tokens <= 0:
-            raise ValueError(f"""Input token length ({input_token_len}) doesn't fit available ctx_len ({self.ctx_len})""")
+            raise ValueError(f"""Input token length ({input_token_len}) doesn't fit available ctx_len ({self.ctx_len}) or max_tokens_limit ({self.max_tokens_limit})""")
 
         # calc maximum possible output
         resolved_max_tokens = genconf.resolve_max_tokens(self.ctx_len, self.max_tokens_limit)
@@ -1601,17 +1601,17 @@ class Model(ABC):
     @abstractmethod
     def provider_version(cls) -> str:
         """Provider library version: provider x.y.z
-        Ex. llama-cpp-python 0.2.44
+        Ex. llama-cpp-python-0.2.44
         """
         ...
 
     @classmethod
     def version(cls) -> str:
         """Sibila version + provider version
-        Ex: sibila='0.2.3' provider='llama-cpp-python 0.2.44'        
+        Ex: sibila=0.2.3 provider=llama-cpp-python-0.2.44
         """        
         from .__init__ import __version__ as version  # type: ignore[import-not-found]
-        return f"sibila='{version}' provider='{cls.provider_version()}'"
+        return f"sibila={version} provider={cls.provider_version()}"
         
 
 

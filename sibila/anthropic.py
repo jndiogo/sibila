@@ -432,7 +432,7 @@ class AnthropicModel(MessagesModel):
     @classmethod
     def provider_version(_) -> str:
         """Provider library version: provider x.y.z
-        Ex. anthropic 0.25.6
+        Ex. anthropic-0.25.6
         """
         try:
             import anthropic
@@ -440,6 +440,6 @@ class AnthropicModel(MessagesModel):
         except Exception:
             raise ImportError("Please install anthropic API by running: pip install anthropic")
             
-        return f"anthropic {ver}"
+        return f"anthropic-{ver}"
     
     

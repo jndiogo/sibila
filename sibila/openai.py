@@ -547,7 +547,7 @@ class OpenAIModel(MessagesModel):
     @classmethod
     def provider_version(_) -> str:
         """Provider library version: provider x.y.z
-        Ex. openai 1.3.6
+        Ex. openai-1.3.6
         """
         try:        
             import openai
@@ -555,7 +555,7 @@ class OpenAIModel(MessagesModel):
         except Exception:
             raise ImportError("Please install openai by running: pip install openai")
             
-        return f"openai {ver}"
+        return f"openai-{ver}"
     
     
 

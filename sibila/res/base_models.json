@@ -29,7 +29,8 @@
 
   "openai": {
     "_default": {
-      "ctx_len": 4096,
+      "ctx_len": 8192,
+      "max_tokens_limit": 4096,
       "overhead_per_msg": 3,
       "token_estimation_factor": 0.4
     },
@@ -39,29 +40,31 @@
     }, 
 
     "gpt-4-0125-preview": {
-      "ctx_len": 128000,
-      "max_tokens_limit": 4096
+      "ctx_len": 128000
     }, 
 
     "gpt-4-1106-preview": {
-      "ctx_len": 128000,
-      "max_tokens_limit": 4096
+      "ctx_len": 128000
     }, 
 
     "gpt-4-0613": {
-      "ctx_len": 8192
+      "ctx_len": 8192,
+      "max_tokens_limit": null
     }, 
 
     "gpt-4-0314": {
-      "ctx_len": 8192
+      "ctx_len": 8192,
+      "max_tokens_limit": null
     }, 
 
     "gpt-4-32k-0613": {
-      "ctx_len": 32768
+      "ctx_len": 32768,
+      "max_tokens_limit": null
     }, 
 
     "gpt-4-32k-0314": {
-      "ctx_len": 32768
+      "ctx_len": 32768,
+      "max_tokens_limit": null
     }, 
 
     "gpt-4-turbo": "gpt-4-turbo-2024-04-09",
@@ -70,35 +73,35 @@
     "gpt-4": "gpt-4-1106-preview",
 
 
-
     "gpt-3.5-turbo-0125": {
-      "ctx_len": 16385,
-      "max_tokens_limit": 4096
+      "ctx_len": 16385
     }, 
 
     "gpt-3.5-turbo-1106": {
-      "ctx_len": 16385,
-      "max_tokens_limit": 4096
+      "ctx_len": 16385
     }, 
 
     "gpt-3.5-turbo-0613": {
-      "ctx_len": 4096
+      "ctx_len": 4096,
+      "max_tokens_limit": null
     }, 
 
     "gpt-3.5-turbo-0301": {
       "ctx_len": 4096,
+      "max_tokens_limit": null,
       "overhead_per_msg": 4
     }, 
 
     "gpt-3.5-turbo-16k-0613": {
-      "ctx_len": 16385
+      "ctx_len": 16385,
+      "max_tokens_limit": null
     }, 
 
     "gpt-3.5-turbo": "gpt-3.5-turbo-0125",
     "gpt-3.5-turbo-16k": "gpt-3.5-turbo-16k-0613",
 
-    "gpt-3.5": "gpt-3.5-turbo-1106",
-    "gpt-3": "gpt-3.5-turbo-1106"
+    "gpt-3.5": "gpt-3.5-turbo-0125",
+    "gpt-3": "gpt-3.5-turbo-0125"
   },
 
   "together": {
