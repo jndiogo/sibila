@@ -576,6 +576,8 @@
       
         
       
+        
+      
     
     
     
@@ -636,11 +638,11 @@
   
   
     <li class="md-nav__item">
-      <a href="../openai/" class="md-nav__link">
+      <a href="../anthropic/" class="md-nav__link">
         
   
   <span class="md-ellipsis">
-    OpenAI
+    Anthropic
   </span>
   
 
@@ -657,11 +659,32 @@
   
   
     <li class="md-nav__item">
-      <a href="../anthropic/" class="md-nav__link">
+      <a href="../fireworks/" class="md-nav__link">
         
   
   <span class="md-ellipsis">
-    Anthropic
+    Fireworks AI
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../groq/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Groq
   </span>
   
 
@@ -699,11 +722,11 @@
   
   
     <li class="md-nav__item">
-      <a href="../together/" class="md-nav__link">
+      <a href="../openai/" class="md-nav__link">
         
   
   <span class="md-ellipsis">
-    Together.ai
+    OpenAI
   </span>
   
 
@@ -720,11 +743,11 @@
   
   
     <li class="md-nav__item">
-      <a href="../fireworks/" class="md-nav__link">
+      <a href="../together/" class="md-nav__link">
         
   
   <span class="md-ellipsis">
-    Fireworks AI
+    Together.ai
   </span>
   
 
@@ -1122,11 +1145,11 @@
   
   
     <li class="md-nav__item">
-      <a href="../../extract/dataclass/" class="md-nav__link">
+      <a href="../../extract/pydantic/" class="md-nav__link">
         
   
   <span class="md-ellipsis">
-    Dataclass
+    Pydantic
   </span>
   
 
@@ -1143,11 +1166,11 @@
   
   
     <li class="md-nav__item">
-      <a href="../../extract/pydantic/" class="md-nav__link">
+      <a href="../../extract/dataclass/" class="md-nav__link">
         
   
   <span class="md-ellipsis">
-    Pydantic
+    Dataclass
   </span>
   
 
@@ -1957,7 +1980,7 @@
 </span></code></pre></div>
 <p>The first line calls <a href="../../api-reference/models/#sibila.Models.setup">Models.setup()</a> to initialize the factory with the folder where model files and configs ("models.json" and "formats.json") are located.</p>
 <p>The second line calls <a href="../../api-reference/models/#sibila.Models.create">Models.create()</a> to create a model from the name "openai:gpt-4". In this case we created a remote model, but we could as well create a local model based in a GGUF file.</p>
-<p>The names should be in the format "provider:model_name" and Sibila currently supports two providers:</p>
+<p>The names should be in the format "provider:model_name" and Sibila currently supports these providers:</p>
 <table>
 <thead>
 <tr>
@@ -1968,22 +1991,47 @@
 </thead>
 <tbody>
 <tr>
-<td>llamacpp</td>
+<td><a href="../local_model/">llamacpp</a></td>
 <td>Local GGUF model</td>
 <td>LlamaCppModel</td>
 </tr>
 <tr>
-<td>openai</td>
+<td><a href="../anthropic/">anthropic</a></td>
+<td>Remote model</td>
+<td>AnthropicModel</td>
+</tr>
+<tr>
+<td><a href="../fireworks/">fireworks</a></td>
+<td>Remote model</td>
+<td>FireworksModel</td>
+</tr>
+<tr>
+<td><a href="../groq/">groq</a></td>
+<td>Remote model</td>
+<td>GroqModel</td>
+</tr>
+<tr>
+<td><a href="../mistral/">mistral</a></td>
+<td>Remote model</td>
+<td>MistralModel</td>
+</tr>
+<tr>
+<td><a href="../openai/">openai</a></td>
 <td>Remote model</td>
 <td>OpenAIModel</td>
 </tr>
+<tr>
+<td><a href="../together/">together</a></td>
+<td>Remote model</td>
+<td>TogetherModel</td>
+</tr>
 </tbody>
 </table>
-<p>The name part, after the "provider:" must either be:</p>
+<p>The name part, after the "provider:", must either be:</p>
 <ul>
 <li>A remote model name, like "gpt-4": "openai:gpt-4"</li>
-<li>A local model name, like "openchat": "llamacpp:openchat"</li>
-<li>The actual filename of a model in the "models" folder: "llamacpp:openchat-3.5-1210.Q4_K_M.gguf" - this is the form we use in the examples, but of course using "openchat" instead of the filename would be better...</li>
+<li>For llamacpp, a local model name, defined in a models.json file, like "openchat": "llamacpp:openchat"</li>
+<li>Also for llamacpp, name can be the actual filename of a model in the "models" folder: "llamacpp:openchat-3.5-1210.Q4_K_M.gguf".</li>
 </ul>
 <p>Although you can use filenames as model names, it's generally a better idea, for continued use, to create an entry in the "models.json" file  - this allows future model replacement to be much easier.</p>
 <p>See <a href="../models_json/">Managing models</a> to learn how to register these model names.</p>

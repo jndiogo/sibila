@@ -579,6 +579,8 @@
       
         
       
+        
+      
     
     
     
@@ -639,11 +641,11 @@
   
   
     <li class="md-nav__item">
-      <a href="../../models/openai/" class="md-nav__link">
+      <a href="../../models/anthropic/" class="md-nav__link">
         
   
   <span class="md-ellipsis">
-    OpenAI
+    Anthropic
   </span>
   
 
@@ -660,11 +662,32 @@
   
   
     <li class="md-nav__item">
-      <a href="../../models/anthropic/" class="md-nav__link">
+      <a href="../../models/fireworks/" class="md-nav__link">
         
   
   <span class="md-ellipsis">
-    Anthropic
+    Fireworks AI
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../models/groq/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Groq
   </span>
   
 
@@ -702,11 +725,11 @@
   
   
     <li class="md-nav__item">
-      <a href="../../models/together/" class="md-nav__link">
+      <a href="../../models/openai/" class="md-nav__link">
         
   
   <span class="md-ellipsis">
-    Together.ai
+    OpenAI
   </span>
   
 
@@ -723,11 +746,11 @@
   
   
     <li class="md-nav__item">
-      <a href="../../models/fireworks/" class="md-nav__link">
+      <a href="../../models/together/" class="md-nav__link">
         
   
   <span class="md-ellipsis">
-    Fireworks AI
+    Together.ai
   </span>
   
 
@@ -1117,11 +1140,11 @@
   
   
     <li class="md-nav__item">
-      <a href="../../extract/dataclass/" class="md-nav__link">
+      <a href="../../extract/pydantic/" class="md-nav__link">
         
   
   <span class="md-ellipsis">
-    Dataclass
+    Pydantic
   </span>
   
 
@@ -1138,11 +1161,11 @@
   
   
     <li class="md-nav__item">
-      <a href="../../extract/pydantic/" class="md-nav__link">
+      <a href="../../extract/dataclass/" class="md-nav__link">
         
   
   <span class="md-ellipsis">
-    Pydantic
+    Dataclass
   </span>
   
 
@@ -1942,6 +1965,15 @@
 </li>
       
         <li class="md-nav__item">
+  <a href="#043" class="md-nav__link">
+    <span class="md-ellipsis">
+      [0.4.3]
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
   <a href="#042" class="md-nav__link">
     <span class="md-ellipsis">
       [0.4.2]
@@ -2085,6 +2117,15 @@
 </li>
       
         <li class="md-nav__item">
+  <a href="#043" class="md-nav__link">
+    <span class="md-ellipsis">
+      [0.4.3]
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
   <a href="#042" class="md-nav__link">
     <span class="md-ellipsis">
       [0.4.2]
@@ -2199,6 +2240,15 @@ The project adheres to <a href="https://semver.org/spec/v2.0.0.html">Semantic Ve
 <h2 id="unreleased">[Unreleased]<a class="headerlink" href="#unreleased" title="Permanent link">#</a></h2>
 <ul>
 <li>feat: Add seed setting to GenConf. Commented-out because of lack of support in OpenAI models and some llama.cpp hardware accelerations.</li>
+</ul>
+<h2 id="043">[0.4.3]<a class="headerlink" href="#043" title="Permanent link">#</a></h2>
+<ul>
+<li>feat: Add extraction support for dataclass field types Optional and Union.</li>
+<li>feat: Add Groq remote model provider.</li>
+<li>fix: Add deepcopy to json_schema_massage() to solve schema massaging error.</li>
+<li>fix: Set Thread.<strong>repr</strong> output the same as <strong>str</strong> for development convenience.</li>
+<li>docs: Improve Pydantic and dataclass documentation with examples of Optional, Union and default fields.</li>
+<li>test: Add tests for complex extraction into Pydantic and dataclass objects.</li>
 </ul>
 <h2 id="042">[0.4.2]<a class="headerlink" href="#042" title="Permanent link">#</a></h2>
 <ul>

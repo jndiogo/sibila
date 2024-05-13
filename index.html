@@ -579,6 +579,8 @@
       
         
       
+        
+      
     
     
     
@@ -639,11 +641,11 @@
   
   
     <li class="md-nav__item">
-      <a href="models/openai/" class="md-nav__link">
+      <a href="models/anthropic/" class="md-nav__link">
         
   
   <span class="md-ellipsis">
-    OpenAI
+    Anthropic
   </span>
   
 
@@ -660,11 +662,32 @@
   
   
     <li class="md-nav__item">
-      <a href="models/anthropic/" class="md-nav__link">
+      <a href="models/fireworks/" class="md-nav__link">
         
   
   <span class="md-ellipsis">
-    Anthropic
+    Fireworks AI
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="models/groq/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Groq
   </span>
   
 
@@ -702,11 +725,11 @@
   
   
     <li class="md-nav__item">
-      <a href="models/together/" class="md-nav__link">
+      <a href="models/openai/" class="md-nav__link">
         
   
   <span class="md-ellipsis">
-    Together.ai
+    OpenAI
   </span>
   
 
@@ -723,11 +746,11 @@
   
   
     <li class="md-nav__item">
-      <a href="models/fireworks/" class="md-nav__link">
+      <a href="models/together/" class="md-nav__link">
         
   
   <span class="md-ellipsis">
-    Fireworks AI
+    Together.ai
   </span>
   
 
@@ -1117,11 +1140,11 @@
   
   
     <li class="md-nav__item">
-      <a href="extract/dataclass/" class="md-nav__link">
+      <a href="extract/pydantic/" class="md-nav__link">
         
   
   <span class="md-ellipsis">
-    Dataclass
+    Pydantic
   </span>
   
 
@@ -1138,11 +1161,11 @@
   
   
     <li class="md-nav__item">
-      <a href="extract/pydantic/" class="md-nav__link">
+      <a href="extract/dataclass/" class="md-nav__link">
         
   
   <span class="md-ellipsis">
-    Pydantic
+    Dataclass
   </span>
   
 
@@ -1945,7 +1968,7 @@
 
 
 <h1 id="sibila">Sibila<a class="headerlink" href="#sibila" title="Permanent link">#</a></h1>
-<p>Extract structured data from remote or local LLM models. Predictable output is important for serious use of LLMs.</p>
+<p>Extract structured data from remote or local LLM models. Because predictable output is important for serious use of LLMs.</p>
 <ul>
 <li>Query structured data into Pydantic objects, dataclasses or simple types.</li>
 <li>Access remote models from OpenAI, Anthropic, Mistral AI and other providers.</li>
@@ -1953,7 +1976,7 @@
 <li>Besides structured extraction, Sibila is also a general purpose model access library, to generate plain text or free JSON results, with the same API for local and remote models.</li>
 <li>Model management: download models, manage configuration, quickly switch between models.</li>
 </ul>
-<p>No matter how well you craft a prompt begging a model for the output you need, it can always respond something else. Extracting structured data can be a big step into getting predictable behavior from your models.</p>
+<p>No matter how well you craft a prompt begging a model for the format you need, it can always respond something else. Extracting structured data can be a big step into getting predictable behavior from your models.</p>
 <p>See <a href="https://jndiogo.github.io/sibila/what/">What can you do with Sibila?</a></p>
 <p>To extract structured data from a local model:</p>
 <div class="language-python highlight"><pre><span></span><code><span id="__span-0-1"><a id="__codelineno-0-1" name="__codelineno-0-1" href="#__codelineno-0-1"></a><span class="kn">from</span> <span class="nn">sibila</span> <span class="kn">import</span> <span class="n">Models</span>
@@ -1982,7 +2005,7 @@
 </span><span id="__span-2-2"><a id="__codelineno-2-2" name="__codelineno-2-2" href="#__codelineno-2-2"></a>
 </span><span id="__span-2-3"><a id="__codelineno-2-3" name="__codelineno-2-3" href="#__codelineno-2-3"></a><span class="n">model</span><span class="o">.</span><span class="n">extract</span><span class="p">(</span><span class="n">Info</span><span class="p">,</span> <span class="s2">&quot;Who was the first man in the moon?&quot;</span><span class="p">)</span>
 </span></code></pre></div>
-<p>If Pydantic BaseModel objects are too much for your project, Sibila supports similar functionality with Python dataclass. Also includes asynchronous access to remote models.</p>
+<p>If Pydantic BaseModel objects are too much for your project, Sibila supports similar functionality with Python dataclasses. Also includes asynchronous access to remote models.</p>
 
 
 

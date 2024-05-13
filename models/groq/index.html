@@ -8,13 +8,13 @@
       
       
       
-        <link rel="canonical" href="https://jndiogo.github.io/sibila/models/models_json/">
+        <link rel="canonical" href="https://jndiogo.github.io/sibila/models/groq/">
       
       
-        <link rel="prev" href="../models_factory/">
+        <link rel="prev" href="../fireworks/">
       
       
-        <link rel="next" href="../formats_json/">
+        <link rel="next" href="../mistral/">
       
       
       <link rel="icon" href="../../assets/images/favicon.png">
@@ -22,7 +22,7 @@
     
     
       
-        <title>Managing models - Sibila</title>
+        <title>Groq - Sibila</title>
       
     
     
@@ -78,7 +78,7 @@
     <div data-md-component="skip">
       
         
-        <a href="#use-the-sibila-models-cli-tool" class="md-skip">
+        <a href="#creating-models" class="md-skip">
           Skip to content
         </a>
       
@@ -114,7 +114,7 @@
         <div class="md-header__topic" data-md-component="header-topic">
           <span class="md-ellipsis">
             
-              Managing models
+              Groq
             
           </span>
         </div>
@@ -564,8 +564,10 @@
                 
   
   
+    
   
   
+  
     
     
       
@@ -587,14 +589,12 @@
     
     
     
-    <li class="md-nav__item md-nav__item--nested">
+    <li class="md-nav__item md-nav__item--active md-nav__item--nested">
       
         
         
         
-          
-        
-        <input class="md-nav__toggle md-toggle md-toggle--indeterminate" type="checkbox" id="__nav_1_4_1" >
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_1_4_1" checked>
         
           
           <label class="md-nav__link" for="__nav_1_4_1" id="__nav_1_4_1_label" tabindex="0">
@@ -608,7 +608,7 @@
             <span class="md-nav__icon md-icon"></span>
           </label>
         
-        <nav class="md-nav" data-md-level="3" aria-labelledby="__nav_1_4_1_label" aria-expanded="false">
+        <nav class="md-nav" data-md-level="3" aria-labelledby="__nav_1_4_1_label" aria-expanded="true">
           <label class="md-nav__title" for="__nav_1_4_1">
             <span class="md-nav__icon md-icon"></span>
             Remote models
@@ -682,10 +682,28 @@
                 
   
   
+    
   
   
-    <li class="md-nav__item">
-      <a href="../groq/" class="md-nav__link">
+  
+    <li class="md-nav__item md-nav__item--active">
+      
+      <input class="md-nav__toggle md-toggle" type="checkbox" id="__toc">
+      
+      
+      
+        <label class="md-nav__link md-nav__link--active" for="__toc">
+          
+  
+  <span class="md-ellipsis">
+    Groq
+  </span>
+  
+
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
+      <a href="./" class="md-nav__link md-nav__link--active">
         
   
   <span class="md-ellipsis">
@@ -694,6 +712,53 @@
   
 
       </a>
+      
+        
+
+  
+
+<nav class="md-nav md-nav--secondary" aria-label="Contents">
+  
+  
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Contents
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#creating-models" class="md-nav__link">
+    <span class="md-ellipsis">
+      Creating models
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#model-list" class="md-nav__link">
+    <span class="md-ellipsis">
+      Model list
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#json-schema-models" class="md-nav__link">
+    <span class="md-ellipsis">
+      JSON Schema models
+    </span>
+  </a>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+      
     </li>
   
 
@@ -892,10 +957,8 @@
                 
   
   
-    
   
   
-  
     
     
       
@@ -911,12 +974,14 @@
     
     
     
-    <li class="md-nav__item md-nav__item--active md-nav__item--nested">
+    <li class="md-nav__item md-nav__item--nested">
       
         
         
         
-        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_1_4_3" checked>
+          
+        
+        <input class="md-nav__toggle md-toggle md-toggle--indeterminate" type="checkbox" id="__nav_1_4_3" >
         
           
           <label class="md-nav__link" for="__nav_1_4_3" id="__nav_1_4_3_label" tabindex="0">
@@ -930,7 +995,7 @@
             <span class="md-nav__icon md-icon"></span>
           </label>
         
-        <nav class="md-nav" data-md-level="3" aria-labelledby="__nav_1_4_3_label" aria-expanded="true">
+        <nav class="md-nav" data-md-level="3" aria-labelledby="__nav_1_4_3_label" aria-expanded="false">
           <label class="md-nav__title" for="__nav_1_4_3">
             <span class="md-nav__icon md-icon"></span>
             Models factory
@@ -962,28 +1027,10 @@
                 
   
   
-    
   
   
-  
-    <li class="md-nav__item md-nav__item--active">
-      
-      <input class="md-nav__toggle md-toggle" type="checkbox" id="__toc">
-      
-      
-      
-        <label class="md-nav__link md-nav__link--active" for="__toc">
-          
-  
-  <span class="md-ellipsis">
-    Managing models
-  </span>
-  
-
-          <span class="md-nav__icon md-icon"></span>
-        </label>
-      
-      <a href="./" class="md-nav__link md-nav__link--active">
+    <li class="md-nav__item">
+      <a href="../models_json/" class="md-nav__link">
         
   
   <span class="md-ellipsis">
@@ -992,44 +1039,6 @@
   
 
       </a>
-      
-        
-
-  
-
-<nav class="md-nav md-nav--secondary" aria-label="Contents">
-  
-  
-  
-  
-    <label class="md-nav__title" for="__toc">
-      <span class="md-nav__icon md-icon"></span>
-      Contents
-    </label>
-    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
-      
-        <li class="md-nav__item">
-  <a href="#use-the-sibila-models-cli-tool" class="md-nav__link">
-    <span class="md-ellipsis">
-      Use the "sibila models" CLI tool
-    </span>
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#manually-edit-modelsjson" class="md-nav__link">
-    <span class="md-ellipsis">
-      Manually edit "models.json"
-    </span>
-  </a>
-  
-</li>
-      
-    </ul>
-  
-</nav>
-      
     </li>
   
 
@@ -2014,18 +2023,27 @@
     <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
       
         <li class="md-nav__item">
-  <a href="#use-the-sibila-models-cli-tool" class="md-nav__link">
+  <a href="#creating-models" class="md-nav__link">
     <span class="md-ellipsis">
-      Use the "sibila models" CLI tool
+      Creating models
     </span>
   </a>
   
 </li>
       
         <li class="md-nav__item">
-  <a href="#manually-edit-modelsjson" class="md-nav__link">
+  <a href="#model-list" class="md-nav__link">
     <span class="md-ellipsis">
-      Manually edit "models.json"
+      Model list
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#json-schema-models" class="md-nav__link">
+    <span class="md-ellipsis">
+      JSON Schema models
     </span>
   </a>
   
@@ -2049,128 +2067,65 @@
   
 
 
-  <h1>Managing models</h1>
+  <h1>Groq</h1>
 
-<p>Model names are stored in a file named "models.json", in your "models" folder. Models registered in this file can then be used when calling <a href="../../api-reference/models/#sibila.Models.create">Models.create()</a> to create an instance of the model.</p>
-<p>Registering a name is not strictly needed, as you can create models from their filenames or remote model names, for example in most examples you'll find models created with:</p>
-<div class="language-python highlight"><pre><span></span><code><span id="__span-0-1"><a id="__codelineno-0-1" name="__codelineno-0-1" href="#__codelineno-0-1"></a><span class="n">model</span> <span class="o">=</span> <span class="n">Models</span><span class="o">.</span><span class="n">create</span><span class="p">(</span><span class="s2">&quot;llamacpp:openchat-3.5-1210.Q4_K_M.gguf&quot;</span><span class="p">)</span>
-</span></code></pre></div>
-<p>However, it's a good idea to register a name, specially if you'll be using a model for some time, or there's the possibility you'll need to replace it later. If you register a name, only that will later need to be changed.</p>
-<p>There are two ways of registering names: by using the sibila CLI tool or by directly editing the "models.json" file.</p>
-<h2 id="use-the-sibila-models-cli-tool">Use the "sibila models" CLI tool<a class="headerlink" href="#use-the-sibila-models-cli-tool" title="Permanent link">#</a></h2>
-<p>To register a model with the Models factory you can use the "sibila models" tool. Run in the "models" folder:</p>
-<div class="language-text highlight"><pre><span></span><code><span id="__span-1-1"><a id="__codelineno-1-1" name="__codelineno-1-1" href="#__codelineno-1-1"></a>&gt; sibila models -s &quot;llamacpp:openchat openchat-3.5-1210.Q4_K_M.gguf&quot; openchat
-</span><span id="__span-1-2"><a id="__codelineno-1-2" name="__codelineno-1-2" href="#__codelineno-1-2"></a>
-</span><span id="__span-1-3"><a id="__codelineno-1-3" name="__codelineno-1-3" href="#__codelineno-1-3"></a>Using models directory &#39;.&#39;
-</span><span id="__span-1-4"><a id="__codelineno-1-4" name="__codelineno-1-4" href="#__codelineno-1-4"></a>Set model &#39;llamacpp:openchat&#39; with name=&#39;openchat-3.5-1210.Q4_K_M.gguf&#39;, 
-</span><span id="__span-1-5"><a id="__codelineno-1-5" name="__codelineno-1-5" href="#__codelineno-1-5"></a>format=&#39;formatx&#39; at &#39;./models.json&#39;.
-</span></code></pre></div>
-<p>First argument after -s is the new entry name (including the "llamacpp:" provider), then the filename, then the <a href="../setup_format/">chat template format</a>, if needed.</p>
-<p>This will create an "openchat" entry in "models.json", exactly like the manually created below.</p>
-<h2 id="manually-edit-modelsjson">Manually edit "models.json"<a class="headerlink" href="#manually-edit-modelsjson" title="Permanent link">#</a></h2>
-<p>In alternative, you can manually register a model name by editing the "models.json" file located in you "models" folder.</p>
-<div class="admonition example">
-<p class="admonition-title">A "models.json" file:</p>
-<div class="language-json highlight"><pre><span></span><code><span id="__span-2-1"><a id="__codelineno-2-1" name="__codelineno-2-1" href="#__codelineno-2-1"></a><span class="p">{</span>
-</span><span id="__span-2-2"><a id="__codelineno-2-2" name="__codelineno-2-2" href="#__codelineno-2-2"></a><span class="w">    </span><span class="err">#</span><span class="w"> </span><span class="s2">&quot;llamacpp&quot;</span><span class="w"> </span><span class="err">is</span><span class="w"> </span><span class="err">a</span><span class="w"> </span><span class="err">provider</span><span class="p">,</span><span class="w"> </span><span class="err">you</span><span class="w"> </span><span class="err">ca</span><span class="kc">n</span><span class="w"> </span><span class="kc">t</span><span class="err">he</span><span class="kc">n</span><span class="w"> </span><span class="err">crea</span><span class="kc">te</span><span class="w"> </span><span class="err">models</span><span class="w"> </span><span class="err">wi</span><span class="kc">t</span><span class="err">h</span><span class="w"> </span><span class="kc">na</span><span class="err">mes</span><span class="w"> </span>
-</span><span id="__span-2-3"><a id="__codelineno-2-3" name="__codelineno-2-3" href="#__codelineno-2-3"></a><span class="w">    </span><span class="err">#</span><span class="w"> </span><span class="err">like</span><span class="w"> </span><span class="s2">&quot;provider:model_name&quot;</span><span class="p">,</span><span class="w"> </span><span class="kc">f</span><span class="err">or</span><span class="w"> </span><span class="err">ex</span><span class="p">:</span><span class="w"> </span><span class="nt">&quot;llamacpp:openchat&quot;</span>
-</span><span id="__span-2-4"><a id="__codelineno-2-4" name="__codelineno-2-4" href="#__codelineno-2-4"></a><span class="w">    </span><span class="nt">&quot;llamacpp&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="w"> </span>
-</span><span id="__span-2-5"><a id="__codelineno-2-5" name="__codelineno-2-5" href="#__codelineno-2-5"></a>
-</span><span id="__span-2-6"><a id="__codelineno-2-6" name="__codelineno-2-6" href="#__codelineno-2-6"></a><span class="w">        </span><span class="nt">&quot;_default&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="err">#</span><span class="w"> </span><span class="err">place</span><span class="w"> </span><span class="err">here</span><span class="w"> </span><span class="err">de</span><span class="kc">fault</span><span class="w"> </span><span class="err">args</span><span class="w"> </span><span class="kc">f</span><span class="err">or</span><span class="w"> </span><span class="err">all</span><span class="w"> </span><span class="err">llamacpp</span><span class="p">:</span><span class="w"> </span><span class="err">models.</span>
-</span><span id="__span-2-7"><a id="__codelineno-2-7" name="__codelineno-2-7" href="#__codelineno-2-7"></a><span class="w">            </span><span class="nt">&quot;genconf&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="nt">&quot;temperature&quot;</span><span class="p">:</span><span class="w"> </span><span class="mf">0.0</span><span class="p">}</span>
-</span><span id="__span-2-8"><a id="__codelineno-2-8" name="__codelineno-2-8" href="#__codelineno-2-8"></a><span class="w">            </span><span class="err">#</span><span class="w"> </span><span class="err">each</span><span class="w"> </span><span class="err">model</span><span class="w"> </span><span class="err">e</span><span class="kc">ntr</span><span class="err">y</span><span class="w"> </span><span class="err">below</span><span class="w"> </span><span class="err">ca</span><span class="kc">n</span><span class="w"> </span><span class="kc">t</span><span class="err">he</span><span class="kc">n</span><span class="w"> </span><span class="err">override</span><span class="w"> </span><span class="err">as</span><span class="w"> </span><span class="kc">nee</span><span class="err">ded</span>
-</span><span id="__span-2-9"><a id="__codelineno-2-9" name="__codelineno-2-9" href="#__codelineno-2-9"></a><span class="w">        </span><span class="p">},</span>
-</span><span id="__span-2-10"><a id="__codelineno-2-10" name="__codelineno-2-10" href="#__codelineno-2-10"></a>
-</span><span id="__span-2-11"><a id="__codelineno-2-11" name="__codelineno-2-11" href="#__codelineno-2-11"></a><span class="w">        </span><span class="nt">&quot;openchat&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="err">#</span><span class="w"> </span><span class="err">a</span><span class="w"> </span><span class="err">model</span><span class="w"> </span><span class="err">de</span><span class="kc">f</span><span class="err">i</span><span class="kc">n</span><span class="err">i</span><span class="kc">t</span><span class="err">io</span><span class="kc">n</span>
-</span><span id="__span-2-12"><a id="__codelineno-2-12" name="__codelineno-2-12" href="#__codelineno-2-12"></a><span class="w">            </span><span class="nt">&quot;name&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;openchat-3.5-1210.Q4_K_M.gguf&quot;</span><span class="p">,</span>
-</span><span id="__span-2-13"><a id="__codelineno-2-13" name="__codelineno-2-13" href="#__codelineno-2-13"></a><span class="w">            </span><span class="nt">&quot;format&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;openchat&quot;</span><span class="w"> </span><span class="err">#</span><span class="w"> </span><span class="err">cha</span><span class="kc">t</span><span class="w"> </span><span class="kc">te</span><span class="err">mpla</span><span class="kc">te</span><span class="w"> </span><span class="kc">f</span><span class="err">orma</span><span class="kc">t</span><span class="w"> </span><span class="err">used</span><span class="w"> </span><span class="err">by</span><span class="w"> </span><span class="kc">t</span><span class="err">his</span><span class="w"> </span><span class="err">model</span>
-</span><span id="__span-2-14"><a id="__codelineno-2-14" name="__codelineno-2-14" href="#__codelineno-2-14"></a><span class="w">        </span><span class="p">},</span>
-</span><span id="__span-2-15"><a id="__codelineno-2-15" name="__codelineno-2-15" href="#__codelineno-2-15"></a>
-</span><span id="__span-2-16"><a id="__codelineno-2-16" name="__codelineno-2-16" href="#__codelineno-2-16"></a><span class="w">        </span><span class="nt">&quot;phi2&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">{</span>
-</span><span id="__span-2-17"><a id="__codelineno-2-17" name="__codelineno-2-17" href="#__codelineno-2-17"></a><span class="w">            </span><span class="nt">&quot;name&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;phi-2.Q4_K_M.gguf&quot;</span><span class="p">,</span><span class="w"> </span><span class="err">#</span><span class="w"> </span><span class="err">model</span><span class="w"> </span><span class="kc">f</span><span class="err">ile</span><span class="kc">na</span><span class="err">me</span>
-</span><span id="__span-2-18"><a id="__codelineno-2-18" name="__codelineno-2-18" href="#__codelineno-2-18"></a><span class="w">            </span><span class="nt">&quot;format&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;phi2&quot;</span><span class="p">,</span>
-</span><span id="__span-2-19"><a id="__codelineno-2-19" name="__codelineno-2-19" href="#__codelineno-2-19"></a><span class="w">            </span><span class="nt">&quot;genconf&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="nt">&quot;temperature&quot;</span><span class="p">:</span><span class="w"> </span><span class="mf">2.0</span><span class="p">}</span><span class="w"> </span><span class="err">#</span><span class="w"> </span><span class="err">a</span><span class="w"> </span><span class="err">ho</span><span class="kc">t</span><span class="mi">-</span><span class="err">headed</span><span class="w"> </span><span class="err">model</span>
-</span><span id="__span-2-20"><a id="__codelineno-2-20" name="__codelineno-2-20" href="#__codelineno-2-20"></a><span class="w">        </span><span class="p">},</span>
-</span><span id="__span-2-21"><a id="__codelineno-2-21" name="__codelineno-2-21" href="#__codelineno-2-21"></a>
-</span><span id="__span-2-22"><a id="__codelineno-2-22" name="__codelineno-2-22" href="#__codelineno-2-22"></a><span class="w">        </span><span class="nt">&quot;oc&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;openchat&quot;</span><span class="w"> </span>
-</span><span id="__span-2-23"><a id="__codelineno-2-23" name="__codelineno-2-23" href="#__codelineno-2-23"></a><span class="w">        </span><span class="err">#</span><span class="w"> </span><span class="kc">t</span><span class="err">his</span><span class="w"> </span><span class="err">is</span><span class="w"> </span><span class="err">a</span><span class="w"> </span><span class="err">li</span><span class="kc">n</span><span class="err">k</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;oc&quot;</span><span class="w"> </span><span class="kc">f</span><span class="err">orwards</span><span class="w"> </span><span class="kc">t</span><span class="err">o</span><span class="w"> </span><span class="kc">t</span><span class="err">he</span><span class="w"> </span><span class="s2">&quot;openchat&quot;</span><span class="w"> </span><span class="err">e</span><span class="kc">ntr</span><span class="err">y</span>
-</span><span id="__span-2-24"><a id="__codelineno-2-24" name="__codelineno-2-24" href="#__codelineno-2-24"></a><span class="w">    </span><span class="p">},</span>
-</span><span id="__span-2-25"><a id="__codelineno-2-25" name="__codelineno-2-25" href="#__codelineno-2-25"></a>
-</span><span id="__span-2-26"><a id="__codelineno-2-26" name="__codelineno-2-26" href="#__codelineno-2-26"></a><span class="w">    </span><span class="err">#</span><span class="w"> </span><span class="err">The</span><span class="w"> </span><span class="s2">&quot;openai&quot;</span><span class="w"> </span><span class="err">provider.</span><span class="w"> </span><span class="err">A</span><span class="w"> </span><span class="err">model</span><span class="w"> </span><span class="err">ca</span><span class="kc">n</span><span class="w"> </span><span class="err">be</span><span class="w"> </span><span class="err">crea</span><span class="kc">te</span><span class="err">d</span><span class="w"> </span><span class="err">wi</span><span class="kc">t</span><span class="err">h</span><span class="w"> </span><span class="kc">na</span><span class="err">me</span><span class="p">:</span><span class="w"> </span><span class="nt">&quot;openai:gpt-4&quot;</span>
-</span><span id="__span-2-27"><a id="__codelineno-2-27" name="__codelineno-2-27" href="#__codelineno-2-27"></a><span class="w">    </span><span class="nt">&quot;openai&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="w"> </span>
-</span><span id="__span-2-28"><a id="__codelineno-2-28" name="__codelineno-2-28" href="#__codelineno-2-28"></a>
-</span><span id="__span-2-29"><a id="__codelineno-2-29" name="__codelineno-2-29" href="#__codelineno-2-29"></a><span class="w">        </span><span class="nt">&quot;_default&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">{},</span><span class="w"> </span><span class="err">#</span><span class="w"> </span><span class="err">de</span><span class="kc">fault</span><span class="w"> </span><span class="err">se</span><span class="kc">tt</span><span class="err">i</span><span class="kc">n</span><span class="err">gs</span><span class="w"> </span><span class="kc">f</span><span class="err">or</span><span class="w"> </span><span class="err">all</span><span class="w"> </span><span class="err">Ope</span><span class="kc">n</span><span class="err">AI</span><span class="w"> </span><span class="err">models</span>
-</span><span id="__span-2-30"><a id="__codelineno-2-30" name="__codelineno-2-30" href="#__codelineno-2-30"></a>
-</span><span id="__span-2-31"><a id="__codelineno-2-31" name="__codelineno-2-31" href="#__codelineno-2-31"></a><span class="w">        </span><span class="nt">&quot;gpt-3.5&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">{</span>
-</span><span id="__span-2-32"><a id="__codelineno-2-32" name="__codelineno-2-32" href="#__codelineno-2-32"></a><span class="w">            </span><span class="nt">&quot;name&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;gpt-3.5-turbo-1106&quot;</span><span class="w"> </span><span class="err">#</span><span class="w"> </span><span class="err">Ope</span><span class="kc">n</span><span class="err">AI&#39;s</span><span class="w"> </span><span class="err">model</span><span class="w"> </span><span class="kc">na</span><span class="err">me</span>
-</span><span id="__span-2-33"><a id="__codelineno-2-33" name="__codelineno-2-33" href="#__codelineno-2-33"></a><span class="w">        </span><span class="p">},</span>
-</span><span id="__span-2-34"><a id="__codelineno-2-34" name="__codelineno-2-34" href="#__codelineno-2-34"></a>
-</span><span id="__span-2-35"><a id="__codelineno-2-35" name="__codelineno-2-35" href="#__codelineno-2-35"></a><span class="w">        </span><span class="nt">&quot;gpt-4&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">{</span>
-</span><span id="__span-2-36"><a id="__codelineno-2-36" name="__codelineno-2-36" href="#__codelineno-2-36"></a><span class="w">            </span><span class="nt">&quot;name&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;gpt-4-1106-preview&quot;</span>
-</span><span id="__span-2-37"><a id="__codelineno-2-37" name="__codelineno-2-37" href="#__codelineno-2-37"></a><span class="w">        </span><span class="p">},</span>
-</span><span id="__span-2-38"><a id="__codelineno-2-38" name="__codelineno-2-38" href="#__codelineno-2-38"></a><span class="w">    </span><span class="p">},</span>
-</span><span id="__span-2-39"><a id="__codelineno-2-39" name="__codelineno-2-39" href="#__codelineno-2-39"></a>
-</span><span id="__span-2-40"><a id="__codelineno-2-40" name="__codelineno-2-40" href="#__codelineno-2-40"></a><span class="w">    </span><span class="err">#</span><span class="w"> </span><span class="s2">&quot;alias&quot;</span><span class="w"> </span><span class="err">e</span><span class="kc">ntr</span><span class="err">y</span><span class="w"> </span><span class="err">is</span><span class="w"> </span><span class="kc">n</span><span class="err">o</span><span class="kc">t</span><span class="w"> </span><span class="err">a</span><span class="w"> </span><span class="err">provider</span><span class="w"> </span><span class="err">bu</span><span class="kc">t</span><span class="w"> </span><span class="err">a</span><span class="w"> </span><span class="err">way</span><span class="w"> </span><span class="kc">t</span><span class="err">o</span><span class="w"> </span><span class="err">have</span><span class="w"> </span><span class="err">simpler</span><span class="w"> </span><span class="err">alias</span><span class="w"> </span><span class="kc">na</span><span class="err">mes.</span>
-</span><span id="__span-2-41"><a id="__codelineno-2-41" name="__codelineno-2-41" href="#__codelineno-2-41"></a><span class="w">    </span><span class="err">#</span><span class="w"> </span><span class="err">For</span><span class="w"> </span><span class="err">example</span><span class="w"> </span><span class="err">you</span><span class="w"> </span><span class="err">ca</span><span class="kc">n</span><span class="w"> </span><span class="err">use</span><span class="w"> </span><span class="s2">&quot;alias:develop&quot;</span><span class="w"> </span><span class="err">or</span><span class="w"> </span><span class="err">eve</span><span class="kc">n</span><span class="w"> </span><span class="err">simpler</span><span class="p">,</span><span class="w"> </span><span class="err">jus</span><span class="kc">t</span><span class="w"> </span><span class="s2">&quot;develop&quot;</span><span class="w"> </span><span class="kc">t</span><span class="err">o</span><span class="w"> </span><span class="err">crea</span><span class="kc">te</span><span class="w"> </span><span class="kc">t</span><span class="err">he</span><span class="w"> </span><span class="err">model</span><span class="p">:</span>
-</span><span id="__span-2-42"><a id="__codelineno-2-42" name="__codelineno-2-42" href="#__codelineno-2-42"></a><span class="w">    </span><span class="nt">&quot;alias&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="w"> </span>
-</span><span id="__span-2-43"><a id="__codelineno-2-43" name="__codelineno-2-43" href="#__codelineno-2-43"></a><span class="w">        </span><span class="nt">&quot;develop&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;llamacpp:openchat&quot;</span><span class="p">,</span>
-</span><span id="__span-2-44"><a id="__codelineno-2-44" name="__codelineno-2-44" href="#__codelineno-2-44"></a><span class="w">        </span><span class="nt">&quot;production&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;openai:gpt-3.5&quot;</span>
-</span><span id="__span-2-45"><a id="__codelineno-2-45" name="__codelineno-2-45" href="#__codelineno-2-45"></a><span class="w">    </span><span class="p">}</span>
-</span><span id="__span-2-46"><a id="__codelineno-2-46" name="__codelineno-2-46" href="#__codelineno-2-46"></a><span class="p">}</span>
+<p>To use the models hosted by <a href="https://console.groq.com/playground">Groq</a>, you'll need an API key (which is initially free). As in other providers, although you can pass this key when you create the model object, it's more secure to define an env variable with this information:</p>
+<div class="tabbed-set tabbed-alternate" data-tabs="1:2"><input checked="checked" id="__tabbed_1_1" name="__tabbed_1" type="radio" /><input id="__tabbed_1_2" name="__tabbed_1" type="radio" /><div class="tabbed-labels"><label for="__tabbed_1_1">Linux and Mac</label><label for="__tabbed_1_2">Windows</label></div>
+<div class="tabbed-content">
+<div class="tabbed-block">
+<div class="language-text highlight"><pre><span></span><code><span id="__span-0-1"><a id="__codelineno-0-1" name="__codelineno-0-1" href="#__codelineno-0-1"></a>export GROQ_API_KEY=&quot;...&quot;
 </span></code></pre></div>
 </div>
-<p>Looking at the above structure, we have two top entries for providers "llamacpp" and "openai", and also an "alias" entry.</p>
-<p>Inside each provider entry, we have a "_defaults" key, which can store a base GenConf or other arguments passed during model creation. The default values defined in "_default" entries can later be overridden by any keys of the same name specified in each model definition. You can see this in the "phi2" entry, which overrides the genconf entry given in the above "_default", setting temperature to 2.0. 
-Keys are merged element-wise from any specified in the "_defaults" entry for the provider: keys with the same name are overridden, all other keys are inherited.</p>
-<p>In the above "model.json" example, let's look at the "openchat" model entry:</p>
-<div class="language-json highlight"><pre><span></span><code><span id="__span-3-1"><a id="__codelineno-3-1" name="__codelineno-3-1" href="#__codelineno-3-1"></a><span class="nt">&quot;openchat&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="err">#</span><span class="w"> </span><span class="err">a</span><span class="w"> </span><span class="err">model</span><span class="w"> </span><span class="err">de</span><span class="kc">f</span><span class="err">i</span><span class="kc">n</span><span class="err">i</span><span class="kc">t</span><span class="err">io</span><span class="kc">n</span>
-</span><span id="__span-3-2"><a id="__codelineno-3-2" name="__codelineno-3-2" href="#__codelineno-3-2"></a><span class="w">    </span><span class="nt">&quot;name&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;openchat-3.5-1210.Q4_K_M.gguf&quot;</span><span class="p">,</span>
-</span><span id="__span-3-3"><a id="__codelineno-3-3" name="__codelineno-3-3" href="#__codelineno-3-3"></a><span class="w">    </span><span class="nt">&quot;format&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;openchat&quot;</span><span class="w"> </span><span class="err">#</span><span class="w"> </span><span class="err">cha</span><span class="kc">t</span><span class="w"> </span><span class="kc">te</span><span class="err">mpla</span><span class="kc">te</span><span class="w"> </span><span class="kc">f</span><span class="err">orma</span><span class="kc">t</span><span class="w"> </span><span class="err">used</span><span class="w"> </span><span class="err">by</span><span class="w"> </span><span class="kc">t</span><span class="err">his</span><span class="w"> </span><span class="err">model</span>
-</span><span id="__span-3-4"><a id="__codelineno-3-4" name="__codelineno-3-4" href="#__codelineno-3-4"></a><span class="p">},</span>
+<div class="tabbed-block">
+<div class="language-text highlight"><pre><span></span><code><span id="__span-1-1"><a id="__codelineno-1-1" name="__codelineno-1-1" href="#__codelineno-1-1"></a>setx GROQ_API_KEY &quot;...&quot;
 </span></code></pre></div>
-<p>The "openchat" key name is the name you'll use to create the model as "llamacpp:openchat":</p>
-<div class="language-py highlight"><pre><span></span><code><span id="__span-4-1"><a id="__codelineno-4-1" name="__codelineno-4-1" href="#__codelineno-4-1"></a><span class="c1"># initialize Models to this folder</span>
-</span><span id="__span-4-2"><a id="__codelineno-4-2" name="__codelineno-4-2" href="#__codelineno-4-2"></a><span class="n">Models</span><span class="o">.</span><span class="n">setup</span><span class="p">(</span><span class="s2">&quot;../../models&quot;</span><span class="p">)</span>
-</span><span id="__span-4-3"><a id="__codelineno-4-3" name="__codelineno-4-3" href="#__codelineno-4-3"></a>
-</span><span id="__span-4-4"><a id="__codelineno-4-4" name="__codelineno-4-4" href="#__codelineno-4-4"></a><span class="n">model</span> <span class="o">=</span> <span class="n">Models</span><span class="o">.</span><span class="n">create</span><span class="p">(</span><span class="s2">&quot;llamacpp:openchat&quot;</span><span class="p">)</span>
+</div>
+</div>
+</div>
+<p>Another possibility is to store your API key in .env files, which has many advantages: see the <a href="https://github.com/theskumar/python-dotenv">dotenv-python</a> package.</p>
+<h2 id="creating-models">Creating models<a class="headerlink" href="#creating-models" title="Permanent link">#</a></h2>
+<p>Models served by Groq can be used by Sibila through the <a href="../../api-reference/remote_model/#sibila.GroqModel">GroqModel class</a>. </p>
+<div class="admonition example">
+<p class="admonition-title">Example</p>
+<div class="language-python highlight"><pre><span></span><code><span id="__span-2-1"><a id="__codelineno-2-1" name="__codelineno-2-1" href="#__codelineno-2-1"></a><span class="kn">from</span> <span class="nn">sibila</span> <span class="kn">import</span> <span class="n">GroqModel</span>
+</span><span id="__span-2-2"><a id="__codelineno-2-2" name="__codelineno-2-2" href="#__codelineno-2-2"></a>
+</span><span id="__span-2-3"><a id="__codelineno-2-3" name="__codelineno-2-3" href="#__codelineno-2-3"></a><span class="n">model</span> <span class="o">=</span> <span class="n">GroqModel</span><span class="p">(</span><span class="s2">&quot;llama3-70b-8192&quot;</span><span class="p">)</span>
+</span><span id="__span-2-4"><a id="__codelineno-2-4" name="__codelineno-2-4" href="#__codelineno-2-4"></a>
+</span><span id="__span-2-5"><a id="__codelineno-2-5" name="__codelineno-2-5" href="#__codelineno-2-5"></a><span class="n">model</span><span class="p">(</span><span class="s2">&quot;I think that I shall never see.&quot;</span><span class="p">)</span>
 </span></code></pre></div>
-<p>You can have the following keys in a model entry:</p>
-<table>
-<thead>
-<tr>
-<th>Key</th>
-<th></th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td>name</td>
-<td>The filename to use when loading a model (or remote model name)</td>
-</tr>
-<tr>
-<td>format</td>
-<td>Identifies the chat template format that it should use, from the <a href="../formats_json/">"formats.json"</a> file. Some local models include the chat template format in their metadata, so this key is optional.</td>
-</tr>
-<tr>
-<td>genconf</td>
-<td>Default <a href="../../api-reference/generation/#sibila.GenConf">GenConf (generation config settings)</a> used to create the model, which will default to use them in each generation. These config settings are merged element-wise from any specified in the "_defaults" entry for the provider.</td>
-</tr>
-<tr>
-<td>other</td>
-<td>Any other keys will be passed during model creation as its arguments. You can learn which arguments are possible in the API reference for <a href="../../api-reference/local_model/#sibila.LlamaCppModel">LlamaCppModel</a> or <a href="../../api-reference/remote_model/#sibila.OpenAIModel">OpenAIModel</a>. For example you can pass "ctx_len": 2048 to define the context length to use. As genconf, these keys are merged element-wise from any specified in the "_defaults" entry for the provider.</td>
-</tr>
-</tbody>
-</table>
-<!-- add links to LlamaCppModel and OpenAI API ref -->
-
-<p>The "alias" entry is a handy way to keep names that point to actual model entries (independent of provider). Note the two alias entries "develop" and "production" in the above "models.json" - you could then create the production model by doing:</p>
-<p><div class="language-python highlight"><pre><span></span><code><span id="__span-5-1"><a id="__codelineno-5-1" name="__codelineno-5-1" href="#__codelineno-5-1"></a><span class="c1"># initialize Models to this folder</span>
-</span><span id="__span-5-2"><a id="__codelineno-5-2" name="__codelineno-5-2" href="#__codelineno-5-2"></a><span class="n">Models</span><span class="o">.</span><span class="n">setup</span><span class="p">(</span><span class="s2">&quot;../../models&quot;</span><span class="p">)</span>
-</span><span id="__span-5-3"><a id="__codelineno-5-3" name="__codelineno-5-3" href="#__codelineno-5-3"></a>
-</span><span id="__span-5-4"><a id="__codelineno-5-4" name="__codelineno-5-4" href="#__codelineno-5-4"></a><span class="n">model</span> <span class="o">=</span> <span class="n">Models</span><span class="o">.</span><span class="n">create</span><span class="p">(</span><span class="s2">&quot;production&quot;</span><span class="p">)</span>
+<div class="admonition success">
+<p class="admonition-title">Result (model is hallucinating)</p>
+<div class="language-text highlight"><pre><span></span><code><span id="__span-3-1"><a id="__codelineno-3-1" name="__codelineno-3-1" href="#__codelineno-3-1"></a>A poem!
+</span><span id="__span-3-2"><a id="__codelineno-3-2" name="__codelineno-3-2" href="#__codelineno-3-2"></a>
+</span><span id="__span-3-3"><a id="__codelineno-3-3" name="__codelineno-3-3" href="#__codelineno-3-3"></a>&quot;I think that I shall never see
+</span><span id="__span-3-4"><a id="__codelineno-3-4" name="__codelineno-3-4" href="#__codelineno-3-4"></a>A poem lovely as a tree.
+</span><span id="__span-3-5"><a id="__codelineno-3-5" name="__codelineno-3-5" href="#__codelineno-3-5"></a>A tree whose hungry mouth is prest
+</span><span id="__span-3-6"><a id="__codelineno-3-6" name="__codelineno-3-6" href="#__codelineno-3-6"></a>Against the earth&#39;s sweet flowing breast;
+</span><span id="__span-3-7"><a id="__codelineno-3-7" name="__codelineno-3-7" href="#__codelineno-3-7"></a>
+</span><span id="__span-3-8"><a id="__codelineno-3-8" name="__codelineno-3-8" href="#__codelineno-3-8"></a>A tree that looks at God all day,
+</span><span id="__span-3-9"><a id="__codelineno-3-9" name="__codelineno-3-9" href="#__codelineno-3-9"></a>And lifts her leafy arms to pray;
+</span><span id="__span-3-10"><a id="__codelineno-3-10" name="__codelineno-3-10" href="#__codelineno-3-10"></a>A tree that may in Summer wear
+</span><span id="__span-3-11"><a id="__codelineno-3-11" name="__codelineno-3-11" href="#__codelineno-3-11"></a>A nest of robins in her hair;
+</span><span id="__span-3-12"><a id="__codelineno-3-12" name="__codelineno-3-12" href="#__codelineno-3-12"></a>
+</span><span id="__span-3-13"><a id="__codelineno-3-13" name="__codelineno-3-13" href="#__codelineno-3-13"></a>Upon whose bosom snow has lain;
+</span><span id="__span-3-14"><a id="__codelineno-3-14" name="__codelineno-3-14" href="#__codelineno-3-14"></a>Who intimately lives with rain.
+</span><span id="__span-3-15"><a id="__codelineno-3-15" name="__codelineno-3-15" href="#__codelineno-3-15"></a>Poems are made by fools like me,
+</span><span id="__span-3-16"><a id="__codelineno-3-16" name="__codelineno-3-16" href="#__codelineno-3-16"></a>But only God can make a tree.&quot;
+</span><span id="__span-3-17"><a id="__codelineno-3-17" name="__codelineno-3-17" href="#__codelineno-3-17"></a>
+</span><span id="__span-3-18"><a id="__codelineno-3-18" name="__codelineno-3-18" href="#__codelineno-3-18"></a>— Alfred Joyce Kilmer█
 </span></code></pre></div>
-Alias entries can be used as "alias:production" or without the "alias:" provider, just as "production" as in the example above.</p>
-<p>For an example of a JSON file with many models defined, see the "<a href="https://github.com/jndiogo/sibila/blob/main/models/models.json">models/models.json</a>" file.</p>
+</div>
+</div>
+<p>You can also create a Groq model in the <a href="../models_factory/">Models factory</a> by using the "groq:" provider prefix:</p>
+<div class="language-python highlight"><pre><span></span><code><span id="__span-4-1"><a id="__codelineno-4-1" name="__codelineno-4-1" href="#__codelineno-4-1"></a><span class="kn">from</span> <span class="nn">sibila</span> <span class="kn">import</span> <span class="n">Models</span>
+</span><span id="__span-4-2"><a id="__codelineno-4-2" name="__codelineno-4-2" href="#__codelineno-4-2"></a>
+</span><span id="__span-4-3"><a id="__codelineno-4-3" name="__codelineno-4-3" href="#__codelineno-4-3"></a><span class="n">model</span> <span class="o">=</span> <span class="n">Models</span><span class="o">.</span><span class="n">create</span><span class="p">(</span><span class="s2">&quot;groq:llama3-70b-8192&quot;</span><span class="p">)</span>
+</span></code></pre></div>
+<h2 id="model-list">Model list<a class="headerlink" href="#model-list" title="Permanent link">#</a></h2>
+<p>The available Groq text inference models models are listed <a href="https://console.groq.com/docs/models">here</a>. You should use the listed "Model ID" names as the model name, when creating a GroqModel object.</p>
+<p>Unfortunately Groq doesn't provide an API to list the models, so GroqModel.known_models() will return None.</p>
+<h2 id="json-schema-models">JSON Schema models<a class="headerlink" href="#json-schema-models" title="Permanent link">#</a></h2>
+<p>All the Groq AI models should support JSON Schema generation, which is required for structured data extraction.</p>
 
 
 
