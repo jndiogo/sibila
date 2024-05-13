@@ -19,7 +19,7 @@ Another possibility is to store your API key in .env files, which has many advan
 
 ## Creating models
 
-Models served by Together.ai can be used by Sibila through the [FireworksModel class](../api-reference/remote_model.md#sibila.FireworksModel). 
+Models served by Fireworks AI can be used by Sibila through the [FireworksModel class](../api-reference/remote_model.md#sibila.FireworksModel). 
 
 !!! example
     ``` python

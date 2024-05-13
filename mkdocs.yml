@@ -14,11 +14,12 @@ nav:
     - Creating Models:
       - Remote models:
         - models/remote_model.md
-        - models/openai.md
         - models/anthropic.md
-        - models/mistral.md
-        - models/together.md
         - models/fireworks.md
+        - models/groq.md
+        - models/mistral.md
+        - models/openai.md
+        - models/together.md
       
       - Local models:
         - models/local_model.md
@@ -34,8 +35,8 @@ nav:
     - Extracting Structured Data:
       - extract/simple_types.md
       - extract/enums.md
-      - extract/dataclass.md
       - extract/pydantic.md
+      - extract/dataclass.md
       - extract/free_json.md
       - extract/free_text.md
 

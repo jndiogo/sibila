@@ -9,6 +9,15 @@ The project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html
 ## [Unreleased]
 - feat: Add seed setting to GenConf. Commented-out because of lack of support in OpenAI models and some llama.cpp hardware accelerations.
 
+
+## [0.4.3]
+- feat: Add extraction support for dataclass field types Optional and Union.
+- feat: Add Groq remote model provider.
+- fix: Add deepcopy to json_schema_massage() to solve schema massaging error.
+- fix: Set Thread.__repr__ output the same as __str__ for development convenience.
+- docs: Improve Pydantic and dataclass documentation with examples of Optional, Union and default fields.
+- test: Add tests for complex extraction into Pydantic and dataclass objects.
+
 ## [0.4.2]
 - feat: Add Model.create() argument to retrieve the actual initialization params used to create the model.
 - fix: Correct OpenAI's "max_tokens_limit" setting to 4096 in base_models.json, a more sensible default value for future models.

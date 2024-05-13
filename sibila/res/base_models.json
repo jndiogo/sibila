@@ -14,6 +14,13 @@
     }
   },
 
+  "groq": {
+    "_default": {
+      "ctx_len": 8192,
+      "token_estimation_factor": 0.4
+    }
+  },
+
   "llamacpp": {
     "_default": {
       "ctx_len": 2048

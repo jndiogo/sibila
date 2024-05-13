@@ -88,7 +88,8 @@ For Pydantic this is done with Field(description="description") - see the "start
 
 !!! example
     ``` python
-    from pydantic import Field
+    from typing import Literal, Optional, Union
+    from pydantic import BaseModel, Field
 
     Weekday = Literal["Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday", "Sunday"
     ]
@@ -111,4 +112,51 @@ For Pydantic this is done with Field(description="description") - see the "start
 In this manner, the model can be informed of what is wanted for each specific field.
 
 
-Check the [Extract Pydantic example](../examples/extract.md) to see this kind of extraction.
+
+
+## Optional, default and Union fields
+
+A field can be marked as optional by annotating with Optional[Type] and setting a default value, as in the "person_name" field:
+
+!!! example
+    ``` python
+    class Period(BaseModel):
+        start: Weekday = Field(description="Day of arrival")
+        end: Weekday = Field(description="Day of departure")
+        person_name: Optional[str] = Field(default=None, description="Person name if any")
+
+    model.extract(Period,
+                  "Right, well, I was planning to arrive on Wednesday and "
+                  "only leave Sunday morning. Would that be okay?")
+    ```
+
+    !!! success "Result"
+        ``` python
+        Period(start='Wednesday', end='Sunday', person_name=None)
+        ```
+
+
+A field can also be marked as a union of alternative types with Union[Type1,Type2,...] as in the "bags" field below:
+
+!!! example
+    ``` python
+    class Period(BaseModel):
+        start: Weekday = Field(description="Day of arrival")
+        end: Weekday = Field(description="Day of departure")
+        person_name: Optional[str] = Field(default=None, description="Person name if any")
+        bags: Union[int, str, None] = Field(description="Number of bags, bag voucher or none")
+
+    model.extract(Period,
+                  "Right, well, I was planning to arrive on Wednesday and "
+                  "only leave Sunday morning. Would that be okay?")
+    ```
+
+    !!! success "Result"
+        ``` python
+        Period(start='Wednesday', end='Sunday', person_name=None, bags=None)
+        ```
+
+
+
+
+Check the [Extract Pydantic example](../examples/extract.md) to see an interesting example of structured extraction.

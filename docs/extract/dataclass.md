@@ -2,7 +2,7 @@
 title: Dataclass
 ---
 
-Besides simple types and enums, we can also extract objects whose structure is given by a dataclass definition:
+We can also extract objects whose structure is given by a dataclass definition:
 
 !!! example
     ``` python
@@ -90,7 +90,7 @@ For dataclasses this is done with Annotated[type, "description"] - see the "star
 
 !!! example
     ``` python
-    from typing import Annotated
+    from typing import Annotated, Literal, Optional, Union
 
     Weekday = Literal["Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday", "Sunday"
     ]
@@ -113,5 +113,54 @@ For dataclasses this is done with Annotated[type, "description"] - see the "star
 
 In this manner, the model can be informed of what is wanted for each specific field.
 
-Check the [Extract dataclass example](../examples/extract_dataclass.md) to see this in action.
+
+
+
+## Optional, default and Union fields
+
+A field can be marked as optional by annotating with Optional[Type] and setting a default value, as in the "person_name" field:
+
+
+!!! example
+    ``` python
+    @dataclass
+    class Period():
+        start: Annotated[Weekday, "Day of arrival"]
+        end: Annotated[Weekday, "Day of departure"]
+        person_name: Annotated[Optional[str], "Person name if any"] = None
+
+    model.extract(Period,
+                  "Right, well, I was planning to arrive on Wednesday and "
+                  "only leave Sunday morning. Would that be okay?")
+    ```
+
+    !!! success "Result"
+        ``` python
+        Period(start='Wednesday', end='Sunday', person_name=None)
+        ```
+
+Due to the dataclass rules, Fields with default values must appear after all other fields.
+
+A field can also be marked as a union of alternative types with Union[Type1,Type2,...] - see the "bags" field below:
+
+!!! example
+    ``` python
+    class Period(BaseModel):
+        start: Weekday = Field(description="Day of arrival")
+        end: Weekday = Field(description="Day of departure")
+        person_name: Optional[str] = Field(default=None, description="Person name if any")
+        bags: Annotated[Union[int, str, None], "Number of bags, bag voucher or none"]
+        person_name: Annotated[Optional[str], "Person name if any"] = None
+
+    model.extract(Period,
+                  "Right, well, I was planning to arrive on Wednesday and "
+                  "only leave Sunday morning. Would that be okay?")
+    ```
+
+    !!! success "Result"
+        ``` python
+        Period(start='Wednesday', end='Sunday', person_name=None, bags=None)
+        ```
+
+Check the [Extract dataclass example](../examples/extract_dataclass.md) to see a more sophisticated example of structured data extraction.
 

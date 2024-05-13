@@ -659,3 +659,11 @@ class Thread(Sequence):
             kind = Thread._kind_from_pos(index)
             out += f"\n{index}: {kind.name}=█{text}█"
         return out
+
+    def __repr__(self):
+        return self.__str__()
+    
+
+
+
+

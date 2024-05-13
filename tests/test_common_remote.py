@@ -41,6 +41,7 @@ OUT_MAX_TOKENS = 1024
 models = [
     "anthropic:claude-3-haiku-20240307",
     "fireworks:accounts/fireworks/models/mixtral-8x7b-instruct",
+    "groq:llama3-70b-8192",
     "mistral:mistral-small-latest",
     "openai:gpt-3.5",
     "openai:gpt-4",
@@ -48,7 +49,7 @@ models = [
 ]
 
 __models = [
-    "anthropic:claude-3-haiku-20240307",
+    "groq:llama3-70b-8192",
 ]
 
 

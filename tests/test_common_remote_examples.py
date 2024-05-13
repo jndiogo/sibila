@@ -48,7 +48,7 @@ models = [
 ]
 
 __models = [
-    "fireworks:accounts/fireworks/models/mixtral-8x7b-instruct"
+    "groq:llama3-70b-8192",
 ]
 
 """

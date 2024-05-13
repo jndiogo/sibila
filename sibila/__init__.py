@@ -1,6 +1,6 @@
 """Structured data from local or remote LLM models."""
 
-__version__ = "0.4.2"
+__version__ = "0.4.3"
 
 __all__ = [
     "Models",
@@ -8,6 +8,7 @@ __all__ = [
     "GenConf", "GenRes", "GenError", "GenOut",
     "AnthropicModel",
     "FireworksModel",
+    "GroqModel",
     "LlamaCppModel", "LlamaCppTokenizer",
     "MistralModel",
     "OpenAIModel", "OpenAITokenizer",
@@ -57,8 +58,9 @@ from .openai import (
 )
 
 from .schema_format_openai import (
-    TogetherModel,
-    FireworksModel
+    FireworksModel,
+    GroqModel,
+    TogetherModel
 )
 
 

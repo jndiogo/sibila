@@ -5,7 +5,7 @@ import enum
 
 from datetime import date, time, datetime
 
-from dataclasses import dataclass, is_dataclass, fields, MISSING
+from dataclasses import dataclass
 
 from pydantic import BaseModel, Field
 

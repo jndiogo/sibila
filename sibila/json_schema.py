@@ -1,9 +1,10 @@
 """JSON Schema generator functions"""
 
 from typing import Any, Optional, Union, Literal, Annotated, get_origin, get_args
+from types import NoneType
 from enum import Enum
 
-from copy import copy
+from copy import copy, deepcopy
 
 import json
 
@@ -12,7 +13,7 @@ logger = logging.getLogger(__name__)
 
 from datetime import date, time, datetime
 
-from dataclasses import dataclass, is_dataclass, field, fields, MISSING
+from dataclasses import dataclass, is_dataclass, field, fields, asdict, MISSING
 
 from pydantic import BaseModel, TypeAdapter, ValidationError
 
@@ -128,6 +129,8 @@ def json_schema_massage(sch: dict,
     Resolves $refs and eliminates definitions.
     """
    
+    sch = deepcopy(sch)
+
     # resolve $refs -> defs
     if schemaconf.resolve_refs:
         sch = json_schema_resolve_refs(sch)
@@ -316,6 +319,8 @@ def get_type(type_: Any) -> tuple:
         - int
         - float
         - str
+
+    - typing.Union
         
     - enums:
 
@@ -348,8 +353,8 @@ def get_type(type_: Any) -> tuple:
     Returns:
         Returns (type_, anno_desc, options) or (None,,) if not a supported type.
         options: optional keys
-        "str_format": str
-        "enum_list": []
+            "str_format": str
+            "enum_list": []
     """
 
     anno_desc = None
@@ -364,8 +369,12 @@ def get_type(type_: Any) -> tuple:
 
     if (is_prim_type(type_) or
         is_dataclass(type_) or
-        is_subclass_of(type_, BaseModel)):
+        is_subclass_of(type_, BaseModel) or
+        get_origin(type_) is Union):
         ...
+
+    elif type_ is NoneType:
+        type_ = NoneType
 
     elif is_subclass_of(type_, datetime):
         type_ = str
@@ -493,14 +502,14 @@ def get_type_list(type_: Any) -> tuple:
 def build_type_json_schema(type_: Any, 
                            desc: Optional[str] = None,
                            options: dict = {},
-                           default: Optional[Any] = None) -> dict:
+                           default: Optional[Any] = MISSING) -> dict:
     """Render a JSON Schema specification for an accepted simple type.
 
     Args:
         type_: A type supported by get_type().
         desc: Optional description for field. Defaults to None, but if given, will override any Annotated type's description.
-        default: A default value for field. Defaults to {}.
-        format: A default value for strings. Defaults to None.
+        options: Type options for specifying enums, str_format. Defaults to {}.
+        default: A default value for field. Defaults to MISSING.
 
     Returns:
         A dict whose json.dumps() serialization is a valid JSON Schema specification for the given type_ arg.
@@ -510,26 +519,19 @@ def build_type_json_schema(type_: Any,
     if out_type is None:
         raise TypeError(f"Unsupported type: '{type(type_)}'")
     
-    if desc is None:
-        desc = anno_desc
-
     if is_dataclass(out_type):
         out = build_dataclass_object_json_schema(out_type)
-
-        if desc is not None:
-            out["description"] = desc
 
     elif is_subclass_of(out_type, BaseModel):
         out = out_type.model_json_schema()
 
-        if desc is not None:
-            out["description"] = desc
+    elif get_origin(out_type) is Union:
+        args = list(get_args(out_type))
+        out_json = [build_type_json_schema(t) for t in args]
+        out = {"anyOf": out_json} 
 
-    else: # prim_type or enum
+    else: # prim_type or enum or NoneType
         out = {}
-
-        if desc:
-            out["description"] = desc
 
         enum_list = options.get("enum_list")
         if enum_list is None:
@@ -548,11 +550,18 @@ def build_type_json_schema(type_: Any,
 
         out["type"] = get_json_type(out_type)
 
-        if default is not None:
-            if not isinstance(default, out_type):
-                raise TypeError(f"Arg default is not of type {out_type}.")
+    desc = desc or anno_desc
+    if desc is not None:
+        out["description"] = str(desc) # ensure string
 
-            out["default"] = default
+    if default is not MISSING:
+        # @TODO: better checking for Union origin types, deal with Literals, for example
+        if (get_origin(out_type) is not Union and
+            not isinstance(default, out_type) and
+            not isinstance(default, dict)):
+            raise TypeError(f"Arg default is not of type {out_type} nor dict.")
+        
+        out["default"] = default
 
     return out
 
@@ -561,7 +570,8 @@ def build_type_json_schema(type_: Any,
 def build_array_json_schema(item_type: Any,
                             item_desc: Optional[str] = None,
                             item_options: dict = {},
-                            list_desc: Optional[str] = None) -> dict:
+                            list_desc: Optional[str] = None,
+                            default: Optional[Any] = MISSING) -> dict:
     """Render a JSON Schema specification for an list/array.
 
     Args:
@@ -569,6 +579,7 @@ def build_array_json_schema(item_type: Any,
         item_desc: Optional description for an array item. Defaults to None, but if given, will override any Annotated type's description.
         item_options: Optional array item options. Defaults to {}.
         list_desc: Optional description for the entire array. Defaults to None.
+        default: Optional default value. Defaults to MISSING.
 
     Returns:
         A dict whose json.dumps() serialization is a valid JSON Schema specification for the given array.
@@ -581,11 +592,14 @@ def build_array_json_schema(item_type: Any,
     out: dict[str,Any] = {}
 
     if list_desc:
-        out["description"] = list_desc
+        out["description"] = str(list_desc) # ensure string
 
     out["items"] = items_repr
 
     out["type"] = "array"
+
+    if default is not MISSING:
+        out["default"] = default
 
     return out
 
@@ -597,17 +611,19 @@ def build_array_json_schema(item_type: Any,
 
 
 def build_type_or_array_json_schema(type_: Any,
-                                    default: Optional[Any] = None) -> tuple[dict,bool]:
+                                    default: Optional[Any] = MISSING) -> tuple[dict,bool]:
     """Build a JSON schema for given simple type or array. See build_*() functions for details."""
 
     # type list
-    item_type, item_desc, item_options, list_desc = get_type_list(type_)    
+    item_type, item_desc, item_options, list_desc = get_type_list(type_)
+
     if item_type is not None:            
         # build json schema for list of type_
         schema = build_array_json_schema(item_type, 
                                          item_desc, 
                                          item_options,
-                                         list_desc)
+                                         list_desc,
+                                         default)
         is_object = False
 
     else: # prim, enum, datetime, dataclass, BaseModel
@@ -659,6 +675,17 @@ def build_object_json_schema(properties_repr: dict,
     return out
 
 
+def get_from_default_factory(obj: Any) -> Any:
+
+    if is_dataclass(obj) and not isinstance(obj, type): # dataclass obj
+        return asdict(obj)
+    elif isinstance(obj, BaseModel):
+        return dict(obj)
+    elif isinstance(obj, list) or is_prim_type(type(obj)):
+        return obj
+    
+    return None
+    
 
 
 
@@ -677,8 +704,11 @@ def build_dataclass_object_json_schema(type_: Any) -> dict:
         name = fl.name
         prop_type = fl.type # can be Annotated[] -> desc
         if fl.default is MISSING:
-            default = None
-            required.append(name)
+            if fl.default_factory is not MISSING:
+                default = get_from_default_factory(fl.default_factory())
+            else: # not default means required
+                default = MISSING
+                required.append(name)
         else:
             default = fl.default
 
@@ -754,10 +784,7 @@ def get_final_type(type_: Any) -> Any:
         elif is_subclass_of(type_, Enum): # Enum types resolve to themselves
             break
 
-        elif (type_ is str or # prim_types
-              type_ is float or 
-              type_ is int or 
-              type_ is bool):
+        elif is_prim_type(type_):
             break
         
         else:
@@ -815,10 +842,7 @@ def create_final_instance(type_: Any,
             return type_(val)
         
         # Literals also resolve to their prim_types        
-        elif (type_ is str or 
-              type_ is float or 
-              type_ is int or 
-              type_ is bool):
+        elif is_prim_type(type_):
             value = type_(val) 
             return value
         
@@ -852,7 +876,8 @@ def get_json_type(t: Any) -> str:
         str: "string",
         float: "number",            
         int: "integer",            
-        bool: "boolean"
+        bool: "boolean",
+        NoneType: "null",
     }
     if t not in JSON_TYPE_FROM_PY_TYPE:
         raise TypeError(f"Unknown type '{t}'")
@@ -863,5 +888,5 @@ def get_json_type(t: Any) -> str:
 
 # Useful:
 # string formats: https://json-schema.org/understanding-json-schema/reference/string#built-in-formats
-# Online JSON schema validator: https://www.jsonschemavalidator.net/
+# Online JSON schema validator: https://jsonschema.dev/
 # JSON pretty formatter: https://jsonformatter.org/json-pretty-print

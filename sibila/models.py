@@ -172,6 +172,10 @@ class Models:
             "mandatory": [],
             "flags": ["name_passthrough"]
         },
+        "groq": {
+            "mandatory": [],
+            "flags": ["name_passthrough"]
+        },
         "llamacpp": {
             "mandatory": ["name"],
             "flags": ["name_passthrough", "local"]
@@ -196,6 +200,7 @@ class Models:
         return {
             "anthropic": {},
             "fireworks": {},
+            "groq": {},
             "llamacpp": {},
             "mistral": {},
             "openai": {},
@@ -375,7 +380,7 @@ class Models:
             resolved_create_args.update(args)
 
 
-        logger.debug(f"Resolved '{res_name}' to '{provider}:{name}' with args: {args}")
+        logger.debug(f"Resolved '{res_name}' to provider '{provider}' with args: {args}")
 
 
         model: Model
@@ -388,6 +393,11 @@ class Models:
 
             from .schema_format_openai import FireworksModel
             model = FireworksModel(**args)
+            
+        elif provider == "groq":
+
+            from .schema_format_openai import GroqModel
+            model = GroqModel(**args)
             
         elif provider == "llamacpp":
 
@@ -420,13 +430,11 @@ class Models:
 
             from .schema_format_openai import TogetherModel
             model = TogetherModel(**args)
-            
-        """
-        elif provider == "hf":
-            from .hf import HFModel
-            
-            model = HFModel(**args)
-        """
+
+        else:
+            raise ValueError(f"Unknown provider '{provider}' for '{res_name}'")
+        
+    
            
         return model
 

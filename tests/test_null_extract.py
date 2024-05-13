@@ -133,25 +133,25 @@ def test_dataclass():
 
 def test_pydantic():
 
-    class UserDetail(BaseModel):
+    class UserDetail1(BaseModel):
         """ Details about a user """
         name: str
         age: int
 
-    extract(list[UserDetail],
+    extract(list[UserDetail1],
             "Paul and his buddy Mathilda, they love to ride. He's 68 years old, she's 81.",
             '{"output": [{"name": "Paul", "age": 68}, {"name": "Mathilda", "age": 81}]}',
-            [UserDetail(name='Paul', age=68), UserDetail(name='Mathilda', age=81)])
+            [UserDetail1(name='Paul', age=68), UserDetail1(name='Mathilda', age=81)])
 
-    class UserDetail(BaseModel):
+    class UserDetail2(BaseModel):
         """ Details about a user """
         name: str = Field(..., description="The name for the user")
         age: int = Field(..., description="The user's age")
 
-    target = UserDetail
+    target = UserDetail2
     text = "Jane's 99 years old."
     response = '{"name": "Jane", "age": 99}'
-    expected = UserDetail(name='Jane', age=99)
+    expected = UserDetail2(name='Jane', age=99)
     extract(target,
             text,
             response,
@@ -161,10 +161,10 @@ def test_pydantic():
     assert model.pydantic(target, text) == expected
 
 
-    extract(list[UserDetail],
+    extract(list[UserDetail2],
             "Jane's 99 years old, Paul is 75.",
             '{"output": [{"name": "Jane", "age": 99}, {"name": "Paul", "age": 75}]}',
-            [UserDetail(name='Jane', age=99), UserDetail(name='Paul', age=75)])
+            [UserDetail2(name='Jane', age=99), UserDetail2(name='Paul', age=75)])
 
 
 

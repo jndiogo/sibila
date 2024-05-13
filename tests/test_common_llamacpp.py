@@ -76,7 +76,6 @@ models = [
     "phi-2.Q5_K_M.gguf",
     "Phi-3-mini-4k-instruct-q4.gguf",
     "stablelm-2-12b-chat-Q4_K_M.gguf",
-    "stablelm-2-zephyr-1_6b-Q4_K_M.gguf",
     "stablelm-zephyr-3b.Q4_K_M.gguf",
     "starling-lm-7b-alpha.Q5_K_M.gguf",
     "Starling-LM-7B-beta-Q4_K_M.gguf",
@@ -95,6 +94,7 @@ Models that don't pass these tests:
 "mistral-7b-instruct-v0.2.Q5_K_M.gguf",
 "qwen1_5-0_5b-chat-q4_k_m.gguf",
 "rocket-3b.Q4_K_M.gguf",
+"stablelm-2-zephyr-1_6b-Q4_K_M.gguf",
 "tinyllama-1.1b-chat-v1.0.Q4_K_M.gguf",
 "zephyr-7b-gemma-v0.1-Q4_K_M.gguf",
 """
