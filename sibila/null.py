@@ -56,6 +56,7 @@ class NullModel(Model):
             "finish": "stop"
         }
 
+    def close(self): pass
 
     def set_response(self,
                      text: str,

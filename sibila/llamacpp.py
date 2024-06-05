@@ -5,12 +5,9 @@
 """
 
 
-from typing import Any, Optional, Union, BinaryIO
+from typing import Optional, Union, BinaryIO, Literal
 
-import sys, os, json, ctypes, struct
-
-from time import time 
-from copy import copy
+import sys, os, ctypes, struct, re
 
 import logging
 logger = logging.getLogger(__name__)
@@ -38,17 +35,27 @@ from .json_grammar import (
     JSON_GBNF
 )
 
+from .utils import get_bytes_from_url
+
+
 try:
     from llama_cpp import (
         Llama,
         llama_cpp,
         llama_token_get_text,
-        llama_grammar
+        llama_grammar,
     )
     has_llama_cpp = True
 except ImportError:
     has_llama_cpp = False
 
+try:
+    from llama_cpp import (
+        llava_cpp,
+    )
+    has_llava_cpp = True
+except ImportError:
+    has_llava_cpp = False
 
 
 
@@ -116,6 +123,8 @@ class LlamaCppModel(FormattedTextModel):
         """
 
         self._llama = None # type: ignore[assignment]
+        self._llava_ctx = None
+
         self.tokenizer = None # type: ignore[assignment]
         self._own_tokenizer = False
 
@@ -127,21 +136,25 @@ class LlamaCppModel(FormattedTextModel):
         if path.startswith(provider_name):
             path = path[len(provider_name):]
 
-        if not os.path.isfile(path):
-            raise NameError(f"Model file not found at '{path}'")
+        sub_paths = extract_sub_paths(path)
+        for sp in sub_paths:
+            if not os.path.isfile(sp):
+                raise NameError(f"Model file not found at '{sp}'")
 
+        llama_path = sub_paths[0]
+        llava_proj_path = sub_paths[1] if len(sub_paths) > 1 else None
 
         # find ctx_len from metadata --and-- check file format
         max_ctx_len = 0
         try:
-            md = load_gguf_metadata(path)
+            md = load_gguf_metadata(llama_path)
             if md is not None:
                 for key in md:
                     if key.endswith('.context_length'):
                         max_ctx_len = int(md[key])
                         break
         except Exception as e:
-            raise NameError(f"Error loading file '{path}': {e}")
+            raise NameError(f"Error loading file '{llama_path}': {e}")
 
 
         if ctx_len is None: # find a default in Models _default dict
@@ -176,21 +189,21 @@ class LlamaCppModel(FormattedTextModel):
                                verbose=verbose
                                )
         
-        logger.debug(f"Creating inner Llama with path='{path}', llamacpp_kwargs={llamacpp_kwargs}")
+        logger.debug(f"Creating inner Llama model with path='{llama_path}', llamacpp_kwargs={llamacpp_kwargs}")
 
 
         try:
             with llamacpp_verbosity_manager(verbose):
-                self._llama = Llama(model_path=path, **llamacpp_kwargs)
+                self._llama = Llama(model_path=llama_path, **llamacpp_kwargs)
 
         except Exception as e:
-            raise MemoryError(f"Could not load model file '{path}'. "
+            raise MemoryError(f"Could not load model file '{llama_path}'. "
                               "This is usually an out of memory situation but could also be due to a corrupt file. "
-                              f"Internal error: {e}")
+                              f"Internal error: {e}.")
 
 
-        self._model_path = path
-        
+        self._model_path = llama_path
+       
 
         # correct super __init__ values
         self.ctx_len = self._llama.n_ctx()
@@ -201,17 +214,12 @@ class LlamaCppModel(FormattedTextModel):
         self.max_tokens_limit = min(self.max_tokens_limit, self.ctx_len)
 
 
-        if self.tokenizer is None:
-            self.tokenizer = LlamaCppTokenizer(self._llama)
-            self._own_tokenizer = True
-        else:
-            self._own_tokenizer = False
 
         try:
             self.init_format(format,
                              format_search_order,
-                             {"name": os.path.basename(self._model_path),
-                              "path": self._model_path,
+                             {"name": os.path.basename(path), # note: the multiple filename with '*'
+                              "path": path, # note: full path of the multiple filename with '*'
                               "meta_template_name": "tokenizer.chat_template"}
                              )
         except Exception as e:
@@ -219,46 +227,97 @@ class LlamaCppModel(FormattedTextModel):
             del self._llama
             raise AttributeError(str(e))
             
-        
-   
-    
 
-    def __del__(self):
+        # llava projector setup
+        if llava_proj_path is not None:
+
+            if not has_llava_cpp:
+                raise ImportError("Llava is not available in this installation of llama-cpp-python")
+    
+            logger.debug(f"Creating inner Llava projector with path='{llava_proj_path}'")
+
+            with llamacpp_verbosity_manager(verbose):
+                self._llava_ctx = llava_cpp.clip_model_load(llava_proj_path.encode(encoding='utf-8'), 
+                                                            0) # verbosity
+
+            if self._llava_ctx is None:
+                raise ValueError(f"Failed to load llava projector: {llava_proj_path}")
+
+            self._model_path += "*" + llava_proj_path
+
+            """
+            self._llava_exit_stack = ExitStack()
+            def llava_free():
+                with llamacpp_verbosity_manager(verbose):
+                    llava_cpp.clip_free(self._llava_ctx)
+                    
+            self._llava_exit_stack.callback(llava_free)
+            """
+
+        self.maybe_image_input = self._llava_ctx is not None
+
+
+
+        if self.tokenizer is None:
+            self.tokenizer = LlamaCppTokenizer(self._llama)
+            self._own_tokenizer = True
+        else:
+            self._own_tokenizer = False
+
+
+
+    def close(self):
+        """Close model, release resources like memory or net connections."""
+        
         if hasattr(self, "tokenizer") and self.tokenizer:
             if hasattr(self, "_own_tokenizer") and self._own_tokenizer:
                 del self.tokenizer
+            self.tokenizer = None
+
+        if hasattr(self, "_llava_ctx") and self._llava_ctx: # only happens if llama_cpp was loaded
+            llava_cpp.clip_free(self._llava_ctx)
+            del self._llava_ctx
+            self._llava_ctx = None
+
         if hasattr(self, "_llama") and self._llama:
             del self._llama
+            self._llama = None
 
+
+    def __del__(self):
+        """__del__ is important to release llama.cpp memory"""
+        # print("LlamaCppModel.__del__")
+        self.close()
     
     
-    
-    def _gen_text(self,
-                  text: str,
-                  genconf: GenConf) -> tuple[str,str]:
+    def _gen_thread(self,
+                    thread: Thread,
+                    genconf: GenConf) -> tuple[str,str]:
         """Generate from formatted text.
 
         Args:
-            text: Formatted text (from input Thread).
+            thread: Input Thread object.
             genconf: Model generation configuration.
 
         Raises:
+            ValueError: If trying to generate from an empty prompt.
             RuntimeError: If unable to generate.
             
         Returns:
             Tuple of strings: generated_text, finish_reason.
         """
 
-        if self.tokenizer is None:
-            raise ValueError("A LlamaCppModel object requires a tokenizer")
+        thread = self._prepare_gen_thread(thread, genconf)
 
-        token_ids = self.tokenizer.encode(text)
-        token_len = len(token_ids)
+        token_ids = self.tokens_llava_embeddings_from_thread(thread,
+                                                             create_embeddings=True)
 
-
-        # resolve max_tokens size
-        resolved_max_tokens = self.resolve_genconf_max_tokens(token_len, genconf)
-
+        # This provider doesn't require "max_tokens" (but defaults to a low value) and will not error on excess.
+        if genconf.max_tokens != 0:
+            token_len = len(token_ids)
+            resolved_max_tokens = self.resolve_genconf_max_tokens(token_len, genconf)
+        else: # for genconf.max_tokens=0, this provider doesn't require "max_tokens", so we don't send below
+            resolved_max_tokens = 0
 
         # prepare llamaCpp args:
         genconf_kwargs = genconf.as_dict()
@@ -304,33 +363,265 @@ class LlamaCppModel(FormattedTextModel):
                                                      **genconf_kwargs)
         except Exception as e:
             raise RuntimeError(f"Cannot generate. Internal error: {e}")
-
-
+        
         logger.debug(f"LlamaCpp response: {response}")
 
         choice = response["choices"][0] # type: ignore[index]
-        return choice["text"], choice["finish_reason"] # type: ignore[return-value]
+
+        text = choice["text"]
+        finish_reason = choice["finish_reason"]
+
+        return text, finish_reason # type: ignore[return-value]
 
 
 
-    async def _gen_text_async(self,
-                              text: str,
-                              genconf: GenConf) -> tuple[str,str]:
+
+    async def _gen_thread_async(self,
+                                thread: Thread,
+                                genconf: GenConf) -> tuple[str,str]:
         """Generate from formatted text. Please note that the llama.cpp engine 
         cannot currently benefit from async: calls will be generated sequentially.
 
         Args:
-            text: Formatted text (from input Thread).
+            thread: Input Thread object.
             genconf: Model generation configuration.
 
         Raises:
+            ValueError: If trying to generate from an empty prompt.
             RuntimeError: If unable to generate.
 
         Returns:
             Tuple of strings: generated_text, finish_reason.
         """
 
-        return self._gen_text(text, genconf)
+        return self._gen_thread(thread, genconf)
+
+
+
+
+
+    def tokens_from_thread(self,
+                           thread: Thread) -> list[int]:
+        """Encode a thread to tokens. 
+        Thread must be the final thread which will passed to model.
+            
+        Args:
+            thread: Final thread to be passed to model.
+
+        Returns:
+            Tokens list.
+        """
+
+        return self.tokens_llava_embeddings_from_thread(thread,
+                                                        create_embeddings=False)
+    
+
+
+
+    # based on llamacpp-python's llama_chat_format.py Llava15ChatHandler
+    def tokens_llava_embeddings_from_thread(self,
+                                            thread: Thread,
+                                            create_embeddings: bool) -> list[int]:
+        """Encode a thread to tokens and setup llava embeddings. 
+        Thread must be the final thread which will passed to model.
+        Tokens resulting from image embedding are all set to -1, 
+        the embeddings are cached inside llava/llama, so generation should follow.
+            
+        Args:
+            thread: Final thread to be passed to model.
+            create_embeddings: True will create image embeddings (if any), besides tokens. False only extracts tokens.
+
+        Returns:
+            Tokens list.
+        """
+
+        if self.tokenizer is None:
+            raise ValueError("A LlamaCppModel object requires a tokenizer")
+
+        text = self.text_from_thread(thread)
+        if not text:
+            raise ValueError("Cannot generate from an empty prompt")
+
+        if logger.isEnabledFor(logging.DEBUG):
+            filtered_text = re.sub(r'(data:[^,]+)\S+', r'\1(...)', text)
+            logger.debug(f"Prompt: █{filtered_text}█")
+
+
+        if not thread.has_images:
+            token_ids = self.tokenizer.encode(text)
+            logger.debug(f"Prompt len(token_ids): {len(token_ids)}")
+            return token_ids
+
+
+        # there are images in the thread: image embeddings must be taken
+        
+        if self._llava_ctx is None:
+            raise ValueError("Can't embed images: llava_cpp is not enabled for model")
+
+        # extract all image urls:
+        image_urls = []
+        for msg in thread:
+            if msg.has_images:
+                for image in msg.images:
+                    image_urls.append(image["url"])
+
+        # split prompt into text and image urls
+        split_text = split_text_on_image_urls(text, image_urls)
+        # print(split_text)
+
+
+        if create_embeddings:
+            # eval must be done with _llama, image embeddings will be cached and used for generation
+            self._llama.reset()
+            self._llama._ctx.kv_cache_clear()
+
+            for type_, value in split_text:
+                if type_ == "text":
+                    tokens = self.tokenizer.encode(value)
+
+                    total = self._llama.n_tokens + len(tokens)
+                    if total > self._llama.n_ctx():
+                        raise ValueError(f"Token length ({total}) exceeds n_ctx ({self._llama.n_ctx()})")
+
+                    self._llama.eval(tokens)
+
+                else:
+                    image_bytes = get_bytes_from_url(value)
+
+                    try:
+                        embed = None
+                        with llamacpp_verbosity_manager(self._llama.verbose):
+                            # create embeddings
+                            embed = llava_cpp.llava_image_embed_make_with_bytes(
+                                self._llava_ctx,
+                                self._llama.context_params.n_threads_batch,
+                                (ctypes.c_uint8 * len(image_bytes)).from_buffer(bytearray(image_bytes)),
+                                len(image_bytes))
+
+                            total = self._llama.n_tokens + embed.contents.n_image_pos
+                            if total > self._llama.n_ctx():
+                                raise ValueError(f"Token length ({total}) exceeds n_ctx ({self._llama.n_ctx()})")
+                                            
+                            # eval embeddings
+                            n_past = ctypes.c_int(self._llama.n_tokens)
+                            n_past_p = ctypes.pointer(n_past)
+                            llava_cpp.llava_eval_image_embed(
+                                self._llama.ctx,
+                                embed,
+                                self._llama.n_batch,
+                                n_past_p)
+
+                    finally:
+                        if embed is not None:
+                            llava_cpp.llava_image_embed_free(embed)
+
+                    # avoid issues with hf tokenizer: sets image tokens to -1, but embeddings were stored
+                    self._llama.input_ids[self._llama.n_tokens:n_past.value] = -1
+                    self._llama.n_tokens = n_past.value
+
+            token_ids = self._llama.input_ids[:self._llama.n_tokens].tolist()
+
+        else: # image embeddings need not be evaluated: emit text tokens and fake -1 tokens for embeddings
+
+            token_ids = []
+
+            for type_, value in split_text:
+                if type_ == "text":
+                    tokens = self.tokenizer.encode(value)
+
+                    total = len(token_ids) + len(tokens)
+                    if total > self._llama.n_ctx():
+                        raise ValueError(f"Token length ({total}) exceeds n_ctx ({self._llama.n_ctx()})")
+
+                    token_ids += tokens
+
+                else:
+                    image_bytes = get_bytes_from_url(value)
+
+                    try:
+                        embed = None
+                        with llamacpp_verbosity_manager(self._llama.verbose):
+                            # create embeddings
+                            embed = llava_cpp.llava_image_embed_make_with_bytes(
+                                self._llava_ctx,
+                                self._llama.context_params.n_threads_batch,
+                                (ctypes.c_uint8 * len(image_bytes)).from_buffer(bytearray(image_bytes)),
+                                len(image_bytes))
+                            
+                            embed_token_count = embed.contents.n_image_pos
+
+                            total = len(token_ids) + embed_token_count
+                            if total > self._llama.n_ctx():
+                                raise ValueError(f"Token length ({total}) exceeds n_ctx ({self._llama.n_ctx()})")
+
+                    finally:
+                        if embed is not None:
+                            llava_cpp.llava_image_embed_free(embed)
+
+                    # set image tokens to -1
+                    token_ids += [-1] * embed_token_count
+
+        logger.debug(f"Prompt len(token_ids): {len(token_ids)}")
+
+        return token_ids
+
+
+
+
+
+    def text_from_thread(self,
+                         thread: Thread) -> str:
+        """Apply template format to transform a Thread into raw text.
+
+        Args:
+            thread: Input Thread object.
+
+        Returns:
+            Text resulting from chat template expansion.
+        """
+
+        if self.tokenizer is None:
+            raise ValueError("A FormattedTextModel object requires a tokenizer")
+
+        messages = thread.as_chatml()
+        text = self._jinja_compiled_template.render(messages=messages, # type: ignore[union-attr]
+                                                    add_generation_prompt=True,
+                                                    **self.tokenizer.special_tokens_map())
+        return text
+        
+
+
+    def token_len(self,
+                  thread_or_text: Union[Thread,str],
+                  _: Optional[GenConf] = None) -> int:
+        """Calculate or estimate the token length for a Thread or a plain text string.
+        In some cases where it's not possible to calculate the exact token count, 
+        this function should give a conservative (upper bound) estimate.
+        It's up to the implementation whether to account for side information like JSON Schema,
+        but it must reflect the model's context token accounting.
+        Thread or text must be the final text which will passed to model.
+         
+        Args:
+            thread_or_text: Final thread or text to be passed to model.
+
+        Returns:
+            Number of tokens used.
+        """
+
+        if isinstance(thread_or_text, Thread):
+            thread = thread_or_text            
+        else:
+            thread = Thread.make_IN(thread_or_text)
+
+        token_ids = self.tokens_from_thread(thread)
+        return len(token_ids)
+
+
+
+
+
+
+
 
 
 
@@ -341,7 +632,7 @@ class LlamaCppModel(FormattedTextModel):
 
     def desc(self) -> str:
         """Model description."""
-        return f"{type(self).__name__}: {self._model_path} - '{self._llama._model.desc()}'"
+        return f"{type(self).__name__}: '{self._model_path}' - '{self._llama._model.desc()}'"
 
         
     @classmethod
@@ -399,8 +690,7 @@ class LlamaCppTokenizer(Tokenizer):
     """Tokenizer for llama.cpp loaded GGUF models."""
 
     def __init__(self, 
-                 llama: Llama, 
-                 reg_flags: Optional[str] = None):
+                 llama: Llama):
         self._llama = llama
 
         self.vocab_size = self._llama.n_vocab()
@@ -417,10 +707,6 @@ class LlamaCppTokenizer(Tokenizer):
         self.unk_token_id = None # ? fill by taking a look at id 0?
         self.unk_token = None
 
-        # workaround for https://github.com/ggerganov/llama.cpp/issues/4772
-        self._workaround1 = reg_flags is not None and "llamacpp1" in reg_flags
-            
-
     
     def encode(self, 
                text: str) -> list[int]:
@@ -433,24 +719,6 @@ class LlamaCppTokenizer(Tokenizer):
             A list of ints with the encoded tokens.
         """
 
-        if self._workaround1:
-            # append a space after each bos and eos, so that llama's tokenizer matches HF
-            def space_post(text, s):
-                out = ""
-                while (index := text.find(s)) != -1:
-                    after = index + len(s)
-                    out += text[:after]
-                    if text[after] != ' ':
-                        out += ' '
-                    text = text[after:]
-                        
-                out += text
-                return out
-
-            text = space_post(text, self.bos_token)
-            text = space_post(text, self.eos_token)
-            # print(text)
-        
         # str -> bytes
         btext = text.encode("utf-8", errors="ignore")
 
@@ -513,6 +781,10 @@ class LlamaCppTokenizer(Tokenizer):
         return output.decode("utf-8", errors="ignore")
     
         
+
+
+
+
 
 
         
@@ -687,4 +959,54 @@ def load_gguf_metadata(path: str,
 
     return out
 
+
+
+
+def extract_sub_paths(in_path: str) -> list[str]:
+    """Extract multiple paths in filename1*filename2"""
+
+    out = []
+    path_list = in_path.split("*")
+
+    curr_dir = ""
+
+    for path in path_list:
+        dir_part = os.path.dirname(path)
+        if dir_part: # has dir
+            curr_dir = dir_part
+        else: # filename only: append curr_dir
+            path = os.path.join(curr_dir, path)
+        out.append(path)
+            
+    return out
+
+
+# Based on llamacpp-python's function of the same name in llama_chat_format.py
+def split_text_on_image_urls(text: str, 
+                             image_urls: list[str]):
+
+    def find_first(s: str, substrs: list[str]):
+        for i, substr in enumerate(substrs):
+            pos = s.find(substr)
+            if pos != -1:
+                return pos, i
+        return None, None
+
+    split_text: list[tuple[Literal["text", "image_url"], str]] = []
+
+    remaining = text
+    while remaining:
+        # find next image_url
+        pos, i = find_first(remaining, image_urls)
+        if pos is not None and i is not None:
+            if pos > 0:
+                split_text.append(("text", remaining[:pos]))
+                
+            split_text.append(("image_url", image_urls[i]))
+            remaining = remaining[pos + len(image_urls[i]):]
+        else:
+            split_text.append(("text", remaining))
+            remaining = ""
+
+    return split_text
 

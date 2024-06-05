@@ -1,5 +1,5 @@
 ---
-title: Threads, messages, context
+title: Threads and messages
 ---
 
 
@@ -7,41 +7,49 @@ title: Threads, messages, context
     options:
         members:
             - __init__
-            - clear
-            - last_kind
-            - last_text
             - inst
-            - add
-            - addx
-            - get_text
-            - set_text
-            - concat
+            - init_INST_IN
+            - add_IN
+            - add_OUT
+            - add_OUT_IN
+            - make_INST_IN
+            - make_IN
+            - make_OUT_IN
+            - clone
+            - clear
             - load
             - save
-            - init_inst_in
-            - add_in
-            - add_out
-            - add_out_in
-            - make_inst_in
-            - make_out_in
-            - msg_as_chatml
+            - from_dict
+            - as_dict
+            - from_chatml
             - as_chatml
-            - has_text_lower
-
-
-::: sibila.MsgKind
-    options:
-        members:
-            - IN
-            - OUT
-            - INST
-
-::: sibila.Context
-    options:
-        members:
-            - __init__
-            - clear
+            - Trim
             - trim
+            - add
+            - concat
+            - get_iter
+            - has_images
+            - next_kind
+            - has_text_lower
+            - join_sep
+            - __add__
+            - __get_item__
+            - __del_item__
+            - __iter__
 
-::: sibila.Trim
+::: sibila.Msg
+    options:
+        members:
+            - Kind
+            - kind
+            - text
+            - images
+            - make_IN
+            - make_OUT
+            - make_INST
+            - clone
+            - from_dict
+            - as_dict
+            - from_chatml
+            - as_chatml
 

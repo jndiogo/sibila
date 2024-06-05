@@ -25,7 +25,7 @@ Models.setup("../../models")
 local_name = "llamacpp:openchat-3.5-1210.Q4_K_M.gguf"
 
 # to use an OpenAI model:
-remote_name = "openai:gpt-3.5"
+remote_name = "openai:gpt-4"
 ```
 
 Now let's define a list of reviews that we'll ask the two models to do sentiment analysis upon.
@@ -80,7 +80,7 @@ print(out)
     neutral
 
 
-Definitely neutral is a good answer for this one. 
+Definitely, 'neutral' is a good answer for this one. 
 
 Let's now try the remote model:
 
@@ -102,7 +102,7 @@ print(out)
     neutral
 
 
-And the remote model (GPT-3.5) seems to agree on neutrality.
+And the remote model (GPT-4) seems to agree on neutrality.
 
 By using the query_multigen() function that we'll import from sibila.multigen, we'll be able to compare what multiple models generate in response to each input.
 
@@ -138,7 +138,7 @@ out = query_multigen(reviews,
     ////////////////////////////////////////////////////////////
     ==================== llamacpp:openchat-3.5-1210.Q4_K_M.gguf -> OK_STOP
     'neutral'
-    ==================== openai:gpt-3.5 -> OK_STOP
+    ==================== openai:gpt-4 -> OK_STOP
     'neutral'
     
     ////////////////////////////////////////////////////////////
@@ -146,7 +146,7 @@ out = query_multigen(reviews,
     ////////////////////////////////////////////////////////////
     ==================== llamacpp:openchat-3.5-1210.Q4_K_M.gguf -> OK_STOP
     'positive'
-    ==================== openai:gpt-3.5 -> OK_STOP
+    ==================== openai:gpt-4 -> OK_STOP
     'positive'
     
     ////////////////////////////////////////////////////////////
@@ -154,7 +154,7 @@ out = query_multigen(reviews,
     ////////////////////////////////////////////////////////////
     ==================== llamacpp:openchat-3.5-1210.Q4_K_M.gguf -> OK_STOP
     'negative'
-    ==================== openai:gpt-3.5 -> OK_STOP
+    ==================== openai:gpt-4 -> OK_STOP
     'negative'
     
     ////////////////////////////////////////////////////////////
@@ -162,7 +162,7 @@ out = query_multigen(reviews,
     ////////////////////////////////////////////////////////////
     ==================== llamacpp:openchat-3.5-1210.Q4_K_M.gguf -> OK_STOP
     'positive'
-    ==================== openai:gpt-3.5 -> OK_STOP
+    ==================== openai:gpt-4 -> OK_STOP
     'positive'
     
     ////////////////////////////////////////////////////////////
@@ -170,15 +170,15 @@ out = query_multigen(reviews,
     ////////////////////////////////////////////////////////////
     ==================== llamacpp:openchat-3.5-1210.Q4_K_M.gguf -> OK_STOP
     'positive'
-    ==================== openai:gpt-3.5 -> OK_STOP
+    ==================== openai:gpt-4 -> OK_STOP
     'positive'
     
     ////////////////////////////////////////////////////////////
     The packaging was damaged upon arrival, but the product itself works great.
     ////////////////////////////////////////////////////////////
     ==================== llamacpp:openchat-3.5-1210.Q4_K_M.gguf -> OK_STOP
-    'neutral'
-    ==================== openai:gpt-3.5 -> OK_STOP
+    'positive'
+    ==================== openai:gpt-4 -> OK_STOP
     'neutral'
     
     ////////////////////////////////////////////////////////////
@@ -186,7 +186,7 @@ out = query_multigen(reviews,
     ////////////////////////////////////////////////////////////
     ==================== llamacpp:openchat-3.5-1210.Q4_K_M.gguf -> OK_STOP
     'positive'
-    ==================== openai:gpt-3.5 -> OK_STOP
+    ==================== openai:gpt-4 -> OK_STOP
     'positive'
     
     ////////////////////////////////////////////////////////////
@@ -194,7 +194,7 @@ out = query_multigen(reviews,
     ////////////////////////////////////////////////////////////
     ==================== llamacpp:openchat-3.5-1210.Q4_K_M.gguf -> OK_STOP
     'negative'
-    ==================== openai:gpt-3.5 -> OK_STOP
+    ==================== openai:gpt-4 -> OK_STOP
     'negative'
     
     ////////////////////////////////////////////////////////////
@@ -202,7 +202,7 @@ out = query_multigen(reviews,
     ////////////////////////////////////////////////////////////
     ==================== llamacpp:openchat-3.5-1210.Q4_K_M.gguf -> OK_STOP
     'negative'
-    ==================== openai:gpt-3.5 -> OK_STOP
+    ==================== openai:gpt-4 -> OK_STOP
     'negative'
     
     ////////////////////////////////////////////////////////////
@@ -210,7 +210,7 @@ out = query_multigen(reviews,
     ////////////////////////////////////////////////////////////
     ==================== llamacpp:openchat-3.5-1210.Q4_K_M.gguf -> OK_STOP
     'positive'
-    ==================== openai:gpt-3.5 -> OK_STOP
+    ==================== openai:gpt-4 -> OK_STOP
     'positive'
     
     ////////////////////////////////////////////////////////////
@@ -218,7 +218,7 @@ out = query_multigen(reviews,
     ////////////////////////////////////////////////////////////
     ==================== llamacpp:openchat-3.5-1210.Q4_K_M.gguf -> OK_STOP
     'positive'
-    ==================== openai:gpt-3.5 -> OK_STOP
+    ==================== openai:gpt-4 -> OK_STOP
     'positive'
     
     ////////////////////////////////////////////////////////////
@@ -226,7 +226,7 @@ out = query_multigen(reviews,
     ////////////////////////////////////////////////////////////
     ==================== llamacpp:openchat-3.5-1210.Q4_K_M.gguf -> OK_STOP
     'positive'
-    ==================== openai:gpt-3.5 -> OK_STOP
+    ==================== openai:gpt-4 -> OK_STOP
     'positive'
     
     
@@ -240,7 +240,7 @@ This gizmo is a game-changer for my daily routine. Couldn't be happier with my p
 ////////////////////////////////////////////////////////////
 ==================== llamacpp:openchat-3.5-1210.Q4_K_M.gguf -> OK_STOP  <----- Local model name and result
 'positive'  <----- What the local model output
-==================== openai:gpt-3.5 -> OK_STOP  <----- Remote model name and result
+==================== openai:gpt-4 -> OK_STOP  <----- Remote model name and result
 'positive'  <----- Remote model output
 ```
 

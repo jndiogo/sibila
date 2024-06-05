@@ -1,10 +1,10 @@
 """Structured data from local or remote LLM models."""
 
-__version__ = "0.4.3"
+__version__ = "0.4.4"
 
 __all__ = [
     "Models",
-    "Model", "TextModel", "MessagesModel", "Tokenizer",
+    "Model", "FormattedTextModel", "MessagesModel", "Tokenizer",
     "GenConf", "GenRes", "GenError", "GenOut",
     "AnthropicModel",
     "FireworksModel",
@@ -13,8 +13,7 @@ __all__ = [
     "MistralModel",
     "OpenAIModel", "OpenAITokenizer",
     "TogetherModel",
-    "Thread", "MsgKind",
-    "Context", "Trim",
+    "Thread", "Msg",
     "JSchemaConf",
     "TDesc"
 ]
@@ -31,12 +30,11 @@ from .gen import (
 
 from .thread import (
     Thread,
-    MsgKind,
+    Msg,
 )
 
 from .model import (
     Model,
-    TextModel,
     FormattedTextModel,
     MessagesModel,
     Tokenizer
@@ -63,11 +61,6 @@ from .schema_format_openai import (
     TogetherModel
 )
 
-
-from .context import (
-    Context,
-    Trim
-)
 
 from .models import Models
 

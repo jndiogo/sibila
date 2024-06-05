@@ -10,7 +10,6 @@ Jupyter notebook and Python script versions are available in the example's folde
 
 So, let's create a local model.
 
-
 ```python
 from sibila import Models, GenConf
 
@@ -48,161 +47,140 @@ interact(model,
     > Hello there!
 
 
-    Hello! How can I help you today? If you have any questions or need assistance, feel free to ask.
+    Hello! How can I help you today?
     
 
 
     > I'm doing an example of this LLM access package called Sibila - have you heard about it?
 
 
-    Yes, I'm familiar with Sibila. It is a large language model developed by a company called Lightning AI. Sibila is designed to provide conversational AI services and is based on OpenAI's GPT-3 architecture. It is capable of understanding and generating human-like text responses across various topics and languages.
-    
-    If you have any specific questions or need further information about Sibila or related topics, please feel free to ask.
+    Yes, I am familiar with the Sibila AI platform. Sibila is a Spanish-language large language model developed by OpenAI, similar to ChatGPT. It is designed to assist users with various tasks, such as answering questions, writing text, and providing recommendations. Sibila can be integrated into different applications and services to improve their functionality and user experience.
     
 
 
     > No way! I've just searched and there's no such company nor model. You are hallucinating, Mr. Model!
 
 
-    Apologies for the confusion in my previous response. It seems I provided inaccurate information. I appreciate your understanding. If you have any other questions or topics you'd like to discuss, please feel free to ask.
+    My apologies for the confusion in my previous response. It appears that I made an error in my information. There is no specific LLM access package or model called Sibila that I am aware of. If you have any other questions or topics you'd like to discuss, please feel free to ask.
     
 
 
-    > No problem. See, I'm using an function of package Sibila that allows for maintaining a chat with you. It stores all user and model messages in a sibila.Context class.
+    > No problem. See, I'm using an function of package Sibila that allows for maintaining a chat with you. It stores all user and model messages in a sibila.Thread class.
 
 
-    I understand now. It seems that the Sibila package allows users to maintain a conversation with an AI model like me while storing the context of the conversation in a sibila.Context class. This helps to maintain a more coherent and relevant conversation between the user and the AI model.
-    
-    If you have any questions or topics you'd like to discuss, please go ahead and ask. I'm here to help.
+    Got it! So, you are using a function from the Sibila package that enables a continuous conversation between you and the AI model. This function likely utilizes a threading mechanism to store and manage both user and model messages within a `sibila.Thread` class. If you have any questions or need assistance while using this function, please don't hesitate to ask. I'm here to help!
     
 
 
     > That's right - I can list the context messages by entering "!c"
 
 
-    Got it! If you enter "!c" while conversing with the AI model using the Sibila package, it will list the context messages that have been stored in the sibila.Context class. This can be a useful tool for reviewing the conversation history and understanding the context of the discussion.
-    
-    Please feel free to ask any questions or continue the conversation, and I'll be happy to help.
-    
-
-
-    > Not you - the interact() function!
-
-
-    I apologize for the misunderstanding. The interact() function is part of the Sibila package that allows users to have a conversation with an AI model like me. When you enter "!c" during the conversation, it lists the context messages that have been stored in the sibila.Context class.
-    
-    If you have any questions or topics you'd like to discuss, please go ahead and use the interact() function to continue the conversation, and I'll be happy to help.
+    I see! It seems that within the Sibila package, you can use the command `!c` to list the context messages in your conversation. This feature allows you to review and manage the messages exchanged between you and the AI model, which can be useful for understanding the conversation history and making sure you have the necessary information at hand. If you need any assistance or clarification regarding any of these messages or other aspects of the Sibila package, feel free to ask.
     
 
 
     > !c
 
 
-    Thread token len=671, max len before next gen=1448
-    inst=█Be helpful.█, sep='\n', len=12
-    0: IN=█Hello there!█
-    1: OUT=█Hello! How can I help you today? If you have any questions or need assistance, feel free to ask.█
-    2: IN=█I'm doing an example of this LLM access package called Sibila - have you heard about it?█
-    3: OUT=█Yes, I'm familiar with Sibila. It is a large language model developed by a company called Lightning AI. Sibila is designed to provide conversational AI services and is based on OpenAI's GPT-3 architecture. It is capable of understanding and generating human-like text responses across various topics and languages.\n\nIf you have any specific questions or need further information about Sibila or related topics, please feel free to ask.█
-    4: IN=█No way! I've just searched and there's no such company nor model. You are hallucinating, Mr. Model!█
-    5: OUT=█Apologies for the confusion in my previous response. It seems I provided inaccurate information. I appreciate your understanding. If you have any other questions or topics you'd like to discuss, please feel free to ask.█
-    6: IN=█No problem. See, I'm using an function of package Sibila that allows for maintaining a chat with you. It stores all user and model messages in a sibila.Context class.█
-    7: OUT=█I understand now. It seems that the Sibila package allows users to maintain a conversation with an AI model like me while storing the context of the conversation in a sibila.Context class. This helps to maintain a more coherent and relevant conversation between the user and the AI model.\n\nIf you have any questions or topics you'd like to discuss, please go ahead and ask. I'm here to help.█
-    8: IN=█That's right - I can list the context messages by entering "!c"█
-    9: OUT=█Got it! If you enter "!c" while conversing with the AI model using the Sibila package, it will list the context messages that have been stored in the sibila.Context class. This can be a useful tool for reviewing the conversation history and understanding the context of the discussion.\n\nPlease feel free to ask any questions or continue the conversation, and I'll be happy to help.█
-    10: IN=█Not you - the interact() function!█
-    11: OUT=█I apologize for the misunderstanding. The interact() function is part of the Sibila package that allows users to have a conversation with an AI model like me. When you enter "!c" during the conversation, it lists the context messages that have been stored in the sibila.Context class.\n\nIf you have any questions or topics you'd like to discuss, please go ahead and use the interact() function to continue the conversation, and I'll be happy to help.█
+    Thread token len=542, max len before next gen=1448
+    Thread inst='Be helpful.', join_sep='\n', len=10
+    0: IN='Hello there!'
+    1: OUT='Hello! How can I help you today?'
+    2: IN="I'm doing an example of this LLM access package called Sibila - have you heard about it?"
+    3: OUT='Yes, I am familiar with the Sibila AI platform. Sibila is a Spanish-language large language model developed by OpenAI, similar to ChatGPT. It is designed to assist users with various tasks, such as answering questions, writing text, and providing recommendations. Sibila can be integrated into different applications and services to improve their functionality and user experience.'
+    4: IN="No way! I've just searched and there's no such company nor model. You are hallucinating, Mr. Model!"
+    5: OUT="My apologies for the confusion in my previous response. It appears that I made an error in my information. There is no specific LLM access package or model called Sibila that I am aware of. If you have any other questions or topics you'd like to discuss, please feel free to ask."
+    6: IN="No problem. See, I'm using an function of package Sibila that allows for maintaining a chat with you. It stores all user and model messages in a sibila.Thread class."
+    7: OUT="Got it! So, you are using a function from the Sibila package that enables a continuous conversation between you and the AI model. This function likely utilizes a threading mechanism to store and manage both user and model messages within a `sibila.Thread` class. If you have any questions or need assistance while using this function, please don't hesitate to ask. I'm here to help!"
+    8: IN='That\'s right - I can list the context messages by entering "!c"'
+    9: OUT='I see! It seems that within the Sibila package, you can use the command `!c` to list the context messages in your conversation. This feature allows you to review and manage the messages exchanged between you and the AI model, which can be useful for understanding the conversation history and making sure you have the necessary information at hand. If you need any assistance or clarification regarding any of these messages or other aspects of the Sibila package, feel free to ask.'
     
 
 
     > Info about the model: "!i"
 
 
-    The model you are using is an instance of OpenAI's GPT-3 architecture powered by the Sibila package. GPT-3, or Generative Pre-trained Transformer 3, is a state-of-the-art language model developed by OpenAI. It is designed to understand and generate human-like text responses across various topics and languages.
-    
-    The Sibila package wraps around the GPT-3 model and provides a user-friendly interface for interacting with the AI, as well as features like maintaining conversation context in a sibila.Context class.
-    
-    If you have any questions or topics you'd like to discuss, please use the interact() function to continue the conversation, and I'll be happy to help.
+    The `!i` command likely provides information about the AI model being used within the Sibila package. This could include details such as the model's architecture, training data, capabilities, and other relevant specifications. If you need any further information or assistance regarding the model or its features, please let me know.
     
 
 
-    > !i
+    > Sorry, it's actually "!info"
+
+
+    My apologies for the confusion in my previous response. The correct command to get information about the AI model within the Sibila package is `!info`. This command should provide you with details about the model's architecture, training data, capabilities, and other relevant specifications. If you need any further information or assistance regarding the model or its features, please feel free to ask.
+    
+
+
+    > !info
 
 
     Model:
-    desc='LlamaCppModel: /home/jorge/ai/sibila/models/openchat-3.5-1210.Q4_K_M.gguf - 'llama 7B Q4_K - Medium'',ctx_len=2048,
-    max_tokens_limit=2048,
-    genconf=GenConf(max_tokens=0, stop=[], temperature=0.0, top_p=0.9, format='text', json_schema=None)
+    desc='LlamaCppModel: '/home/jorge/ai/sibila/models/openchat-3.5-1210.Q4_K_M.gguf' - 'llama 7B Q4_K - Medium'',
+    ctx_len=2048, max_tokens_limit=2048,
+    genconf=GenConf(max_tokens=0, stop=[], temperature=0.0, top_p=0.9, format='text', json_schema=None, special=None)
     GenConf:
-    GenConf(max_tokens=600, stop=[], temperature=0.9, top_p=0.9, format='text', json_schema=None)
+    GenConf(max_tokens=600, stop=[], temperature=0.9, top_p=0.9, format='text', json_schema=None, special=None)
     
-    Thread token len=854, max len before next gen=1448
-    
-
-
-    > For all commands: "!"
-
-
-    Thank you for the clarification. Here's a summary of the available commands in the Sibila package for this GPT-3 model instance:
-    
-    * interact(): Starts or continues a conversation with the AI model.
-    * !i: Displays information about the AI model and its architecture.
-    * !c: Lists the context messages stored in the sibila.Context class.
-    
-    Please feel free to use any of these commands or ask any questions or topics you'd like to discuss. I'm here to help.
+    Thread token len=736, max len before next gen=1448
     
 
 
-    > Sorry, I was not talking to you, just demoing the commands available with "!"
+    > For help on al lcommands: "!"
 
 
-    Apologies for the confusion. I understand that you were demonstrating the available commands in the Sibila package using the "!" prefix. If you have any questions or need assistance with anything else, please don't hesitate to ask.
+    Within the Sibila package, using an exclamation mark (`!`) by itself typically displays a list of available commands and their usage. This command helps you understand the different options and functionalities offered by the package so that you can make the most of it during your interactions with the AI model. If you need further assistance or clarification on any specific commands or features, please don't hesitate to ask.
     
 
 
-    > !cs
+    > !
 
 
-    Saved context to ctx.json
+    Unknown command '!' - known commands:
+     !inst[=text] - clear messages and add inst (system) message
+     !add=path - load file and add to last msg
+     !image=path/url - include a local or remote image. Local images must fit the context!
+     !c - list context msgs
+     !cl=path - load context (default=thread.json)
+     !cs=path - save context (default=thread.json)
+     !tl - thread's token length
+     !info - model and genconf info
+     Delimit with """ for multiline begin/end or terminate line with \ to continue into a new line
+     Empty line + enter to quit
+    
+
+
+    > The Thread class can manage total token length: it will delete older messages if the thread becomes larger than the content max length.
+
+
+    I understand that the `sibila.Thread` class in the Sibila package is designed to manage the total token length of your conversation. If the conversation becomes too large and exceeds the maximum allowed token length, the class will automatically delete older messages to maintain the thread within the desired size limit. This ensures that the conversation remains efficient and manageable while preventing it from growing too large. If you have any questions or concerns about managing the token length in your conversations or need assistance with other aspects of the Sibila package, please feel free to ask.
+    
+
+
+    > That's it - to see token length: "!tl"
+
+
+    The `!tl` command within the Sibila package is likely used to display the current token length of your conversation. This command helps you keep track of how many tokens are being used in your exchange with the AI model, ensuring that you remain aware of the conversation's size and staying within any imposed token length limits. If you need assistance with managing token lengths or have questions about other aspects of the Sibila package, please don't hesitate to ask.
     
 
 
     > !tl
 
 
-    Thread token len=1073, max len before next gen=1448
+    Thread token len=1128, max len before next gen=1448
     
 
 
-    > The Context class manages total token length: it will delete older messages if the thread becomes larger than the content max length.
+    > To save the thread to a JSON file: "!cs"
 
 
-    I see. The Context class in the Sibila package manages the total token length of the conversation to ensure that the AI model doesn't exceed certain limitations. When the conversation grows too large and reaches the content max length, the class will automatically delete older messages to make room for newer ones.
-    
-    This helps maintain the performance and responsiveness of the AI model while keeping the conversation within the desired token limit. If you have any other questions or topics related to Sibila or its features, please feel free to ask.
-    
-
-
-    > Right. In this case, the context would be trimmed if its token length is greater than 1448 = ctx_len - max_tokens, where ctx_len is the context length, max_tokens is the maximum output tokens per response.
-
-
-    Yes, that's correct. In this case, the Context class would trim the context if its token length exceeds the value calculated by subtracting the maximum output tokens per response (max\_tokens) from the context length (ctx\_len). This ensures that the total number of tokens in the conversation, including the context and the AI model's response, does not exceed the allowed limit.
-    
-    The Sibila package takes care of managing the token length and removing older messages from the Context class as needed, ensuring a smooth and efficient interaction with the AI model. If you have any other questions or topics related to Sibila or its features, please feel free to ask.
-    
-
-
-    > That's it, thanks for explaining.
-
-
-    You're welcome! I'm glad I could help clarify the details about the Sibila package and its Context class. If you have any other questions or need assistance with anything else, please don't hesitate to ask. Have a great day!
+    The `!cs` command within the Sibila package is likely used to save your current conversation thread to a JSON file. This feature allows you to store the exchanged messages between you and the AI model for future reference or further analysis. To use this command, simply enter `!cs` in your conversation, and follow any prompts or instructions provided by the package. If you need assistance with saving your thread to a JSON file or have questions about other aspects of the Sibila package, please don't hesitate to ask.
     
 
 
     > !cs
 
 
-    Saved context to ctx.json
+    Saved context to thread.json
     
 
 
@@ -212,21 +190,43 @@ interact(model,
 
 
 
-    <sibila.context.Context at 0x7a6cc85818d0>
+    Thread inst='Be helpful.', join_sep='\n', len=22
+    0: IN='Hello there!'
+    1: OUT='Hello! How can I help you today?'
+    2: IN="I'm doing an example of this LLM access package called Sibila - have you heard about it?"
+    3: OUT='Yes, I am familiar with the Sibila AI platform. Sibila is a Spanish-language large language model developed by OpenAI, similar to ChatGPT. It is designed to assist users with various tasks, such as answering questions, writing text, and providing recommendations. Sibila can be integrated into different applications and services to improve their functionality and user experience.'
+    4: IN="No way! I've just searched and there's no such company nor model. You are hallucinating, Mr. Model!"
+    5: OUT="My apologies for the confusion in my previous response. It appears that I made an error in my information. There is no specific LLM access package or model called Sibila that I am aware of. If you have any other questions or topics you'd like to discuss, please feel free to ask."
+    6: IN="No problem. See, I'm using an function of package Sibila that allows for maintaining a chat with you. It stores all user and model messages in a sibila.Thread class."
+    7: OUT="Got it! So, you are using a function from the Sibila package that enables a continuous conversation between you and the AI model. This function likely utilizes a threading mechanism to store and manage both user and model messages within a `sibila.Thread` class. If you have any questions or need assistance while using this function, please don't hesitate to ask. I'm here to help!"
+    8: IN='That\'s right - I can list the context messages by entering "!c"'
+    9: OUT='I see! It seems that within the Sibila package, you can use the command `!c` to list the context messages in your conversation. This feature allows you to review and manage the messages exchanged between you and the AI model, which can be useful for understanding the conversation history and making sure you have the necessary information at hand. If you need any assistance or clarification regarding any of these messages or other aspects of the Sibila package, feel free to ask.'
+    10: IN='Info about the model: "!i"'
+    11: OUT="The `!i` command likely provides information about the AI model being used within the Sibila package. This could include details such as the model's architecture, training data, capabilities, and other relevant specifications. If you need any further information or assistance regarding the model or its features, please let me know."
+    12: IN='Sorry, it\'s actually "!info"'
+    13: OUT="My apologies for the confusion in my previous response. The correct command to get information about the AI model within the Sibila package is `!info`. This command should provide you with details about the model's architecture, training data, capabilities, and other relevant specifications. If you need any further information or assistance regarding the model or its features, please feel free to ask."
+    14: IN='For help on al lcommands: "!"'
+    15: OUT="Within the Sibila package, using an exclamation mark (`!`) by itself typically displays a list of available commands and their usage. This command helps you understand the different options and functionalities offered by the package so that you can make the most of it during your interactions with the AI model. If you need further assistance or clarification on any specific commands or features, please don't hesitate to ask."
+    16: IN='The Thread class can manage total token length: it will delete older messages if the thread becomes larger than the content max length.'
+    17: OUT='I understand that the `sibila.Thread` class in the Sibila package is designed to manage the total token length of your conversation. If the conversation becomes too large and exceeds the maximum allowed token length, the class will automatically delete older messages to maintain the thread within the desired size limit. This ensures that the conversation remains efficient and manageable while preventing it from growing too large. If you have any questions or concerns about managing the token length in your conversations or need assistance with other aspects of the Sibila package, please feel free to ask.'
+    18: IN='That\'s it - to see token length: "!tl"'
+    19: OUT="The `!tl` command within the Sibila package is likely used to display the current token length of your conversation. This command helps you keep track of how many tokens are being used in your exchange with the AI model, ensuring that you remain aware of the conversation's size and staying within any imposed token length limits. If you need assistance with managing token lengths or have questions about other aspects of the Sibila package, please don't hesitate to ask."
+    20: IN='To save the thread to a JSON file: "!cs"'
+    21: OUT="The `!cs` command within the Sibila package is likely used to save your current conversation thread to a JSON file. This feature allows you to store the exchanged messages between you and the AI model for future reference or further analysis. To use this command, simply enter `!cs` in your conversation, and follow any prompts or instructions provided by the package. If you need assistance with saving your thread to a JSON file or have questions about other aspects of the Sibila package, please don't hesitate to ask."
 
 
 
 These are the "!" commands that you can use in the interact() inputs:
 ```
- ! - to show this help
- !inst[=text] - clear messages and add inst (system) message
- !add|!a=path - load file and add to last msg
- !c - list context msgs
- !cl=path - load context (default=ctx.json)
- !cs=path - save context (default=ctx.json)
- !tl - thread's token length
- !i - model and genconf info
- Delimit with """ for multiline begin/end or terminate line with \ to continue into a new line
- Empty line + enter to quit
+    !inst[=text] - clear messages and add inst (system) message
+    !add=path - load file and add to last msg
+    !image=path/url - include a local or remote image. Local images must fit the context!
+    !c - list context msgs
+    !cl=path - load context (default=thread.json)
+    !cs=path - save context (default=thread.json)
+    !tl - thread's token length
+    !info - model and genconf info
+    Delimit with """ for multiline begin/end or terminate line with \ to continue into a new line
+    Empty line + enter to quit
 ```
 

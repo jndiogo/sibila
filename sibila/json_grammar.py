@@ -16,7 +16,7 @@ llama.cpp json-schema to grammar converter adapted from llama_cpp_python:
 https://github.com/abetlen/llama-cpp-python
 
 Originally from llama.cpp:
-https://github.com/ggerganov/llama.cpp/blob/master/examples/json-schema-to-grammar.py
+https://github.com/ggerganov/llama.cpp/blob/master/examples/json_schema_to_grammar.py
 https://github.com/ggerganov/llama.cpp/tree/master/grammars
 """
 

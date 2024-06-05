@@ -26,6 +26,7 @@ title: Remote model classes
             - token_len
             - tokenizer
             - ctx_len
+            - maybe_image_input
             - known_models
             - desc
 
@@ -53,6 +54,7 @@ title: Remote model classes
             - token_len
             - tokenizer
             - ctx_len
+            - maybe_image_input
             - known_models
             - desc
 
@@ -80,6 +82,7 @@ title: Remote model classes
             - token_len
             - tokenizer
             - ctx_len
+            - maybe_image_input
             - known_models
             - desc
 
@@ -107,6 +110,7 @@ title: Remote model classes
             - token_len
             - tokenizer
             - ctx_len
+            - maybe_image_input
             - known_models
             - desc
 
@@ -134,6 +138,7 @@ title: Remote model classes
             - token_len
             - tokenizer
             - ctx_len
+            - maybe_image_input
             - known_models
             - desc
 
@@ -161,6 +166,7 @@ title: Remote model classes
             - token_len
             - tokenizer
             - ctx_len
+            - maybe_image_input
             - known_models
             - desc
 

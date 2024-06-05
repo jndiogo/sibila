@@ -60,15 +60,13 @@ IN_CTX_LEN = 2048
 
 models = [
     "dolphin-2_6-phi-2.Q4_K_M.gguf",
-    "gemma-2b-it-q4_k_m.gguf",
     "Hermes-2-Pro-Mistral-7B.Q4_K_M.gguf",
     "llama-2-7b-chat.Q4_K_M.gguf",
-    "Meta-Llama-3-8B-Instruct.Q4_K_M.gguf",
+    "Meta-Llama-3-8B-Instruct-Q4_K_M.gguf",
     "mistral-7b-instruct-v0.1.Q4_K_M.gguf",
     "openchat-3.5-0106.Q4_K_M.gguf",
     "openchat-3.5-1210.Q4_K_M.gguf",
     "Phi-3-mini-4k-instruct-q4.gguf",
-    "stablelm-2-12b-chat-Q4_K_M.gguf",
     "starling-lm-7b-alpha.Q5_K_M.gguf",
 ]
 
@@ -80,11 +78,13 @@ __models = [
 
 """
 Models that don't pass these tests:
+    "gemma-2b-it-q4_k_m.gguf",
     "gemma-2b-it-q8_0.gguf",
     "kunoichi-dpo-v2-7b.Q4_K_M.gguf",
     "phi-2.Q5_K_M.gguf",
     "qwen1_5-0_5b-chat-q4_k_m.gguf",
     "rocket-3b.Q4_K_M.gguf",
+    "stablelm-2-12b-chat-Q4_K_M.gguf",
     "stablelm-2-zephyr-1_6b-Q4_K_M.gguf",
     "stablelm-zephyr-3b.Q4_K_M.gguf",
     "Starling-LM-7B-beta-Q4_K_M.gguf",

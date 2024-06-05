@@ -96,7 +96,7 @@ If you get an error like this in JupyterLab, open the Kernel menu and select "Sh
 A good practice is to delete any local model after you no longer need it or right before loading a new one. A simple "del model" works fine, or you can add these two lines before creating a model:
 
 ``` python
-try: del model
+try: model.close(); del model
 except: ...
 
 model = LlamaCppModel(...)

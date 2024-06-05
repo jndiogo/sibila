@@ -104,10 +104,10 @@ for person in out:
 ```
 
     first_name='Lucy' last_name='Bennett' age=28 occupation='journalist' details_about_person='her pen poised to capture the essence of the world around her' source_location='London' source_country='United Kingdom'
-    first_name='Carlos' last_name='Ramirez' age=35 occupation='architect' details_about_person='exuded creativity, passion for design evident' source_location='Barcelona' source_country='Spain'
-    first_name='Mia' last_name='Chang' age=23 occupation='musician' details_about_person='fingers danced across the strings, weaving stories' source_location='Tokyo' source_country='Japan'
-    first_name='Ahmed' last_name='Khan' age=40 occupation='engineer' details_about_person='navigated the complexities of technology' source_location='Mumbai' source_country='India'
-    first_name='Isabella' last_name='Santos' age=32 occupation='fashion designer' details_about_person='impeccable style and effortless grace' source_location='Paris' source_country='France'
+    first_name='Carlos' last_name='Ramirez' age=35 occupation='architect' details_about_person='exuded creativity, passion for design evident in the thoughtful lines that adorned his face' source_location='Barcelona' source_country='Spain'
+    first_name='Mia' last_name='Chang' age=23 occupation='musician' details_about_person='fingers danced across the strings, weaving stories of love and longing' source_location='Tokyo' source_country='Japan'
+    first_name='Ahmed' last_name='Khan' age=40 occupation='engineer' details_about_person='navigated the complexities of technology with ease, intellect shining through the chaos of urban life' source_location='Mumbai' source_country='India'
+    first_name='Isabella' last_name='Santos' age=32 occupation='fashion designer' details_about_person='impeccable style and effortless grace reflected the timeless elegance of her beloved city' source_location='Paris' source_country='France'
 
 
 Quite reasonable: the model is doing a good job and we didn't even add descriptions to the fields - it's inferring what we want from the field names only.
@@ -134,11 +134,11 @@ for person in out:
     print(person)
 ```
 
-    first_name='Lucy' last_name='Bennett' age=28 occupation='journalist' details_about_person='her pen poised to capture the essence of the world around her' source_location='London' source_country='United Kingdom' is_married=False
-    first_name='Carlos' last_name='Ramirez' age=35 occupation='architect' details_about_person='exuded creativity, passion for design evident' source_location='Barcelona' source_country='Spain' is_married=False
-    first_name='Mia' last_name='Chang' age=23 occupation='musician' details_about_person='fingers danced across the strings, weaving stories' source_location='Tokyo' source_country='Japan' is_married=False
-    first_name='Ahmed' last_name='Khan' age=40 occupation='engineer' details_about_person='navigated the complexities of technology' source_location='Mumbai' source_country='India' is_married=True
-    first_name='Isabella' last_name='Santos' age=32 occupation='fashion designer' details_about_person='impeccable style and effortless grace' source_location='Paris' source_country='France' is_married=False
+    first_name='Lucy' last_name='Bennett' age=28 occupation='journalist' details_about_person='her pen poised to capture the essence of the world around her. Her eyes sparkled with curiosity, mirroring the dynamic energy of her beloved city.' source_location='London' source_country='United Kingdom' is_married=False
+    first_name='Carlos' last_name='Ramirez' age=35 occupation='architect' details_about_person='exuded creativity, his passion for design evident in the thoughtful lines that adorned his face.' source_location='Barcelona' source_country='Spain' is_married=False
+    first_name='Mia' last_name='Chang' age=23 occupation='musician' details_about_person='her fingers danced across the strings, weaving stories of love and longing, echoing the rhythm of her vibrant city.' source_location='Tokyo' source_country='Japan' is_married=False
+    first_name='Ahmed' last_name='Khan' age=40 occupation='engineer' details_about_person='navigated the complexities of technology with ease, his intellect shining through the chaos of urban life.' source_location='Mumbai' source_country='India' is_married=True
+    first_name='Isabella' last_name='Santos' age=32 occupation='fashion designer' details_about_person='her impeccable style and effortless grace reflected the timeless elegance of her beloved city.' source_location='Paris' source_country='France' is_married=False
 
 
 From the five characters only Ahmed is mentioned to be married, and it is the one that the model marked with the is_married=True attribute.

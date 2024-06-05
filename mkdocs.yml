@@ -31,6 +31,8 @@ nav:
         - models/models_json.md
         - models/formats_json.md
         - models/sibila_cli.md
+      
+      - models/vision.md
 
     - Extracting Structured Data:
       - extract/simple_types.md
@@ -40,10 +42,10 @@ nav:
       - extract/free_json.md
       - extract/free_text.md
 
-    - Other Stuff:
-      - async.md
-      - tools.md
-      - tips.md
+    - thread.md
+    - async.md
+    - tools.md
+    - tips.md
 
 
   - Examples:
@@ -57,6 +59,7 @@ nav:
     - examples/tough_meeting.md
     - examples/compare.md
     - examples/interact.md
+    - examples/receipt.md
     - examples/async.md
     - "Sibila CLI": examples/cli.md
 

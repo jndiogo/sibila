@@ -158,7 +158,7 @@ out = model.extract(Meeting,
 print(out)
 ```
 
-    participants=['Chairman Wormsley', 'Commissioner Brown', 'Commissioner Hobbs', 'Commissioner McCroskey', 'Commissioner Adkins', 'Commissioner Carmical', 'Commissioner McKee', 'Commissioner Rodgers', 'Commissioner Duckett', 'Commissioner Reinhart', 'Commissioner Malone', 'Commissioner Headrick', 'County Attorney Fults', 'Commissioner Adams', 'Commissioner Crenshaw', 'Commissioner Thompson', 'Commissioner Hayes', 'Commissioner Hailey', 'Commissioner Carmical', 'Commissioner Austin', 'Commissioner Garland']
+    participants=['Chairman Wormsley', 'Clerk', 'Commissioner Brown', 'Commissioner Hobbs', 'Commissioner McCroskey', 'Commissioner Adkins', 'Commissioner Carmical', 'Commissioner McKee', 'Commissioner Rodgers', 'Commissioner Duckett', 'Commissioner Reinhart', 'Commissioner Malone', 'Commissioner Headrick', 'County Attorney Fults', 'Commissioner Adams', 'Commissioner Crenshaw', 'Commissioner Thompson', 'Commissioner Hayes', 'Commissioner Hailey', 'Commissioner Carmical', 'Commissioner Austin', 'Commissioner Garland']
 
 
 
@@ -169,6 +169,7 @@ for part in out.participants:
 ```
 
     Chairman Wormsley
+    Clerk
     Commissioner Brown
     Commissioner Hobbs
     Commissioner McCroskey
@@ -191,7 +192,7 @@ for part in out.participants:
     Commissioner Garland
 
 
-Some names appear twice ("Commissioner Carmical") and the "clerk", which is mentioned in the text, is not listed.
+A name appears twice - "Commissioner Carmical".
 
 It's a matter of opinion if the clerk is an active participant, but let's try to fix the repeated names.
 
@@ -328,11 +329,11 @@ for ai in out.action_items:
     index=3 name='Approve the resolution to transfer funds from the Data Processing Reserve Account to purchase a laptop'
     index=4 name='Withdraw the motion to sell property near the airport'
     index=5 name='Adopt the resolution to increase the state match local litigation tax'
-    index=6 name="Amend the motion to allocate 25 percent of the proceeds from the tax increase to fund the sheriff's department"
+    index=6 name="Amend the motion to allocate 25 percent of the increased tax on criminal cases to the sheriff's department"
     index=7 name='Vote on the state match local litigation taxes increase with the amendment'
     index=8 name='Adopt the resolution to increase the wheel tax by $10 for education funding'
-    index=9 name='Hold a Budget Committee meeting on solid waste funding recommendations'
-    index=10 name='Announce the chili supper at County Elementary School'
+    index=9 name='Budget Committee meeting on solid waste funding recommendations'
+    index=10 name='Chili supper at County Elementary School'
 
 
 These are reasonable action items.
@@ -394,15 +395,15 @@ for ai in out.action_items:
     Action items ----------------
     index=1 name='Approve the agenda' priority=<ActionPriority.HIGH: 'high'>
     index=2 name='Correct the minutes to include Commissioner McCroskey' priority=<ActionPriority.MEDIUM: 'medium'>
-    index=3 name='Approve the resolution to transfer funds for laptop purchase' priority=<ActionPriority.HIGH: 'high'>
-    index=4 name='Withdraw motion to sell property near the airport' priority=<ActionPriority.MEDIUM: 'medium'>
+    index=3 name='Approve the resolution for funds transfer for laptop purchase' priority=<ActionPriority.MEDIUM: 'medium'>
+    index=4 name='Withdraw motion to sell property near the airport' priority=<ActionPriority.LOW: 'low'>
     index=5 name='Adopt resolution to increase state match local litigation tax' priority=<ActionPriority.HIGH: 'high'>
-    index=6 name="Amend resolution to allocate funds to sheriff's department" priority=<ActionPriority.HIGH: 'high'>
-    index=7 name='Vote on the amended resolution for litigation tax increase' priority=<ActionPriority.HIGH: 'high'>
-    index=8 name='Adopt resolution to increase the wheel tax' priority=<ActionPriority.HIGH: 'high'>
+    index=6 name="Amend resolution to allocate funds to sheriff's department" priority=<ActionPriority.MEDIUM: 'medium'>
+    index=7 name='Roll call vote on litigation tax increase' priority=<ActionPriority.HIGH: 'high'>
+    index=8 name='Adopt resolution to increase wheel tax for education funding' priority=<ActionPriority.HIGH: 'high'>
     index=9 name='Budget Committee meeting on solid waste funding' priority=<ActionPriority.MEDIUM: 'medium'>
-    index=10 name='Announce chili supper at County Elementary School' priority=<ActionPriority.LOW: 'low'>
-    index=11 name='Adjourn the meeting' priority=<ActionPriority.MEDIUM: 'medium'>
+    index=10 name='Chili supper at County Elementary School announcement' priority=<ActionPriority.LOW: 'low'>
+    index=11 name='Adjournment' priority=<ActionPriority.MEDIUM: 'medium'>
 
 
 It's not clear from the meeting transcript text if these priorities are correct, but some items related to taxes are receiving high priorities, from the context, it looks reasonable that taxes are a priority. : )

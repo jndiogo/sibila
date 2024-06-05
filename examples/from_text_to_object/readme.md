@@ -93,14 +93,14 @@ out = model(in_text, inst=inst_text)
 print(out)
 ```
 
-    1. Fiji is an island country located in Melanesia, part of Oceania in the South Pacific Ocean. It lies approximately 1,100 nautical miles north-northeast of New Zealand.
-    2. The country consists of more than 330 islands with about 110 permanently inhabited islands and over 500 islets, totaling a land area of about 18,300 square kilometers.
-    3. Approximately 87% of Fiji's total population of 924,610 live on the two major islands, Viti Levu and Vanua Levu, with a majority living on Viti Levu's coasts.
-    4. The majority of Fiji's islands were formed by volcanic activity starting around 150 million years ago, with some geothermal activity still occurring on certain islands.
-    5. Fiji has a complex history, transitioning from an independent kingdom to a British colony, then a Dominion, and finally a republic after a series of coups and constitutional changes. In 2014, a democratic election took place, marking a significant milestone in the country's political history.
+    1. Fiji is an island country in Melanesia, part of Oceania in the South Pacific Ocean.
+    2. It consists of more than 330 islands with a total land area of about 18,300 square kilometres (7,100 sq mi).
+    3. The majority of Fiji's population lives on the two major islands, Viti Levu and Vanua Levu.
+    4. Most of Fiji's islands were formed by volcanic activity starting around 150 million years ago.
+    5. Fiji has a history of political instability, with multiple coups and changes in government since gaining independence in 1970.
 
 
-These are quite reasonable keypoints!
+These are quite reasonable keypoints.
 
 Let's now ask for JSON output, taking care to explicitly request it in the query (in_text variable).
 
@@ -118,14 +118,14 @@ out = model.json(in_text,
 pp.pprint(out)
 ```
 
-    {'keypoints': [{'title': 'Location', 'description': 'Fiji is an island country in Melanesia, part of Oceania in the South Pacific Ocean.'},
-                   {'title': 'Geography', 'description': 'Consists of more than 330 islands with about 110 permanently inhabited islands.'},
-                   {'title': 'Population', 'description': 'Total population of 924,610 live on the two major islands, Viti Levu and Vanua Levu.'},
-                   {'title': 'History', 'description': 'Humans have lived in Fiji since the second millennium BC with Austronesians, Melanesians, and Polynesian influences.'},
-                   {'title': 'Political Status', 'description': 'Officially known as the Republic of Fiji, gained independence from British rule in 1970.'}]}
+    {'keypoints': [{'point': 'Fiji is an island country in Melanesia, part of Oceania in the South Pacific Ocean.', 'location': 'Melanesia, Oceania'},
+                   {'point': 'Fiji consists of more than 330 islands with about 110 permanently inhabited islands and over 500 islets.', 'total_land_area': 'about 18,300 square kilometres (7,100 sq mi)'},
+                   {'point': 'About 87% of the total population of 924,610 live on the two major islands, Viti Levu and Vanua Levu.', 'population_statistics': '87%, 924,610'},
+                   {'point': "The majority of Fiji's islands were formed by volcanic activity starting around 150 million years ago.", 'island_formation': 'volcanic activity, 150 million years ago'},
+                   {'point': 'Fiji has a history of political instability with multiple coups and changes in government.', 'political_history': 'multiple coups, changes in government'}]}
 
 
-Note how the model chose to return different fields like "title" or "description".
+Note how the model chose to return different fields like "point" or "island_formation".
 
 Because we didn't specify which fields we want, each model will generate different ones.
 
@@ -164,7 +164,7 @@ out = model.json(in_text,
 print(out)
 ```
 
-    {'keypoint_list': ['Fiji is an island country in Melanesia, part of Oceania in the South Pacific Ocean.', 'About 87% of the total population of 924,610 live on the two major islands, Viti Levu and Vanua Levu.', "The majority of Fiji's islands were formed by volcanic activity starting around 150 million years ago.", 'Humans have lived in Fiji since the second millennium BC—first Austronesians and later Melanesians, with some Polynesian influences.', "In 2014, a democratic election took place, with Bainimarama's FijiFirst party winning 59.2% of the vote."]}
+    {'keypoint_list': ['Fiji is an island country in Melanesia, part of Oceania in the South Pacific Ocean.', "About 87% of Fiji's total population live on the two major islands, Viti Levu and Vanua Levu.", "The majority of Fiji's islands were formed by volcanic activity starting around 150 million years ago.", 'Humans have lived in Fiji since the second millennium BC, first Austronesians and later Melanesians, with some Polynesian influences.', "In 2014, a democratic election took place, with Bainimarama's FijiFirst party winning 59.2% of the vote."]}
 
 
 
@@ -174,9 +174,9 @@ for kpoint in out["keypoint_list"]:
 ```
 
     Fiji is an island country in Melanesia, part of Oceania in the South Pacific Ocean.
-    About 87% of the total population of 924,610 live on the two major islands, Viti Levu and Vanua Levu.
+    About 87% of Fiji's total population live on the two major islands, Viti Levu and Vanua Levu.
     The majority of Fiji's islands were formed by volcanic activity starting around 150 million years ago.
-    Humans have lived in Fiji since the second millennium BC—first Austronesians and later Melanesians, with some Polynesian influences.
+    Humans have lived in Fiji since the second millennium BC, first Austronesians and later Melanesians, with some Polynesian influences.
     In 2014, a democratic election took place, with Bainimarama's FijiFirst party winning 59.2% of the vote.
 
 
@@ -200,7 +200,7 @@ out = model.pydantic(Keypoints,
 print(out)
 ```
 
-    keypoint_list=['Fiji is an island country in Melanesia, part of Oceania in the South Pacific Ocean.', 'About 87% of the total population of 924,610 live on the two major islands, Viti Levu and Vanua Levu.', "The majority of Fiji's islands were formed by volcanic activity starting around 150 million years ago.", 'Humans have lived in Fiji since the second millennium BC—first Austronesians and later Melanesians, with some Polynesian influences.', "In 2014, a democratic election took place, with Bainimarama's FijiFirst party winning 59.2% of the vote."]
+    keypoint_list=['Fiji is an island country in Melanesia, part of Oceania in the South Pacific Ocean.', "About 87% of Fiji's total population live on the two major islands, Viti Levu and Vanua Levu.", "The majority of Fiji's islands were formed by volcanic activity starting around 150 million years ago.", 'Humans have lived in Fiji since the second millennium BC, first Austronesians and later Melanesians, with some Polynesian influences.', "In 2014, a democratic election took place, with Bainimarama's FijiFirst party winning 59.2% of the vote."]
 
 
 
@@ -210,9 +210,9 @@ for kpoint in out.keypoint_list:
 ```
 
     Fiji is an island country in Melanesia, part of Oceania in the South Pacific Ocean.
-    About 87% of the total population of 924,610 live on the two major islands, Viti Levu and Vanua Levu.
+    About 87% of Fiji's total population live on the two major islands, Viti Levu and Vanua Levu.
     The majority of Fiji's islands were formed by volcanic activity starting around 150 million years ago.
-    Humans have lived in Fiji since the second millennium BC—first Austronesians and later Melanesians, with some Polynesian influences.
+    Humans have lived in Fiji since the second millennium BC, first Austronesians and later Melanesians, with some Polynesian influences.
     In 2014, a democratic election took place, with Bainimarama's FijiFirst party winning 59.2% of the vote.
 
 

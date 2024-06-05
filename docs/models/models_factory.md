@@ -2,22 +2,21 @@
 title: Models factory
 ---
 
+The [Models factory class](../api-reference/models.md) is a flexible way to create and manage a model configuration with its initialization settings.
 
-The Models factory is based in a "models" folder that contains two configuration files: "models.json" and "formats.json" and the actual files for local models. 
-
-The [Models factory class](../api-reference/models.md) is a more flexible way to create models, for example:
+After defining it in a JSON file named 'models.json', you can create the model by simply referring to its name, for example:
 
 ``` python
 Models.setup("../../models")
 
-model = Models.create("openai:gpt-4")
+model = Models.create("openai:gpt-4-development")
 ```
 
-The first line calls [Models.setup()](../api-reference/models.md#sibila.Models.setup) to initialize the factory with the folder where model files and configs ("models.json" and "formats.json") are located.
+The first line calls [Models.setup()](../api-reference/models.md#sibila.Models.setup) to initialize the Models factory with the folder where model files and configs ("models.json" and "formats.json") are located.
 
-The second line calls [Models.create()](../api-reference/models.md#sibila.Models.create) to create a model from the name "openai:gpt-4". In this case we created a remote model, but we could as well create a local model based in a GGUF file.
+The second line calls [Models.create()](../api-reference/models.md#sibila.Models.create) to create a model from the name "openai:gpt-4-development". In this case we created a remote model, but we could as well create a local model based in a GGUF file.
 
-The names should be in the format "provider:model_name" and Sibila currently supports these providers:
+The names should be in the format "provider:model_name" and Sibila currently supports the following providers:
 
 | Provider | Type | Creates object of type |
 |----------|------|------------------------|

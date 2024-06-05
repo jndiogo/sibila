@@ -25,7 +25,10 @@ class GenConf:
     """Model generation configuration, used in Model.gen() and variants."""
     
     max_tokens: int = 0 
-    """Maximum output token length. Special value of 0 means all available context length, special values between -1 and -100 mean a -percentage of ctx_len. For example -20 allows output up to 20% of ctx_len."""
+    """Maximum output token length. 
+    Special value of 0 means all available context length, special values between -1 and -100 mean a -percentage of ctx_len. 
+    In some providers, a value of 0 also signals that max_tokens is not used/sent.
+    For example -20 allows output up to 20% of ctx_len."""
     
     stop: Union[str, list[str]] = field(default_factory=list)
     """List of generation stop text sequences"""
@@ -153,7 +156,7 @@ class GenConf:
         for k,v in self.special.items():
             if k == provider: # provider-specific
                 if not isinstance(v,dict):
-                    raise ValueError(f"Config 'special' for provider '{provider}' must be a dict.")
+                    raise ValueError(f"Config 'special' for provider '{provider}' must be a dict")
                 out.update(v)
             else: # common args
                 if isinstance(v,dict) and k in Models.ALL_PROVIDER_NAMES: # skip other provider entries
@@ -311,7 +314,7 @@ class GenError(RuntimeError, GenOut):
         
         if out.res != GenRes.OK_STOP:
             if out.res == GenRes.OK_LENGTH and not ok_length_is_error:
-                return # OK_LENGTH to not be considered an error
+                return # set ok_length_is_error to ignore this error
 
             raise GenError(out)
             

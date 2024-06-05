@@ -20,7 +20,7 @@ from .gen import (
 
 from .thread import (
     Thread,
-    MsgKind
+    Msg
 )
 
 from .model import (
@@ -29,6 +29,7 @@ from .model import (
 )
 
 from .json_schema import JSchemaConf
+
 
 try:
     from anthropic import Anthropic, AsyncAnthropic
@@ -151,6 +152,7 @@ class AnthropicModel(MessagesModel):
 
         self._token_estimation_factor = token_estimation_factor or default_token_estimation_factor
 
+        self.maybe_image_input = True # currently all Anthropic models support image input - always check model specs
 
         # only check for "json" text presence as json schema (including field descriptions) is requested with the tools facility.
         self.json_format_instructors["json_schema"] = self.json_format_instructors["json"]
@@ -161,6 +163,10 @@ class AnthropicModel(MessagesModel):
             self._client_init_kwargs["api_key"] = api_key    
 
 
+
+    def close(self):
+        """Close model, release resources like memory or net connections."""
+        self._client = self._client_async = None
 
 
 
@@ -202,6 +208,8 @@ class AnthropicModel(MessagesModel):
         thread = self._prepare_gen_thread(thread, genconf)
 
         """
+        This provider requires "max_tokens" and doesn't error on excess.
+
         Since we can only have an estimate of token length, we don't use it when generating:
             token_len = self.token_len(thread, genconf)
             resolved_max_tokens = self.resolve_genconf_max_tokens(token_len, genconf)
@@ -233,15 +241,47 @@ class AnthropicModel(MessagesModel):
 
             logger.debug(f"Anthropic json args: {json_kwargs}")
             
-        # Anthropic API has no support for seed parameter
-        
+        has_images = thread.has_images
+        if has_images: # download any remote url images to data: urls
+            thread = thread.clone()
+            thread.download_images_as_data()
+
         msgs = thread.as_chatml(include_INST=False)
+
+        if has_images: # massage images from the ChatML format into Anthropic's format
+            for msg in msgs:
+                content = msg["content"]
+                if isinstance(content, list):
+                    for cont in content:
+                        if cont["type"] == "image_url":
+                            image_url = cont["image_url"]["url"]
+                            
+                            image_url = image_url[5:]
+                            mime = image_url.split(";")
+                            if len(mime) != 2:
+                                raise ValueError(f"Error decoding image data: '{image_url[:16]}'")
+                            base64 = mime[1].split(",")
+                            if len(base64) != 2 or base64[0].lower() != "base64":
+                                raise ValueError(f"Error decoding image data base64: '{image_url[:32]}'")
+                            mime_str = mime[0]
+                            base64_str = base64[1]
+
+                            # rewrite keys
+                            cont["type"] = "image"
+                            del cont["image_url"]
+                            cont["source"] = {
+                                "type": "base64",
+                                "media_type": mime_str,
+                                "data": base64_str
+                            }
+
 
         if format == "json" and "tools" not in json_kwargs: 
             # json non-schema request: prefill format as an assistant message
             msgs.append({"role": "assistant", "content": "{"})
 
-
+        # Anthropic API has no support for seed parameter
+        
         kwargs = {"model": self._model_name,
                   "messages": msgs, # type: ignore[arg-type]
                   "stop_sequences": genconf.stop,
@@ -251,10 +291,12 @@ class AnthropicModel(MessagesModel):
                   **json_kwargs}
 
         if thread.inst:
-            kwargs["system"] = thread.inst
+            kwargs["system"] = thread.inst.text
 
         # inject model-specific args, if any
         kwargs.update(genconf.resolve_special(self.PROVIDER_NAME))
+
+        logger.debug(f"{type(self).__name__} gen args: {kwargs}")
 
         return (kwargs, genconf)
         
@@ -382,7 +424,12 @@ class AnthropicModel(MessagesModel):
     def token_len(self,
                   thread_or_text: Union[Thread,str],
                   genconf: Optional[GenConf] = None) -> int:
-        """Estimate the number of tokens used by a Thread or text string.
+        """Calculate or estimate the token length for a Thread or a plain text string.
+        In some cases where it's not possible to calculate the exact token count, 
+        this function should give a conservative (upper bound) estimate.
+        It's up to the implementation whether to account for side information like JSON Schema,
+        but it must reflect the model's context token accounting.
+        Thread or text must be the final text which will passed to model.
 
         Args:
             thread_or_text: For token length calculation.
@@ -399,9 +446,10 @@ class AnthropicModel(MessagesModel):
 
         OVERHEAD_PER_MSG = 3
         num_tokens = 0
-        for index in range(-1, len(thread)): # -1 for system message
-            message = thread.msg_as_chatml(index)
-            msg_tokens = len(message["content"]) * self._token_estimation_factor + OVERHEAD_PER_MSG
+        for msg in thread.get_iter(True): # True for system message
+            message = msg.as_chatml()
+            msg_tokens = len(str(message["content"])) * self._token_estimation_factor + OVERHEAD_PER_MSG
+            # str(message["content"]): hacky way to deal with dict "content" key
             num_tokens += int(msg_tokens)
 
         if genconf is not None and genconf.json_schema is not None:

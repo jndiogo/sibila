@@ -49,7 +49,7 @@ from .gen import (
 
 from .thread import (
     Thread,
-    MsgKind
+    Msg
 )
 
 from .json_schema import (
@@ -64,14 +64,15 @@ from .json_schema import (
     create_final_instance
 )
 
-from .utils import is_subclass_of
+from .utils import (
+    is_subclass_of,
+    join_text
+)
+
 
 
 
     
-
-
-
 class Tokenizer(ABC):
     """Base tokenizer class to encode and decode tokens, measure text length in tokens, track special tokens."""
 
@@ -150,6 +151,9 @@ pad={self.pad_token_id}='{self.pad_token}'
 unk={self.unk_token_id}='{self.unk_token}'"""
 
 
+    def __repr__(self):
+        return str(self)
+
 
 
 
@@ -170,7 +174,7 @@ class Model(ABC):
     """Is communication with the model message-based or text-based/token-based?"""
 
     tokenizer: Union[Tokenizer,None]
-    """Tokenizer used to encode text (even for message-based models). Some remote models don't have tokenizer and token length is estimated"""
+    """Tokenizer used to encode text. Some remote models don't have tokenizer and token length is estimated"""
 
     genconf: GenConf
     """Generation configuration: options used during gen()."""
@@ -186,6 +190,9 @@ class Model(ABC):
 
     max_tokens_limit: int
     """Some models limit the size of emitted output tokens."""
+
+    maybe_image_input: bool
+    """Does the model support images as input? A value of False is definitive, a value of True is actually a maybe, as some providers don't give this information. Check the model specs to be certain."""
 
     output_key_name: str
     """Name used when an output key needs to be created for JSON output."""
@@ -251,6 +258,14 @@ class Model(ABC):
             "indent": None,
             "ensure_ascii": False
         } 
+
+
+    @abstractmethod
+    def close(self):
+        """Close model, release resources like memory or net connections."""
+        ...
+
+
 
 
     
@@ -865,7 +880,7 @@ class Model(ABC):
 
 
     def __call__(self,             
-                 query: Union[str,Thread],
+                 query: Union[Thread,Msg,tuple,str],
                  *,
                  inst: Optional[str] = None,
 
@@ -875,7 +890,7 @@ class Model(ABC):
         """Text generation from a Thread or plain text, used by the other model generation methods. Same as call().
 
         Args:
-            query: Thread or an str with the text of a single IN message to use as model input.
+            query: A Thread or a single IN message given as Msg, list, tuple or str. List and tuple should contain the same args as for creating Msg.
             inst: Instruction message for model. Will override Thread's inst, if set. Defaults to None.
             genconf: Model generation configuration. Defaults to None, which uses model's default.
             ok_length_is_error: Should a result of GenRes.OK_LENGTH be considered an error and raise?
@@ -895,7 +910,7 @@ class Model(ABC):
 
 
     def call(self,             
-             query: Union[str,Thread],
+             query: Union[Thread,Msg,tuple,str],
              *,
              inst: Optional[str] = None,
 
@@ -905,7 +920,7 @@ class Model(ABC):
         """Text generation from a Thread or plain text, used by the other model generation methods.
 
         Args:
-            query: Thread or an str with the text of a single IN message to use as model input.
+            query: A Thread or a single IN message given as Msg, list, tuple or str. List and tuple should contain the same args as for creating Msg.
             inst: Instruction message for model. Will override Thread's inst, if set. Defaults to None.
             genconf: Model generation configuration. Defaults to None, which uses model's default.
             ok_length_is_error: Should a result of GenRes.OK_LENGTH be considered an error and raise?
@@ -930,7 +945,7 @@ class Model(ABC):
 
 
     async def call_async(self,
-                         query: Union[str,Thread],
+                         query: Union[Thread,Msg,tuple,str],
                          *,
                          inst: Optional[str] = None,
  
@@ -940,7 +955,7 @@ class Model(ABC):
         """Text generation from a Thread or plain text, used by the other model generation methods.
 
         Args:
-            query: Thread or an str with the text of a single IN message to use as model input.
+            query: A Thread or a single IN message given as Msg, list, tuple or str. List and tuple should contain the same args as for creating Msg.
             inst: Instruction message for model. Will override Thread's inst, if set. Defaults to None.
             genconf: Model generation configuration. Defaults to None, which uses model's default.
             ok_length_is_error: Should a result of GenRes.OK_LENGTH be considered an error and raise?
@@ -972,7 +987,7 @@ class Model(ABC):
 
 
     def json(self,
-             query: Union[str,Thread],
+             query: Union[Thread,Msg,tuple,str],
              *,
              json_schema: Union[dict,str,None] = None,
              inst: Optional[str] = None,
@@ -985,7 +1000,7 @@ class Model(ABC):
         Raises GenError if unable to get a valid/schema-validated JSON.
 
         Args:
-            query: Thread or an str with the text of a single IN message to use as model input.
+            query: A Thread or a single IN message given as Msg, list, tuple or str. List and tuple should contain the same args as for creating Msg.
             json_schema: A JSON schema describing the dict fields that will be output. None means no schema (free JSON output).
             inst: Instruction message for model. Will override Thread's inst, if set. Defaults to None.
             genconf: Model generation configuration. Defaults to None, which uses model's default.
@@ -1019,7 +1034,7 @@ class Model(ABC):
 
 
     async def json_async(self,             
-                         query: Union[str,Thread],
+                         query: Union[Thread,Msg,tuple,str],
                          *,
                          json_schema: Union[dict,str,None] = None,
                          inst: Optional[str] = None,
@@ -1032,7 +1047,7 @@ class Model(ABC):
         Raises GenError if unable to get a valid/schema-validated JSON.
 
         Args:
-            query: Thread or an str with the text of a single IN message to use as model input.
+            query: A Thread or a single IN message given as Msg, list, tuple or str. List and tuple should contain the same args as for creating Msg.
             json_schema: A JSON schema describing the dict fields that will be output. None means no schema (free JSON output).
             inst: Instruction message for model. Will override Thread's inst, if set. Defaults to None.
             genconf: Model generation configuration. Defaults to None, which uses model's default.
@@ -1073,7 +1088,7 @@ class Model(ABC):
     def dataclass(self, # noqa: F811
                   cls: Any, # a dataclass definition
 
-                  query: Union[str,Thread],
+                  query: Union[Thread,Msg,tuple,str],
                   *,
                   inst: Optional[str] = None,
 
@@ -1085,7 +1100,7 @@ class Model(ABC):
 
         Args:
             cls: A dataclass definition.
-            query: Thread or an str with the text of a single IN message to use as model input.
+            query: A Thread or a single IN message given as Msg, list, tuple or str. List and tuple should contain the same args as for creating Msg.
             inst: Instruction message for model. Will override Thread's inst, if set. Defaults to None.
             genconf: Model generation configuration. Defaults to None, which uses model's default.
             schemaconf: JSchemaConf object that controls schema simplification. Defaults to None, which uses model's default.
@@ -1115,7 +1130,7 @@ class Model(ABC):
     async def dataclass_async(self, # noqa: E811
                               cls: Any, # a dataclass definition
 
-                              query: Union[str,Thread],
+                              query: Union[Thread,Msg,tuple,str],
                               *,
                               inst: Optional[str] = None,
 
@@ -1127,7 +1142,7 @@ class Model(ABC):
 
         Args:
             cls: A dataclass definition.
-            query: Thread or an str with the text of a single IN message to use as model input.
+            query: A Thread or a single IN message given as Msg, list, tuple or str. List and tuple should contain the same args as for creating Msg.
             inst: Instruction message for model. Will override Thread's inst, if set. Defaults to None.
             genconf: Model generation configuration. Defaults to None, which uses model's default.
             schemaconf: JSchemaConf object that controls schema simplification. Defaults to None, which uses model's default.
@@ -1163,7 +1178,7 @@ class Model(ABC):
     def pydantic(self,
                  cls: Any, # a Pydantic BaseModel class
 
-                 query: Union[str,Thread],
+                 query: Union[Thread,Msg,tuple,str],
                  *,
                  inst: Optional[str] = None,
 
@@ -1176,7 +1191,7 @@ class Model(ABC):
 
         Args:
             cls: A class derived from a Pydantic BaseModel class.
-            query: Thread or an str with the text of a single IN message to use as model input.
+            query: A Thread or a single IN message given as Msg, list, tuple or str. List and tuple should contain the same args as for creating Msg.
             inst: Instruction message for model. Will override Thread's inst, if set. Defaults to None.
             genconf: Model generation configuration. Defaults to None, which uses model's default.
             schemaconf: JSchemaConf object that controls schema simplification. Defaults to None, which uses model's default.
@@ -1205,7 +1220,7 @@ class Model(ABC):
     async def pydantic_async(self,
                              cls: Any, # a Pydantic BaseModel class
 
-                             query: Union[str,Thread],
+                             query: Union[Thread,Msg,tuple,str],
                              *,
                              inst: Optional[str] = None,
 
@@ -1218,7 +1233,7 @@ class Model(ABC):
 
         Args:
             cls: A class derived from a Pydantic BaseModel class.
-            query: Thread or an str with the text of a single IN message to use as model input.
+            query: A Thread or a single IN message given as Msg, list, tuple or str. List and tuple should contain the same args as for creating Msg.
             inst: Instruction message for model. Will override Thread's inst, if set. Defaults to None.
             genconf: Model generation configuration. Defaults to None, which uses model's default.
             schemaconf: JSchemaConf object that controls schema simplification. Defaults to None, which uses model's default.
@@ -1252,7 +1267,7 @@ class Model(ABC):
     def extract(self,
                 target: Any,
 
-                query: Union[str,Thread],
+                query: Union[Thread,Msg,tuple,str],
                 *,
                 inst: Optional[str] = None,
 
@@ -1296,7 +1311,7 @@ class Model(ABC):
 
         Args:
             target: One of the above types.
-            query: Thread or an str with the text of a single IN message to use as model input.
+            query: A Thread or a single IN message given as Msg, list, tuple or str. List and tuple should contain the same args as for creating Msg.
             inst: Instruction message for model. Will override Thread's inst, if set. Defaults to None.
             genconf: Model generation configuration. Defaults to None, which uses model's default.
             schemaconf: JSchemaConf object that controls schema simplification. Defaults to None, which uses model's default.
@@ -1328,7 +1343,7 @@ class Model(ABC):
     async def extract_async(self,
                             target: Any,
 
-                            query: Union[str,Thread],
+                            query: Union[Thread,Msg,tuple,str],
                             *,
                             inst: Optional[str] = None,
 
@@ -1372,7 +1387,7 @@ class Model(ABC):
 
         Args:
             target: One of the above types.
-            query: Thread or an str with the text of a single IN message to use as model input.
+            query: A Thread or a single IN message given as Msg, list, tuple or str. List and tuple should contain the same args as for creating Msg.
             inst: Instruction message for model. Will override Thread's inst, if set. Defaults to None.
             genconf: Model generation configuration. Defaults to None, which uses model's default.
             schemaconf: JSchemaConf object that controls schema simplification. Defaults to None, which uses model's default.
@@ -1408,7 +1423,7 @@ class Model(ABC):
     def classify(self,
                  labels: Any,
 
-                 query: Union[str,Thread],
+                 query: Union[Thread,Msg,tuple,str],
                  *,
                  inst: Optional[str] = None,
 
@@ -1424,7 +1439,7 @@ class Model(ABC):
 
         Args:
             labels: One of the above types.
-            query: Thread or an str with the text of a single IN message to use as model input.
+            query: A Thread or a single IN message given as Msg, list, tuple or str. List and tuple should contain the same args as for creating Msg.
             inst: Instruction message for model. Will override Thread's inst, if set. Defaults to None.
             genconf: Model generation configuration. Defaults to None, which uses model's default.
             schemaconf: JSchemaConf object that controls schema simplification. Defaults to None, which uses model's default.
@@ -1453,7 +1468,7 @@ class Model(ABC):
     async def classify_async(self,
                              labels: Any,
 
-                             query: Union[str,Thread],
+                             query: Union[Thread,Msg,tuple,str],
                              *,
                              inst: Optional[str] = None,
 
@@ -1469,7 +1484,7 @@ class Model(ABC):
 
         Args:
             labels: One of the above types.
-            query: Thread or an str with the text of a single IN message to use as model input.
+            query: A Thread or a single IN message given as Msg, list, tuple or str. List and tuple should contain the same args as for creating Msg.
             inst: Instruction message for model. Will override Thread's inst, if set. Defaults to None.
             genconf: Model generation configuration. Defaults to None, which uses model's default.
             schemaconf: JSchemaConf object that controls schema simplification. Defaults to None, which uses model's default.
@@ -1508,22 +1523,29 @@ class Model(ABC):
 
     @abstractmethod
     def token_len(self,
-                  thread_or_text: Union[Thread,str]) -> int:
-        """Calculate or estimate the token length for a Thread or plain text string.
-        In some cases it's not possible to calculate the exact token count, 
-        but at least a conservative estimate should be provided.
+                  thread_or_text: Union[Thread,str],
+                  genconf: Optional[GenConf] = None) -> int:
+        """Calculate or estimate the token length for a Thread or a plain text string.
+        In some cases where it's not possible to calculate the exact token count, 
+        this function should give a conservative (upper bound) estimate.
+        It's up to the implementation whether to account for side information like JSON Schema,
+        but it must reflect the model's context token accounting.
+        Thread or text must be the final text which will passed to model.
 
         Args:
-            thread_or_text: A Thread or plain text string For token length calculation.
+            thread_or_text: Final thread or text to be passed to model.
+            genconf: Model generation configuration. Defaults to None.
 
         Returns:
             Number of tokens occupied.
         """
         ...
 
+
+
     @property
-    def token_len_lambda(self) -> Callable[[Union[Thread,str]], int]:
-        return lambda text: self.token_len(text)
+    def token_len_lambda(self) -> Callable[[Union[Thread,str],Optional[GenConf]], int]:
+        return lambda thread_or_text, genconf=None: self.token_len(thread_or_text, genconf) # type: ignore[misc]
 
 
 
@@ -1647,7 +1669,9 @@ class Model(ABC):
         if not len(thread):
             raise ValueError("Cannot generate from an empty thread")
         
-        if thread.last_kind != MsgKind.IN:
+        if thread[0].kind != Msg.Kind.IN:
+            logger.warning("First thread message is not an IN message.")
+        if thread[-1].kind != Msg.Kind.IN:
             logger.warning("Last thread message is not an IN message.")
 
         if genconf.format == "json":
@@ -1671,9 +1695,11 @@ class Model(ABC):
 
                         text = text.replace("{{json_schema}}", sc)
 
-                    first_text = thread.get_text(0)
-                    first_text = thread.join_text(first_text, text, inst["sep_count"]) # will separate by join_sep * sep_count
-                    thread.set_text(0, first_text)
+                    first_text = thread[0].text
+                    first_text = join_text(first_text, 
+                                           text,
+                                           thread.join_sep * inst["sep_count"]) # will separate by join_sep * sep_count
+                    thread[0].text = first_text
                     
                     logger.debug(f'Appended {"json" if genconf.json_schema is None else "json_schema"} instruction to first message.')
 
@@ -1773,63 +1799,12 @@ class Model(ABC):
 
 
 
-class TextModel(Model, ABC):
-    """Model with text-based input/output."""
-
-    def __init__(self,
-                 is_local_model: bool,
-                 genconf: Union[GenConf, None],
-                 schemaconf: Union[JSchemaConf, None],
-                 tokenizer: Union[Tokenizer, None]):
-
-        super().__init__(is_local_model,
-                         genconf,
-                         schemaconf,
-                         tokenizer)
-        
-        self.is_message_model = False
-
-    
-    def token_len(self,
-                  thread_or_text: Union[Thread,str],
-                  _: Optional[GenConf] = None) -> int:
-        """Calculate token length for a Thread.
-
-        Args:
-            thread_or_text: For token length calculation.
-
-        Returns:
-            Number of tokens used.
-        """
-
-        if self.tokenizer is None:
-            raise ValueError("A TextModel object requires a tokenizer")
-
-        if isinstance(thread_or_text, Thread):
-            text = self.text_from_thread(thread_or_text)
-        else:
-            text = thread_or_text
-
-        return self.tokenizer.token_len(text)
-
-   
-    
-    @abstractmethod
-    def text_from_thread(self,
-                         thread: Thread) -> str:
-        ...
-    
-
-
-
-
-
 
 
 from .models import Models
 
 
-class FormattedTextModel(TextModel, ABC):
+class FormattedTextModel(Model, ABC):
     """Model that uses formatted text (chat templates) for input/output."""
     
     format_template: Union[str,None]
@@ -1845,6 +1820,8 @@ class FormattedTextModel(TextModel, ABC):
                          genconf,
                          schemaconf,
                          tokenizer)
+
+        self.is_message_model = False
 
         self.format_template = None
         self._jinja_compiled_template = None
@@ -1905,8 +1882,8 @@ class FormattedTextModel(TextModel, ABC):
 
             raise ValueError(f"Could not find chat template format for model '{info['name']}'. "
                              "Fine-tuned models cannot work well without the right format. "
-                             "See the docs on how you can fix this: "
-                             "either setup the format in Models factory, or provide the chat template in the 'format' arg.")
+                             "Please provide a chat template in the 'format' argument: either as a Jinja template, or the format name if already defined in Models' formats.json. "
+                             "See the docs for more information.")
 
         
         if format is not None: # format was passed (call or Models' model entry)
@@ -1931,27 +1908,6 @@ class FormattedTextModel(TextModel, ABC):
 
 
 
-    def _gen_pre(self, 
-                 thread: Thread,
-                 genconf: Optional[GenConf] = None,
-                 ) -> tuple:
-
-        if genconf is None:
-            genconf = self.genconf
-
-        thread = self._prepare_gen_thread(thread, genconf)
-
-        prompt = self.text_from_thread(thread)
-
-        if not prompt:
-            raise ValueError("Cannot generate from an empty prompt")
-        
-        logger.debug(f"Prompt: █{prompt}█")
-
-        return prompt, genconf
-
-
-
 
     def gen(self, 
             thread: Thread,
@@ -1972,12 +1928,12 @@ class FormattedTextModel(TextModel, ABC):
             A GenOut object with result, generated text, etc. 
         """
 
-        genconf2: GenConf
-        prompt, genconf2 = self._gen_pre(thread, genconf)
+        if genconf is None:
+            genconf = self.genconf
 
-        text,finish = self._gen_text(prompt, genconf2)
+        text,finish = self._gen_thread(thread, genconf)
 
-        return self._prepare_gen_out(text, finish, genconf2)
+        return self._prepare_gen_out(text, finish, genconf)
 
 
 
@@ -2001,24 +1957,24 @@ class FormattedTextModel(TextModel, ABC):
             A GenOut object with result, generated text, etc. 
         """
 
-        genconf2: GenConf
-        prompt, genconf2 = self._gen_pre(thread, genconf)
+        if genconf is None:
+            genconf = self.genconf
 
-        text,finish = await self._gen_text_async(prompt, genconf2)
+        text,finish = await self._gen_thread_async(thread, genconf)
 
-        return self._prepare_gen_out(text, finish, genconf2)
+        return self._prepare_gen_out(text, finish, genconf)
 
 
 
     
     @abstractmethod
-    def _gen_text(self,
-                  text: str,
-                  genconf: GenConf) -> tuple[str,str]:
+    def _gen_thread(self,
+                    thread: Thread,
+                    genconf: GenConf) -> tuple[str,str]:
         """Generate from formatted text.
 
         Args:
-            text: Formatted text (from input Thread).
+            thread: Input Thread object.
             genconf: Model generation configuration.
 
         Raises:
@@ -2031,13 +1987,13 @@ class FormattedTextModel(TextModel, ABC):
 
 
     @abstractmethod
-    async def _gen_text_async(self,
-                              text: str,
-                              genconf: GenConf) -> tuple[str,str]:
+    async def _gen_thread_async(self,
+                                thread: Thread,
+                                genconf: GenConf) -> tuple[str,str]:
         """Asynchronously generate from formatted text.
 
         Args:
-            text: Formatted text (from input Thread).
+            thread: Input Thread object.
             genconf: Model generation configuration.
 
         Raises:
@@ -2050,25 +2006,14 @@ class FormattedTextModel(TextModel, ABC):
 
 
 
-
-    def text_from_thread(self,
-                         thread: Thread) -> str:
-        """Apply template format to transform a Thread into text."""
-
-        if self.tokenizer is None:
-            raise ValueError("A FormattedTextModel object requires a tokenizer")
-
-        messages = thread.as_chatml()
-        text = self._jinja_compiled_template.render(messages=messages, # type: ignore[union-attr]
-                                                    add_generation_prompt=True,
-                                                    **self.tokenizer.special_tokens_map())
-        return text
-        
-    
-    
     def get_metadata(self) -> dict:
         """Returns model metadata."""
         return {}
+
+
+
+
+
 
 
 
@@ -2108,7 +2053,6 @@ class MessagesModel(Model, ABC):
         provider, name, args = Models.resolve_model_entry(res_name)
 
         logger.debug(f"Resolved '{res_name}' to '{provider}:{name}' with defaults: {args}")
-
 
         # 2: update located defaults with args
         out = {}

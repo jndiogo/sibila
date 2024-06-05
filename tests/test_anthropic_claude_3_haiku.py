@@ -38,7 +38,7 @@ def env_model():
 
     load_dotenv(override=True, verbose=True)
 
-    base_dir, models_dir = setup_env_models("mistral-" + MODEL_NAME, 
+    base_dir, models_dir = setup_env_models("anthropic-" + MODEL_NAME, 
                                             change_cwd=True,
                                             full_clean=False)
 

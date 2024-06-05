@@ -44,16 +44,17 @@ models = [
     "mistral:mistral-small-latest",
     "openai:gpt-3.5",
     "openai:gpt-4",
-    "together:mistralai/Mixtral-8x7B-Instruct-v0.1",
 ]
 
 __models = [
-    "groq:llama3-70b-8192",
+    #"mistral:mistral-small-latest",
+    "together:mistralai/Mixtral-8x7B-Instruct-v0.1",
 ]
 
 """
 Providers/models that don't pass these tests:
 "fireworks:accounts/fireworks/models/mixtral-8x7b-instruct"
+"together:mistralai/Mixtral-8x7B-Instruct-v0.1",
 """
 
 

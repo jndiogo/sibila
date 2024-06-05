@@ -106,7 +106,7 @@ print(out)
     meeting_date='10th April 2024' meeting_location='Conference Room A' attendees=[Attendee(name='Arthur', occupation='Logistics Supervisor'), Attendee(name='Bianca', occupation='Operations Manager'), Attendee(name='Chris', occupation='Fleet Coordinator')]
 
 
-A prettier display:
+For a nicer display:
 
 
 ```python
@@ -164,9 +164,9 @@ for items in out.action_items:
     name='Bianca' occupation='Operations Manager'
     name='Chris' occupation='Fleet Coordinator'
     Action items:
-    index=1 name='Investigate and report on late deliveries'
+    index=1 name='Investigate and report late deliveries'
     index=2 name='Update driver training manual'
-    index=3 name='Schedule a meeting with software vendor to discuss tracking system updates'
+    index=3 name='Schedule meeting with software vendor to discuss tracking system updates'
 
 
 The extracted action items also look good.
@@ -232,4 +232,4 @@ for items in out.action_items:
 
 The new information was correctly extracted: priorities, due by and assigned attendees for each action item.
 
-For an example of a harder, more complex transcript see the Tough meeting example.
+For an example of a harder, more complex transcript, see the "Tough meeting" example.

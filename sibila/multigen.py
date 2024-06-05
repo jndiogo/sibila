@@ -20,13 +20,9 @@ from .gen import (
 
 from .thread import (
     Thread,
-    MsgKind
+    Msg
 )
 
-from .context import (
-    Trim,
-    Context
-)
 
 from .model import (
     Model
@@ -157,6 +153,7 @@ def multigen(threads: list[Thread],
         all_out.append(mod_out)
 
         if model_names_del_after and models is None:
+            model.close()
             del model
         
     # all_out is currently shaped (M,T) -> transpose to (T,M), so that each row contains thread t for all models
@@ -502,7 +499,7 @@ def cycle_gen_print(in_list: list[str],
             in_text = in_list[i]
             print(f"IN: {in_text}")
             
-            th += (MsgKind.IN, in_text)
+            th += Msg.make_IN(in_text)
 
             out = gencall(model, th, genconf)
 
@@ -520,8 +517,9 @@ def cycle_gen_print(in_list: list[str],
                     val = nice_print(k, out_dict[k], json_kwargs)
                     print(val)
                     
-            th += (MsgKind.OUT, out.text)
+            th += Msg.make_OUT(out.text)
 
+        model.close()
         del model
 
     

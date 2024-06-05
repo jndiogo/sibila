@@ -66,32 +66,32 @@ await extract_names()
 ```
 
     extract_names begin... 0.0
-    ...extract_names done 4.1
+    ...extract_names done 4.4
 
 
 
 
 
-    ['John Smith',
-     'Emily Johnson',
-     'Michael Brown',
-     'Jessica Williams',
+    ['James Smith',
+     'Michael Johnson',
+     'Robert Williams',
+     'Maria Garcia',
      'David Jones',
-     'Sarah Davis',
-     'Daniel Miller',
-     'Laura Wilson',
-     'James Taylor',
-     'Sophia Anderson',
-     'Christopher Thomas',
-     'Emma Moore',
-     'Joseph Jackson',
-     'Olivia Martin',
-     'Andrew White',
-     'Isabella Thompson',
-     'Matthew Harris',
-     'Ava Garcia',
-     'Ethan Martin',
-     'Mia Clark']
+     'Jennifer Miller',
+     'John Davis',
+     'Patricia Wilson',
+     'Daniel Anderson',
+     'Elizabeth Taylor',
+     'William Brown',
+     'Barbara Moore',
+     'Joseph Thompson',
+     'Susan Martinez',
+     'Charles Jackson',
+     'Linda Harris',
+     'Thomas Clark',
+     'Jessica Lewis',
+     'Christopher Walker',
+     'Sarah Robinson']
 
 
 
@@ -114,7 +114,7 @@ await classify_spam()
 ```
 
     classify_spam begin... 0.0
-    ...classify_spam done 1.5
+    ...classify_spam done 1.4
 
 
 
@@ -147,9 +147,9 @@ await run_tasks()
     classify_spam begin... 0.0
     ...classify_spam done 1.0
     Result: spam
-    ...extract_names done 4.8
-    Result: ['John Smith', 'Emily Johnson', 'Michael Brown', 'Jessica Williams', 'David Jones', 'Sarah Davis', 'Daniel Miller', 'Laura Wilson', 'James Taylor', 'Sophia Anderson', 'Christopher Thomas', 'Emma Moore', 'Joseph Jackson', 'Olivia Martin', 'Andrew White', 'Isabella Thompson', 'Matthew Harris', 'Ava Garcia', 'Ethan Martin', 'Mia Clark']
-    ---as_complete done 4.8
+    ...extract_names done 5.8
+    Result: ['James Smith', 'Emma Johnson', 'Olivia Williams', 'Liam Brown', 'Ava Jones', 'Noah Garcia', 'Sophia Miller', 'Mason Davis', 'Isabella Rodriguez', 'Ethan Martinez', 'Mia Hernandez', 'Logan Wilson', 'Charlotte Anderson', 'Aiden Moore', 'Harper Thomas', 'Lucas Jackson', 'Ella White', 'Benjamin Taylor', 'Amelia Harris', 'Alexander Clark']
+    ---as_complete done 5.8
 
 
 Follow the above begin/done print statements and the listed time in seconds, as they are printed.

@@ -17,16 +17,19 @@ Let's run sibila CLI to get help:
 
 usage: sibila [-h] [--version] {models,formats,hub} ...
 
-Sibila cli tool for managing models and formats.
+Sibila CLI tool for managing models and formats.
 
 options:
   -h, --help            show this help message and exit
   --version             show program's version number and exit
 
 actions:
-  hf, models, formats
+  Use 'models' and 'formats' to manage, 'hub' to search and download models.
 
   {models,formats,hub}  Run 'sibila {command} --help' for specific help.
+
+For help, check https://jndiogo.github.io/sibila/
+
 ```
 
 Sibila CLI has three modes:
@@ -122,7 +125,7 @@ model("Hello there!")
 
 
 
-    "Hello! I'm an AI language model here to assist you with your inquiries or generate content for you. I am programmed to be polite and respectful, so please let me know how I can help you today."
+    "Hello! I am an AI language model and I'm here to assist you with your questions or provide information if you have any. I am programmed to be polite and respectful, so please let me know how I can help you today."
 
 
 

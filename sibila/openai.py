@@ -23,7 +23,7 @@ from .gen import (
 
 from .thread import (
     Thread,
-    MsgKind
+    Msg
 )
 
 from .model import (
@@ -180,6 +180,7 @@ class OpenAIModel(MessagesModel):
 
         self._token_estimation_factor = token_estimation_factor or default_token_estimation_factor
 
+        self.maybe_image_input = True # True means maybe - always check model specs
 
         # only check for "json" text presence as json schema (including field descriptions) is requested with the tools facility.
         self.json_format_instructors["json_schema"] = self.json_format_instructors["json"]
@@ -191,6 +192,7 @@ class OpenAIModel(MessagesModel):
             except Exception as e:
                 logger.warning(f"Could not create a local tokenizer for model '{self._model_name}' - "
                                "token length calculation will be disabled and assume defaults. "
+                               "To support recent OpenAI models, install the latest tiktoken version with 'pip install -U tiktoken'. "
                                f"Internal error: {e}")
 
 
@@ -202,6 +204,9 @@ class OpenAIModel(MessagesModel):
 
 
 
+    def close(self):
+        """Close model, release resources like memory or net connections."""
+        self._client = self._client_async = self.tokenizer = None
 
 
 
@@ -243,11 +248,15 @@ class OpenAIModel(MessagesModel):
 
         thread = self._prepare_gen_thread(thread, genconf)
 
-        token_len = self.token_len(thread, genconf)
-        resolved_max_tokens = self.resolve_genconf_max_tokens(token_len, genconf)
+        # This provider doesn't require "max_tokens" but will error on excess.
+        if genconf.max_tokens != 0:
+            token_len = self.token_len(thread, genconf)
+            resolved_max_tokens = self.resolve_genconf_max_tokens(token_len, genconf)
+            # for reference: next commented-out line is a bad idea, as endpoint will error if max_tokens is greater than limit:
+            # resolved_max_tokens = self.resolve_genconf_max_tokens(0, genconf)
+        else: # for genconf.max_tokens=0, this provider doesn't require "max_tokens", so we don't send below
+            resolved_max_tokens = 0
 
-        # for reference: next commented-out line is a bad idea, as endpoint will error if max_tokens is greater than limit:
-        # resolved_max_tokens = self.resolve_genconf_max_tokens(0, genconf)
 
         json_kwargs: dict = {}
         if genconf.format == "json":
@@ -286,14 +295,18 @@ class OpenAIModel(MessagesModel):
         msgs = thread.as_chatml()
 
         kwargs = {"model": self._model_name,
-                  "messages": msgs, # type: ignore[arg-type]
-                  "max_tokens": resolved_max_tokens,
-                  "stop": genconf.stop,
+                  "messages": msgs, # type: ignore[arg-type]                  
                   "temperature": genconf.temperature,
                   "top_p": genconf.top_p,
                   # "seed": seed,
                   "n": 1,
                   **json_kwargs}
+        
+        if genconf.stop: # OpenAI API: empty stop errors when generating from images
+            kwargs["stop"] = genconf.stop
+
+        if resolved_max_tokens:
+            kwargs["max_tokens"] = resolved_max_tokens
 
         # inject model-specific args, if any
         kwargs.update(genconf.resolve_special(self.PROVIDER_NAME))
@@ -431,7 +444,13 @@ class OpenAIModel(MessagesModel):
     def token_len(self,
                   thread_or_text: Union[Thread,str],
                   genconf: Optional[GenConf] = None) -> int:
-        """Estimate the number of tokens used by a Thread or text string.
+        """Calculate or estimate the token length for a Thread or a plain text string.
+        In some cases where it's not possible to calculate the exact token count, 
+        this function should give a conservative (upper bound) estimate.
+        It's up to the implementation whether to account for side information like JSON Schema,
+        but it must reflect the model's context token accounting.
+        Thread or text must be the final text which will passed to model.
+
         If a json_schema is provided in genconf, we use its string's token_len as upper bound for the extra prompt tokens.
         
         From https://github.com/openai/openai-cookbook/blob/main/examples/How_to_count_tokens_with_tiktoken.ipynb
@@ -460,9 +479,10 @@ class OpenAIModel(MessagesModel):
         if self.tokenizer is None: # no tokenizer was found, so we'll have to do a conservative estimate
 
             OVERHEAD_PER_MSG = 3
-            for index in range(-1, len(thread)): # -1 for system message
-                message = thread.msg_as_chatml(index)
-                msg_tokens = len(message["content"]) * self._token_estimation_factor + OVERHEAD_PER_MSG
+            for msg in thread.get_iter(True): # True for system message
+                message = msg.as_chatml()
+                msg_tokens = len(str(message["content"])) * self._token_estimation_factor + OVERHEAD_PER_MSG
+                # str(message["content"]): hacky way to deal with dict "content" key
                 num_tokens += int(msg_tokens)
 
             if genconf is not None and genconf.json_schema is not None:
@@ -477,12 +497,12 @@ class OpenAIModel(MessagesModel):
 
         else: # do an "informed" token estimation from what is known of the OpenAI model's tokenization
             
-            for index in range(-1, len(thread)): # -1 for system message
-                message = thread.msg_as_chatml(index)
+            for msg in thread.get_iter(True): # True for system message
+                message = msg.as_chatml()
                 # print(message)
                 num_tokens += self._overhead_per_msg
                 for key, value in message.items():
-                    num_tokens += len(self.tokenizer.encode(value))
+                    num_tokens += len(self.tokenizer.encode(str(value))) # str(value): hacky way to deal with dict "content" key
             
             # add extras + every reply is primed with <|start|>assistant<|message|>
             num_tokens += 32

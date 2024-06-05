@@ -36,9 +36,9 @@ models_dir = None
 def get_models_dir(pytestconfig):    
     global models_dir
 
-    print("PRE", Models.info())
-    Models.clear()
-    print("POST", Models.info())
+    # print("PRE", Models.info())
+    # Models.clear()
+    # print("POST", Models.info())
 
     models_dir = pytestconfig.getoption("models_dir")
     if not models_dir:
@@ -64,12 +64,10 @@ def create_model(filename: str) -> Model:
 
 IN_CTX_LEN = 2048
 
-models = [    
-    "gemma-2b-it-q4_k_m.gguf",
-    "gemma-2b-it-q8_0.gguf",
+models = [
     "Hermes-2-Pro-Mistral-7B.Q4_K_M.gguf",
     "llama-2-7b-chat.Q4_K_M.gguf",
-    "Meta-Llama-3-8B-Instruct.Q4_K_M.gguf",
+    "Meta-Llama-3-8B-Instruct-Q4_K_M.gguf",
     "mistral-7b-instruct-v0.1.Q4_K_M.gguf",
     "openchat-3.5-0106.Q4_K_M.gguf",
     "openchat-3.5-1210.Q4_K_M.gguf",
@@ -84,14 +82,16 @@ models = [
 ]
 
 __models = [
-    "gemma-2b-it-q4_k_m.gguf",
 ]
 
 """
 Models that don't pass these tests:
 "dolphin-2_6-phi-2.Q4_K_M.gguf",
+"gemma-2b-it-q4_k_m.gguf",
+"gemma-2b-it-q8_0.gguf",
 "kunoichi-dpo-v2-7b.Q4_K_M.gguf",
 "mistral-7b-instruct-v0.2.Q5_K_M.gguf",
+"openchat-3.6-8b-20240522-Q4_K_M.gguf",
 "qwen1_5-0_5b-chat-q4_k_m.gguf",
 "rocket-3b.Q4_K_M.gguf",
 "stablelm-2-zephyr-1_6b-Q4_K_M.gguf",
@@ -147,7 +147,7 @@ def run_lower_in(model: Model):
     for op in lower_in_ops:
         text = model(op[0])
         print(text)
-        assert op[1] in text.lower()
+        assert op[1] in text.lower(), op
 
 
 
@@ -158,7 +158,7 @@ def run_lower_in(model: Model):
 # query, type, value
 extract_ops = [
     ("Extract the number from the following text: there are twelve bananas", int, 12),
-    ("Yes, that's true.", bool, True),
+    ("The contrary of False is?", bool, True),
 ]
 
 
@@ -166,7 +166,7 @@ def run_extract(model: Model):
 
     for extract in extract_ops:
         res = model.extract(extract[1], extract[0])
-        assert res == extract[2]
+        assert res == extract[2], extract
 
 
 
@@ -180,7 +180,7 @@ async def run_async_extract1(model: Model):
     for extract in extract_ops:
 
         res = await model.extract_async(extract[1], extract[0])
-        assert res == extract[2]
+        assert res == extract[2], extract
 
     print("run_async done")
         
@@ -194,7 +194,7 @@ async def _run_async(index: int,
 
     extract = extract_ops[index]
     res = await model.extract_async(extract[1], extract[0])
-    assert res == extract[2]
+    assert res == extract[2], extract
     
     print(f"run {index} done")
 

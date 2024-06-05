@@ -20,7 +20,7 @@ from .gen import (
 
 from .thread import (
     Thread,
-    MsgKind
+    Msg
 )
 
 from .model import (
@@ -152,6 +152,7 @@ class MistralModel(MessagesModel):
 
         self._token_estimation_factor = token_estimation_factor or default_token_estimation_factor
 
+        self.maybe_image_input = False # no Mistral models currently support image input - always check model specs
 
         # only check for "json" text presence as json schema (including field descriptions) is requested with the tools facility.
         self.json_format_instructors["json_schema"] = self.json_format_instructors["json"]
@@ -166,7 +167,9 @@ class MistralModel(MessagesModel):
 
 
 
-
+    def close(self):
+        """Close model, release resources like memory or net connections."""
+        self._client = self._client_async = None
 
 
 
@@ -207,14 +210,19 @@ class MistralModel(MessagesModel):
 
         thread = self._prepare_gen_thread(thread, genconf)
 
-        """
-        Since we can only have an estimate of token length, we don't use it when generating:
+        if genconf.max_tokens != 0:
+            """
+            This provider doesn't require "max_tokens" and won't error on excess.
+
+            Since we can only have an estimate of token length, we don't use it when generating:
             token_len = self.token_len(thread, genconf)
             resolved_max_tokens = self.resolve_genconf_max_tokens(token_len, genconf)
 
-        Instead we allow all available output length. This is only possible because endpoint
-        doesn't error when max_tokens is larger than possible:"""
-        resolved_max_tokens = self.resolve_genconf_max_tokens(0, genconf)
+            Instead we allow all available output length. This is only possible because endpoint
+            doesn't error when max_tokens is larger than possible:"""
+            resolved_max_tokens = self.resolve_genconf_max_tokens(0, genconf)
+        else:
+            resolved_max_tokens = 0
 
 
         # https://docs.mistral.ai/api/#operation/createChatCompletion
@@ -258,14 +266,19 @@ class MistralModel(MessagesModel):
 
         kwargs = {"model": self._model_name,
                   "messages": msgs, # type: ignore[arg-type]
-                  "max_tokens": resolved_max_tokens,
                   "temperature": genconf.temperature,
                   "top_p": 1. if genconf.temperature == 0 else genconf.top_p,
+                  # mistral API has no "stop" arg
                   # "random_seed": seed,
                   **json_kwargs}
 
+        if resolved_max_tokens:
+            kwargs["max_tokens"] = resolved_max_tokens
+
         # inject model-specific args, if any
         kwargs.update(genconf.resolve_special(self.PROVIDER_NAME))
+
+        logger.debug(f"{type(self).__name__} gen args: {kwargs}")
 
         return (kwargs, genconf)
         
@@ -399,7 +412,12 @@ class MistralModel(MessagesModel):
     def token_len(self,
                   thread_or_text: Union[Thread,str],
                   genconf: Optional[GenConf] = None) -> int:
-        """Estimate the number of tokens used by a Thread or text string.
+        """Calculate or estimate the token length for a Thread or a plain text string.
+        In some cases where it's not possible to calculate the exact token count, 
+        this function should give a conservative (upper bound) estimate.
+        It's up to the implementation whether to account for side information like JSON Schema,
+        but it must reflect the model's context token accounting.
+        Thread or text must be the final text which will passed to model.
 
         Args:
             thread_or_text: For token length calculation.
@@ -416,9 +434,10 @@ class MistralModel(MessagesModel):
 
         OVERHEAD_PER_MSG = 3
         num_tokens = 0
-        for index in range(-1, len(thread)): # -1 for system message
-            message = thread.msg_as_chatml(index)
-            msg_tokens = len(message["content"]) * self._token_estimation_factor + OVERHEAD_PER_MSG
+        for msg in thread.get_iter(True): # True for system message
+            message = msg.as_chatml()
+            msg_tokens = len(str(message["content"])) * self._token_estimation_factor + OVERHEAD_PER_MSG
+            # str(message["content"]): hacky way to deal with dict "content" key
             num_tokens += int(msg_tokens)
 
         if genconf is not None and genconf.json_schema is not None:

@@ -5,11 +5,19 @@ from typing import Any, Optional, Union, Callable
 from copy import copy
 import re
 
+from .thread import Thread
+from .gen import GenConf
+
 
 class RecursiveTextSplitter:
     """
     When using a token_len len_fn, returned chunks might be sightly smaller than chunk size, if one of the separators is space, because tokens may already assume space as a prefix.
     """
+
+    chunk_size:int 
+    chunk_overlap: int
+    seps: list[str]
+    len_fn: Callable[[str], int]
 
     def __init__(self,
                  chunk_size: int,
@@ -29,7 +37,7 @@ class RecursiveTextSplitter:
         
         self.chunk_size = chunk_size
         self.chunk_overlap = chunk_overlap
-        self.len_fn = len_fn or len
+        self.len_fn = len_fn or len # type: ignore[assignment]
         
         self.seps = seps or ["\n\n", "\n", " ", ""]
         if self.seps[-1] != "":

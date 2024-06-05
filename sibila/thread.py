@@ -1,50 +1,283 @@
 """Threads of messages are the way to communicate with models. 
-For a quick extraction or classification, a thread with a simple IN message and possibly model instructions can be used.
-For more sophisticated queries that depend on previous interactions, IN (user or input) and OUT (model response) messages can be added.
+For a quick extraction or classification, a thread with a simple IN message and possibly model instructions is enough.
+For more sophisticated queries that depend on previous interactions, IN (user or input) and OUT (model output or response) messages can be added to construct a conversation or thread.
 
-- Msg: A message of type IN (user query), OUT (assistant answer) or INST (initial assistant instructions).
+- Msg: A message of type IN (user query), OUT (assistant answer) or INST (initial model instructions).
 - Thread: A sequence of Msgs alternating between user and model.
 """
 
-from typing import Any, Optional, Union, Callable
+from typing import Optional, Union, Callable
 from typing_extensions import Self
-from enum import IntEnum
-from collections.abc import Sequence
+from enum import Enum, IntFlag
+from collections.abc import Sequence, Iterable
+from dataclasses import dataclass
 
-from copy import copy, deepcopy
 import json
 
 import logging
 logger = logging.getLogger(__name__)
 
+from .utils import (
+    quote_text,
+    join_text,
+    is_url,
+    load_image_as_base64_data_url,
+    download_as_base64_data_url
+)
 
 
+@dataclass
+class Msg():
 
-class MsgKind(IntEnum):
-    """Enumeration for kinds of messages in a Thread."""
+    class Kind(Enum):
+        """Enumeration for kinds of messages in a Thread."""
 
-    IN = 0
-    """Input message, from user."""
+        IN = "IN"
+        """Input message, from user."""
 
-    OUT = 1
-    """Model output message."""
+        OUT = "OUT"
+        """Model output message."""
 
-    INST = 2
-    """Initial instructions for model."""
+        INST = "INST"
+        """Initial model instructions."""
+        
+
+        def as_chatml_role(self: Self) -> str:
+            CHATML_FROM_KIND: dict = {Msg.Kind.IN: "user", Msg.Kind.OUT: "assistant", Msg.Kind.INST: "system"}
+            return CHATML_FROM_KIND.get(self) # type: ignore[return-value]
+                
+        @staticmethod
+        def from_chatml_role(role: str) -> 'Msg.Kind':
+            KIND_FROM_CHATML: dict = {"user": Msg.Kind.IN, "assistant": Msg.Kind.OUT, "system": Msg.Kind.INST}
+            kind = KIND_FROM_CHATML.get(role)
+            if kind is None:
+                raise ValueError(f"Unknown ChatML role '{role}'")
+            else:
+                return kind
+    
+        @staticmethod
+        def flip(kind: 'Msg.Kind') -> 'Msg.Kind':
+            return Msg.Kind.OUT if kind is Msg.Kind.IN else Msg.Kind.IN
+    
+        def __repr__(self):
+            return repr(self.value)
+        
+        
+
+    kind: Kind
+    """Message kind."""
+
+    text: str
+    """Message text (mandatory)."""
+
+    images: Optional[list[dict]] = None
+    """List of images in message. An entry must have a 'url' key, but any other keys can be added.
+    Key 'url' key must be a remote url (https,http) or a 'data:' base64-encoded url."""
+    
+
+
+    def __post_init__(self):
+        self.set_images(self.images)
+
 
     @staticmethod
-    def kind_from_chatml_role(role: str) -> Any: # Any=MsgKind
-        KIND_FROM_CHATML: dict = {"user": MsgKind.IN, "assistant": MsgKind.OUT, "system": MsgKind.INST}
-        kind = KIND_FROM_CHATML.get(role)
-        if kind is None:
-            raise ValueError(f"Unknown ChatML role '{role}'.")
+    def make_IN(text: str,
+                images: Optional[Union[list,str,dict]] = None) -> 'Msg':
+        return Msg(Msg.Kind.IN,
+                   text,
+                   images)
+
+    @staticmethod
+    def make_OUT(text: str,
+                 images: Optional[Union[list,str,dict]] = None) -> 'Msg':
+        return Msg(Msg.Kind.OUT, 
+                   text, 
+                   images)
+
+    @staticmethod
+    def make_INST(text: str,
+                  images: Optional[Union[list,str,dict]] = None) -> 'Msg':
+        return Msg(Msg.Kind.INST, 
+                   text,
+                   images)
+
+
+    def clone(self) -> 'Msg':
+        return Msg(self.kind, self.text, self.images)
+
+
+    def as_dict(self) -> dict:
+        """Return Msg as a dict."""
+        return {"kind": self.kind.value, # kind as string
+                "text": self.text,
+                "images": self.images}
+
+    @staticmethod
+    def from_dict(dic: dict) -> 'Msg':
+        return Msg(kind=Msg.Kind(dic["kind"]),
+                   text=dic["text"],
+                   images=dic["images"])
+
+
+    
+    def as_chatml(self) -> dict:
+        """Returns message in a ChatML dict.
+
+        Returns:
+            A ChatML dict with "role" and "content" keys.
+        """
+
+        role = self.kind.as_chatml_role()
+
+        if self.images:
+            chatml_msg = {
+                "role": role, 
+                "content": [
+                    {"type": "text", "text": self.text},
+                ]}
+            
+            for image in self.images:
+                if "url" not in image:
+                    raise ValueError(f"Image without 'url' key at {image}")
+                
+                image_url = {"url": image["url"]}
+                if "detail" in image:
+                    image_url["detail"] = image["detail"]
+
+                chatml_msg["content"].append( # type: ignore[attr-defined]
+                    {"type": "image_url", "image_url": image_url}
+                )
+            return chatml_msg
         else:
-            return kind
+            return {"role": role, "content": self.text}
+
 
     @staticmethod
-    def chatml_role_from_kind(kind: Any) -> str: # Any=MsgKind
-        CHATML_FROM_KIND: dict = {MsgKind.IN: "user", MsgKind.OUT: "assistant", MsgKind.INST: "system"}
-        return CHATML_FROM_KIND.get(kind) # type: ignore[return-value]
+    def from_chatml(dic: dict,
+                    join_sep:str = "\n") -> 'Msg':
+        
+        role = dic.get("role")
+        if role is None:
+            raise ValueError(f"Key 'role' not found in {dic}")
+
+        kind = Msg.Kind.from_chatml_role(role)
+
+        content = dic.get("content")
+        if content is None:
+            raise ValueError(f"Bad 'content' key in {dic}")
+
+        text = ''
+        images = []
+        if isinstance(content, list):
+            for cont in content:
+                if not isinstance(cont, dict) or "type" not in cont:
+                    raise TypeError(f"ChatML list entries must be of type dict and include a 'type' key in {cont}")
+
+                if cont["type"] == "text":
+                    text = join_text(text, cont["text"], join_sep)
+
+                elif cont["type"] == "image_url":
+                    image = cont["image_url"]
+                    if "url" not in image:
+                        raise TypeError(f"ChatML image_url entries must include a 'url' key in {cont}")
+                    images.append(image)
+                    
+        elif isinstance(content, str):
+            text = content
+            
+        else:
+            raise TypeError(f"ChatML content must have str or dict type in {content}")
+
+        return Msg(kind, 
+                   text,
+                   images if images else None)
+
+
+    def set_images(self,
+                   images: Union[list,str,dict,None]):
+
+        if images is None:
+            self.images = None
+            return
+        
+        elif not isinstance(images, list): # ensure input images to be a list
+            images = [images]
+
+        self.images = []
+
+        for image in images:
+
+            if isinstance(image, str): # an URL or local path to be loaded into a data: URL
+                if not is_url(image):
+                    image_url = load_image_as_base64_data_url(image)
+                else:
+                    image_url = image
+
+                self.images.append({"url": image_url})
+
+            elif isinstance(image, dict):
+                if "url" not in image:
+                    raise TypeError(f"Image entries must have an 'url' key at {image}")
+                
+                if not is_url(image["url"]): # a local image path
+                    image_url = load_image_as_base64_data_url(image["url"])
+                    image["url"] = image_url
+                    
+                self.images.append(image)
+
+            else:
+                raise ValueError("Unable to set images: expecting an str file path or a dict with 'url' key")
+
+
+    @property
+    def has_images(self) -> bool:
+        return bool(self.images)
+
+
+    def download_images_as_data(self):
+        """Download any remote images to a 'data:' url."""
+
+        if self.images:
+            for image in self.images:
+                if not image["url"].startswith("data:"):
+                    image["url"] = download_as_base64_data_url(image["url"])
+
+
+    def join_same_kind(self,
+                       other: Self,
+                       join_sep: str):
+        
+        assert self.kind == other.kind, f"Messages are not of the same kind: {self} and {other}."
+
+        self.text = join_text(self.text, other.text,
+                              join_sep)
+        
+        if other.images:
+            if self.images is None:
+                self.images = []
+
+            self.images += other.images
+
+
+    def __str__(self):
+        text = self.text.replace("\n", "\\n")
+        out = f"{self.kind.name}={quote_text(text)}"
+        if self.images:
+            out += " images=["
+            for image in self.images:
+                dic = image.copy()
+                dic['url'] = dic['url'][:64] + "(...)" if len(dic['url']) > 64 else dic['url']
+                out += str(dic) + ","
+            out += "]"
+                
+        return out
+
+    def __repr__(self):
+        return self.__str__()
+    
+
+
+
 
 
 
@@ -55,247 +288,269 @@ class Thread(Sequence):
     Stores a special initial INST information (known as "system" role in ChatML) providing instructions to the model.
     Some models don't use system instructions - in those cases it's prepended to first IN message.
 
-    Messages are kept in a strict IN,OUT,IN,OUT,... order. To enforce this, if two IN messages are added, the second just appends to the text of the first.
+    Messages are kept in a strict IN,OUT,IN,OUT,... order. 
+    To enforce this, if two IN messages are added, the second just appends to the text of the first or to its image list.
     
     Attributes:
         inst: Text for system instructions.
     """
 
-    inst: str
-    """Text for system instructions, defaults to empty string"""
+    _msgs: list[Msg]
+    """List of IN and OUT Msg messages. Messages are made to alternate between IN and OUT kinds."""
+
+    inst: Msg
+    """System instructions in an Msg of kind INST, defaults to empty text."""
 
     join_sep: str
     """Separator used when message text needs to be joined. Defaults to '\\n'"""
 
-    _msgs: list[str]
-    """List of thread messages"""
-    
 
     def __init__(self,
-                 t: Optional[Union[Any,list,str,dict,tuple]] = None, # Any=Thread
-                 inst: str = '',
+                 t: Optional[Union[Self,list,Msg,dict,tuple,str]] = None,
+                 inst: str = "",
                  join_sep: str = "\n"):
         """
-        Examples:
-            Creation with a list of  messages
-
-            >>> from sibila import Thread, MsgKind
-            >>> th = Thread([(MsgKind.IN, "Hello model!"), (MsgKind.OUT, "Hello there human!")],
-            ...             inst="Be helpful.")
-            >>> print(th)
-            inst=█Be helpful.█, sep='\\n', len=2
-            0: IN=█Hello model!█
-            1: OUT=█Hello there human!█
-
-            Adding messages
-
-            >>> from sibila import Thread, MsgKind
-            >>> th = Thread(inst="Be helpful.")
-            >>> th.add(MsgKind.IN, "Can you teach me how to cook?")
-            >>> th.add_IN("I mean really cook as a chef?") # gets appended
-            >>> print(th)
-            inst=█Be helpful.█, sep='\\n', len=1
-            0: IN=█Can you teach me how to cook?\\nI mean really cook as a chef?█
-
-            Another way to add a message
-
-            >>> from sibila import Thread, MsgKind
-            >>> th = Thread(inst="Be informative.")
-            >>> th.add_IN("Tell me about kangaroos, please?")
-            >>> th += "They are so impressive." # appends text to last message
-            >>> print(th)
-            inst=█Be informative.█, sep='\\n', len=1
-            0: IN=█Tell me about kangaroos, please?\\nThey are so impressive.█
-            
-            Return thread as a ChatML message list
-
-            >>> from sibila import Thread, MsgKind
-            >>> th = Thread([(MsgKind.IN, "Hello model!"), (MsgKind.OUT, "Hello there human!")], 
-            ...             inst="Be helpful.")
-            >>> th.as_chatml()
-            [{'role': 'system', 'content': 'Be helpful.'},
-             {'role': 'user', 'content': 'Hello model!'},
-             {'role': 'assistant', 'content': 'Hello there human!'}]
-
         Args:
-            t: Can initialize from a Thread, from a list (containing messages in any format accepted in _parse_msg()) or a single message as an str, an (MsgKind,text) tuple or a dict. Defaults to None.
+            t: Optionally initialize from a Thread, list[Msg], list[ChatML format dict], list[tuple], list[str], Msg, ChatML format dict, tuple or str.
+            inst: Instructions text. If inst arg is not set and t is a Thread, its inst will be used.
             join_sep: Separator used when message text needs to be joined. Defaults to "\\n".
 
         Raises:
             TypeError: On invalid args passed.
         """
 
-        if isinstance(t, Thread):
-            self._msgs = t._msgs.copy()
-            self.inst = t.inst
-            self.join_sep = t.join_sep
-        else:
-            self._msgs = []
-            self.inst = inst
-            self.join_sep = join_sep
-
-            if t is not None:
-                self.concat(t)
-
-
-
-    def clear(self):
-        """Delete all messages and clear inst."""
-        self.inst = ""
         self._msgs = []
-            
+        self.inst = Msg.make_INST(inst)
+        self.join_sep = join_sep
+
+        if t is not None:
+            self.concat(t)
+
+
+
+    def clone(self) -> Self:
+        """Return a copy of current Thread.
+
+        Returns:
+            A copy of this Thread.
+        """
+        return Thread(self)
+
+
+    def clear(self,
+              clear_inst: bool = True):
+        """Delete all messages and clear inst."""
+        self._msgs = []
+        if clear_inst:
+            self.inst.text = ""
+                
+
+
+    # = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = Msg add and concat:
+    
+    def init_INST_IN(self,
+                     inst_text: str,
+                     in_text: str,
+                     in_images: Optional[Union[list,str,dict]] = None):
+        """Initialize Thread with instructions and an IN message.
+
+        Args:
+            inst_text: Instructions text.
+            in_text: Text for IN message.
+            in_images: An array (or its first element) of either an str (a file path, will be loaded and converted to a data: URL) or a dict with "url" key and others. If url arg is not a valid URL, it will be loaded and converted to a data: URL.
+        """
+        self.clear()
+        self.inst.text = inst_text
+        self.add_IN(in_text, in_images)
+
+
+    def add_IN(self,
+               in_text: str,
+               in_images: Optional[Union[list,str,dict]] = None):
+        """Appends an IN message to Thread.
+
+        Args:
+            in_text: Text for IN message.
+            in_images: An array (or its first element) of either an str (a file path, will be loaded and converted to a data: URL) or a dict with "url" key and others. If url arg is not a valid URL, it will be loaded and converted to a data: URL.
+        """
+        self.add(Msg.Kind.IN, in_text, in_images)
     
 
-    @property
-    def last_kind(self) -> MsgKind:
-        """Get kind of last message in thread .
+    def add_OUT(self,
+                out_text: str,
+                out_images: Optional[Union[list,str,dict]] = None):
+        """Appends an OUT message to Thread.
 
-        Returns:
-            Kind of last message or MsgKind.IN if empty.
+        Args:
+            out_text: Text for OUT message.
+            out_images: An array (or its first element) of either an str (a file path, will be loaded and converted to a data: URL) or a dict with "url" key and others. If url arg is not a valid URL, it will be loaded and converted to a data: URL.
         """
-        length = len(self._msgs)
-        if not length: # empty: assume IN
-            return MsgKind.IN
-        else:
-            return Thread._kind_from_pos(length - 1)
+        self.add(Msg.Kind.OUT, out_text, out_images)
+
+    
+    def add_OUT_IN(self,
+                   out_text: str,
+                   in_text: str,
+                   *,
+                   out_images: Optional[Union[list,str,dict]] = None,
+                   in_images: Optional[Union[list,str,dict]] = None):
+        """Appends an OUT message followed by an IN message.
+
+        Args:
+            out_text: Text for OUT message.
+            in_text: Text for IN message.
+            out_images: An array (or its first element) of either an str (a file path, will be loaded and converted to a data: URL) or a dict with "url" key and others. If url arg is not a valid URL, it will be loaded and converted to a data: URL.
+            in_images: Optional list of IN message images.
+        """        
+        self.add(Msg.Kind.OUT, out_text, out_images)
+        self.add(Msg.Kind.IN, in_text, in_images)
 
 
-    @property
-    def last_text(self) -> str:
-        """Get text of last message in thread .
 
-        Returns:
-            Last message text.
+    @staticmethod
+    def make_INST_IN(inst_text: str,
+                     in_text: str,
+                     in_images: Optional[Union[list,str,dict]] = None) -> 'Thread':
+        """Return an initialized Thread with instructions and an IN message.
 
-        Raises:
-            IndexError: If thread is empty.
+        Args:
+            inst_text: Instructions text.
+            in_text: Text for IN message.
+            in_images: An array (or its first element) of either an str (a file path, will be loaded and converted to a data: URL) or a dict with "url" key and others. If url arg is not a valid URL, it will be loaded and converted to a data: URL.
         """
-        length = len(self._msgs)
-        if not length: # empty
-            raise IndexError("Thread is empty")
-        else:
-            return self._msgs[-1]
+
+        thread = Thread(inst=inst_text)
+        thread.add_IN(in_text, in_images)
+        return thread
+
+    @staticmethod
+    def make_IN(in_text: str,
+                in_images: Optional[Union[list,str,dict]] = None) -> 'Thread':
+        """Return an initialized Thread with an IN message.
+
+        Args:
+            in_text: Text for IN message.
+            in_images: An array (or its first element) of either an str (a file path, will be loaded and converted to a data: URL) or a dict with "url" key and others. If url arg is not a valid URL, it will be loaded and converted to a data: URL.
+        """
+
+        thread = Thread()
+        thread.add_IN(in_text, in_images)
+        return thread
+
 
 
     def add(self, 
-            t: Union[str,tuple,dict,MsgKind],
-            text: Optional[str] = None):
-        """Add a message to Thread by parsing a mix of types.
+            t: Union[Msg,dict,tuple,str,Msg.Kind],
+            text: Optional[str] = None,
+            images: Optional[Union[list,str,dict]] = None):
+        
+        """Add a message to Thread.
 
         Accepts any of these argument combinations:
-
-        - t=MsgKind, text=str
-        - t=str, text=None -> uses last thread message's MsgKind
-        - (MsgKind, text)
-        - {"kind": "...", text: "..."}
-        - {"role": "...", content: "..."} - ChatML format
+            t=Msg, ChatML format dict, tuple or str
+            --or--
+            t=kind, text[, images]
 
         Args:
-            t: One of the accepted types listed above.
-            text: Message text if first type is MsgKind. Defaults to None.
+            t: One of Msg, ChatML format dict, tuple or str, or Msg.Kind.
+            text: Message text, only if t=Msg.Kind.
+            images: only if t=Msg.Kind or t=str-> an array (or its first element) of either an str (a file path, will be loaded and converted to a data: URL) or a dict with keys "url" and any other keys like "detail". If url arg is not a valid URL, it will be loaded and converted to a data URL.
         """
-        
-        kind, text = self._parse_msg(t, text)
 
-        if kind == MsgKind.INST:
-            self.inst = self.join_text(self.inst, text)
-        else:
-            if kind == self.last_kind and len(self._msgs):
-                self._msgs[-1] = self.join_text(self._msgs[-1], text)
+        if text is not None:
+            if not isinstance(t, Msg.Kind):
+                raise TypeError("When arg 'text' is given, first arg must be of type Msg.Kind")
+
+            msg = Msg(t, text, images)
+
+        else: # add from t arg
+            if isinstance(t, dict): # ChatML formatted dict
+                msg = Msg.from_chatml(t)
+
+
+            elif isinstance(t, tuple):
+                msg = Msg(self.next_kind,
+                          *t)
+
+            elif isinstance(t, str): # simple text
+                msg = Msg(self.next_kind,
+                          t,
+                          images)
+                
+            elif isinstance(t, Msg):
+                msg = t.clone()
+
             else:
-                self._msgs.append(text) # in new kind
+                raise TypeError("Arg 't' must be one of: Msg, ChatML format dict, tuple or str")
 
+           
+        # now append to list
+        if msg.kind == Msg.Kind.INST:
+            self.inst.join_same_kind(msg, self.join_sep)
 
-            
-    def addx(self, 
-             path: Optional[str] = None, 
-             text: Optional[str] = None,
-             kind: Optional[MsgKind] = None):
-        """Add message with text from a supplied arg or loaded from a path.
-
-        Args:
-            path: If given, text is loaded from an UTF-8 file in this path. Defaults to None.
-            text: If given, text is added. Defaults to None.
-            kind: MsgKind of message. If not given or the same as last thread message, it's appended to it. Defaults to None.
-        """
-
-        assert (path is not None) ^ (text is not None), "Only one of path or text"
-
-        if path is not None:
-            with open(path, 'r', encoding="utf-8") as f:
-                text = f.read()
-
-        if kind is None: # use last message role, so that it gets appended
-            kind = self.last_kind
-
-        self.add(kind, text)
-
-
-
-    def get_text(self,
-                 index: int) -> str:
-        """Return text for message at index.
-
-        Args:
-            index: Message index. Use -1 to get inst value.
-
-        Returns:
-            Message text at index.
-        """        
-        if index == -1:
-            return self.inst
         else:
-            return self._msgs[index]
+            if not len(self._msgs) or msg.kind == self.next_kind: # next different kind or empty
+                self._msgs.append(msg)
+            else: # new msg is of same kind as last existing message: join/append to it
+                last = self._msgs[-1]
+                last.join_same_kind(msg, self.join_sep)
 
-    def set_text(self,
-                 index: int,
-                 text: str):        
-        """Set text for message at index.
 
-        Args:
-            index: Message index. Use -1 to set inst value.
-            text: Text to replace in message at index.
-        """
-        if index == -1:
-            self.inst = text
-        else:
-            self._msgs[index] = text
-            
 
     def concat(self,
-               t: Optional[Union[Self,list,str,dict,tuple]]):
-        """Concatenate a Thread or list of messages to the current Thread.
+               t: Union[Self,list,Msg,dict,tuple,str]):
+        """Concatenate to current Thread: another Thread, list[Msg], list[ChatML format dict], list[str], Msg, ChatML format dict or str.
 
-        Take care that the other list starts with an IN message, therefore, 
-        if last message in self is also an IN kind, their text will be joined as in add().
+        if last message in self is the same kind of first in t, their text, images, etc will be joined.
 
         Args:
-            t: A Thread or a list of messages. Otherwise a single message as in add().
-
-        Raises:
-            TypeError: If bad arg types provided.
+            t: A Thread, list[Msg], list[ChatML format dict], list[str], Msg, ChatML format dict or str.
         """
         if isinstance(t, Thread):
             for msg in t:
                 self.add(msg)
-            self.inst = self.join_text(self.inst, t.inst)
 
-        elif isinstance(t, list): # message list
+            self.inst.join_same_kind(t.inst, self.join_sep)
+
+        else:
+            if not isinstance(t, list):
+                t = [t]
             for msg in t:
                 self.add(msg)
 
-        elif isinstance(t, str) or isinstance(t, dict) or isinstance(t, tuple): # single message
-            self.add(t)
 
-        else:
-            raise TypeError("Arg t must be: Thread --or-- list[messages] --or-- an str, tuple or dict single message.")
+
+    # = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = To and from dict and ChatML, load-save
+
+    @staticmethod
+    def from_dict(state: dict) -> 'Thread':
+        """Deserialize a Thread from a dict."""
+
+        th = Thread()
+        for dic in state["_msgs"]:
+            th.add(Msg.from_dict(dic))
+        th.inst = Msg.from_dict(state["inst"])
+        th.join_sep = state["join_sep"]
+
+        return th
+
+    def as_dict(self) -> dict:
+        """Serialize this Thread to a dict."""
+ 
+        state = {"_msgs": [],
+                 "inst": self.inst.as_dict(),
+                 "join_sep": self.join_sep}
     
+        for msg in self._msgs:
+            state["_msgs"].append(msg.as_dict()) # type: ignore[attr-defined]
 
+        return state
 
 
     
     def load(self,
-             path: str):
+             path: str,
+             clear: bool):
         """Load this Thread from a JSON file.
 
         Args:
@@ -306,9 +561,11 @@ class Thread(Sequence):
             js = f.read()
         state = json.loads(js)
 
-        self._msgs = state["_msgs"]
-        self.inst = state["inst"]
-        self.join_sep = state["join_sep"]
+        if clear:
+            self.clear()
+
+        th = self.from_dict(state)
+        self.concat(th)
 
     
     def save(self,
@@ -319,10 +576,7 @@ class Thread(Sequence):
             path: Path of file to save into.
         """
  
-        state = {"_msgs": self._msgs,
-                 "inst": self.inst,
-                 "join_sep": self.join_sep
-                 }
+        state = self.as_dict()
     
         json_str = json.dumps(state, indent=2, default=vars)
     
@@ -331,142 +585,6 @@ class Thread(Sequence):
 
     
 
-
-    
-    # = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = for convenience:
-    
-    def init_INST_IN(self,
-                     inst_text: str,
-                     in_text: str):
-        """Initialize Thread with instructions and an IN message.
-
-        Args:
-            inst_text: Instructions text.
-            in_text: Text for IN message.
-        """
-        self.clear()
-        self += self.make_INST_IN(inst_text, in_text)
-
-
-    def add_IN(self,
-               in_text: str):
-        """Appends an IN message to Thread.
-
-        Args:
-            in_text: Text for IN message.
-        """
-        self.add(MsgKind.IN, in_text)
-    
-    def add_OUT(self,
-                out_text: str):
-        """Appends an OUT message to Thread.
-
-        Args:
-            in_text: Text for OUT message.
-        """
-        self.add(MsgKind.OUT, out_text)
-
-    
-    def add_OUT_IN(self,
-                   out_text: str,
-                   in_text: str):
-        """Appends an OUT message followed by an IN message.
-
-        Args:
-            out_text: Text for OUT message.
-            in_text: Text for IN message.
-        """        
-        self.add(MsgKind.OUT, out_text)
-        self.add(MsgKind.IN, in_text)
-
-
-
-    @staticmethod
-    def make_INST_IN(inst_text: str,
-                     in_text: str) -> Any: # Any=Thread
-        """Return an initialized Thread with instructions and an IN message.
-
-        Args:
-            inst_text: Instructions text.
-            in_text: Text for IN message.
-        """
-
-        thread = Thread([(MsgKind.INST, inst_text),
-                         (MsgKind.IN, in_text)]
-                        )        
-        return thread
-
-    @staticmethod
-    def make_IN(in_text: str) -> Any: # Any=Thread
-        """Return an initialized Thread with an IN message.
-
-        Args:
-            in_text: Text for IN message.
-        """
-
-        thread = Thread([(MsgKind.IN, in_text)])        
-        return thread
-
-    @staticmethod
-    def make_OUT_IN(out_text: str,
-                    in_text: str) -> Any: # Any=Thread
-        """Return an initialized Thread with an OUT message followed by an IN message.
-
-        Args:
-            out_text: Text for OUT message.
-            in_text: Text for IN message.
-        """
-        thread = Thread([(MsgKind.OUT, out_text),
-                         (MsgKind.IN, in_text)]
-                        )
-        return thread
-
-    @staticmethod
-    def ensure(query: Union[str,Any],
-               inst: Optional[str] = None) -> Any: # Any=Thread
-        """Utility to return a Thread from either a passed Thread or an str used as an IN message.
-
-        Args:
-            query: Thread or an str with the text of a single IN message to use as model input.
-            inst: Instruction message for model. Will override Thread's inst. Defaults to None.
-
-        Raises:
-            TypeError: Arg query must be of type Thread or str.
-
-        Returns:
-            Initialized Thread object.
-        """
-        
-        if isinstance(query, str):
-            if inst is None:
-                return Thread.make_IN(query)
-            else:
-                return Thread.make_INST_IN(inst, query)
-        elif isinstance(query, Thread):
-            if inst is not None:
-                query = Thread(query, inst) # a clone
-            return query
-        else:
-            raise TypeError("Arg query must be of type Thread or str")
-
-
-
-    def msg_as_chatml(self,
-                      index: int) -> dict:
-        """Returns message in a ChatML dict.
-
-        Args:
-            index: Index of the message to return.
-
-        Returns:
-            A ChatML dict with "role" and "content" keys.
-        """
-
-        kind = Thread._kind_from_pos(index)
-        role = MsgKind.chatml_role_from_kind(kind)
-        text = self._msgs[index] if index >= 0 else self.inst
-        return {"role": role, "content": text}
-    
 
     def as_chatml(self,
                   include_INST: bool = True) -> list[dict]:
@@ -477,12 +595,75 @@ class Thread(Sequence):
         """
         msgs = []
 
-        for index,msg in enumerate(self._msgs):
-            if index == 0 and self.inst and include_INST:
-                msgs.append(self.msg_as_chatml(-1))
-            msgs.append(self.msg_as_chatml(index))
+        if self.inst.text and include_INST:
+            msgs.append(self.inst.as_chatml())
+
+        for msg in self._msgs:
+            msgs.append(msg.as_chatml())
             
         return msgs
+
+
+
+
+    # = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = Utils
+
+    @property
+    def has_images(self) -> bool:
+        for msg in self.get_iter(True):
+            if msg.has_images:
+                return True
+        return False
+
+
+    def download_images_as_data(self):
+        self.inst.download_images_as_data()
+
+        for msg in self:
+            if msg.has_images:
+                msg.download_images_as_data()
+
+
+    def get_iter(self,
+                 include_set_inst: bool):
+        """Return an iterator that can be used to cycle over messages.
+        include_set_inst: If inst message is set, include it before all others.
+        """
+        class MsgIter:
+            def __init__(self, 
+                         thread: Thread,
+                         include_inst: bool):
+                self.thread = thread
+                self.curr = -1 - int(include_inst)
+
+            def __iter__(self):
+                return self
+            
+            def __next__(self):
+                self.curr += 1
+                if self.curr == -1:
+                    return self.thread.inst
+                elif self.curr < len(self.thread):
+                    return self.thread[self.curr]
+                else:
+                    raise StopIteration
+
+        return MsgIter(self,
+                       include_set_inst and bool(self.inst.text))
+
+
+    @property
+    def next_kind(self) -> Msg.Kind:
+        """Get kind of next new message that can be added to thread .
+
+        Returns:
+            Kind of last message or Msg.Kind.IN if empty.
+        """
+        if not self._msgs: # empty
+            return Msg.Kind.IN
+        else:
+            return Msg.Kind.flip(self._msgs[-1].kind)
+
 
 
     def has_text_lower(self,
@@ -496,168 +677,145 @@ class Thread(Sequence):
             True if such text was found.
         """
         for msg in self._msgs:
-            if text_lower in msg.lower():
+            if text_lower in msg.text.lower():
                 return True
             
         return False        
-    
-
-    
-    def clone(self):
-        """Return a copy of current Thread.
-
-        Returns:
-            A copy of this Thread.
-        """
-        return Thread(self)
-
-
-
-    # = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = lower level
-    def _parse_msg(self,
-                   t: Union[str,tuple,dict,MsgKind],
-                   text: Optional[str] = None) -> tuple[MsgKind,str]:
         
-        """Parses a mix of types into (MsgKind, text).
-        Accepts arg types:
-            t:MsgKind, text:str
-            t:str, text=None -> returns self.last_kind(), text
-            (MsgKind, text)
-            {"kind": "...", text: "..."}
-            {"role": "...", content: "..."} - ChatML format
+
+
+    @staticmethod
+    def ensure(query: Union['Thread',Msg,tuple,str],
+               inst: Optional[str] = None) -> 'Thread':
+        """Utility to return a Thread from either a passed Thread or an str used as an IN message.
 
         Args:
-            t: one of the accepted types.
+            query: A Thread or a single IN message given as Msg, list, tuple or str. List and tuple should contain the same args as for creating Msg.
+            inst: Instruction message for model. Will override Thread's inst. Defaults to None.
+
+        Raises:
+            TypeError: Arg query must be of type Thread or str.
 
         Returns:
-            Tuple of parsed MsgKind, text
+            Initialized Thread object.
         """
         
-        if text is not None: # t must be a kind
-            if not isinstance(text, str):
-                raise TypeError("If arg text is given, it must be an str.")
-            if not isinstance(t, MsgKind):
-                raise TypeError("If arg text is given, arg k must be of type MsgKind.")
-            return t,text
+        if isinstance(query, str):
+            th = Thread.make_IN(query)
+            if inst is not None:
+                th.inst.text = inst
 
-        elif isinstance(t, str):
-            return self.last_kind, t
+        elif isinstance(query, tuple):
+            th = Thread.make_IN(*query)
+            if inst is not None:
+                th.inst.text = inst
 
-        elif isinstance(t, tuple):
-            if len(t) != 2 or not isinstance(t[0], MsgKind) or not isinstance(t[1], str):
-                raise TypeError("Tuple must hold (MsgKind, str).")
-            return t[0], t[1]
-        
-        elif isinstance(t, dict):
-            if "role" in t:
-                kind = MsgKind.kind_from_chatml_role(t["role"])
-                if "content" not in t:
-                    raise TypeError("A dict in format ChatML must include a content key.")
-                return kind, t["content"]
-            
-            elif "kind" in t:
-                if "text" not in t:
-                    raise TypeError("Dict with 'kind' key must also include a 'text' key.")
-                return t["kind"], t["text"]
+        elif isinstance(query, Msg):
+            if query.kind != Msg.Kind.IN:
+                raise TypeError("Only 'IN' kind is allowed for Msg")
+            th = Thread(query)
+            if inst is not None:
+                th.inst.text = inst
 
+        elif isinstance(query, Thread):
+            if inst is not None:
+                th = Thread(query, inst) # a clone
             else:
-                raise TypeError("Unknown dict format.")
+                th = query
+
         else:
-            raise TypeError("""Args must be: MsgKind,str --or str,text=None --or-- (MsgKind, text) --or-- {"kind": "...", text: "..."} --or--  {"role": "...", content: "..."}.""")
+            raise TypeError("Arg query must be of type Thread, Msg, tuple or str")
+
+        return th
 
 
 
-    @staticmethod                     
-    def _kind_from_pos(pos: int) -> MsgKind:
-        if pos == -1:
-            return MsgKind.INST
-        else:
-            return MsgKind.OUT if pos % 2 else MsgKind.IN
+
+    # = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = __lower_level__
 
 
-    def join_text(self,
-                  a: str,
-                  b: str,
-                  sep_count: int = 1) -> str:        
-        if b:
-            if a:
-                if a[-sep_count] != self.join_sep:
-                    a = a + (self.join_sep * sep_count) + b
-                else:
-                    a += b
-            else:
-                a = b
-        return a
-
-            
     def __len__(self):
         return len(self._msgs)
 
 
+    def __add__(self,
+                other: Union[Self,list, Msg, dict, str]) -> Self:
+        out = self.clone()
+        out.concat(other)
+        return out
+
+
     def __getitem__(self, # type: ignore[override]
-                    index: int) -> tuple[MsgKind,str]:
-        return Thread._kind_from_pos(index), self._msgs[index]
+                    index: int) -> Msg:
+        
+        if isinstance(index, int):
+            if index < 0: # need to take care of negative index
+                index = len(self._msgs) + index
+            if index >= len(self._msgs):
+                raise IndexError(f"Trying to access non-existent message at index {index}, allowed index: 0 to {len(self._msgs)-1}")
+
+            return self._msgs[index]
+        
+        elif isinstance(index, slice):
+            start, stop, step = index.indices(len(self._msgs)) # negative index are taken care here
+            return self._msgs[slice(start, stop, step)]
+        else:
+            raise TypeError("Arg index must be int or slice types")
 
 
     def __delitem__(self, 
                     index: int):
-        
+
+        if not isinstance(index, int):
+            raise TypeError("Arg index must be of int type")
+
+        if index < 0: # need to take care of negative index
+            index = len(self._msgs) + index
+        if index >= len(self._msgs):
+            raise IndexError(f"Trying to access non-existent message at index {index}, allowed index: 0 to {len(self._msgs)-1}")
+
         if index + 1 == len(self._msgs): # last: just delete
             del self._msgs[index]
 
-        elif index == 0:
-            raise IndexError("Can only delete at index 0 if len=1.")
+        elif index == 0: # delete first message: this will leave an OUT message as first
+            del self._msgs[0]
         
         else:
             # augment next of the same kind with previous (of the same kind) text
-            self._msgs[index + 1] = self.join_text(self._msgs[index - 1], 
-                                                   self._msgs[index + 1])
+            # merge text and images
+            if self._msgs[index - 1].kind != self._msgs[index + 1].kind:
+                raise ValueError(f"Messages at index {index-1} and index {index+1} should have the same kind")
+            
+            self._msgs[index - 1].join_same_kind(self._msgs[index + 1],  self.join_sep)
+
+            del self._msgs[index + 1] # delete next, which was joined to index-1
             del self._msgs[index] # delete requested
-            del self._msgs[index - 1] # delete previous
 
 
     def __iter__(self):
-        class MsgIter:
-            def __init__(self, thread):
-                self.thread = thread
-                self.curr = -1
+        # Default iterator doesn't include inst message.
+        return self.get_iter(False)
 
-            def __iter__(self):
-                return self
-            
-            def __next__(self):
-                self.curr += 1
-                if self.curr < len(self.thread):
-                    return self.thread[self.curr]
-                else:
-                    raise StopIteration
-
-        return MsgIter(self)
 
     def __reversed__(self):
         return reversed(self._msgs)
 
 
-    def __add__(self,
-                other: Union[Self,list,str,dict,tuple]) -> Self:
 
-        out = self.clone()
-        out.concat(other)
 
-        if isinstance(other, Thread):
-            self.inst = self.join_text(self.inst, other.inst)
-
-        return out
+    def __eq__(self, other) -> bool:
+        return (self._msgs == other._msgs and 
+                self.inst == other.inst and 
+                self.join_sep == other.join_sep)
 
 
     def __str__(self):
-        inst = self.inst.replace('\n', '\\n')
-        sep = self.join_sep.replace('\n', '\\n')
-        out = f"inst=█{inst}█, sep='{sep}', len={len(self._msgs)}"
-        for index,text in enumerate(self._msgs):
-            text = text.replace("\n", "\\n")
-            kind = Thread._kind_from_pos(index)
-            out += f"\n{index}: {kind.name}=█{text}█"
+        inst = self.inst.text.replace('\n', '\\n')
+        join_sep = self.join_sep.replace('\n', '\\n')
+        out = f"Thread inst={quote_text(inst)}, join_sep='{join_sep}', len={len(self._msgs)}"
+        for index,msg in enumerate(self._msgs):
+            out += f"\n{index}: {msg}"
+               
         return out
 
     def __repr__(self):
@@ -665,5 +823,116 @@ class Thread(Sequence):
     
 
 
+
+
+
+    class Trim(IntFlag):
+        """Flags for Thread trimming."""
+
+        NONE = 0
+        """No trimming."""
+
+        INST = 1
+        """Can remove INST message."""
+
+        IN = 2
+        """Can remove IN messages."""
+
+        OUT = 4
+        """Can remove OUT messages."""
+            
+        KEEP_FIRST_IN = 1024
+        """If trimming IN messages, never remove first one."""
+
+        KEEP_FIRST_OUT = 2048
+        """If trimming OUT messages, never remove first one."""
+
+
+    def trim(self,
+             trim_flags: Trim,
+             max_token_len: int,
+             thread_token_len_fn: Callable
+             ) -> int:
+        """Trim context by selectively removing older messages until thread fits max_token_len.
+
+        Args:
+            trim_flags: Flags to guide selection of which messages to remove.
+            max_token_len: Cut messages until size is lower than this number. Defaults to None.
+            thread_token_len_fn: A function that returns token count for a passed Thread.
+
+        Example of a thread_token_len_fn that counts 1 char = 1 token:
+            def thread_token_len_fn(thread: Thread) -> int:
+                total = len(thread.inst.text)
+                for msg in thread:
+                    total += len(msg.text)
+                    if msg.images:
+                        total += len(str(msg.images))
+                return total
+
+        Returns:
+            Trimming result: 1=trimmed messages to max_token_len, 0: no trimming was needed, -1: Unable to trim to max_token_len.
+        """
+
+        if trim_flags == Thread.Trim.NONE: # no trimming
+            return 0
+        
+        thread = self.clone()
+
+        any_trim = False
+        
+        while True:
+
+            curr_len = thread_token_len_fn(thread)
+
+            if curr_len <= max_token_len:
+                break
+
+            logger.debug(f"len={curr_len} / max={max_token_len}")
+
+            if thread.inst.text and trim_flags & Thread.Trim.INST:
+                thread.inst.text = ""
+                any_trim = True
+                logger.debug(f"Cutting INST {thread.inst.text[:40]}")
+                continue
+
+            # cut first possible message, starting from oldest first ones
+            trimmed = False
+            in_index = out_index = 0
+
+            for index,msg in enumerate(thread):
+
+                if msg.kind == Msg.Kind.IN:
+                    if trim_flags & Thread.Trim.IN:
+                        if not (trim_flags & Thread.Trim.KEEP_FIRST_IN and in_index == 0):
+                            del thread[index]
+                            trimmed = True
+                            logger.debug(f"Cutting IN {msg.text[:40]}")
+                            break
+                    in_index += 1
+
+                elif msg.kind == Msg.Kind.OUT:
+                    if trim_flags & Thread.Trim.OUT:                        
+                        if not (trim_flags & Thread.Trim.KEEP_FIRST_OUT and out_index == 0):
+                            del thread[index]
+                            trimmed = True
+                            logger.debug(f"Cutting OUT {msg.text[:40]}")
+                            break
+                    out_index += 1
+                
+            if not trimmed:
+                # all thread messages were cycled but not a single could be cut, so size remains the same
+                # arriving here we did all we could for trim_flags but could not remove any more
+                return -1
+            else:
+                any_trim = True
+
+        # while end
+        
+
+        if any_trim:
+            self._msgs = thread._msgs
+            self.inst = thread.inst
+            
+        return int(any_trim)
 
 

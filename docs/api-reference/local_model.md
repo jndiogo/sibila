@@ -6,6 +6,7 @@ title: Local model classes
     options:
         members:
             - __init__
+            - close
             - extract
             - classify
             - json
@@ -26,6 +27,7 @@ title: Local model classes
             - token_len
             - tokenizer
             - ctx_len
+            - maybe_image_input
             - known_models
             - desc
             - n_embd
@@ -37,6 +39,7 @@ title: Local model classes
     options:
         members:
             - __init__
+            - close
             - extract
             - classify
             - json
@@ -57,6 +60,7 @@ title: Local model classes
             - token_len
             - tokenizer
             - ctx_len
+            - maybe_image_input
             - known_models
             - desc
             - n_embd

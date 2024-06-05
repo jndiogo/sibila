@@ -24,12 +24,7 @@ from .gen import (
 
 from .thread import (
     Thread,
-    MsgKind
-)
-
-from .context import (
-    Trim,
-    Context
+    Msg
 )
 
 from .model import (
@@ -41,117 +36,114 @@ from .text_splitter import RecursiveTextSplitter
 
 
 
-TRIM_DEFAULT = Trim.IN | Trim.OUT | Trim.KEEP_FIRST_IN
+TRIM_DEFAULT = Thread.Trim.IN | Thread.Trim.OUT | Thread.Trim.KEEP_FIRST_IN
 
 
-def loop(callback: Callable[[Union[GenOut,None], Context, Model, GenConf], bool],
+def loop(callback: Callable[[Union[GenOut,None], Thread, Model, GenConf, int], bool],
          model: Model,
          *,
          inst_text: Optional[str] = None,
          in_text: Optional[str] = None,
 
-         trim_flags: Trim = TRIM_DEFAULT,
+         trim_flags: Thread.Trim = TRIM_DEFAULT,
          max_token_len: Optional[int] = None,
-         ctx: Optional[Context] = None,
+         thread: Optional[Thread] = None,
 
          genconf: Optional[GenConf] = None,
-         ) -> Context:
+         ) -> Thread:
     """Iteratively append inputs and generate model outputs.
     
     Callback should call ctx.add_OUT(), ctx.add_IN() and return a bool to continue looping or not.
     
-    If last Thread msg is not MsgKind.IN, callback() will be called with out_text=None.
+    If last Thread msg is not Msg.Kind.IN, callback() will be called with out_text=None.
 
     Args:
         callback: A function(out, ctx, model) that will be iteratively called with model's output.
         model: Model to use for generating.
         inst_text: text for Thread instructions. Defaults to None.
-        in_text: Text for Thread's initial MsgKind.IN. Defaults to None.
-        trim_flags: Context trimming flags, when Thread is too long. Defaults to TRIM_DEFAULT.
+        in_text: Text for Thread's initial Msg.Kind.IN. Defaults to None.
+        trim_flags: Thread trimming flags, when Thread is too long. Defaults to TRIM_DEFAULT.
         max_token_len: Maximum token count to use when trimming. Defaults to None.
-        ctx: Optional input Context. Defaults to None.
+        thread: Optional input Thread. Defaults to None.
         genconf: Model generation configuration. Defaults to None, which uses to model's genconf.
     """
     
-    if ctx is None:
-        ctx = Context()
+    if thread is None:
+        thread = Thread()
     else:
-        ctx = ctx
+        thread = thread
 
     if inst_text is not None:
-        ctx.inst = inst_text
+        thread.inst.text = inst_text
     if in_text is not None:
-        ctx.add_IN(in_text)
+        thread.add_IN(in_text)
     
     if genconf is None:
         genconf = model.genconf
 
     if max_token_len is None:
-        if ctx.max_token_len is not None: # use from ctx
-            max_token_len = ctx.max_token_len
-        else: # use from genconf?
-            if genconf.max_tokens == 0:
-                raise ValueError("Unable to calc max_token_len: either pass the value to this function, in a Context object, or set GenConf.max_tokens to a non-zero value")
-
-            resolved_max_tokens = genconf.resolve_max_tokens(model.ctx_len, model.max_tokens_limit)
-
-            max_token_len = model.ctx_len - resolved_max_tokens
-            ctx.max_token_len = max_token_len
+        resolved_max_tokens = genconf.resolve_max_tokens(model.ctx_len, model.max_tokens_limit)
+        max_token_len = model.ctx_len - resolved_max_tokens
+        if max_token_len == 0:
+            raise ValueError("Unable to calc max_token_len: either pass the value to this function or set GenConf.max_tokens to a non-zero value")
 
     while True:
 
-        if len(ctx) and ctx.last_kind == MsgKind.IN:
+        if len(thread) and thread[-1].kind == Msg.Kind.IN:
             # last is an IN message: we can trim and generate
         
-            ctx.trim(trim_flags,
-                     model)
-       
-            out = model.gen(ctx, genconf)
+            thread.trim(trim_flags,
+                    max_token_len,
+                    model.token_len_lambda)
+                            
+            out = model.gen(thread, genconf)
         else:
             out = None # first call
         
         res = callback(out, 
-                       ctx, 
+                       thread, 
                        model,
-                       genconf)
+                       genconf,
+                       max_token_len)
 
         if not res:
             break
             
 
-    return ctx
+    return thread
             
 
 
 def interact(model: Model,
              *,
-             ctx: Optional[Context] = None,
+             th: Optional[Thread] = None,
              inst_text: Optional[str] = None,
-             trim_flags: Trim = TRIM_DEFAULT,
+             trim_flags: Thread.Trim = TRIM_DEFAULT,
              
              genconf: Optional[GenConf] = None,
              max_tokens_default: int = -20
-             ) -> Context:
+             ) -> Thread:
     """Interact with model as in a chat, using input().
 
     Includes a list of commands: type !? to see help.
 
     Args:
         model: Model to use for generating.
-        ctx: Optional input Context. Defaults to None.
+        th: Optional input Thread. Defaults to None.
         inst_text: text for Thread instructions. Defaults to None.
-        trim_flags: Context trimming flags, when Thread is too long. Defaults to TRIM_DEFAULT.
+        trim_flags: Thread trimming flags, when Thread is too long. Defaults to TRIM_DEFAULT.
         genconf: Model generation configuration. Defaults to None, which uses to model's genconf.
         max_tokens_default: Used if a non-zero genconf.max_tokens is not found.
 
     Returns:
-        Context after all the interactions.
+        Thread after all the interactions.
     """
 
     def callback(out: Union[GenOut,None], 
-                 ctx: Context, 
+                 th: Thread, 
                  model: Model,
-                 genconf: GenConf) -> bool:
+                 genconf: GenConf,
+                 max_token_len: int) -> bool:
 
         if out is not None:
             if out.res != GenRes.OK_STOP:
@@ -162,14 +154,14 @@ def interact(model: Model,
             else:
                 text = "***No text out***"
                 
-            ctx.add_OUT(text)
+            th.add_OUT(text)
             print(text)
             print()
 
         
         def print_thread_info():
-            length = model.token_len(ctx, genconf)
-            print(f"Thread token len={length}, max len before next gen={ctx.max_token_len}")
+            length = model.token_len(th, genconf)
+            print(f"Thread token len={length}, max len before next gen={max_token_len}")
             
 
         
@@ -200,7 +192,7 @@ def interact(model: Model,
                 elif user.endswith("\\"):
                     user = user[:-1]
                     user = user.replace("\\n", "\n")
-                    ctx.add_IN(user)
+                    th.add_IN(user)
                     continue
                     
                 elif user.startswith("!"): # a command
@@ -209,18 +201,19 @@ def interact(model: Model,
                     params = params[1:]
     
                     if cmd == "inst":
-                        ctx.clear()
+                        th.clear()
                         if params:
                             text = params[0].replace("\\n", "\n")
-                            ctx.inst = text
+                            th.inst.text = text
                             
                     elif cmd == "add" or cmd == "a":
                         if params:
                             try:
                                 path = params[0]
-                                ctx.addx(path=path)
-                                ct = ctx.last_text
-                                print(ct[:500])
+                                with open(path, "r", encoding="utf-8") as f:
+                                    text = f.read()
+                                th.add_IN(text)
+                                print(text[:500])
                             except FileNotFoundError:
                                 print(f"Could not load '{path}'")
                         else:
@@ -228,49 +221,54 @@ def interact(model: Model,
                                                 
                     elif cmd == 'c':
                         print_thread_info()
-                        print(ctx)
+                        print(th)
                         
                     elif cmd == 'cl':
                         if not params:
-                            params.append("ctx.json")
+                            params.append("thread.json")
                         try:
-                            ctx.load(params[0])
+                            th.load(params[0], 
+                                    clear=True)
                             print(f"Loaded context from {params[0]}")
                         except FileNotFoundError:
                             print(f"Could not load '{params[0]}'")
                         
                     elif cmd == 'cs':
                         if not params:
-                            params.append("ctx.json")
-                        ctx.save(params[0])
+                            params.append("thread.json")
+                        th.save(params[0])
                         print(f"Saved context to {params[0]}")
-    
+
+                    elif cmd == 'image':
+                        if not params:
+                            print("No image given, using a remote photo of two cats")
+                            params.append("https://upload.wikimedia.org/wikipedia/commons/thumb/3/3b/Singapura_Cats.jpg/320px-Singapura_Cats.jpg")
+                        try:
+                            th.add_IN("", params[0])
+                            print(f"Added image '{params[0]}'.\nPlease enter your question:")
+                        except FileNotFoundError:
+                            print(f"Could not local image '{params[0]}'")
+
                     elif cmd == 'tl':
                         print_thread_info()
                         
-                    elif cmd == 'i':
+                    elif cmd == 'info':
                         print(f"Model:\n{model.info()}")
                         print(f"GenConf:\n{genconf}\n")
                         
                         print_thread_info()
 
-                    # elif cmd == 'p':
-                    #     print(model.text_from_turns(ctx.turns))
-                        
-                    # elif cmd == 'to':
-                    #     token_ids = model.tokens_from_turns(ctx.turns)
-                    #     print(f"Prompt tokens={token_ids}")
-                                                
     
                     else:
                         print(f"Unknown command '!{cmd}' - known commands:\n"
                               " !inst[=text] - clear messages and add inst (system) message\n"
-                              " !add|!a=path - load file and add to last msg\n"
+                              " !add=path - load file and add to last msg\n"
+                              " !image=path/url - include a local or remote image. Local images must fit the context!\n"
                               " !c - list context msgs\n"
-                              " !cl=path - load context (default=ctx.json)\n"
-                              " !cs=path - save context (default=ctx.json)\n"
+                              " !cl=path - load context (default=thread.json)\n"
+                              " !cs=path - save context (default=thread.json)\n"
                               " !tl - thread's token length\n"
-                              " !i - model and genconf info\n"
+                              " !info - model and genconf info\n"
                               ' Delimit with """ for multiline begin/end or terminate line with \\ to continue into a new line\n'
                               " Empty line + enter to quit"
                               )
@@ -285,7 +283,7 @@ def interact(model: Model,
             break
 
         
-        ctx.add_IN(user)
+        th.add_IN(user)
         
         return True # continue looping
 
@@ -298,16 +296,16 @@ def interact(model: Model,
         genconf = genconf(max_tokens=max_tokens_default)
 
     # start prompt loop
-    ctx = loop(callback,
-               model,
+    th = loop(callback,
+              model,
                
-               ctx=ctx,
-               inst_text=inst_text,
-               in_text=None, # call callback for first prompt
-               trim_flags=trim_flags,
-               genconf=genconf)
+              thread=th,
+              inst_text=inst_text,
+              in_text=None, # call callback for first prompt
+              trim_flags=trim_flags,
+              genconf=genconf)
 
-    return ctx
+    return th
 
 
 
@@ -322,7 +320,7 @@ def recursive_summarize(model: Model,
                         max_token_len: Optional[int] = None,
                         genconf: Optional[GenConf] = None) -> str:
     
-    """Recursively summarize a (large) text or text file.
+    """Recursively summarize a large text or text file, to fit in a Thread context.
      
     Works by:
 
@@ -349,7 +347,7 @@ def recursive_summarize(model: Model,
 
     inst_text = """Your task is to do short summaries of text."""
     in_text = "Summarize the following text:\n"
-    ctx = Context(pinned_inst_text=inst_text)
+    th = Thread(inst=inst_text)
 
     if genconf is None:
         genconf = model.genconf
@@ -366,12 +364,12 @@ def recursive_summarize(model: Model,
     
 
     # split initial text
-    logger.debug(f"Max ctx token len {max_token_len}")
+    logger.debug(f"Max token len {max_token_len}")
     
     token_len_fn = model.token_len_lambda
-    logger.debug(f"Initial text token_len {token_len_fn(text)}") # type: ignore[arg-type]
+    logger.debug(f"Initial text token_len {token_len_fn(text)}") # type: ignore[arg-type,call-arg]
     
-    spl = RecursiveTextSplitter(max_token_len, overlap_size, len_fn=token_len_fn)
+    spl = RecursiveTextSplitter(max_token_len, overlap_size, len_fn=token_len_fn) # type: ignore[arg-type]
 
     round = 0
     while True: # summarization rounds
@@ -387,11 +385,11 @@ def recursive_summarize(model: Model,
     
             logger.debug(f"{round}>{i} {'='*30}")
             
-            ctx.clear()
-            ctx.add_IN(in_text)
-            ctx.add_IN(t)
+            th.clear(clear_inst=False)
+            th.add_IN(in_text)
+            th.add_IN(t)
     
-            out = model.gen(ctx)        
+            out = model.gen(th)        
             logger.debug(out)
     
             out_list.append(out.text)

@@ -358,7 +358,7 @@ class Models:
         """
                
         try:
-            provider, name, args = cls.resolve_model_entry(res_name, **over_args)
+            provider, _, args = cls.resolve_model_entry(res_name, **over_args)
         except ValueError as e:
             raise NameError(str({e}))
         
@@ -400,20 +400,22 @@ class Models:
             model = GroqModel(**args)
             
         elif provider == "llamacpp":
+            from .llamacpp import LlamaCppModel, extract_sub_paths
 
-            # resolve filename -> path
-            path = cls._locate_file(args["name"])
-            if path is None:
-                path = args["name"] # LlamaCppModel should raise the exception, not us
-            else:
-                logger.debug(f"Resolved llamacpp model '{args['name']}' to '{path}'")
+            # resolve filename -> path. Path filenames can be in the form model1*model2
+            sub_paths = args["name"].split('*')
+
+            # only resolve first path. If not found, let LlamaCpp raise the error below
+            sub_paths[0] = cls._locate_file(sub_paths[0]) or sub_paths[0]
+            
+            # rejoin located paths with '*' (if multiple)
+            path = '*'.join(sub_paths)
+            logger.debug(f"Resolved llamacpp model '{args['name']}' to '{path}'")
 
             # rename "name" -> "path" which LlamaCppModel is expecting
             del args["name"]
             args["path"] = path
                         
-            from .llamacpp import LlamaCppModel
-
             model = LlamaCppModel(**args)
         
         elif provider == "mistral":

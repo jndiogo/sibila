@@ -56,10 +56,10 @@ In a chat interaction, the model has to "remember" the previous messages exchang
 
 
         > No problem. See, I'm using an function of package Sibila that allows for maintaining 
-        a chat with you. It stores all user and model messages in a sibila.Context class.
+        a chat with you. It stores all user and model messages in a sibila.Thread class.
 
         Got it! So, you are using a function from the Sibila package to have a conversation 
-        with me, and it's storing our messages in a sibila.Context object. If you need any help 
+        with me, and it's storing our messages in a sibila.Thread object. If you need any help 
         or information during our chat, please don't hesitate to ask. I'm here to assist you!
 
         (Continues...)

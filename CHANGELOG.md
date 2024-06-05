@@ -3,15 +3,27 @@
 All notable changes to this project will be documented in this file.
 
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
-The project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
+Given its evolving nature, the project does not yet adhere to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 
 ## [Unreleased]
-- feat: Add seed setting to GenConf. Commented-out because of lack of support in OpenAI models and some llama.cpp hardware accelerations.
+- feat: Add seed setting to GenConf. Commented-out because of lack of support in OpenAI models and some llama.cpp hardware accelerations. To be enabled when wider support becomes available.
 
+
+## [0.4.4]
+- feat: Support vision models from OpenAI, Anthropic and Llava-based local models.
+- feat: Add Msg class for better handling of other data types besides text, for now only images.
+- feat: Update Thread class to support images. Also added trimming functionality and as a result removed emptied Context class.
+- feat: Add close() method to Model* classes, to release resources.
+- fix: Removed no longer used _workaround1 in LlamaCppTokenizer.
+- fix: Avoid setting "max_tokens" in remote models that support it, for GenConf.max_tokens=0.
+- fix: Update configs to new OpenAI models.
+- docs: Add vision model and Thread use documentation.
+- docs: Add receipt image extraction example.
+- test: Add tests for Thread, Msg and vision models.
 
 ## [0.4.3]
-- feat: Add extraction support for dataclass field types Optional and Union.
+- feat: Add support for dataclass Optional and Union annotations.
 - feat: Add Groq remote model provider.
 - fix: Add deepcopy to json_schema_massage() to solve schema massaging error.
 - fix: Set Thread.__repr__ output the same as __str__ for development convenience.

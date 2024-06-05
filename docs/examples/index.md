@@ -12,6 +12,7 @@ title: "Examples"
 | [Tough meeting](tough_meeting.md) | Extracting information from a long and complex transcript. |
 | [Compare model output](compare.md) | Compare sentiment analyses of customer reviews done by two models. |
 | [Chat interaction](interact.md) | Interact with the model as in a back-and-forth chat session. |
+| [Receipt](receipt.md) | Extract structured data from a photo of a receipt. |
 | [Async](async.md) | Run tasks in parallel with the *_async methods. |
 | [Model management with CLI](cli.md) | Download and manage models with the command-line sibila. |
 

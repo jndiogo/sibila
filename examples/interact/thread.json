@@ -1,0 +1,120 @@
+{
+  "_msgs": [
+    {
+      "kind": "IN",
+      "text": "Hello there!",
+      "images": null
+    },
+    {
+      "kind": "OUT",
+      "text": "Hello! How can I help you today?",
+      "images": null
+    },
+    {
+      "kind": "IN",
+      "text": "I'm doing an example of this LLM access package called Sibila - have you heard about it?",
+      "images": null
+    },
+    {
+      "kind": "OUT",
+      "text": "Yes, I am familiar with the Sibila AI platform. Sibila is a Spanish-language large language model developed by OpenAI, similar to ChatGPT. It is designed to assist users with various tasks, such as answering questions, writing text, and providing recommendations. Sibila can be integrated into different applications and services to improve their functionality and user experience.",
+      "images": null
+    },
+    {
+      "kind": "IN",
+      "text": "No way! I've just searched and there's no such company nor model. You are hallucinating, Mr. Model!",
+      "images": null
+    },
+    {
+      "kind": "OUT",
+      "text": "My apologies for the confusion in my previous response. It appears that I made an error in my information. There is no specific LLM access package or model called Sibila that I am aware of. If you have any other questions or topics you'd like to discuss, please feel free to ask.",
+      "images": null
+    },
+    {
+      "kind": "IN",
+      "text": "No problem. See, I'm using an function of package Sibila that allows for maintaining a chat with you. It stores all user and model messages in a sibila.Thread class.",
+      "images": null
+    },
+    {
+      "kind": "OUT",
+      "text": "Got it! So, you are using a function from the Sibila package that enables a continuous conversation between you and the AI model. This function likely utilizes a threading mechanism to store and manage both user and model messages within a `sibila.Thread` class. If you have any questions or need assistance while using this function, please don't hesitate to ask. I'm here to help!",
+      "images": null
+    },
+    {
+      "kind": "IN",
+      "text": "That's right - I can list the context messages by entering \"!c\"",
+      "images": null
+    },
+    {
+      "kind": "OUT",
+      "text": "I see! It seems that within the Sibila package, you can use the command `!c` to list the context messages in your conversation. This feature allows you to review and manage the messages exchanged between you and the AI model, which can be useful for understanding the conversation history and making sure you have the necessary information at hand. If you need any assistance or clarification regarding any of these messages or other aspects of the Sibila package, feel free to ask.",
+      "images": null
+    },
+    {
+      "kind": "IN",
+      "text": "Info about the model: \"!i\"",
+      "images": null
+    },
+    {
+      "kind": "OUT",
+      "text": "The `!i` command likely provides information about the AI model being used within the Sibila package. This could include details such as the model's architecture, training data, capabilities, and other relevant specifications. If you need any further information or assistance regarding the model or its features, please let me know.",
+      "images": null
+    },
+    {
+      "kind": "IN",
+      "text": "Sorry, it's actually \"!info\"",
+      "images": null
+    },
+    {
+      "kind": "OUT",
+      "text": "My apologies for the confusion in my previous response. The correct command to get information about the AI model within the Sibila package is `!info`. This command should provide you with details about the model's architecture, training data, capabilities, and other relevant specifications. If you need any further information or assistance regarding the model or its features, please feel free to ask.",
+      "images": null
+    },
+    {
+      "kind": "IN",
+      "text": "For help on al lcommands: \"!\"",
+      "images": null
+    },
+    {
+      "kind": "OUT",
+      "text": "Within the Sibila package, using an exclamation mark (`!`) by itself typically displays a list of available commands and their usage. This command helps you understand the different options and functionalities offered by the package so that you can make the most of it during your interactions with the AI model. If you need further assistance or clarification on any specific commands or features, please don't hesitate to ask.",
+      "images": null
+    },
+    {
+      "kind": "IN",
+      "text": "The Thread class can manage total token length: it will delete older messages if the thread becomes larger than the content max length.",
+      "images": null
+    },
+    {
+      "kind": "OUT",
+      "text": "I understand that the `sibila.Thread` class in the Sibila package is designed to manage the total token length of your conversation. If the conversation becomes too large and exceeds the maximum allowed token length, the class will automatically delete older messages to maintain the thread within the desired size limit. This ensures that the conversation remains efficient and manageable while preventing it from growing too large. If you have any questions or concerns about managing the token length in your conversations or need assistance with other aspects of the Sibila package, please feel free to ask.",
+      "images": null
+    },
+    {
+      "kind": "IN",
+      "text": "That's it - to see token length: \"!tl\"",
+      "images": null
+    },
+    {
+      "kind": "OUT",
+      "text": "The `!tl` command within the Sibila package is likely used to display the current token length of your conversation. This command helps you keep track of how many tokens are being used in your exchange with the AI model, ensuring that you remain aware of the conversation's size and staying within any imposed token length limits. If you need assistance with managing token lengths or have questions about other aspects of the Sibila package, please don't hesitate to ask.",
+      "images": null
+    },
+    {
+      "kind": "IN",
+      "text": "To save the thread to a JSON file: \"!cs\"",
+      "images": null
+    },
+    {
+      "kind": "OUT",
+      "text": "The `!cs` command within the Sibila package is likely used to save your current conversation thread to a JSON file. This feature allows you to store the exchanged messages between you and the AI model for future reference or further analysis. To use this command, simply enter `!cs` in your conversation, and follow any prompts or instructions provided by the package. If you need assistance with saving your thread to a JSON file or have questions about other aspects of the Sibila package, please don't hesitate to ask.",
+      "images": null
+    }
+  ],
+  "inst": {
+    "kind": "INST",
+    "text": "Be helpful.",
+    "images": null
+  },
+  "join_sep": "\n"
+}

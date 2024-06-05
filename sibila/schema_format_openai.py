@@ -23,7 +23,7 @@ from .gen import (
 
 from .thread import (
     Thread,
-    MsgKind
+    Msg
 )
 
 from .model import (
@@ -133,8 +133,12 @@ class SchemaFormatOpenAIModel(OpenAIModel):
 
         thread = self._prepare_gen_thread(thread, genconf)
 
-        token_len = self.token_len(thread, genconf)
-        resolved_max_tokens = self.resolve_genconf_max_tokens(token_len, genconf)
+        # Known providers do not require "max_tokens" and may error on excess.
+        if genconf.max_tokens != 0:
+            token_len = self.token_len(thread, genconf)
+            resolved_max_tokens = self.resolve_genconf_max_tokens(token_len, genconf)
+        else: # for genconf.max_tokens=0, supported providers don't require "max_tokens", so we don't send below
+            resolved_max_tokens = 0
 
 
         json_kwargs: dict = {}
@@ -162,13 +166,15 @@ class SchemaFormatOpenAIModel(OpenAIModel):
 
         kwargs = {"model": self._model_name,
                   "messages": msgs, # type: ignore[arg-type]
-                  "max_tokens": resolved_max_tokens,
                   "stop": genconf.stop,
                   "temperature": genconf.temperature,
                   "top_p": genconf.top_p,
                   # "seed": seed,
                   "n": 1,
                   **json_kwargs}
+
+        if resolved_max_tokens:
+            kwargs["max_tokens"] = resolved_max_tokens
 
         # inject model-specific args, if any
         kwargs.update(genconf.resolve_special(self.PROVIDER_NAME))
@@ -302,6 +308,7 @@ class TogetherModel(SchemaFormatOpenAIModel):
                          # other OpenAI API specific args
                          other_init_kwargs=other_init_kwargs)
 
+        self.maybe_image_input = False # no together.ai models currently support image input - always check model specs
 
 
 
@@ -395,6 +402,7 @@ class FireworksModel(SchemaFormatOpenAIModel):
                          # other OpenAI API specific args
                          other_init_kwargs=other_init_kwargs)
 
+        self.maybe_image_input = False # no Fireworks models currently support image input - always check model specs
 
 
 
@@ -454,7 +462,7 @@ class GroqModel(SchemaFormatOpenAIModel):
             max_tokens_limit: Maximum output tokens limit. None for model's default.
             tokenizer: An external initialized tokenizer to use instead of the created from the GGUF file. Defaults to None.
             api_key: API key. Defaults to None, which will use env variable GROQ_API_KEY.
-            base_url: Base location for API access. Defaults to None, which will use env variable GROK_BASE_URL or a default.
+            base_url: Base location for API access. Defaults to None, which will use env variable GROQ_BASE_URL or a default.
             token_estimation_factor: Used when no tokenizer is available. Multiplication factor to estimate token usage: multiplies total text length to obtain token length.
             other_init_kwargs: Extra args for OpenAI.OpenAI() initialization. Defaults to {}.
 
@@ -484,6 +492,8 @@ class GroqModel(SchemaFormatOpenAIModel):
                          # other OpenAI API specific args
                          other_init_kwargs=other_init_kwargs)
 
+        self.maybe_image_input = False # no Groq models currently support image input - always check model specs
+
 
 
     def _gen_pre(self, 
@@ -496,8 +506,12 @@ class GroqModel(SchemaFormatOpenAIModel):
 
         thread = self._prepare_gen_thread(thread, genconf)
 
-        token_len = self.token_len(thread, genconf)
-        resolved_max_tokens = self.resolve_genconf_max_tokens(token_len, genconf)
+        # This provider doesn't require "max_tokens" and will error on excess.
+        if genconf.max_tokens != 0:
+            token_len = self.token_len(thread, genconf)
+            resolved_max_tokens = self.resolve_genconf_max_tokens(token_len, genconf)
+        else: # for genconf.max_tokens=0, this provider doesn't require "max_tokens", so we don't send below
+            resolved_max_tokens = 0
 
 
         json_kwargs: dict = {}
@@ -539,13 +553,15 @@ class GroqModel(SchemaFormatOpenAIModel):
 
         kwargs = {"model": self._model_name,
                   "messages": msgs, # type: ignore[arg-type]
-                  "max_tokens": resolved_max_tokens,
                   "stop": genconf.stop,
                   "temperature": genconf.temperature,
                   "top_p": genconf.top_p,
                   # "seed": seed,
                   "n": 1,
                   **json_kwargs}
+
+        if resolved_max_tokens:
+            kwargs["max_tokens"] = resolved_max_tokens
 
         # inject model-specific args, if any
         kwargs.update(genconf.resolve_special(self.PROVIDER_NAME))
