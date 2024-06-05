@@ -348,6 +348,12 @@
       
         
       
+        
+      
+        
+      
+        
+      
     
     
     
@@ -451,6 +457,15 @@
 </li>
       
         <li class="md-nav__item">
+  <a href="#extract-data-from-images" class="md-nav__link">
+    <span class="md-ellipsis">
+      Extract data from images
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
   <a href="#from-your-models-or-remote-models" class="md-nav__link">
     <span class="md-ellipsis">
       From your models or remote models
@@ -460,9 +475,9 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#same-api" class="md-nav__link">
+  <a href="#common-api" class="md-nav__link">
     <span class="md-ellipsis">
-      Same API
+      Common API
     </span>
   </a>
   
@@ -592,6 +607,8 @@
   
     
     
+      
+        
       
         
       
@@ -1103,6 +1120,27 @@
 
               
             
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../models/vision/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Vision models
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
           </ul>
         </nav>
       
@@ -1307,49 +1345,20 @@
   
   
   
-    
-    
-      
+    <li class="md-nav__item">
+      <a href="../thread/" class="md-nav__link">
         
-      
-        
-      
-        
-      
-    
-    
-    
-    
-      
-      
-    
-    <li class="md-nav__item md-nav__item--section md-nav__item--nested">
-      
-        
-        
-        
-          
-        
-        <input class="md-nav__toggle md-toggle md-toggle--indeterminate" type="checkbox" id="__nav_1_6" >
-        
-          
-          <label class="md-nav__link" for="__nav_1_6" id="__nav_1_6_label" tabindex="">
-            
   
   <span class="md-ellipsis">
-    Other Stuff
+    Threads and messages
   </span>
   
 
-            <span class="md-nav__icon md-icon"></span>
-          </label>
-        
-        <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_1_6_label" aria-expanded="false">
-          <label class="md-nav__title" for="__nav_1_6">
-            <span class="md-nav__icon md-icon"></span>
-            Other Stuff
-          </label>
-          <ul class="md-nav__list" data-md-scrollfix>
+      </a>
+    </li>
+  
+
+              
             
               
                 
@@ -1420,14 +1429,6 @@
     </li>
   
 
-              
-            
-          </ul>
-        </nav>
-      
-    </li>
-  
-
     
       
       
@@ -1440,6 +1441,8 @@
       
         
           
+        
+      
         
       
         
@@ -1705,6 +1708,27 @@
   
   
     <li class="md-nav__item">
+      <a href="../examples/receipt/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Receipt
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
       <a href="../examples/async/" class="md-nav__link">
         
   
@@ -1904,7 +1928,7 @@
         
   
   <span class="md-ellipsis">
-    Threads, messages, context
+    Threads and messages
   </span>
   
 
@@ -2041,6 +2065,15 @@
 </li>
       
         <li class="md-nav__item">
+  <a href="#extract-data-from-images" class="md-nav__link">
+    <span class="md-ellipsis">
+      Extract data from images
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
   <a href="#from-your-models-or-remote-models" class="md-nav__link">
     <span class="md-ellipsis">
       From your models or remote models
@@ -2050,9 +2083,9 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#same-api" class="md-nav__link">
+  <a href="#common-api" class="md-nav__link">
     <span class="md-ellipsis">
-      Same API
+      Common API
     </span>
   </a>
   
@@ -2087,9 +2120,11 @@
 
   <h1>What can you do with Sibila?</h1>
 
-<p>LLM models answer your questions in the best way their training allows, but they always answer back in plain text.</p>
-<p>With Sibila, you can extract structured data from LLM models. Not whatever the model chose to output (even if you asked it to answer in a certain format), but the exact fields and types that you need.</p>
-<p>This not only simplifies handling the model responses but can also open new possibilities: you can now deal with the model in a structured way.</p>
+<p>Popular LLM usage is associated with chatbots: user enters some text, the model answers back in plain text. But when one wants to use LLMs from software, sending and receiving plain text can be quite painful with people having to create all sorts of prompts begging for a certain format - and then hoping the model complies. (prompts like: "Please answer me in JSON or I'll do something terrible!"). But there's never a warranty, as the model is just outputting plain text.</p>
+<p>With Sibila, you can extract structured data from remote or local LLM models. Not whatever the model chose to output, but the exact fields and types that you need, specified with Pydantic, Python dataclasses or simple types.</p>
+<p>In remote models, this is done via the provider's API, while in local llama.cpp based models, the output is constrained with a JSON Schema grammar. Local and remote model differences are hidden behind a common API, which simplifies model switching. Local open source models are getting better and will one day replace commercial models.</p>
+<p>Getting structured output not only simplifies handling the model responses but can also open new possibilities: you can now deal with the model in an ordered and more predictable way.</p>
+<p>And besides structured output, with Sibila you can also query vision models (accepting image inputs), and it includes useful functionality like message threads, model management and more. </p>
 <h2 id="extract-pydantic-dataclasses-or-simple-types">Extract Pydantic, dataclasses or simple types<a class="headerlink" href="#extract-pydantic-dataclasses-or-simple-types" title="Permanent link">#</a></h2>
 <p>To specify the structured output that you want from the model, you can use Pydantic's BaseModel derived classes, or the lightweight Python dataclasses, if you don't need the whole Pydantic.</p>
 <p>With Sibila, you can also use simple data types like bool, int, str, enumerations or lists. 
@@ -2109,14 +2144,16 @@ For example, need to classify something? </p>
 </span></code></pre></div>
 </div>
 </div>
-<p>How does it work? Extraction to the given data types is guaranteed by automatic JSON Schema grammars in local models, or by the Tools functionality of OpenAI API (or the equivalent in other remote models).</p>
+<h2 id="extract-data-from-images">Extract data from images<a class="headerlink" href="#extract-data-from-images" title="Permanent link">#</a></h2>
+<p>Sibila supports image input models, like GPT-4o and Anthropic models, as well as local Llava-based models.</p>
+<p>Vision models can describe and interpret, recommend suggestions or extract information from images. With Sibila, this data can be extracted in a structured way.</p>
 <h2 id="from-your-models-or-remote-models">From your models or remote models<a class="headerlink" href="#from-your-models-or-remote-models" title="Permanent link">#</a></h2>
 <p>Small downloadable 7B parameter models are getting better every month and they have reached a level where they are competent enough for most common data extraction or summarization tasks.</p>
 <p>With 8Gb or more of RAM or GPU memory, you can get good structured output from models like Llama-3, Phi-3, OpenChat or any other GGUF file.</p>
-<p>Or perhaps the task requires use of state of the art remote models from OpenAI, Anthropic, Mistral AI or other <a href="../models/remote_model/">providers</a> - this is also supported by Sibila. </p>
-<h2 id="same-api">Same API<a class="headerlink" href="#same-api" title="Permanent link">#</a></h2>
+<p>Or perhaps the task requires use of state of the art remote models from OpenAI, Anthropic, Mistral AI or other <a href="../models/remote_model/">providers</a> - no problem, simply change the model's name. </p>
+<h2 id="common-api">Common API<a class="headerlink" href="#common-api" title="Permanent link">#</a></h2>
 <p>The same API is used for both remote and local models. This makes the switch to newer or alternative models much easier, and makes it simpler to evaluate model outputs.</p>
-<p>With Sibila you can choose the best model for each use, allowing you the freedom of choice.</p>
+<p>With a common API you can choose the best model for each use, allowing more freedom of choice.</p>
 <h2 id="and-with-model-management">And with model management<a class="headerlink" href="#and-with-model-management" title="Permanent link">#</a></h2>
 <p>Includes a Models factory that creates models from simple names instead of having to track model configurations, filenames or chat templates.</p>
 <div class="language-python highlight"><pre><span></span><code><span id="__span-2-1"><a id="__codelineno-2-1" name="__codelineno-2-1" href="#__codelineno-2-1"></a><span class="n">local_model</span> <span class="o">=</span> <span class="n">Models</span><span class="o">.</span><span class="n">create</span><span class="p">(</span><span class="s2">&quot;llamacpp:openchat&quot;</span><span class="p">)</span>

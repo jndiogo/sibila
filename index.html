@@ -346,6 +346,12 @@
       
         
       
+        
+      
+        
+      
+        
+      
     
     
     
@@ -516,6 +522,8 @@
   
     
     
+      
+        
       
         
       
@@ -1027,6 +1035,27 @@
 
               
             
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="models/vision/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Vision models
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
           </ul>
         </nav>
       
@@ -1231,49 +1260,20 @@
   
   
   
-    
-    
-      
+    <li class="md-nav__item">
+      <a href="thread/" class="md-nav__link">
         
-      
-        
-      
-        
-      
-    
-    
-    
-    
-      
-      
-    
-    <li class="md-nav__item md-nav__item--section md-nav__item--nested">
-      
-        
-        
-        
-          
-        
-        <input class="md-nav__toggle md-toggle md-toggle--indeterminate" type="checkbox" id="__nav_1_6" >
-        
-          
-          <label class="md-nav__link" for="__nav_1_6" id="__nav_1_6_label" tabindex="">
-            
   
   <span class="md-ellipsis">
-    Other Stuff
+    Threads and messages
   </span>
   
 
-            <span class="md-nav__icon md-icon"></span>
-          </label>
-        
-        <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_1_6_label" aria-expanded="false">
-          <label class="md-nav__title" for="__nav_1_6">
-            <span class="md-nav__icon md-icon"></span>
-            Other Stuff
-          </label>
-          <ul class="md-nav__list" data-md-scrollfix>
+      </a>
+    </li>
+  
+
+              
             
               
                 
@@ -1344,14 +1344,6 @@
     </li>
   
 
-              
-            
-          </ul>
-        </nav>
-      
-    </li>
-  
-
     
       
       
@@ -1364,6 +1356,8 @@
       
         
           
+        
+      
         
       
         
@@ -1629,6 +1623,27 @@
   
   
     <li class="md-nav__item">
+      <a href="examples/receipt/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Receipt
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
       <a href="examples/async/" class="md-nav__link">
         
   
@@ -1828,7 +1843,7 @@
         
   
   <span class="md-ellipsis">
-    Threads, messages, context
+    Threads and messages
   </span>
   
 
@@ -1951,6 +1966,32 @@
     
   
   
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Contents
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#structured-data" class="md-nav__link">
+    <span class="md-ellipsis">
+      Structured data
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#vision-models" class="md-nav__link">
+    <span class="md-ellipsis">
+      Vision models
+    </span>
+  </a>
+  
+</li>
+      
+    </ul>
+  
 </nav>
                   </div>
                 </div>
@@ -1968,17 +2009,18 @@
 
 
 <h1 id="sibila">Sibila<a class="headerlink" href="#sibila" title="Permanent link">#</a></h1>
-<p>Extract structured data from remote or local LLM models. Because predictable output is important for serious use of LLMs.</p>
+<p>Extract structured data from remote or local LLM models. Predictable output is important for serious use of LLMs.</p>
 <ul>
 <li>Query structured data into Pydantic objects, dataclasses or simple types.</li>
 <li>Access remote models from OpenAI, Anthropic, Mistral AI and other providers.</li>
-<li>Use local models like Llama-3, Phi-3, OpenChat or any other GGUF file model.</li>
-<li>Besides structured extraction, Sibila is also a general purpose model access library, to generate plain text or free JSON results, with the same API for local and remote models.</li>
-<li>Model management: download models, manage configuration, quickly switch between models.</li>
+<li>Use vision models like GPT-4o, to extract structured data from images.</li>
+<li>Run local models like Llama-3, Phi-3, OpenChat or any other GGUF file model.</li>
+<li>Sibila is also a general purpose model access library, to generate plain text or free JSON results, with the same API for local and remote models.</li>
 </ul>
 <p>No matter how well you craft a prompt begging a model for the format you need, it can always respond something else. Extracting structured data can be a big step into getting predictable behavior from your models.</p>
 <p>See <a href="https://jndiogo.github.io/sibila/what/">What can you do with Sibila?</a></p>
-<p>To extract structured data from a local model:</p>
+<h2 id="structured-data">Structured data<a class="headerlink" href="#structured-data" title="Permanent link">#</a></h2>
+<p>To extract structured data, using a local model:</p>
 <div class="language-python highlight"><pre><span></span><code><span id="__span-0-1"><a id="__codelineno-0-1" name="__codelineno-0-1" href="#__codelineno-0-1"></a><span class="kn">from</span> <span class="nn">sibila</span> <span class="kn">import</span> <span class="n">Models</span>
 </span><span id="__span-0-2"><a id="__codelineno-0-2" name="__codelineno-0-2" href="#__codelineno-0-2"></a><span class="kn">from</span> <span class="nn">pydantic</span> <span class="kn">import</span> <span class="n">BaseModel</span>
 </span><span id="__span-0-3"><a id="__codelineno-0-3" name="__codelineno-0-3" href="#__codelineno-0-3"></a>
@@ -2006,6 +2048,36 @@
 </span><span id="__span-2-3"><a id="__codelineno-2-3" name="__codelineno-2-3" href="#__codelineno-2-3"></a><span class="n">model</span><span class="o">.</span><span class="n">extract</span><span class="p">(</span><span class="n">Info</span><span class="p">,</span> <span class="s2">&quot;Who was the first man in the moon?&quot;</span><span class="p">)</span>
 </span></code></pre></div>
 <p>If Pydantic BaseModel objects are too much for your project, Sibila supports similar functionality with Python dataclasses. Also includes asynchronous access to remote models.</p>
+<h2 id="vision-models">Vision models<a class="headerlink" href="#vision-models" title="Permanent link">#</a></h2>
+<p>Sibila supports image input, alongside text prompts. For example, to extract the fields from a receipt in a photo:</p>
+<p><img alt="Image" src="https://upload.wikimedia.org/wikipedia/commons/6/6a/Receipts_in_Italy_13.jpg" /></p>
+<div class="language-python highlight"><pre><span></span><code><span id="__span-3-1"><a id="__codelineno-3-1" name="__codelineno-3-1" href="#__codelineno-3-1"></a><span class="kn">from</span> <span class="nn">pydantic</span> <span class="kn">import</span> <span class="n">Field</span>
+</span><span id="__span-3-2"><a id="__codelineno-3-2" name="__codelineno-3-2" href="#__codelineno-3-2"></a>
+</span><span id="__span-3-3"><a id="__codelineno-3-3" name="__codelineno-3-3" href="#__codelineno-3-3"></a><span class="n">model</span> <span class="o">=</span> <span class="n">Models</span><span class="o">.</span><span class="n">create</span><span class="p">(</span><span class="s2">&quot;openai:gpt-4o&quot;</span><span class="p">)</span>
+</span><span id="__span-3-4"><a id="__codelineno-3-4" name="__codelineno-3-4" href="#__codelineno-3-4"></a>
+</span><span id="__span-3-5"><a id="__codelineno-3-5" name="__codelineno-3-5" href="#__codelineno-3-5"></a><span class="k">class</span> <span class="nc">ReceiptLine</span><span class="p">(</span><span class="n">BaseModel</span><span class="p">):</span>
+</span><span id="__span-3-6"><a id="__codelineno-3-6" name="__codelineno-3-6" href="#__codelineno-3-6"></a><span class="w">    </span><span class="sd">&quot;&quot;&quot;Receipt line data&quot;&quot;&quot;</span>
+</span><span id="__span-3-7"><a id="__codelineno-3-7" name="__codelineno-3-7" href="#__codelineno-3-7"></a>    <span class="n">description</span><span class="p">:</span> <span class="nb">str</span>
+</span><span id="__span-3-8"><a id="__codelineno-3-8" name="__codelineno-3-8" href="#__codelineno-3-8"></a>    <span class="n">cost</span><span class="p">:</span> <span class="nb">float</span>
+</span><span id="__span-3-9"><a id="__codelineno-3-9" name="__codelineno-3-9" href="#__codelineno-3-9"></a>
+</span><span id="__span-3-10"><a id="__codelineno-3-10" name="__codelineno-3-10" href="#__codelineno-3-10"></a><span class="k">class</span> <span class="nc">Receipt</span><span class="p">(</span><span class="n">BaseModel</span><span class="p">):</span>
+</span><span id="__span-3-11"><a id="__codelineno-3-11" name="__codelineno-3-11" href="#__codelineno-3-11"></a><span class="w">    </span><span class="sd">&quot;&quot;&quot;Receipt information&quot;&quot;&quot;</span>
+</span><span id="__span-3-12"><a id="__codelineno-3-12" name="__codelineno-3-12" href="#__codelineno-3-12"></a>    <span class="n">total</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span><span class="n">description</span><span class="o">=</span><span class="s2">&quot;Total value&quot;</span><span class="p">)</span>
+</span><span id="__span-3-13"><a id="__codelineno-3-13" name="__codelineno-3-13" href="#__codelineno-3-13"></a>    <span class="n">lines</span><span class="p">:</span> <span class="nb">list</span><span class="p">[</span><span class="n">ReceiptLine</span><span class="p">]</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span><span class="n">description</span><span class="o">=</span><span class="s2">&quot;List of lines of paid items&quot;</span><span class="p">)</span>
+</span><span id="__span-3-14"><a id="__codelineno-3-14" name="__codelineno-3-14" href="#__codelineno-3-14"></a>
+</span><span id="__span-3-15"><a id="__codelineno-3-15" name="__codelineno-3-15" href="#__codelineno-3-15"></a><span class="n">info</span> <span class="o">=</span> <span class="n">model</span><span class="o">.</span><span class="n">extract</span><span class="p">(</span><span class="n">Receipt</span><span class="p">,</span>
+</span><span id="__span-3-16"><a id="__codelineno-3-16" name="__codelineno-3-16" href="#__codelineno-3-16"></a>                     <span class="p">(</span><span class="s2">&quot;Extract receipt information.&quot;</span><span class="p">,</span> 
+</span><span id="__span-3-17"><a id="__codelineno-3-17" name="__codelineno-3-17" href="#__codelineno-3-17"></a>                      <span class="s2">&quot;https://upload.wikimedia.org/wikipedia/commons/6/6a/Receipts_in_Italy_13.jpg&quot;</span><span class="p">))</span>
+</span><span id="__span-3-18"><a id="__codelineno-3-18" name="__codelineno-3-18" href="#__codelineno-3-18"></a><span class="n">info</span>
+</span></code></pre></div>
+<p>Returns receipt fields structured in a Pydantic object:</p>
+<div class="language-text highlight"><pre><span></span><code><span id="__span-4-1"><a id="__codelineno-4-1" name="__codelineno-4-1" href="#__codelineno-4-1"></a>Receipt(total=5.88, 
+</span><span id="__span-4-2"><a id="__codelineno-4-2" name="__codelineno-4-2" href="#__codelineno-4-2"></a>        lines=[ReceiptLine(description=&#39;BIS BORSE TERM.S&#39;, cost=3.9), 
+</span><span id="__span-4-3"><a id="__codelineno-4-3" name="__codelineno-4-3" href="#__codelineno-4-3"></a>               ReceiptLine(description=&#39;GHIACCIO 2X400 G&#39;, cost=0.99),
+</span><span id="__span-4-4"><a id="__codelineno-4-4" name="__codelineno-4-4" href="#__codelineno-4-4"></a>               ReceiptLine(description=&#39;GHIACCIO 2X400 G&#39;, cost=0.99)])
+</span></code></pre></div>
+<p>Local vision models based on llama.cpp/llava can also be used.</p>
+<p>⭐ Like our work? <a href="https://github.com/jndiogo/sibila">Give us a star!</a></p>
 
 
 

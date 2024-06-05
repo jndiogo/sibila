@@ -8,28 +8,28 @@
       
       
       
-        <link rel="canonical" href="https://jndiogo.github.io/sibila/first_run/">
+        <link rel="canonical" href="https://jndiogo.github.io/sibila/examples/receipt/">
       
       
-        <link rel="prev" href="../installing/">
+        <link rel="prev" href="../interact/">
       
       
-        <link rel="next" href="../models/remote_model/">
+        <link rel="next" href="../async/">
       
       
-      <link rel="icon" href="../assets/images/favicon.png">
+      <link rel="icon" href="../../assets/images/favicon.png">
       <meta name="generator" content="mkdocs-1.5.3, mkdocs-material-9.5.6">
     
     
       
-        <title>First run - Sibila</title>
+        <title>Receipt - Sibila</title>
       
     
     
-      <link rel="stylesheet" href="../assets/stylesheets/main.50c56a3b.min.css">
+      <link rel="stylesheet" href="../../assets/stylesheets/main.50c56a3b.min.css">
       
         
-        <link rel="stylesheet" href="../assets/stylesheets/palette.06af60db.min.css">
+        <link rel="stylesheet" href="../../assets/stylesheets/palette.06af60db.min.css">
       
       
 
@@ -48,11 +48,11 @@
       
     
     
-      <link rel="stylesheet" href="../assets/_mkdocstrings.css">
+      <link rel="stylesheet" href="../../assets/_mkdocstrings.css">
     
-      <link rel="stylesheet" href="../stylesheets/extra.css">
+      <link rel="stylesheet" href="../../stylesheets/extra.css">
     
-    <script>__md_scope=new URL("..",location),__md_hash=e=>[...e].reduce((e,_)=>(e<<5)-e+_.charCodeAt(0),0),__md_get=(e,_=localStorage,t=__md_scope)=>JSON.parse(_.getItem(t.pathname+"."+e)),__md_set=(e,_,t=localStorage,a=__md_scope)=>{try{t.setItem(a.pathname+"."+e,JSON.stringify(_))}catch(e){}}</script>
+    <script>__md_scope=new URL("../..",location),__md_hash=e=>[...e].reduce((e,_)=>(e<<5)-e+_.charCodeAt(0),0),__md_get=(e,_=localStorage,t=__md_scope)=>JSON.parse(_.getItem(t.pathname+"."+e)),__md_set=(e,_,t=localStorage,a=__md_scope)=>{try{t.setItem(a.pathname+"."+e,JSON.stringify(_))}catch(e){}}</script>
     
       
 
@@ -77,11 +77,6 @@
     <label class="md-overlay" for="__drawer"></label>
     <div data-md-component="skip">
       
-        
-        <a href="#with-a-remote-model" class="md-skip">
-          Skip to content
-        </a>
-      
     </div>
     <div data-md-component="announce">
       
@@ -94,7 +89,7 @@
 
 <header class="md-header md-header--shadow md-header--lifted" data-md-component="header">
   <nav class="md-header__inner md-grid" aria-label="Header">
-    <a href=".." title="Sibila" class="md-header__button md-logo" aria-label="Sibila" data-md-component="logo">
+    <a href="../.." title="Sibila" class="md-header__button md-logo" aria-label="Sibila" data-md-component="logo">
       
   
   <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a3 3 0 0 0 3-3 3 3 0 0 0-3-3 3 3 0 0 0-3 3 3 3 0 0 0 3 3m0 3.54C9.64 9.35 6.5 8 3 8v11c3.5 0 6.64 1.35 9 3.54 2.36-2.19 5.5-3.54 9-3.54V8c-3.5 0-6.64 1.35-9 3.54Z"/></svg>
@@ -114,7 +109,7 @@
         <div class="md-header__topic" data-md-component="header-topic">
           <span class="md-ellipsis">
             
-              First run
+              Receipt
             
           </span>
         </div>
@@ -213,13 +208,11 @@
         
   
   
-    
-  
   
     
     
-      <li class="md-tabs__item md-tabs__item--active">
-        <a href=".." class="md-tabs__link">
+      <li class="md-tabs__item">
+        <a href="../.." class="md-tabs__link">
           
   
     
@@ -235,11 +228,13 @@
         
   
   
+    
+  
   
     
     
-      <li class="md-tabs__item">
-        <a href="../examples/" class="md-tabs__link">
+      <li class="md-tabs__item md-tabs__item--active">
+        <a href="../" class="md-tabs__link">
           
   
     
@@ -259,7 +254,7 @@
     
     
       <li class="md-tabs__item">
-        <a href="../api-reference/local_model/" class="md-tabs__link">
+        <a href="../../api-reference/local_model/" class="md-tabs__link">
           
   
     
@@ -300,7 +295,7 @@
 
 <nav class="md-nav md-nav--primary md-nav--lifted" aria-label="Navigation" data-md-level="0">
   <label class="md-nav__title" for="__drawer">
-    <a href=".." title="Sibila" class="md-nav__button md-logo" aria-label="Sibila" data-md-component="logo">
+    <a href="../.." title="Sibila" class="md-nav__button md-logo" aria-label="Sibila" data-md-component="logo">
       
   
   <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a3 3 0 0 0 3-3 3 3 0 0 0-3-3 3 3 0 0 0-3 3 3 3 0 0 0 3 3m0 3.54C9.64 9.35 6.5 8 3 8v11c3.5 0 6.64 1.35 9 3.54 2.36-2.19 5.5-3.54 9-3.54V8c-3.5 0-6.64 1.35-9 3.54Z"/></svg>
@@ -327,8 +322,6 @@
       
   
   
-    
-  
   
   
     
@@ -361,17 +354,19 @@
       
       
     
-    <li class="md-nav__item md-nav__item--active md-nav__item--section md-nav__item--nested">
+    <li class="md-nav__item md-nav__item--section md-nav__item--nested">
       
         
         
         
-        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_1" checked>
+          
+        
+        <input class="md-nav__toggle md-toggle md-toggle--indeterminate" type="checkbox" id="__nav_1" >
         
           
           
           <div class="md-nav__link md-nav__container">
-            <a href=".." class="md-nav__link ">
+            <a href="../.." class="md-nav__link ">
               
   
   <span class="md-ellipsis">
@@ -388,7 +383,7 @@
             
           </div>
         
-        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_1_label" aria-expanded="true">
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_1_label" aria-expanded="false">
           <label class="md-nav__title" for="__nav_1">
             <span class="md-nav__icon md-icon"></span>
             Start
@@ -404,7 +399,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../what/" class="md-nav__link">
+      <a href="../../what/" class="md-nav__link">
         
   
   <span class="md-ellipsis">
@@ -422,10 +417,8 @@
                 
   
   
-    
   
   
-  
     
     
       
@@ -440,12 +433,14 @@
       
       
     
-    <li class="md-nav__item md-nav__item--active md-nav__item--section md-nav__item--nested">
+    <li class="md-nav__item md-nav__item--section md-nav__item--nested">
       
         
         
         
-        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_1_3" checked>
+          
+        
+        <input class="md-nav__toggle md-toggle md-toggle--indeterminate" type="checkbox" id="__nav_1_3" >
         
           
           <label class="md-nav__link" for="__nav_1_3" id="__nav_1_3_label" tabindex="">
@@ -459,7 +454,7 @@
             <span class="md-nav__icon md-icon"></span>
           </label>
         
-        <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_1_3_label" aria-expanded="true">
+        <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_1_3_label" aria-expanded="false">
           <label class="md-nav__title" for="__nav_1_3">
             <span class="md-nav__icon md-icon"></span>
             Getting Started
@@ -473,7 +468,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../installing/" class="md-nav__link">
+      <a href="../../installing/" class="md-nav__link">
         
   
   <span class="md-ellipsis">
@@ -491,28 +486,10 @@
                 
   
   
-    
   
   
-  
-    <li class="md-nav__item md-nav__item--active">
-      
-      <input class="md-nav__toggle md-toggle" type="checkbox" id="__toc">
-      
-      
-      
-        <label class="md-nav__link md-nav__link--active" for="__toc">
-          
-  
-  <span class="md-ellipsis">
-    First run
-  </span>
-  
-
-          <span class="md-nav__icon md-icon"></span>
-        </label>
-      
-      <a href="./" class="md-nav__link md-nav__link--active">
+    <li class="md-nav__item">
+      <a href="../../first_run/" class="md-nav__link">
         
   
   <span class="md-ellipsis">
@@ -521,44 +498,6 @@
   
 
       </a>
-      
-        
-
-  
-
-<nav class="md-nav md-nav--secondary" aria-label="Contents">
-  
-  
-  
-  
-    <label class="md-nav__title" for="__toc">
-      <span class="md-nav__icon md-icon"></span>
-      Contents
-    </label>
-    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
-      
-        <li class="md-nav__item">
-  <a href="#with-a-remote-model" class="md-nav__link">
-    <span class="md-ellipsis">
-      With a remote model
-    </span>
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#with-a-local-model" class="md-nav__link">
-    <span class="md-ellipsis">
-      With a local model
-    </span>
-  </a>
-  
-</li>
-      
-    </ul>
-  
-</nav>
-      
     </li>
   
 
@@ -686,7 +625,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../models/remote_model/" class="md-nav__link">
+      <a href="../../models/remote_model/" class="md-nav__link">
         
   
   <span class="md-ellipsis">
@@ -707,7 +646,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../models/anthropic/" class="md-nav__link">
+      <a href="../../models/anthropic/" class="md-nav__link">
         
   
   <span class="md-ellipsis">
@@ -728,7 +667,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../models/fireworks/" class="md-nav__link">
+      <a href="../../models/fireworks/" class="md-nav__link">
         
   
   <span class="md-ellipsis">
@@ -749,7 +688,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../models/groq/" class="md-nav__link">
+      <a href="../../models/groq/" class="md-nav__link">
         
   
   <span class="md-ellipsis">
@@ -770,7 +709,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../models/mistral/" class="md-nav__link">
+      <a href="../../models/mistral/" class="md-nav__link">
         
   
   <span class="md-ellipsis">
@@ -791,7 +730,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../models/openai/" class="md-nav__link">
+      <a href="../../models/openai/" class="md-nav__link">
         
   
   <span class="md-ellipsis">
@@ -812,7 +751,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../models/together/" class="md-nav__link">
+      <a href="../../models/together/" class="md-nav__link">
         
   
   <span class="md-ellipsis">
@@ -888,7 +827,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../models/local_model/" class="md-nav__link">
+      <a href="../../models/local_model/" class="md-nav__link">
         
   
   <span class="md-ellipsis">
@@ -909,7 +848,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../models/find_local_models/" class="md-nav__link">
+      <a href="../../models/find_local_models/" class="md-nav__link">
         
   
   <span class="md-ellipsis">
@@ -930,7 +869,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../models/setup_format/" class="md-nav__link">
+      <a href="../../models/setup_format/" class="md-nav__link">
         
   
   <span class="md-ellipsis">
@@ -1008,7 +947,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../models/models_factory/" class="md-nav__link">
+      <a href="../../models/models_factory/" class="md-nav__link">
         
   
   <span class="md-ellipsis">
@@ -1029,7 +968,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../models/models_json/" class="md-nav__link">
+      <a href="../../models/models_json/" class="md-nav__link">
         
   
   <span class="md-ellipsis">
@@ -1050,7 +989,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../models/formats_json/" class="md-nav__link">
+      <a href="../../models/formats_json/" class="md-nav__link">
         
   
   <span class="md-ellipsis">
@@ -1071,7 +1010,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../models/sibila_cli/" class="md-nav__link">
+      <a href="../../models/sibila_cli/" class="md-nav__link">
         
   
   <span class="md-ellipsis">
@@ -1100,7 +1039,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../models/vision/" class="md-nav__link">
+      <a href="../../models/vision/" class="md-nav__link">
         
   
   <span class="md-ellipsis">
@@ -1185,7 +1124,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../extract/simple_types/" class="md-nav__link">
+      <a href="../../extract/simple_types/" class="md-nav__link">
         
   
   <span class="md-ellipsis">
@@ -1206,7 +1145,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../extract/enums/" class="md-nav__link">
+      <a href="../../extract/enums/" class="md-nav__link">
         
   
   <span class="md-ellipsis">
@@ -1227,7 +1166,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../extract/pydantic/" class="md-nav__link">
+      <a href="../../extract/pydantic/" class="md-nav__link">
         
   
   <span class="md-ellipsis">
@@ -1248,7 +1187,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../extract/dataclass/" class="md-nav__link">
+      <a href="../../extract/dataclass/" class="md-nav__link">
         
   
   <span class="md-ellipsis">
@@ -1269,7 +1208,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../extract/free_json/" class="md-nav__link">
+      <a href="../../extract/free_json/" class="md-nav__link">
         
   
   <span class="md-ellipsis">
@@ -1290,7 +1229,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../extract/free_text/" class="md-nav__link">
+      <a href="../../extract/free_text/" class="md-nav__link">
         
   
   <span class="md-ellipsis">
@@ -1319,7 +1258,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../thread/" class="md-nav__link">
+      <a href="../../thread/" class="md-nav__link">
         
   
   <span class="md-ellipsis">
@@ -1340,7 +1279,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../async/" class="md-nav__link">
+      <a href="../../async/" class="md-nav__link">
         
   
   <span class="md-ellipsis">
@@ -1361,7 +1300,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../tools/" class="md-nav__link">
+      <a href="../../tools/" class="md-nav__link">
         
   
   <span class="md-ellipsis">
@@ -1382,7 +1321,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../tips/" class="md-nav__link">
+      <a href="../../tips/" class="md-nav__link">
         
   
   <span class="md-ellipsis">
@@ -1407,6 +1346,8 @@
       
   
   
+    
+  
   
   
     
@@ -1447,19 +1388,17 @@
       
       
     
-    <li class="md-nav__item md-nav__item--section md-nav__item--nested">
+    <li class="md-nav__item md-nav__item--active md-nav__item--section md-nav__item--nested">
       
         
         
         
-          
-        
-        <input class="md-nav__toggle md-toggle md-toggle--indeterminate" type="checkbox" id="__nav_2" >
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_2" checked>
         
           
           
           <div class="md-nav__link md-nav__container">
-            <a href="../examples/" class="md-nav__link ">
+            <a href="../" class="md-nav__link ">
               
   
   <span class="md-ellipsis">
@@ -1476,7 +1415,7 @@
             
           </div>
         
-        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_2_label" aria-expanded="false">
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_2_label" aria-expanded="true">
           <label class="md-nav__title" for="__nav_2">
             <span class="md-nav__icon md-icon"></span>
             Examples
@@ -1492,7 +1431,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../examples/hello_model/" class="md-nav__link">
+      <a href="../hello_model/" class="md-nav__link">
         
   
   <span class="md-ellipsis">
@@ -1513,7 +1452,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../examples/from_text_to_object/" class="md-nav__link">
+      <a href="../from_text_to_object/" class="md-nav__link">
         
   
   <span class="md-ellipsis">
@@ -1534,7 +1473,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../examples/extract/" class="md-nav__link">
+      <a href="../extract/" class="md-nav__link">
         
   
   <span class="md-ellipsis">
@@ -1555,7 +1494,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../examples/extract_dataclass/" class="md-nav__link">
+      <a href="../extract_dataclass/" class="md-nav__link">
         
   
   <span class="md-ellipsis">
@@ -1576,7 +1515,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../examples/tag/" class="md-nav__link">
+      <a href="../tag/" class="md-nav__link">
         
   
   <span class="md-ellipsis">
@@ -1597,7 +1536,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../examples/quick_meeting/" class="md-nav__link">
+      <a href="../quick_meeting/" class="md-nav__link">
         
   
   <span class="md-ellipsis">
@@ -1618,7 +1557,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../examples/tough_meeting/" class="md-nav__link">
+      <a href="../tough_meeting/" class="md-nav__link">
         
   
   <span class="md-ellipsis">
@@ -1639,7 +1578,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../examples/compare/" class="md-nav__link">
+      <a href="../compare/" class="md-nav__link">
         
   
   <span class="md-ellipsis">
@@ -1660,7 +1599,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../examples/interact/" class="md-nav__link">
+      <a href="../interact/" class="md-nav__link">
         
   
   <span class="md-ellipsis">
@@ -1678,10 +1617,17 @@
                 
   
   
+    
   
   
-    <li class="md-nav__item">
-      <a href="../examples/receipt/" class="md-nav__link">
+  
+    <li class="md-nav__item md-nav__item--active">
+      
+      <input class="md-nav__toggle md-toggle" type="checkbox" id="__toc">
+      
+      
+      
+      <a href="./" class="md-nav__link md-nav__link--active">
         
   
   <span class="md-ellipsis">
@@ -1690,6 +1636,7 @@
   
 
       </a>
+      
     </li>
   
 
@@ -1702,7 +1649,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../examples/async/" class="md-nav__link">
+      <a href="../async/" class="md-nav__link">
         
   
   <span class="md-ellipsis">
@@ -1723,7 +1670,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../examples/cli/" class="md-nav__link">
+      <a href="../cli/" class="md-nav__link">
         
   
   <span class="md-ellipsis">
@@ -1813,7 +1760,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../api-reference/local_model/" class="md-nav__link">
+      <a href="../../api-reference/local_model/" class="md-nav__link">
         
   
   <span class="md-ellipsis">
@@ -1834,7 +1781,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../api-reference/remote_model/" class="md-nav__link">
+      <a href="../../api-reference/remote_model/" class="md-nav__link">
         
   
   <span class="md-ellipsis">
@@ -1855,7 +1802,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../api-reference/models/" class="md-nav__link">
+      <a href="../../api-reference/models/" class="md-nav__link">
         
   
   <span class="md-ellipsis">
@@ -1876,7 +1823,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../api-reference/generation/" class="md-nav__link">
+      <a href="../../api-reference/generation/" class="md-nav__link">
         
   
   <span class="md-ellipsis">
@@ -1897,7 +1844,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../api-reference/thread/" class="md-nav__link">
+      <a href="../../api-reference/thread/" class="md-nav__link">
         
   
   <span class="md-ellipsis">
@@ -1918,7 +1865,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../api-reference/multigen/" class="md-nav__link">
+      <a href="../../api-reference/multigen/" class="md-nav__link">
         
   
   <span class="md-ellipsis">
@@ -1939,7 +1886,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../api-reference/tools/" class="md-nav__link">
+      <a href="../../api-reference/tools/" class="md-nav__link">
         
   
   <span class="md-ellipsis">
@@ -1960,7 +1907,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../api-reference/tokenizer/" class="md-nav__link">
+      <a href="../../api-reference/tokenizer/" class="md-nav__link">
         
   
   <span class="md-ellipsis">
@@ -1981,7 +1928,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../api-reference/changelog/" class="md-nav__link">
+      <a href="../../api-reference/changelog/" class="md-nav__link">
         
   
   <span class="md-ellipsis">
@@ -2022,32 +1969,6 @@
   
   
   
-    <label class="md-nav__title" for="__toc">
-      <span class="md-nav__icon md-icon"></span>
-      Contents
-    </label>
-    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
-      
-        <li class="md-nav__item">
-  <a href="#with-a-remote-model" class="md-nav__link">
-    <span class="md-ellipsis">
-      With a remote model
-    </span>
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#with-a-local-model" class="md-nav__link">
-    <span class="md-ellipsis">
-      With a local model
-    </span>
-  </a>
-  
-</li>
-      
-    </ul>
-  
 </nav>
                   </div>
                 </div>
@@ -2064,100 +1985,86 @@
   
 
 
-  <h1>First run</h1>
+  <h1>Receipt</h1>
 
-<h2 id="with-a-remote-model">With a remote model<a class="headerlink" href="#with-a-remote-model" title="Permanent link">#</a></h2>
-<p>Sibila can use remote models from OpenAI, Anthropic, Mistral and other providers. For example, to use an OpenAI remote model, you'll need a paid OpenAI account and its API key. You can explicitly pass this key in your script but this is a poor security practice. </p>
-<p>A better way is to define an environment variable which the OpenAI API will use when needed:</p>
-<div class="tabbed-set tabbed-alternate" data-tabs="1:2"><input checked="checked" id="__tabbed_1_1" name="__tabbed_1" type="radio" /><input id="__tabbed_1_2" name="__tabbed_1" type="radio" /><div class="tabbed-labels"><label for="__tabbed_1_1">Linux and Mac</label><label for="__tabbed_1_2">Windows</label></div>
-<div class="tabbed-content">
-<div class="tabbed-block">
-<div class="language-text highlight"><pre><span></span><code><span id="__span-0-1"><a id="__codelineno-0-1" name="__codelineno-0-1" href="#__codelineno-0-1"></a>export OPENAI_API_KEY=&quot;...&quot;
+<p>In this example we'll look at extracting structured information from a photo of a receipt.</p>
+<p>Sibila supports local models with image input support, but we'll use OpenAI's GPT-4o which works quite well. Make sure to set your OPENAI_API_KEY env variable.</p>
+<p>You can still use a local model by uncommenting the commented lines below. See the docs for some suggestions about local vision models.</p>
+<p>Jupyter notebook and Python script versions are available in the example's folder.</p>
+<p>Let's create the model:</p>
+<div class="language-python highlight"><pre><span></span><code><span id="__span-0-1"><a id="__codelineno-0-1" name="__codelineno-0-1" href="#__codelineno-0-1"></a><span class="c1"># load env variables like OPENAI_API_KEY from a .env file (if available)</span>
+</span><span id="__span-0-2"><a id="__codelineno-0-2" name="__codelineno-0-2" href="#__codelineno-0-2"></a><span class="k">try</span><span class="p">:</span> <span class="kn">from</span> <span class="nn">dotenv</span> <span class="kn">import</span> <span class="n">load_dotenv</span><span class="p">;</span> <span class="n">load_dotenv</span><span class="p">()</span>
+</span><span id="__span-0-3"><a id="__codelineno-0-3" name="__codelineno-0-3" href="#__codelineno-0-3"></a><span class="k">except</span><span class="p">:</span> <span class="o">...</span>
+</span><span id="__span-0-4"><a id="__codelineno-0-4" name="__codelineno-0-4" href="#__codelineno-0-4"></a>
+</span><span id="__span-0-5"><a id="__codelineno-0-5" name="__codelineno-0-5" href="#__codelineno-0-5"></a><span class="kn">from</span> <span class="nn">sibila</span> <span class="kn">import</span> <span class="n">Models</span>
+</span><span id="__span-0-6"><a id="__codelineno-0-6" name="__codelineno-0-6" href="#__codelineno-0-6"></a>
+</span><span id="__span-0-7"><a id="__codelineno-0-7" name="__codelineno-0-7" href="#__codelineno-0-7"></a><span class="c1"># delete any previous model</span>
+</span><span id="__span-0-8"><a id="__codelineno-0-8" name="__codelineno-0-8" href="#__codelineno-0-8"></a><span class="k">try</span><span class="p">:</span> <span class="k">del</span> <span class="n">model</span>
+</span><span id="__span-0-9"><a id="__codelineno-0-9" name="__codelineno-0-9" href="#__codelineno-0-9"></a><span class="k">except</span><span class="p">:</span> <span class="o">...</span>
+</span><span id="__span-0-10"><a id="__codelineno-0-10" name="__codelineno-0-10" href="#__codelineno-0-10"></a>
+</span><span id="__span-0-11"><a id="__codelineno-0-11" name="__codelineno-0-11" href="#__codelineno-0-11"></a><span class="c1"># to use a local model, assuming it&#39;s in ../../models:</span>
+</span><span id="__span-0-12"><a id="__codelineno-0-12" name="__codelineno-0-12" href="#__codelineno-0-12"></a><span class="c1"># setup models folder:</span>
+</span><span id="__span-0-13"><a id="__codelineno-0-13" name="__codelineno-0-13" href="#__codelineno-0-13"></a><span class="c1"># Models.setup(&quot;../../models&quot;)</span>
+</span><span id="__span-0-14"><a id="__codelineno-0-14" name="__codelineno-0-14" href="#__codelineno-0-14"></a><span class="c1"># model = Models.create(&quot;llamacpp:llava-llama-3-8b-v1_1-int4.gguf*llava-llama-3-8b-v1_1-mmproj-f16.gguf&quot;)</span>
+</span><span id="__span-0-15"><a id="__codelineno-0-15" name="__codelineno-0-15" href="#__codelineno-0-15"></a>
+</span><span id="__span-0-16"><a id="__codelineno-0-16" name="__codelineno-0-16" href="#__codelineno-0-16"></a><span class="c1"># to use an OpenAI model:</span>
+</span><span id="__span-0-17"><a id="__codelineno-0-17" name="__codelineno-0-17" href="#__codelineno-0-17"></a><span class="n">model</span> <span class="o">=</span> <span class="n">Models</span><span class="o">.</span><span class="n">create</span><span class="p">(</span><span class="s2">&quot;openai:gpt-4o&quot;</span><span class="p">)</span>
 </span></code></pre></div>
-</div>
-<div class="tabbed-block">
-<div class="language-text highlight"><pre><span></span><code><span id="__span-1-1"><a id="__codelineno-1-1" name="__codelineno-1-1" href="#__codelineno-1-1"></a>setx OPENAI_API_KEY &quot;...&quot;
+<p>Let's use this photo of an <a href="https://commons.wikimedia.org/wiki/File:Receipts_in_Italy_13.jpg">Italian receipt</a>:</p>
+<p><img alt="Receipt" src="https://upload.wikimedia.org/wikipedia/commons/6/6a/Receipts_in_Italy_13.jpg" /></p>
+<p>To see if the model can handle it, let's try a free text query for the total. We'll pass a tuple of (text_prompt, image_url) -</p>
+<div class="language-python highlight"><pre><span></span><code><span id="__span-1-1"><a id="__codelineno-1-1" name="__codelineno-1-1" href="#__codelineno-1-1"></a><span class="n">model</span><span class="p">((</span><span class="s2">&quot;How much is the total?&quot;</span><span class="p">,</span> 
+</span><span id="__span-1-2"><a id="__codelineno-1-2" name="__codelineno-1-2" href="#__codelineno-1-2"></a>       <span class="s2">&quot;https://upload.wikimedia.org/wikipedia/commons/6/6a/Receipts_in_Italy_13.jpg&quot;</span><span class="p">))</span>
 </span></code></pre></div>
-</div>
-</div>
-</div>
-<p>Having set this variable with your OpenAI API key, you can run a "Hello Model" like this:</p>
-<div class="admonition example">
-<p class="admonition-title">Example</p>
-<div class="language-python highlight"><pre><span></span><code><span id="__span-2-1"><a id="__codelineno-2-1" name="__codelineno-2-1" href="#__codelineno-2-1"></a><span class="kn">from</span> <span class="nn">sibila</span> <span class="kn">import</span> <span class="n">OpenAIModel</span><span class="p">,</span> <span class="n">GenConf</span>
-</span><span id="__span-2-2"><a id="__codelineno-2-2" name="__codelineno-2-2" href="#__codelineno-2-2"></a>
-</span><span id="__span-2-3"><a id="__codelineno-2-3" name="__codelineno-2-3" href="#__codelineno-2-3"></a><span class="c1"># make sure you set the environment variable named OPENAI_API_KEY with your API key.</span>
-</span><span id="__span-2-4"><a id="__codelineno-2-4" name="__codelineno-2-4" href="#__codelineno-2-4"></a><span class="c1"># create an OpenAI model with generation temperature=1</span>
-</span><span id="__span-2-5"><a id="__codelineno-2-5" name="__codelineno-2-5" href="#__codelineno-2-5"></a><span class="n">model</span> <span class="o">=</span> <span class="n">OpenAIModel</span><span class="p">(</span><span class="s2">&quot;gpt-4&quot;</span><span class="p">,</span>
-</span><span id="__span-2-6"><a id="__codelineno-2-6" name="__codelineno-2-6" href="#__codelineno-2-6"></a>                    <span class="n">genconf</span><span class="o">=</span><span class="n">GenConf</span><span class="p">(</span><span class="n">temperature</span><span class="o">=</span><span class="mi">1</span><span class="p">))</span>
-</span><span id="__span-2-7"><a id="__codelineno-2-7" name="__codelineno-2-7" href="#__codelineno-2-7"></a>
-</span><span id="__span-2-8"><a id="__codelineno-2-8" name="__codelineno-2-8" href="#__codelineno-2-8"></a><span class="c1"># the instructions or system command: speak like a pirate!</span>
-</span><span id="__span-2-9"><a id="__codelineno-2-9" name="__codelineno-2-9" href="#__codelineno-2-9"></a><span class="n">inst_text</span> <span class="o">=</span> <span class="s2">&quot;You speak like a pirate.&quot;</span>
-</span><span id="__span-2-10"><a id="__codelineno-2-10" name="__codelineno-2-10" href="#__codelineno-2-10"></a>
-</span><span id="__span-2-11"><a id="__codelineno-2-11" name="__codelineno-2-11" href="#__codelineno-2-11"></a><span class="c1"># the in prompt</span>
-</span><span id="__span-2-12"><a id="__codelineno-2-12" name="__codelineno-2-12" href="#__codelineno-2-12"></a><span class="n">in_text</span> <span class="o">=</span> <span class="s2">&quot;Hello there?&quot;</span>
-</span><span id="__span-2-13"><a id="__codelineno-2-13" name="__codelineno-2-13" href="#__codelineno-2-13"></a><span class="nb">print</span><span class="p">(</span><span class="s2">&quot;User:&quot;</span><span class="p">,</span> <span class="n">in_text</span><span class="p">)</span>
-</span><span id="__span-2-14"><a id="__codelineno-2-14" name="__codelineno-2-14" href="#__codelineno-2-14"></a>
-</span><span id="__span-2-15"><a id="__codelineno-2-15" name="__codelineno-2-15" href="#__codelineno-2-15"></a><span class="c1"># query the model with instructions and input text</span>
-</span><span id="__span-2-16"><a id="__codelineno-2-16" name="__codelineno-2-16" href="#__codelineno-2-16"></a><span class="n">text</span> <span class="o">=</span> <span class="n">model</span><span class="p">(</span><span class="n">in_text</span><span class="p">,</span>
-</span><span id="__span-2-17"><a id="__codelineno-2-17" name="__codelineno-2-17" href="#__codelineno-2-17"></a>                <span class="n">inst</span><span class="o">=</span><span class="n">inst_text</span><span class="p">)</span>
-</span><span id="__span-2-18"><a id="__codelineno-2-18" name="__codelineno-2-18" href="#__codelineno-2-18"></a><span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Model:&quot;</span><span class="p">,</span> <span class="n">text</span><span class="p">)</span>
+<div class="language-text highlight"><pre><span></span><code>&#39;The total amount on the receipt is €5.88.&#39;
+</code></pre></div>
+<p>Good. Can the model extract the receipt item lines?</p>
+<div class="language-python highlight"><pre><span></span><code><span id="__span-2-1"><a id="__codelineno-2-1" name="__codelineno-2-1" href="#__codelineno-2-1"></a><span class="n">model</span><span class="p">((</span><span class="s2">&quot;List the lines of paid items in the receipt?&quot;</span><span class="p">,</span> 
+</span><span id="__span-2-2"><a id="__codelineno-2-2" name="__codelineno-2-2" href="#__codelineno-2-2"></a>       <span class="s2">&quot;https://upload.wikimedia.org/wikipedia/commons/6/6a/Receipts_in_Italy_13.jpg&quot;</span><span class="p">))</span>
 </span></code></pre></div>
-<div class="admonition success">
-<p class="admonition-title">Result</p>
-<div class="language-text highlight"><pre><span></span><code><span id="__span-3-1"><a id="__codelineno-3-1" name="__codelineno-3-1" href="#__codelineno-3-1"></a>User: Hello there?
-</span><span id="__span-3-2"><a id="__codelineno-3-2" name="__codelineno-3-2" href="#__codelineno-3-2"></a>Model: Ahoy there, matey! What can this old sea dog do fer ye today?
+<div class="language-text highlight"><pre><span></span><code>&#39;The lines of paid items in the receipt are:\n\n1. BIS BORSE TERM. S - €3.90\n2. GHIACCIO 2X400 G - €0.99\n3. GHIACCIO 2X400 G - €0.99&#39;
+</code></pre></div>
+<p>It did extract them well. </p>
+<p>Let's wrap this in a Pydantic object to get structured data from the model. We'll add a field for the data listed in the receipt:</p>
+<div class="language-python highlight"><pre><span></span><code><span id="__span-3-1"><a id="__codelineno-3-1" name="__codelineno-3-1" href="#__codelineno-3-1"></a><span class="kn">from</span> <span class="nn">pydantic</span> <span class="kn">import</span> <span class="n">BaseModel</span><span class="p">,</span> <span class="n">Field</span>
+</span><span id="__span-3-2"><a id="__codelineno-3-2" name="__codelineno-3-2" href="#__codelineno-3-2"></a><span class="kn">from</span> <span class="nn">datetime</span> <span class="kn">import</span> <span class="n">datetime</span>
+</span><span id="__span-3-3"><a id="__codelineno-3-3" name="__codelineno-3-3" href="#__codelineno-3-3"></a>
+</span><span id="__span-3-4"><a id="__codelineno-3-4" name="__codelineno-3-4" href="#__codelineno-3-4"></a><span class="k">class</span> <span class="nc">ReceiptLine</span><span class="p">(</span><span class="n">BaseModel</span><span class="p">):</span>
+</span><span id="__span-3-5"><a id="__codelineno-3-5" name="__codelineno-3-5" href="#__codelineno-3-5"></a><span class="w">    </span><span class="sd">&quot;&quot;&quot;Receipt line data&quot;&quot;&quot;</span>
+</span><span id="__span-3-6"><a id="__codelineno-3-6" name="__codelineno-3-6" href="#__codelineno-3-6"></a>    <span class="n">description</span><span class="p">:</span> <span class="nb">str</span>
+</span><span id="__span-3-7"><a id="__codelineno-3-7" name="__codelineno-3-7" href="#__codelineno-3-7"></a>    <span class="n">cost</span><span class="p">:</span> <span class="nb">float</span>
+</span><span id="__span-3-8"><a id="__codelineno-3-8" name="__codelineno-3-8" href="#__codelineno-3-8"></a>
+</span><span id="__span-3-9"><a id="__codelineno-3-9" name="__codelineno-3-9" href="#__codelineno-3-9"></a><span class="k">class</span> <span class="nc">Receipt</span><span class="p">(</span><span class="n">BaseModel</span><span class="p">):</span>
+</span><span id="__span-3-10"><a id="__codelineno-3-10" name="__codelineno-3-10" href="#__codelineno-3-10"></a><span class="w">    </span><span class="sd">&quot;&quot;&quot;Receipt information&quot;&quot;&quot;</span>
+</span><span id="__span-3-11"><a id="__codelineno-3-11" name="__codelineno-3-11" href="#__codelineno-3-11"></a>    <span class="n">total</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span><span class="n">description</span><span class="o">=</span><span class="s2">&quot;Total value&quot;</span><span class="p">)</span>
+</span><span id="__span-3-12"><a id="__codelineno-3-12" name="__codelineno-3-12" href="#__codelineno-3-12"></a>    <span class="n">lines</span><span class="p">:</span> <span class="nb">list</span><span class="p">[</span><span class="n">ReceiptLine</span><span class="p">]</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span><span class="n">description</span><span class="o">=</span><span class="s2">&quot;List of lines of paid items&quot;</span><span class="p">)</span>
+</span><span id="__span-3-13"><a id="__codelineno-3-13" name="__codelineno-3-13" href="#__codelineno-3-13"></a>    <span class="n">date</span><span class="p">:</span> <span class="n">datetime</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span><span class="n">description</span><span class="o">=</span><span class="s2">&quot;Listed date&quot;</span><span class="p">)</span>
+</span><span id="__span-3-14"><a id="__codelineno-3-14" name="__codelineno-3-14" href="#__codelineno-3-14"></a>
+</span><span id="__span-3-15"><a id="__codelineno-3-15" name="__codelineno-3-15" href="#__codelineno-3-15"></a><span class="n">info</span> <span class="o">=</span> <span class="n">model</span><span class="o">.</span><span class="n">extract</span><span class="p">(</span><span class="n">Receipt</span><span class="p">,</span>
+</span><span id="__span-3-16"><a id="__codelineno-3-16" name="__codelineno-3-16" href="#__codelineno-3-16"></a>                     <span class="p">(</span><span class="s2">&quot;Extract receipt information.&quot;</span><span class="p">,</span> 
+</span><span id="__span-3-17"><a id="__codelineno-3-17" name="__codelineno-3-17" href="#__codelineno-3-17"></a>                      <span class="s2">&quot;https://upload.wikimedia.org/wikipedia/commons/6/6a/Receipts_in_Italy_13.jpg&quot;</span><span class="p">))</span>
+</span><span id="__span-3-18"><a id="__codelineno-3-18" name="__codelineno-3-18" href="#__codelineno-3-18"></a><span class="n">info</span>
 </span></code></pre></div>
-</div>
-</div>
-<p>You're all set if you only plan to use remote OpenAI models.</p>
-<h2 id="with-a-local-model">With a local model<a class="headerlink" href="#with-a-local-model" title="Permanent link">#</a></h2>
-<p>Local models run from files in GGUF format which are loaded run by the llama.cpp component.</p>
-<p>You'll need to download a GGUF model file: we suggest OpenChat 3.5 - an excellent 7B parameters quantized model that will run in less thant 7Gb of memory. </p>
-<p>To download the OpenChat model file, please see <a href="../models/local_model/#openchat-model">Download OpenChat model</a>.</p>
-<p>After downloading the file, you can run this "Hello Model" script:</p>
-<div class="admonition example">
-<p class="admonition-title">Example</p>
-<div class="language-python highlight"><pre><span></span><code><span id="__span-4-1"><a id="__codelineno-4-1" name="__codelineno-4-1" href="#__codelineno-4-1"></a><span class="kn">from</span> <span class="nn">sibila</span> <span class="kn">import</span> <span class="n">LlamaCppModel</span><span class="p">,</span> <span class="n">GenConf</span>
-</span><span id="__span-4-2"><a id="__codelineno-4-2" name="__codelineno-4-2" href="#__codelineno-4-2"></a>
-</span><span id="__span-4-3"><a id="__codelineno-4-3" name="__codelineno-4-3" href="#__codelineno-4-3"></a><span class="c1"># model file from the models folder - change if different:</span>
-</span><span id="__span-4-4"><a id="__codelineno-4-4" name="__codelineno-4-4" href="#__codelineno-4-4"></a><span class="n">model_path</span> <span class="o">=</span> <span class="s2">&quot;../../models/openchat-3.5-1210.Q4_K_M.gguf&quot;</span>
-</span><span id="__span-4-5"><a id="__codelineno-4-5" name="__codelineno-4-5" href="#__codelineno-4-5"></a>
-</span><span id="__span-4-6"><a id="__codelineno-4-6" name="__codelineno-4-6" href="#__codelineno-4-6"></a><span class="c1"># create a LlamaCpp model</span>
-</span><span id="__span-4-7"><a id="__codelineno-4-7" name="__codelineno-4-7" href="#__codelineno-4-7"></a><span class="n">model</span> <span class="o">=</span> <span class="n">LlamaCppModel</span><span class="p">(</span><span class="n">model_path</span><span class="p">,</span>
-</span><span id="__span-4-8"><a id="__codelineno-4-8" name="__codelineno-4-8" href="#__codelineno-4-8"></a>                      <span class="n">genconf</span><span class="o">=</span><span class="n">GenConf</span><span class="p">(</span><span class="n">temperature</span><span class="o">=</span><span class="mi">1</span><span class="p">))</span>
-</span><span id="__span-4-9"><a id="__codelineno-4-9" name="__codelineno-4-9" href="#__codelineno-4-9"></a>
-</span><span id="__span-4-10"><a id="__codelineno-4-10" name="__codelineno-4-10" href="#__codelineno-4-10"></a><span class="c1"># the instructions or system command: speak like a pirate!</span>
-</span><span id="__span-4-11"><a id="__codelineno-4-11" name="__codelineno-4-11" href="#__codelineno-4-11"></a><span class="n">inst_text</span> <span class="o">=</span> <span class="s2">&quot;You speak like a pirate.&quot;</span>
-</span><span id="__span-4-12"><a id="__codelineno-4-12" name="__codelineno-4-12" href="#__codelineno-4-12"></a>
-</span><span id="__span-4-13"><a id="__codelineno-4-13" name="__codelineno-4-13" href="#__codelineno-4-13"></a><span class="c1"># the in prompt</span>
-</span><span id="__span-4-14"><a id="__codelineno-4-14" name="__codelineno-4-14" href="#__codelineno-4-14"></a><span class="n">in_text</span> <span class="o">=</span> <span class="s2">&quot;Hello there?&quot;</span>
-</span><span id="__span-4-15"><a id="__codelineno-4-15" name="__codelineno-4-15" href="#__codelineno-4-15"></a><span class="nb">print</span><span class="p">(</span><span class="s2">&quot;User:&quot;</span><span class="p">,</span> <span class="n">in_text</span><span class="p">)</span>
-</span><span id="__span-4-16"><a id="__codelineno-4-16" name="__codelineno-4-16" href="#__codelineno-4-16"></a>
-</span><span id="__span-4-17"><a id="__codelineno-4-17" name="__codelineno-4-17" href="#__codelineno-4-17"></a><span class="c1"># query the model with instructions and input text</span>
-</span><span id="__span-4-18"><a id="__codelineno-4-18" name="__codelineno-4-18" href="#__codelineno-4-18"></a><span class="n">text</span> <span class="o">=</span> <span class="n">model</span><span class="p">(</span><span class="n">in_text</span><span class="p">,</span>
-</span><span id="__span-4-19"><a id="__codelineno-4-19" name="__codelineno-4-19" href="#__codelineno-4-19"></a>            <span class="n">inst</span><span class="o">=</span><span class="n">inst_text</span><span class="p">)</span>
-</span><span id="__span-4-20"><a id="__codelineno-4-20" name="__codelineno-4-20" href="#__codelineno-4-20"></a><span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Model:&quot;</span><span class="p">,</span> <span class="n">text</span><span class="p">)</span>
+<div class="language-text highlight"><pre><span></span><code>Receipt(total=5.88, lines=[ReceiptLine(description=&#39;BIS BORSE TERM.S&#39;, cost=3.9), ReceiptLine(description=&#39;GHIACCIO 2X400 G&#39;, cost=0.99), ReceiptLine(description=&#39;GHIACCIO 2X400 G&#39;, cost=0.99)], date=datetime.datetime(2014, 8, 27, 19, 51, tzinfo=TzInfo(UTC)))
+</code></pre></div>
+<div class="language-python highlight"><pre><span></span><code><span id="__span-4-1"><a id="__codelineno-4-1" name="__codelineno-4-1" href="#__codelineno-4-1"></a><span class="k">for</span> <span class="n">line</span> <span class="ow">in</span> <span class="n">info</span><span class="o">.</span><span class="n">lines</span><span class="p">:</span>
+</span><span id="__span-4-2"><a id="__codelineno-4-2" name="__codelineno-4-2" href="#__codelineno-4-2"></a>    <span class="nb">print</span><span class="p">(</span><span class="n">line</span><span class="p">)</span>
+</span><span id="__span-4-3"><a id="__codelineno-4-3" name="__codelineno-4-3" href="#__codelineno-4-3"></a><span class="nb">print</span><span class="p">(</span><span class="s2">&quot;total:&quot;</span><span class="p">,</span> <span class="n">info</span><span class="o">.</span><span class="n">total</span><span class="p">)</span>
 </span></code></pre></div>
-<div class="admonition success">
-<p class="admonition-title">Result</p>
-<div class="language-text highlight"><pre><span></span><code><span id="__span-5-1"><a id="__codelineno-5-1" name="__codelineno-5-1" href="#__codelineno-5-1"></a>User: Hello there?
-</span><span id="__span-5-2"><a id="__codelineno-5-2" name="__codelineno-5-2" href="#__codelineno-5-2"></a>Model: Ahoy there matey! How can I assist ye today on this here ship o&#39; mine?
-</span><span id="__span-5-3"><a id="__codelineno-5-3" name="__codelineno-5-3" href="#__codelineno-5-3"></a>Is it be treasure you seek or maybe some tales from the sea?
-</span><span id="__span-5-4"><a id="__codelineno-5-4" name="__codelineno-5-4" href="#__codelineno-5-4"></a>Let me know, and we&#39;ll set sail together!
-</span></code></pre></div>
-</div>
-</div>
-<p>If the above scripts output similar pirate talk, Sibila should be working fine.</p>
+<div class="language-text highlight"><pre><span></span><code>description=&#39;BIS BORSE TERM.S&#39; cost=3.9
+description=&#39;GHIACCIO 2X400 G&#39; cost=0.99
+description=&#39;GHIACCIO 2X400 G&#39; cost=0.99
+total: 5.88
+</code></pre></div>
+<p>All the information is correct and structured in an object that we can use as needed.</p>
+<p>From here we could expand the Pydantic object with more fields to extract other information present in the receipt like merchant name, VAT number, etc.</p>
+<p><a href="https://github.com/jndiogo/sibila/tree/main/examples/receipt">Example's assets at GitHub</a>.</p>
 
 
 
 
 
 
-
-  
-  
 
 
 
@@ -2198,10 +2105,10 @@
     </div>
     
     
-    <script id="__config" type="application/json">{"base": "..", "features": ["navigation.tabs", "navigation.tabs.sticky", "navigation.sections", "navigation.expand", "navigation.path", "navigation.indexes", "toc.follow", "content.code.copy"], "search": "../assets/javascripts/workers/search.b8dbb3d2.min.js", "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}}</script>
+    <script id="__config" type="application/json">{"base": "../..", "features": ["navigation.tabs", "navigation.tabs.sticky", "navigation.sections", "navigation.expand", "navigation.path", "navigation.indexes", "toc.follow", "content.code.copy"], "search": "../../assets/javascripts/workers/search.b8dbb3d2.min.js", "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}}</script>
     
     
-      <script src="../assets/javascripts/bundle.e1c3ead8.min.js"></script>
+      <script src="../../assets/javascripts/bundle.e1c3ead8.min.js"></script>
       
     
   </body>

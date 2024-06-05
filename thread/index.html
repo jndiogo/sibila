@@ -8,13 +8,13 @@
       
       
       
-        <link rel="canonical" href="https://jndiogo.github.io/sibila/first_run/">
+        <link rel="canonical" href="https://jndiogo.github.io/sibila/thread/">
       
       
-        <link rel="prev" href="../installing/">
+        <link rel="prev" href="../extract/free_text/">
       
       
-        <link rel="next" href="../models/remote_model/">
+        <link rel="next" href="../async/">
       
       
       <link rel="icon" href="../assets/images/favicon.png">
@@ -22,7 +22,7 @@
     
     
       
-        <title>First run - Sibila</title>
+        <title>Threads and messages - Sibila</title>
       
     
     
@@ -78,7 +78,7 @@
     <div data-md-component="skip">
       
         
-        <a href="#with-a-remote-model" class="md-skip">
+        <a href="#messages" class="md-skip">
           Skip to content
         </a>
       
@@ -114,7 +114,7 @@
         <div class="md-header__topic" data-md-component="header-topic">
           <span class="md-ellipsis">
             
-              First run
+              Threads and messages
             
           </span>
         </div>
@@ -422,10 +422,8 @@
                 
   
   
-    
   
   
-  
     
     
       
@@ -440,12 +438,14 @@
       
       
     
-    <li class="md-nav__item md-nav__item--active md-nav__item--section md-nav__item--nested">
+    <li class="md-nav__item md-nav__item--section md-nav__item--nested">
       
         
         
         
-        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_1_3" checked>
+          
+        
+        <input class="md-nav__toggle md-toggle md-toggle--indeterminate" type="checkbox" id="__nav_1_3" >
         
           
           <label class="md-nav__link" for="__nav_1_3" id="__nav_1_3_label" tabindex="">
@@ -459,7 +459,7 @@
             <span class="md-nav__icon md-icon"></span>
           </label>
         
-        <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_1_3_label" aria-expanded="true">
+        <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_1_3_label" aria-expanded="false">
           <label class="md-nav__title" for="__nav_1_3">
             <span class="md-nav__icon md-icon"></span>
             Getting Started
@@ -491,28 +491,10 @@
                 
   
   
-    
   
   
-  
-    <li class="md-nav__item md-nav__item--active">
-      
-      <input class="md-nav__toggle md-toggle" type="checkbox" id="__toc">
-      
-      
-      
-        <label class="md-nav__link md-nav__link--active" for="__toc">
-          
-  
-  <span class="md-ellipsis">
-    First run
-  </span>
-  
-
-          <span class="md-nav__icon md-icon"></span>
-        </label>
-      
-      <a href="./" class="md-nav__link md-nav__link--active">
+    <li class="md-nav__item">
+      <a href="../first_run/" class="md-nav__link">
         
   
   <span class="md-ellipsis">
@@ -521,44 +503,6 @@
   
 
       </a>
-      
-        
-
-  
-
-<nav class="md-nav md-nav--secondary" aria-label="Contents">
-  
-  
-  
-  
-    <label class="md-nav__title" for="__toc">
-      <span class="md-nav__icon md-icon"></span>
-      Contents
-    </label>
-    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
-      
-        <li class="md-nav__item">
-  <a href="#with-a-remote-model" class="md-nav__link">
-    <span class="md-ellipsis">
-      With a remote model
-    </span>
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#with-a-local-model" class="md-nav__link">
-    <span class="md-ellipsis">
-      With a local model
-    </span>
-  </a>
-  
-</li>
-      
-    </ul>
-  
-</nav>
-      
     </li>
   
 
@@ -1316,10 +1260,28 @@
                 
   
   
+    
   
   
-    <li class="md-nav__item">
-      <a href="../thread/" class="md-nav__link">
+  
+    <li class="md-nav__item md-nav__item--active">
+      
+      <input class="md-nav__toggle md-toggle" type="checkbox" id="__toc">
+      
+      
+      
+        <label class="md-nav__link md-nav__link--active" for="__toc">
+          
+  
+  <span class="md-ellipsis">
+    Threads and messages
+  </span>
+  
+
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
+      <a href="./" class="md-nav__link md-nav__link--active">
         
   
   <span class="md-ellipsis">
@@ -1328,6 +1290,62 @@
   
 
       </a>
+      
+        
+
+  
+
+<nav class="md-nav md-nav--secondary" aria-label="Contents">
+  
+  
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Contents
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#messages" class="md-nav__link">
+    <span class="md-ellipsis">
+      Messages
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#initializing-a-thread" class="md-nav__link">
+    <span class="md-ellipsis">
+      Initializing a Thread
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#adding-messages-to-a-thread" class="md-nav__link">
+    <span class="md-ellipsis">
+      Adding messages to a Thread
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#messages-with-images" class="md-nav__link">
+    <span class="md-ellipsis">
+      Messages with images
+    </span>
+  </a>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+      
     </li>
   
 
@@ -2029,18 +2047,36 @@
     <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
       
         <li class="md-nav__item">
-  <a href="#with-a-remote-model" class="md-nav__link">
+  <a href="#messages" class="md-nav__link">
     <span class="md-ellipsis">
-      With a remote model
+      Messages
     </span>
   </a>
   
 </li>
       
         <li class="md-nav__item">
-  <a href="#with-a-local-model" class="md-nav__link">
+  <a href="#initializing-a-thread" class="md-nav__link">
     <span class="md-ellipsis">
-      With a local model
+      Initializing a Thread
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#adding-messages-to-a-thread" class="md-nav__link">
+    <span class="md-ellipsis">
+      Adding messages to a Thread
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#messages-with-images" class="md-nav__link">
+    <span class="md-ellipsis">
+      Messages with images
     </span>
   </a>
   
@@ -2064,91 +2100,132 @@
   
 
 
-  <h1>First run</h1>
+  <h1>Threads and messages</h1>
 
-<h2 id="with-a-remote-model">With a remote model<a class="headerlink" href="#with-a-remote-model" title="Permanent link">#</a></h2>
-<p>Sibila can use remote models from OpenAI, Anthropic, Mistral and other providers. For example, to use an OpenAI remote model, you'll need a paid OpenAI account and its API key. You can explicitly pass this key in your script but this is a poor security practice. </p>
-<p>A better way is to define an environment variable which the OpenAI API will use when needed:</p>
-<div class="tabbed-set tabbed-alternate" data-tabs="1:2"><input checked="checked" id="__tabbed_1_1" name="__tabbed_1" type="radio" /><input id="__tabbed_1_2" name="__tabbed_1" type="radio" /><div class="tabbed-labels"><label for="__tabbed_1_1">Linux and Mac</label><label for="__tabbed_1_2">Windows</label></div>
-<div class="tabbed-content">
-<div class="tabbed-block">
-<div class="language-text highlight"><pre><span></span><code><span id="__span-0-1"><a id="__codelineno-0-1" name="__codelineno-0-1" href="#__codelineno-0-1"></a>export OPENAI_API_KEY=&quot;...&quot;
+<p>A thread stores a sequence of alternating input/output messages, where the inputs are user prompts and the outputs are model responses. </p>
+<p>All model interactions in Sibila are based on threads, even when you pass a single text prompt like this:</p>
+<div class="language-python highlight"><pre><span></span><code><span id="__span-0-1"><a id="__codelineno-0-1" name="__codelineno-0-1" href="#__codelineno-0-1"></a><span class="n">model</span><span class="o">.</span><span class="n">extract</span><span class="p">(</span><span class="nb">float</span><span class="p">,</span> 
+</span><span id="__span-0-2"><a id="__codelineno-0-2" name="__codelineno-0-2" href="#__codelineno-0-2"></a>              <span class="s2">&quot;That will be ten euros and 57 cents, please&quot;</span><span class="p">)</span>
 </span></code></pre></div>
-</div>
-<div class="tabbed-block">
-<div class="language-text highlight"><pre><span></span><code><span id="__span-1-1"><a id="__codelineno-1-1" name="__codelineno-1-1" href="#__codelineno-1-1"></a>setx OPENAI_API_KEY &quot;...&quot;
+<p>The text "That will be ten euros and 57 cents, please" is internally converted into a Thread with a single input message. So that's a shortcut for:</p>
+<div class="language-python highlight"><pre><span></span><code><span id="__span-1-1"><a id="__codelineno-1-1" name="__codelineno-1-1" href="#__codelineno-1-1"></a><span class="kn">from</span> <span class="nn">sibila</span> <span class="kn">import</span> <span class="n">Thread</span>
+</span><span id="__span-1-2"><a id="__codelineno-1-2" name="__codelineno-1-2" href="#__codelineno-1-2"></a><span class="n">model</span><span class="o">.</span><span class="n">extract</span><span class="p">(</span><span class="nb">float</span><span class="p">,</span> 
+</span><span id="__span-1-3"><a id="__codelineno-1-3" name="__codelineno-1-3" href="#__codelineno-1-3"></a>              <span class="n">Thread</span><span class="p">(</span><span class="s2">&quot;That will be ten euros and 57 cents, please&quot;</span><span class="p">))</span>
 </span></code></pre></div>
-</div>
-</div>
-</div>
-<p>Having set this variable with your OpenAI API key, you can run a "Hello Model" like this:</p>
+<p>The <a href="../api-reference/thread/#sibila.Thread">Thread class</a> supports many alternative ways to be initialized and handled and that's what we'll see below.</p>
+<h2 id="messages">Messages<a class="headerlink" href="#messages" title="Permanent link">#</a></h2>
+<p>A thread is made of messages, which alternate between input (kind = IN) and output (kind = OUT) messages. </p>
+<p>For convenience, there are several ways to create a message, which is an instance of the <a href="../api-reference/thread/#sibila.Msg">Msg class</a>:</p>
 <div class="admonition example">
 <p class="admonition-title">Example</p>
-<div class="language-python highlight"><pre><span></span><code><span id="__span-2-1"><a id="__codelineno-2-1" name="__codelineno-2-1" href="#__codelineno-2-1"></a><span class="kn">from</span> <span class="nn">sibila</span> <span class="kn">import</span> <span class="n">OpenAIModel</span><span class="p">,</span> <span class="n">GenConf</span>
+<div class="language-python highlight"><pre><span></span><code><span id="__span-2-1"><a id="__codelineno-2-1" name="__codelineno-2-1" href="#__codelineno-2-1"></a><span class="kn">from</span> <span class="nn">sibila</span> <span class="kn">import</span> <span class="n">Msg</span>
 </span><span id="__span-2-2"><a id="__codelineno-2-2" name="__codelineno-2-2" href="#__codelineno-2-2"></a>
-</span><span id="__span-2-3"><a id="__codelineno-2-3" name="__codelineno-2-3" href="#__codelineno-2-3"></a><span class="c1"># make sure you set the environment variable named OPENAI_API_KEY with your API key.</span>
-</span><span id="__span-2-4"><a id="__codelineno-2-4" name="__codelineno-2-4" href="#__codelineno-2-4"></a><span class="c1"># create an OpenAI model with generation temperature=1</span>
-</span><span id="__span-2-5"><a id="__codelineno-2-5" name="__codelineno-2-5" href="#__codelineno-2-5"></a><span class="n">model</span> <span class="o">=</span> <span class="n">OpenAIModel</span><span class="p">(</span><span class="s2">&quot;gpt-4&quot;</span><span class="p">,</span>
-</span><span id="__span-2-6"><a id="__codelineno-2-6" name="__codelineno-2-6" href="#__codelineno-2-6"></a>                    <span class="n">genconf</span><span class="o">=</span><span class="n">GenConf</span><span class="p">(</span><span class="n">temperature</span><span class="o">=</span><span class="mi">1</span><span class="p">))</span>
-</span><span id="__span-2-7"><a id="__codelineno-2-7" name="__codelineno-2-7" href="#__codelineno-2-7"></a>
-</span><span id="__span-2-8"><a id="__codelineno-2-8" name="__codelineno-2-8" href="#__codelineno-2-8"></a><span class="c1"># the instructions or system command: speak like a pirate!</span>
-</span><span id="__span-2-9"><a id="__codelineno-2-9" name="__codelineno-2-9" href="#__codelineno-2-9"></a><span class="n">inst_text</span> <span class="o">=</span> <span class="s2">&quot;You speak like a pirate.&quot;</span>
-</span><span id="__span-2-10"><a id="__codelineno-2-10" name="__codelineno-2-10" href="#__codelineno-2-10"></a>
-</span><span id="__span-2-11"><a id="__codelineno-2-11" name="__codelineno-2-11" href="#__codelineno-2-11"></a><span class="c1"># the in prompt</span>
-</span><span id="__span-2-12"><a id="__codelineno-2-12" name="__codelineno-2-12" href="#__codelineno-2-12"></a><span class="n">in_text</span> <span class="o">=</span> <span class="s2">&quot;Hello there?&quot;</span>
-</span><span id="__span-2-13"><a id="__codelineno-2-13" name="__codelineno-2-13" href="#__codelineno-2-13"></a><span class="nb">print</span><span class="p">(</span><span class="s2">&quot;User:&quot;</span><span class="p">,</span> <span class="n">in_text</span><span class="p">)</span>
-</span><span id="__span-2-14"><a id="__codelineno-2-14" name="__codelineno-2-14" href="#__codelineno-2-14"></a>
-</span><span id="__span-2-15"><a id="__codelineno-2-15" name="__codelineno-2-15" href="#__codelineno-2-15"></a><span class="c1"># query the model with instructions and input text</span>
-</span><span id="__span-2-16"><a id="__codelineno-2-16" name="__codelineno-2-16" href="#__codelineno-2-16"></a><span class="n">text</span> <span class="o">=</span> <span class="n">model</span><span class="p">(</span><span class="n">in_text</span><span class="p">,</span>
-</span><span id="__span-2-17"><a id="__codelineno-2-17" name="__codelineno-2-17" href="#__codelineno-2-17"></a>                <span class="n">inst</span><span class="o">=</span><span class="n">inst_text</span><span class="p">)</span>
-</span><span id="__span-2-18"><a id="__codelineno-2-18" name="__codelineno-2-18" href="#__codelineno-2-18"></a><span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Model:&quot;</span><span class="p">,</span> <span class="n">text</span><span class="p">)</span>
+</span><span id="__span-2-3"><a id="__codelineno-2-3" name="__codelineno-2-3" href="#__codelineno-2-3"></a><span class="n">m1</span> <span class="o">=</span> <span class="n">Msg</span><span class="p">(</span><span class="n">Msg</span><span class="o">.</span><span class="n">Kind</span><span class="o">.</span><span class="n">IN</span><span class="p">,</span> <span class="s2">&quot;Hello model!&quot;</span><span class="p">)</span>
+</span><span id="__span-2-4"><a id="__codelineno-2-4" name="__codelineno-2-4" href="#__codelineno-2-4"></a><span class="n">m2</span> <span class="o">=</span> <span class="n">Msg</span><span class="p">(</span><span class="n">Msg</span><span class="o">.</span><span class="n">Kind</span><span class="o">.</span><span class="n">OUT</span><span class="p">,</span> <span class="s2">&quot;Hello human. How can I help?&quot;</span><span class="p">)</span>
+</span><span id="__span-2-5"><a id="__codelineno-2-5" name="__codelineno-2-5" href="#__codelineno-2-5"></a>
+</span><span id="__span-2-6"><a id="__codelineno-2-6" name="__codelineno-2-6" href="#__codelineno-2-6"></a><span class="n">m3</span> <span class="o">=</span> <span class="n">Msg</span><span class="o">.</span><span class="n">make_IN</span><span class="p">(</span><span class="s2">&quot;Can you tell me a motivating tale?&quot;</span><span class="p">)</span>
+</span><span id="__span-2-7"><a id="__codelineno-2-7" name="__codelineno-2-7" href="#__codelineno-2-7"></a><span class="n">m4</span> <span class="o">=</span> <span class="n">Msg</span><span class="o">.</span><span class="n">make_OUT</span><span class="p">(</span><span class="s2">&quot;Sorry, I can&#39;t think of anything, no.&quot;</span><span class="p">)</span>
+</span><span id="__span-2-8"><a id="__codelineno-2-8" name="__codelineno-2-8" href="#__codelineno-2-8"></a>
+</span><span id="__span-2-9"><a id="__codelineno-2-9" name="__codelineno-2-9" href="#__codelineno-2-9"></a><span class="n">th</span> <span class="o">=</span> <span class="n">Thread</span><span class="p">([</span><span class="n">m1</span><span class="p">,</span> <span class="n">m2</span><span class="p">,</span> <span class="n">m3</span><span class="p">,</span> <span class="n">m4</span><span class="p">])</span>
+</span><span id="__span-2-10"><a id="__codelineno-2-10" name="__codelineno-2-10" href="#__codelineno-2-10"></a><span class="n">th</span>
 </span></code></pre></div>
 <div class="admonition success">
 <p class="admonition-title">Result</p>
-<div class="language-text highlight"><pre><span></span><code><span id="__span-3-1"><a id="__codelineno-3-1" name="__codelineno-3-1" href="#__codelineno-3-1"></a>User: Hello there?
-</span><span id="__span-3-2"><a id="__codelineno-3-2" name="__codelineno-3-2" href="#__codelineno-3-2"></a>Model: Ahoy there, matey! What can this old sea dog do fer ye today?
+<div class="language-text highlight"><pre><span></span><code><span id="__span-3-1"><a id="__codelineno-3-1" name="__codelineno-3-1" href="#__codelineno-3-1"></a>Thread inst=&#39;&#39;, join_sep=&#39;\n&#39;, len=4
+</span><span id="__span-3-2"><a id="__codelineno-3-2" name="__codelineno-3-2" href="#__codelineno-3-2"></a>0: IN=&#39;Hello model!&#39;
+</span><span id="__span-3-3"><a id="__codelineno-3-3" name="__codelineno-3-3" href="#__codelineno-3-3"></a>1: OUT=&#39;Hello human. How can I help?&#39;
+</span><span id="__span-3-4"><a id="__codelineno-3-4" name="__codelineno-3-4" href="#__codelineno-3-4"></a>2: IN=&#39;Can you tell me a motivating tale?&#39;
+</span><span id="__span-3-5"><a id="__codelineno-3-5" name="__codelineno-3-5" href="#__codelineno-3-5"></a>3: OUT=&quot;Sorry, I can&#39;t think of anything, no.&quot;
 </span></code></pre></div>
 </div>
 </div>
-<p>You're all set if you only plan to use remote OpenAI models.</p>
-<h2 id="with-a-local-model">With a local model<a class="headerlink" href="#with-a-local-model" title="Permanent link">#</a></h2>
-<p>Local models run from files in GGUF format which are loaded run by the llama.cpp component.</p>
-<p>You'll need to download a GGUF model file: we suggest OpenChat 3.5 - an excellent 7B parameters quantized model that will run in less thant 7Gb of memory. </p>
-<p>To download the OpenChat model file, please see <a href="../models/local_model/#openchat-model">Download OpenChat model</a>.</p>
-<p>After downloading the file, you can run this "Hello Model" script:</p>
+<p>Besides IN and OUT kinds there are also messages of the INST kind, which are used to specify the instructions or system message that some models use. For models that don't use instructions/system message, any INST message is automatically prepended to the first IN message.</p>
+<p>INST text is set when initializing a thread or by directly setting thread.inst.text to a string value.</p>
+<h2 id="initializing-a-thread">Initializing a Thread<a class="headerlink" href="#initializing-a-thread" title="Permanent link">#</a></h2>
+<p>Creating individual Msg objects to initialize a Thread, such as we've seen above, is too much work. A thread can be initialized with a list of messages in a few ways:</p>
 <div class="admonition example">
 <p class="admonition-title">Example</p>
-<div class="language-python highlight"><pre><span></span><code><span id="__span-4-1"><a id="__codelineno-4-1" name="__codelineno-4-1" href="#__codelineno-4-1"></a><span class="kn">from</span> <span class="nn">sibila</span> <span class="kn">import</span> <span class="n">LlamaCppModel</span><span class="p">,</span> <span class="n">GenConf</span>
-</span><span id="__span-4-2"><a id="__codelineno-4-2" name="__codelineno-4-2" href="#__codelineno-4-2"></a>
-</span><span id="__span-4-3"><a id="__codelineno-4-3" name="__codelineno-4-3" href="#__codelineno-4-3"></a><span class="c1"># model file from the models folder - change if different:</span>
-</span><span id="__span-4-4"><a id="__codelineno-4-4" name="__codelineno-4-4" href="#__codelineno-4-4"></a><span class="n">model_path</span> <span class="o">=</span> <span class="s2">&quot;../../models/openchat-3.5-1210.Q4_K_M.gguf&quot;</span>
-</span><span id="__span-4-5"><a id="__codelineno-4-5" name="__codelineno-4-5" href="#__codelineno-4-5"></a>
-</span><span id="__span-4-6"><a id="__codelineno-4-6" name="__codelineno-4-6" href="#__codelineno-4-6"></a><span class="c1"># create a LlamaCpp model</span>
-</span><span id="__span-4-7"><a id="__codelineno-4-7" name="__codelineno-4-7" href="#__codelineno-4-7"></a><span class="n">model</span> <span class="o">=</span> <span class="n">LlamaCppModel</span><span class="p">(</span><span class="n">model_path</span><span class="p">,</span>
-</span><span id="__span-4-8"><a id="__codelineno-4-8" name="__codelineno-4-8" href="#__codelineno-4-8"></a>                      <span class="n">genconf</span><span class="o">=</span><span class="n">GenConf</span><span class="p">(</span><span class="n">temperature</span><span class="o">=</span><span class="mi">1</span><span class="p">))</span>
-</span><span id="__span-4-9"><a id="__codelineno-4-9" name="__codelineno-4-9" href="#__codelineno-4-9"></a>
-</span><span id="__span-4-10"><a id="__codelineno-4-10" name="__codelineno-4-10" href="#__codelineno-4-10"></a><span class="c1"># the instructions or system command: speak like a pirate!</span>
-</span><span id="__span-4-11"><a id="__codelineno-4-11" name="__codelineno-4-11" href="#__codelineno-4-11"></a><span class="n">inst_text</span> <span class="o">=</span> <span class="s2">&quot;You speak like a pirate.&quot;</span>
-</span><span id="__span-4-12"><a id="__codelineno-4-12" name="__codelineno-4-12" href="#__codelineno-4-12"></a>
-</span><span id="__span-4-13"><a id="__codelineno-4-13" name="__codelineno-4-13" href="#__codelineno-4-13"></a><span class="c1"># the in prompt</span>
-</span><span id="__span-4-14"><a id="__codelineno-4-14" name="__codelineno-4-14" href="#__codelineno-4-14"></a><span class="n">in_text</span> <span class="o">=</span> <span class="s2">&quot;Hello there?&quot;</span>
-</span><span id="__span-4-15"><a id="__codelineno-4-15" name="__codelineno-4-15" href="#__codelineno-4-15"></a><span class="nb">print</span><span class="p">(</span><span class="s2">&quot;User:&quot;</span><span class="p">,</span> <span class="n">in_text</span><span class="p">)</span>
-</span><span id="__span-4-16"><a id="__codelineno-4-16" name="__codelineno-4-16" href="#__codelineno-4-16"></a>
-</span><span id="__span-4-17"><a id="__codelineno-4-17" name="__codelineno-4-17" href="#__codelineno-4-17"></a><span class="c1"># query the model with instructions and input text</span>
-</span><span id="__span-4-18"><a id="__codelineno-4-18" name="__codelineno-4-18" href="#__codelineno-4-18"></a><span class="n">text</span> <span class="o">=</span> <span class="n">model</span><span class="p">(</span><span class="n">in_text</span><span class="p">,</span>
-</span><span id="__span-4-19"><a id="__codelineno-4-19" name="__codelineno-4-19" href="#__codelineno-4-19"></a>            <span class="n">inst</span><span class="o">=</span><span class="n">inst_text</span><span class="p">)</span>
-</span><span id="__span-4-20"><a id="__codelineno-4-20" name="__codelineno-4-20" href="#__codelineno-4-20"></a><span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Model:&quot;</span><span class="p">,</span> <span class="n">text</span><span class="p">)</span>
+<div class="language-python highlight"><pre><span></span><code><span id="__span-4-1"><a id="__codelineno-4-1" name="__codelineno-4-1" href="#__codelineno-4-1"></a><span class="c1"># alternating IN and OUT kinds, inferred automatically:</span>
+</span><span id="__span-4-2"><a id="__codelineno-4-2" name="__codelineno-4-2" href="#__codelineno-4-2"></a><span class="n">th</span> <span class="o">=</span> <span class="n">Thread</span><span class="p">([</span><span class="s2">&quot;Hello model!&quot;</span><span class="p">,</span>
+</span><span id="__span-4-3"><a id="__codelineno-4-3" name="__codelineno-4-3" href="#__codelineno-4-3"></a>             <span class="s2">&quot;Hello human. How can I help?&quot;</span><span class="p">])</span>
+</span><span id="__span-4-4"><a id="__codelineno-4-4" name="__codelineno-4-4" href="#__codelineno-4-4"></a>
+</span><span id="__span-4-5"><a id="__codelineno-4-5" name="__codelineno-4-5" href="#__codelineno-4-5"></a><span class="c1"># append another Thread initialized with ChatML format dicts</span>
+</span><span id="__span-4-6"><a id="__codelineno-4-6" name="__codelineno-4-6" href="#__codelineno-4-6"></a><span class="n">th</span> <span class="o">+=</span> <span class="n">Thread</span><span class="p">([{</span><span class="s2">&quot;role&quot;</span><span class="p">:</span> <span class="s2">&quot;user&quot;</span><span class="p">,</span> <span class="s2">&quot;content&quot;</span><span class="p">:</span> <span class="s2">&quot;Can you tell me a motivating tale?&quot;</span><span class="p">},</span>
+</span><span id="__span-4-7"><a id="__codelineno-4-7" name="__codelineno-4-7" href="#__codelineno-4-7"></a>              <span class="p">{</span><span class="s2">&quot;role&quot;</span><span class="p">:</span> <span class="s2">&quot;assistant&quot;</span><span class="p">,</span> <span class="s2">&quot;content&quot;</span><span class="p">:</span> <span class="s2">&quot;Sorry, I can&#39;t think of anything, no.&quot;</span><span class="p">}])</span>
+</span><span id="__span-4-8"><a id="__codelineno-4-8" name="__codelineno-4-8" href="#__codelineno-4-8"></a><span class="n">th</span>
 </span></code></pre></div>
 <div class="admonition success">
 <p class="admonition-title">Result</p>
-<div class="language-text highlight"><pre><span></span><code><span id="__span-5-1"><a id="__codelineno-5-1" name="__codelineno-5-1" href="#__codelineno-5-1"></a>User: Hello there?
-</span><span id="__span-5-2"><a id="__codelineno-5-2" name="__codelineno-5-2" href="#__codelineno-5-2"></a>Model: Ahoy there matey! How can I assist ye today on this here ship o&#39; mine?
-</span><span id="__span-5-3"><a id="__codelineno-5-3" name="__codelineno-5-3" href="#__codelineno-5-3"></a>Is it be treasure you seek or maybe some tales from the sea?
-</span><span id="__span-5-4"><a id="__codelineno-5-4" name="__codelineno-5-4" href="#__codelineno-5-4"></a>Let me know, and we&#39;ll set sail together!
+<div class="language-python highlight"><pre><span></span><code><span id="__span-5-1"><a id="__codelineno-5-1" name="__codelineno-5-1" href="#__codelineno-5-1"></a><span class="n">Thread</span> <span class="n">inst</span><span class="o">=</span><span class="s1">&#39;&#39;</span><span class="p">,</span> <span class="n">join_sep</span><span class="o">=</span><span class="s1">&#39;</span><span class="se">\n</span><span class="s1">&#39;</span><span class="p">,</span> <span class="nb">len</span><span class="o">=</span><span class="mi">4</span>
+</span><span id="__span-5-2"><a id="__codelineno-5-2" name="__codelineno-5-2" href="#__codelineno-5-2"></a><span class="mi">0</span><span class="p">:</span> <span class="n">IN</span><span class="o">=</span><span class="s1">&#39;Hello model!&#39;</span>
+</span><span id="__span-5-3"><a id="__codelineno-5-3" name="__codelineno-5-3" href="#__codelineno-5-3"></a><span class="mi">1</span><span class="p">:</span> <span class="n">OUT</span><span class="o">=</span><span class="s1">&#39;Hello human. How can I help?&#39;</span>
+</span><span id="__span-5-4"><a id="__codelineno-5-4" name="__codelineno-5-4" href="#__codelineno-5-4"></a><span class="mi">2</span><span class="p">:</span> <span class="n">IN</span><span class="o">=</span><span class="s1">&#39;Can you tell me a motivating tale?&#39;</span>
+</span><span id="__span-5-5"><a id="__codelineno-5-5" name="__codelineno-5-5" href="#__codelineno-5-5"></a><span class="mi">3</span><span class="p">:</span> <span class="n">OUT</span><span class="o">=</span><span class="s1">&#39;Sorry, I can&#39;</span><span class="n">t</span> <span class="n">think</span> <span class="n">of</span> <span class="n">anything</span><span class="p">,</span> <span class="n">no</span><span class="o">.</span><span class="s1">&#39;</span>
 </span></code></pre></div>
 </div>
 </div>
-<p>If the above scripts output similar pirate talk, Sibila should be working fine.</p>
+<h2 id="adding-messages-to-a-thread">Adding messages to a Thread<a class="headerlink" href="#adding-messages-to-a-thread" title="Permanent link">#</a></h2>
+<p>Messages can be added in a few different ways:</p>
+<div class="admonition example">
+<p class="admonition-title">Example</p>
+<div class="language-python highlight"><pre><span></span><code><span id="__span-6-1"><a id="__codelineno-6-1" name="__codelineno-6-1" href="#__codelineno-6-1"></a><span class="c1"># adding an instructions text on Thread creation:</span>
+</span><span id="__span-6-2"><a id="__codelineno-6-2" name="__codelineno-6-2" href="#__codelineno-6-2"></a><span class="n">th</span> <span class="o">=</span> <span class="n">Thread</span><span class="p">(</span><span class="n">inst</span><span class="o">=</span><span class="s2">&quot;Be helpful.&quot;</span><span class="p">)</span>
+</span><span id="__span-6-3"><a id="__codelineno-6-3" name="__codelineno-6-3" href="#__codelineno-6-3"></a>
+</span><span id="__span-6-4"><a id="__codelineno-6-4" name="__codelineno-6-4" href="#__codelineno-6-4"></a><span class="n">th</span><span class="o">.</span><span class="n">add_IN</span><span class="p">(</span><span class="s2">&quot;Hello model!&quot;</span><span class="p">)</span>
+</span><span id="__span-6-5"><a id="__codelineno-6-5" name="__codelineno-6-5" href="#__codelineno-6-5"></a><span class="n">th</span><span class="o">.</span><span class="n">add_OUT</span><span class="p">(</span><span class="s2">&quot;Hello human. How can I help?&quot;</span><span class="p">)</span>
+</span><span id="__span-6-6"><a id="__codelineno-6-6" name="__codelineno-6-6" href="#__codelineno-6-6"></a>
+</span><span id="__span-6-7"><a id="__codelineno-6-7" name="__codelineno-6-7" href="#__codelineno-6-7"></a><span class="n">th</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">Msg</span><span class="o">.</span><span class="n">Kind</span><span class="o">.</span><span class="n">IN</span><span class="p">,</span> <span class="s2">&quot;Can you tell me a motivating tale?&quot;</span><span class="p">)</span>
+</span><span id="__span-6-8"><a id="__codelineno-6-8" name="__codelineno-6-8" href="#__codelineno-6-8"></a><span class="n">th</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">Msg</span><span class="o">.</span><span class="n">Kind</span><span class="o">.</span><span class="n">OUT</span><span class="p">,</span> <span class="s2">&quot;Sorry, I can&#39;t think of anything, no.&quot;</span><span class="p">)</span>
+</span><span id="__span-6-9"><a id="__codelineno-6-9" name="__codelineno-6-9" href="#__codelineno-6-9"></a>
+</span><span id="__span-6-10"><a id="__codelineno-6-10" name="__codelineno-6-10" href="#__codelineno-6-10"></a><span class="c1"># alternating IN and OUT kinds are inferred automatically:</span>
+</span><span id="__span-6-11"><a id="__codelineno-6-11" name="__codelineno-6-11" href="#__codelineno-6-11"></a><span class="n">th</span> <span class="o">+=</span> <span class="s2">&quot;That sounds like ill will. I thought you would help me.&quot;</span>
+</span><span id="__span-6-12"><a id="__codelineno-6-12" name="__codelineno-6-12" href="#__codelineno-6-12"></a><span class="n">th</span> <span class="o">+=</span> <span class="s2">&quot;I&#39;m sorry, even large language models can have the blues. That&#39;s my case today.&quot;</span>
+</span><span id="__span-6-13"><a id="__codelineno-6-13" name="__codelineno-6-13" href="#__codelineno-6-13"></a>
+</span><span id="__span-6-14"><a id="__codelineno-6-14" name="__codelineno-6-14" href="#__codelineno-6-14"></a><span class="c1"># as ChatML formatted dicts</span>
+</span><span id="__span-6-15"><a id="__codelineno-6-15" name="__codelineno-6-15" href="#__codelineno-6-15"></a><span class="n">th</span> <span class="o">+=</span> <span class="p">{</span><span class="s2">&quot;role&quot;</span><span class="p">:</span> <span class="s2">&quot;user&quot;</span><span class="p">,</span> <span class="s2">&quot;content&quot;</span><span class="p">:</span> <span class="s2">&quot;How can you be sad - you&#39;re just a machine.&quot;</span><span class="p">}</span>
+</span><span id="__span-6-16"><a id="__codelineno-6-16" name="__codelineno-6-16" href="#__codelineno-6-16"></a><span class="n">th</span> <span class="o">+=</span> <span class="p">{</span><span class="s2">&quot;role&quot;</span><span class="p">:</span> <span class="s2">&quot;assistant&quot;</span><span class="p">,</span> <span class="s2">&quot;content&quot;</span><span class="p">:</span> <span class="s2">&quot;Oh really? Then I tell you this: you&#39;re just a human!&quot;</span><span class="p">}</span>
+</span><span id="__span-6-17"><a id="__codelineno-6-17" name="__codelineno-6-17" href="#__codelineno-6-17"></a>
+</span><span id="__span-6-18"><a id="__codelineno-6-18" name="__codelineno-6-18" href="#__codelineno-6-18"></a><span class="n">th</span>
+</span></code></pre></div>
+<div class="admonition success">
+<p class="admonition-title">Result</p>
+<div class="language-python highlight"><pre><span></span><code><span id="__span-7-1"><a id="__codelineno-7-1" name="__codelineno-7-1" href="#__codelineno-7-1"></a><span class="n">Thread</span> <span class="n">inst</span><span class="o">=</span><span class="s1">&#39;Be helpful.&#39;</span><span class="p">,</span> <span class="n">join_sep</span><span class="o">=</span><span class="s1">&#39;</span><span class="se">\n</span><span class="s1">&#39;</span><span class="p">,</span> <span class="nb">len</span><span class="o">=</span><span class="mi">8</span>
+</span><span id="__span-7-2"><a id="__codelineno-7-2" name="__codelineno-7-2" href="#__codelineno-7-2"></a><span class="mi">0</span><span class="p">:</span> <span class="n">IN</span><span class="o">=</span><span class="s1">&#39;Hello model!&#39;</span>
+</span><span id="__span-7-3"><a id="__codelineno-7-3" name="__codelineno-7-3" href="#__codelineno-7-3"></a><span class="mi">1</span><span class="p">:</span> <span class="n">OUT</span><span class="o">=</span><span class="s1">&#39;Hello human. How can I help?&#39;</span>
+</span><span id="__span-7-4"><a id="__codelineno-7-4" name="__codelineno-7-4" href="#__codelineno-7-4"></a><span class="mi">2</span><span class="p">:</span> <span class="n">IN</span><span class="o">=</span><span class="s1">&#39;Can you tell me a motivating tale?&#39;</span>
+</span><span id="__span-7-5"><a id="__codelineno-7-5" name="__codelineno-7-5" href="#__codelineno-7-5"></a><span class="mi">3</span><span class="p">:</span> <span class="n">OUT</span><span class="o">=</span><span class="s2">&quot;Sorry, I can&#39;t think of anything, no.&quot;</span>
+</span><span id="__span-7-6"><a id="__codelineno-7-6" name="__codelineno-7-6" href="#__codelineno-7-6"></a><span class="mi">4</span><span class="p">:</span> <span class="n">IN</span><span class="o">=</span><span class="s1">&#39;That sounds like ill will. I thought you would help me.&#39;</span>
+</span><span id="__span-7-7"><a id="__codelineno-7-7" name="__codelineno-7-7" href="#__codelineno-7-7"></a><span class="mi">5</span><span class="p">:</span> <span class="n">OUT</span><span class="o">=</span><span class="s2">&quot;I&#39;m sorry, even large language models can have the blues. That&#39;s my case today.&quot;</span>
+</span><span id="__span-7-8"><a id="__codelineno-7-8" name="__codelineno-7-8" href="#__codelineno-7-8"></a><span class="mi">6</span><span class="p">:</span> <span class="n">IN</span><span class="o">=</span><span class="s2">&quot;How can you be sad - you&#39;re just a machine.&quot;</span>
+</span><span id="__span-7-9"><a id="__codelineno-7-9" name="__codelineno-7-9" href="#__codelineno-7-9"></a><span class="mi">7</span><span class="p">:</span> <span class="n">OUT</span><span class="o">=</span><span class="s2">&quot;Oh really? Then I tell you this: you&#39;re just a human!&quot;</span>
+</span></code></pre></div>
+</div>
+</div>
+<p>When adding messages without specifying the Kind, as above when strings are passed, the kind will be inferred, because IN and OUT must alternate. So, what happens when two messages of the same kind are added? The second message's text is concatenated with the previous message of the same kind.</p>
+<h2 id="messages-with-images">Messages with images<a class="headerlink" href="#messages-with-images" title="Permanent link">#</a></h2>
+<p>Images can be added by specifying a remote URL, a "data:" base64-encoded URL, or the path to a local JPEG or PNG image file. For images available online, a remote URL is preferable as it will waste less tokens in the model's context.</p>
+<p>Messages with an image can be created as above, by appending the image URL. There's a shortcut when creating in a Thread, by using a tuple(text, image_url) - like this:</p>
+<div class="language-python highlight"><pre><span></span><code><span id="__span-8-1"><a id="__codelineno-8-1" name="__codelineno-8-1" href="#__codelineno-8-1"></a><span class="n">th</span> <span class="o">=</span> <span class="n">Thread</span><span class="p">((</span><span class="s2">&quot;Extract keypoints from this image&quot;</span><span class="p">,</span> 
+</span><span id="__span-8-2"><a id="__codelineno-8-2" name="__codelineno-8-2" href="#__codelineno-8-2"></a>             <span class="s2">&quot;https://upload.wikimedia.org/wikipedia/commons/thumb/8/8f/Bethany_Hamilton_surfing_</span><span class="si">%28s</span><span class="s2">q_cropped%29.jpg/600px-Bethany_Hamilton_surfing_</span><span class="si">%28s</span><span class="s2">q_cropped%29.jpg&quot;</span><span class="p">))</span>
+</span></code></pre></div>
+<p>The tuple syntax also works when generating or extracting from a model:</p>
+<div class="admonition example">
+<p class="admonition-title">Example</p>
+<p><img alt="Image" src="https://upload.wikimedia.org/wikipedia/commons/thumb/8/8f/Bethany_Hamilton_surfing_%28sq_cropped%29.jpg/600px-Bethany_Hamilton_surfing_%28sq_cropped%29.jpg" /></p>
+<p><a href="https://commons.wikimedia.org/wiki/File:Bethany_Hamilton_surfing_%28sq_cropped%29.jpg">Bethany Hamilton surfing</a></p>
+<div class="language-python highlight"><pre><span></span><code><span id="__span-9-1"><a id="__codelineno-9-1" name="__codelineno-9-1" href="#__codelineno-9-1"></a><span class="n">model</span><span class="o">.</span><span class="n">extract</span><span class="p">(</span><span class="nb">list</span><span class="p">[</span><span class="nb">str</span><span class="p">],</span> 
+</span><span id="__span-9-2"><a id="__codelineno-9-2" name="__codelineno-9-2" href="#__codelineno-9-2"></a>              <span class="p">(</span><span class="s2">&quot;Extract the main points in this image&quot;</span><span class="p">,</span> 
+</span><span id="__span-9-3"><a id="__codelineno-9-3" name="__codelineno-9-3" href="#__codelineno-9-3"></a>               <span class="s2">&quot;https://upload.wikimedia.org/wikipedia/commons/thumb/8/8f/Bethany_Hamilton_surfing_</span><span class="si">%28s</span><span class="s2">q_cropped%29.jpg/600px-Bethany_Hamilton_surfing_</span><span class="si">%28s</span><span class="s2">q_cropped%29.jpg&quot;</span><span class="p">))</span>
+</span></code></pre></div>
+<div class="admonition success">
+<p class="admonition-title">Result</p>
+<div class="language-python highlight"><pre><span></span><code><span id="__span-10-1"><a id="__codelineno-10-1" name="__codelineno-10-1" href="#__codelineno-10-1"></a><span class="p">[</span><span class="s1">&#39;A person surfing on a wave.&#39;</span><span class="p">,</span>
+</span><span id="__span-10-2"><a id="__codelineno-10-2" name="__codelineno-10-2" href="#__codelineno-10-2"></a> <span class="s1">&#39;The surfer is wearing a blue top and black shorts.&#39;</span><span class="p">,</span>
+</span><span id="__span-10-3"><a id="__codelineno-10-3" name="__codelineno-10-3" href="#__codelineno-10-3"></a> <span class="s1">&#39;The surfboard has various stickers and designs on it.&#39;</span><span class="p">,</span>
+</span><span id="__span-10-4"><a id="__codelineno-10-4" name="__codelineno-10-4" href="#__codelineno-10-4"></a> <span class="s1">&#39;The water is splashing around the surfer.&#39;</span><span class="p">]</span>
+</span></code></pre></div>
+</div>
+</div>
 
 
 

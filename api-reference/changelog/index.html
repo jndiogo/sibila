@@ -344,6 +344,12 @@
       
         
       
+        
+      
+        
+      
+        
+      
     
     
     
@@ -516,6 +522,8 @@
   
     
     
+      
+        
       
         
       
@@ -1027,6 +1035,27 @@
 
               
             
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../models/vision/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Vision models
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
           </ul>
         </nav>
       
@@ -1231,49 +1260,20 @@
   
   
   
-    
-    
-      
+    <li class="md-nav__item">
+      <a href="../../thread/" class="md-nav__link">
         
-      
-        
-      
-        
-      
-    
-    
-    
-    
-      
-      
-    
-    <li class="md-nav__item md-nav__item--section md-nav__item--nested">
-      
-        
-        
-        
-          
-        
-        <input class="md-nav__toggle md-toggle md-toggle--indeterminate" type="checkbox" id="__nav_1_6" >
-        
-          
-          <label class="md-nav__link" for="__nav_1_6" id="__nav_1_6_label" tabindex="">
-            
   
   <span class="md-ellipsis">
-    Other Stuff
+    Threads and messages
   </span>
   
 
-            <span class="md-nav__icon md-icon"></span>
-          </label>
-        
-        <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_1_6_label" aria-expanded="false">
-          <label class="md-nav__title" for="__nav_1_6">
-            <span class="md-nav__icon md-icon"></span>
-            Other Stuff
-          </label>
-          <ul class="md-nav__list" data-md-scrollfix>
+      </a>
+    </li>
+  
+
+              
             
               
                 
@@ -1344,14 +1344,6 @@
     </li>
   
 
-              
-            
-          </ul>
-        </nav>
-      
-    </li>
-  
-
     
       
       
@@ -1364,6 +1356,8 @@
       
         
           
+        
+      
         
       
         
@@ -1629,6 +1623,27 @@
   
   
     <li class="md-nav__item">
+      <a href="../../examples/receipt/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Receipt
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
       <a href="../../examples/async/" class="md-nav__link">
         
   
@@ -1828,7 +1843,7 @@
         
   
   <span class="md-ellipsis">
-    Threads, messages, context
+    Threads and messages
   </span>
   
 
@@ -1959,6 +1974,15 @@
   <a href="#unreleased" class="md-nav__link">
     <span class="md-ellipsis">
       [Unreleased]
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#044" class="md-nav__link">
+    <span class="md-ellipsis">
+      [0.4.4]
     </span>
   </a>
   
@@ -2117,6 +2141,15 @@
 </li>
       
         <li class="md-nav__item">
+  <a href="#044" class="md-nav__link">
+    <span class="md-ellipsis">
+      [0.4.4]
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
   <a href="#043" class="md-nav__link">
     <span class="md-ellipsis">
       [0.4.3]
@@ -2236,14 +2269,27 @@
 <h1 id="changelog">Changelog<a class="headerlink" href="#changelog" title="Permanent link">#</a></h1>
 <p>All notable changes to this project will be documented in this file.</p>
 <p>The format is based on <a href="https://keepachangelog.com/en/1.1.0/">Keep a Changelog</a>.
-The project adheres to <a href="https://semver.org/spec/v2.0.0.html">Semantic Versioning</a>.</p>
+Given its evolving nature, the project does not yet adhere to <a href="https://semver.org/spec/v2.0.0.html">Semantic Versioning</a>.</p>
 <h2 id="unreleased">[Unreleased]<a class="headerlink" href="#unreleased" title="Permanent link">#</a></h2>
 <ul>
-<li>feat: Add seed setting to GenConf. Commented-out because of lack of support in OpenAI models and some llama.cpp hardware accelerations.</li>
+<li>feat: Add seed setting to GenConf. Commented-out because of lack of support in OpenAI models and some llama.cpp hardware accelerations. To be enabled when wider support becomes available.</li>
+</ul>
+<h2 id="044">[0.4.4]<a class="headerlink" href="#044" title="Permanent link">#</a></h2>
+<ul>
+<li>feat: Support vision models from OpenAI, Anthropic and Llava-based local models.</li>
+<li>feat: Add Msg class for better handling of other data types besides text, for now only images.</li>
+<li>feat: Update Thread class to support images. Also added trimming functionality and as a result removed emptied Context class.</li>
+<li>feat: Add close() method to Model* classes, to release resources.</li>
+<li>fix: Removed no longer used _workaround1 in LlamaCppTokenizer.</li>
+<li>fix: Avoid setting "max_tokens" in remote models that support it, for GenConf.max_tokens=0.</li>
+<li>fix: Update configs to new OpenAI models.</li>
+<li>docs: Add vision model and Thread use documentation.</li>
+<li>docs: Add receipt image extraction example.</li>
+<li>test: Add tests for Thread, Msg and vision models.</li>
 </ul>
 <h2 id="043">[0.4.3]<a class="headerlink" href="#043" title="Permanent link">#</a></h2>
 <ul>
-<li>feat: Add extraction support for dataclass field types Optional and Union.</li>
+<li>feat: Add support for dataclass Optional and Union annotations.</li>
 <li>feat: Add Groq remote model provider.</li>
 <li>fix: Add deepcopy to json_schema_massage() to solve schema massaging error.</li>
 <li>fix: Set Thread.<strong>repr</strong> output the same as <strong>str</strong> for development convenience.</li>

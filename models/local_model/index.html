@@ -348,6 +348,12 @@
       
         
       
+        
+      
+        
+      
+        
+      
     
     
     
@@ -520,6 +526,8 @@
   
     
     
+      
+        
       
         
       
@@ -1118,6 +1126,27 @@
 
               
             
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../vision/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Vision models
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
           </ul>
         </nav>
       
@@ -1322,49 +1351,20 @@
   
   
   
-    
-    
-      
+    <li class="md-nav__item">
+      <a href="../../thread/" class="md-nav__link">
         
-      
-        
-      
-        
-      
-    
-    
-    
-    
-      
-      
-    
-    <li class="md-nav__item md-nav__item--section md-nav__item--nested">
-      
-        
-        
-        
-          
-        
-        <input class="md-nav__toggle md-toggle md-toggle--indeterminate" type="checkbox" id="__nav_1_6" >
-        
-          
-          <label class="md-nav__link" for="__nav_1_6" id="__nav_1_6_label" tabindex="">
-            
   
   <span class="md-ellipsis">
-    Other Stuff
+    Threads and messages
   </span>
   
 
-            <span class="md-nav__icon md-icon"></span>
-          </label>
-        
-        <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_1_6_label" aria-expanded="false">
-          <label class="md-nav__title" for="__nav_1_6">
-            <span class="md-nav__icon md-icon"></span>
-            Other Stuff
-          </label>
-          <ul class="md-nav__list" data-md-scrollfix>
+      </a>
+    </li>
+  
+
+              
             
               
                 
@@ -1435,14 +1435,6 @@
     </li>
   
 
-              
-            
-          </ul>
-        </nav>
-      
-    </li>
-  
-
     
       
       
@@ -1455,6 +1447,8 @@
       
         
           
+        
+      
         
       
         
@@ -1720,6 +1714,27 @@
   
   
     <li class="md-nav__item">
+      <a href="../../examples/receipt/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Receipt
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
       <a href="../../examples/async/" class="md-nav__link">
         
   
@@ -1919,7 +1934,7 @@
         
   
   <span class="md-ellipsis">
-    Threads, messages, context
+    Threads and messages
   </span>
   
 
@@ -2166,7 +2181,7 @@
 </div>
 <p>If you get an error like this in JupyterLab, open the Kernel menu and select "Shut Down All Kernels...". This will get rid of any out-of-memory stuck models.</p>
 <p>A good practice is to delete any local model after you no longer need it or right before loading a new one. A simple "del model" works fine, or you can add these two lines before creating a model:</p>
-<div class="language-python highlight"><pre><span></span><code><span id="__span-4-1"><a id="__codelineno-4-1" name="__codelineno-4-1" href="#__codelineno-4-1"></a><span class="k">try</span><span class="p">:</span> <span class="k">del</span> <span class="n">model</span>
+<div class="language-python highlight"><pre><span></span><code><span id="__span-4-1"><a id="__codelineno-4-1" name="__codelineno-4-1" href="#__codelineno-4-1"></a><span class="k">try</span><span class="p">:</span> <span class="n">model</span><span class="o">.</span><span class="n">close</span><span class="p">();</span> <span class="k">del</span> <span class="n">model</span>
 </span><span id="__span-4-2"><a id="__codelineno-4-2" name="__codelineno-4-2" href="#__codelineno-4-2"></a><span class="k">except</span><span class="p">:</span> <span class="o">...</span>
 </span><span id="__span-4-3"><a id="__codelineno-4-3" name="__codelineno-4-3" href="#__codelineno-4-3"></a>
 </span><span id="__span-4-4"><a id="__codelineno-4-4" name="__codelineno-4-4" href="#__codelineno-4-4"></a><span class="n">model</span> <span class="o">=</span> <span class="n">LlamaCppModel</span><span class="p">(</span><span class="o">...</span><span class="p">)</span>

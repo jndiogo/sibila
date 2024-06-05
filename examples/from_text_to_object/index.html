@@ -341,6 +341,12 @@
       
         
       
+        
+      
+        
+      
+        
+      
     
     
     
@@ -513,6 +519,8 @@
   
     
     
+      
+        
       
         
       
@@ -1024,6 +1032,27 @@
 
               
             
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../models/vision/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Vision models
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
           </ul>
         </nav>
       
@@ -1228,49 +1257,20 @@
   
   
   
-    
-    
-      
+    <li class="md-nav__item">
+      <a href="../../thread/" class="md-nav__link">
         
-      
-        
-      
-        
-      
-    
-    
-    
-    
-      
-      
-    
-    <li class="md-nav__item md-nav__item--section md-nav__item--nested">
-      
-        
-        
-        
-          
-        
-        <input class="md-nav__toggle md-toggle md-toggle--indeterminate" type="checkbox" id="__nav_1_6" >
-        
-          
-          <label class="md-nav__link" for="__nav_1_6" id="__nav_1_6_label" tabindex="">
-            
   
   <span class="md-ellipsis">
-    Other Stuff
+    Threads and messages
   </span>
   
 
-            <span class="md-nav__icon md-icon"></span>
-          </label>
-        
-        <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_1_6_label" aria-expanded="false">
-          <label class="md-nav__title" for="__nav_1_6">
-            <span class="md-nav__icon md-icon"></span>
-            Other Stuff
-          </label>
-          <ul class="md-nav__list" data-md-scrollfix>
+      </a>
+    </li>
+  
+
+              
             
               
                 
@@ -1341,14 +1341,6 @@
     </li>
   
 
-              
-            
-          </ul>
-        </nav>
-      
-    </li>
-  
-
     
       
       
@@ -1363,6 +1355,8 @@
       
         
           
+        
+      
         
       
         
@@ -1634,6 +1628,27 @@
   
   
     <li class="md-nav__item">
+      <a href="../receipt/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Receipt
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
       <a href="../async/" class="md-nav__link">
         
   
@@ -1833,7 +1848,7 @@
         
   
   <span class="md-ellipsis">
-    Threads, messages, context
+    Threads and messages
   </span>
   
 
@@ -2050,13 +2065,13 @@ For an OpenAI model, make sure you defined the env variable OPENAI_API_KEY with 
 </span><span id="__span-2-3"><a id="__codelineno-2-3" name="__codelineno-2-3" href="#__codelineno-2-3"></a><span class="n">out</span> <span class="o">=</span> <span class="n">model</span><span class="p">(</span><span class="n">in_text</span><span class="p">,</span> <span class="n">inst</span><span class="o">=</span><span class="n">inst_text</span><span class="p">)</span>
 </span><span id="__span-2-4"><a id="__codelineno-2-4" name="__codelineno-2-4" href="#__codelineno-2-4"></a><span class="nb">print</span><span class="p">(</span><span class="n">out</span><span class="p">)</span>
 </span></code></pre></div>
-<div class="language-text highlight"><pre><span></span><code>1. Fiji is an island country located in Melanesia, part of Oceania in the South Pacific Ocean. It lies approximately 1,100 nautical miles north-northeast of New Zealand.
-2. The country consists of more than 330 islands with about 110 permanently inhabited islands and over 500 islets, totaling a land area of about 18,300 square kilometers.
-3. Approximately 87% of Fiji&#39;s total population of 924,610 live on the two major islands, Viti Levu and Vanua Levu, with a majority living on Viti Levu&#39;s coasts.
-4. The majority of Fiji&#39;s islands were formed by volcanic activity starting around 150 million years ago, with some geothermal activity still occurring on certain islands.
-5. Fiji has a complex history, transitioning from an independent kingdom to a British colony, then a Dominion, and finally a republic after a series of coups and constitutional changes. In 2014, a democratic election took place, marking a significant milestone in the country&#39;s political history.
+<div class="language-text highlight"><pre><span></span><code>1. Fiji is an island country in Melanesia, part of Oceania in the South Pacific Ocean.
+2. It consists of more than 330 islands with a total land area of about 18,300 square kilometres (7,100 sq mi).
+3. The majority of Fiji&#39;s population lives on the two major islands, Viti Levu and Vanua Levu.
+4. Most of Fiji&#39;s islands were formed by volcanic activity starting around 150 million years ago.
+5. Fiji has a history of political instability, with multiple coups and changes in government since gaining independence in 1970.
 </code></pre></div>
-<p>These are quite reasonable keypoints!</p>
+<p>These are quite reasonable keypoints.</p>
 <p>Let's now ask for JSON output, taking care to explicitly request it in the query (in_text variable).</p>
 <p>Instead of model() we now use json() which returns a Python dict.</p>
 <div class="language-python highlight"><pre><span></span><code><span id="__span-3-1"><a id="__codelineno-3-1" name="__codelineno-3-1" href="#__codelineno-3-1"></a><span class="kn">import</span> <span class="nn">pprint</span>
@@ -2068,13 +2083,13 @@ For an OpenAI model, make sure you defined the env variable OPENAI_API_KEY with 
 </span><span id="__span-3-7"><a id="__codelineno-3-7" name="__codelineno-3-7" href="#__codelineno-3-7"></a>                 <span class="n">inst</span><span class="o">=</span><span class="n">inst_text</span><span class="p">)</span>
 </span><span id="__span-3-8"><a id="__codelineno-3-8" name="__codelineno-3-8" href="#__codelineno-3-8"></a><span class="n">pp</span><span class="o">.</span><span class="n">pprint</span><span class="p">(</span><span class="n">out</span><span class="p">)</span>
 </span></code></pre></div>
-<div class="language-text highlight"><pre><span></span><code>{&#39;keypoints&#39;: [{&#39;title&#39;: &#39;Location&#39;, &#39;description&#39;: &#39;Fiji is an island country in Melanesia, part of Oceania in the South Pacific Ocean.&#39;},
-               {&#39;title&#39;: &#39;Geography&#39;, &#39;description&#39;: &#39;Consists of more than 330 islands with about 110 permanently inhabited islands.&#39;},
-               {&#39;title&#39;: &#39;Population&#39;, &#39;description&#39;: &#39;Total population of 924,610 live on the two major islands, Viti Levu and Vanua Levu.&#39;},
-               {&#39;title&#39;: &#39;History&#39;, &#39;description&#39;: &#39;Humans have lived in Fiji since the second millennium BC with Austronesians, Melanesians, and Polynesian influences.&#39;},
-               {&#39;title&#39;: &#39;Political Status&#39;, &#39;description&#39;: &#39;Officially known as the Republic of Fiji, gained independence from British rule in 1970.&#39;}]}
+<div class="language-text highlight"><pre><span></span><code>{&#39;keypoints&#39;: [{&#39;point&#39;: &#39;Fiji is an island country in Melanesia, part of Oceania in the South Pacific Ocean.&#39;, &#39;location&#39;: &#39;Melanesia, Oceania&#39;},
+               {&#39;point&#39;: &#39;Fiji consists of more than 330 islands with about 110 permanently inhabited islands and over 500 islets.&#39;, &#39;total_land_area&#39;: &#39;about 18,300 square kilometres (7,100 sq mi)&#39;},
+               {&#39;point&#39;: &#39;About 87% of the total population of 924,610 live on the two major islands, Viti Levu and Vanua Levu.&#39;, &#39;population_statistics&#39;: &#39;87%, 924,610&#39;},
+               {&#39;point&#39;: &quot;The majority of Fiji&#39;s islands were formed by volcanic activity starting around 150 million years ago.&quot;, &#39;island_formation&#39;: &#39;volcanic activity, 150 million years ago&#39;},
+               {&#39;point&#39;: &#39;Fiji has a history of political instability with multiple coups and changes in government.&#39;, &#39;political_history&#39;: &#39;multiple coups, changes in government&#39;}]}
 </code></pre></div>
-<p>Note how the model chose to return different fields like "title" or "description".</p>
+<p>Note how the model chose to return different fields like "point" or "island_formation".</p>
 <p>Because we didn't specify which fields we want, each model will generate different ones.</p>
 <p>To specify a fixed format, let's now generate by setting a JSON schema that defines which fields and types we want:</p>
 <div class="language-python highlight"><pre><span></span><code><span id="__span-4-1"><a id="__codelineno-4-1" name="__codelineno-4-1" href="#__codelineno-4-1"></a><span class="n">json_schema</span> <span class="o">=</span> <span class="p">{</span>
@@ -2102,15 +2117,15 @@ For an OpenAI model, make sure you defined the env variable OPENAI_API_KEY with 
 </span><span id="__span-5-4"><a id="__codelineno-5-4" name="__codelineno-5-4" href="#__codelineno-5-4"></a>
 </span><span id="__span-5-5"><a id="__codelineno-5-5" name="__codelineno-5-5" href="#__codelineno-5-5"></a><span class="nb">print</span><span class="p">(</span><span class="n">out</span><span class="p">)</span>
 </span></code></pre></div>
-<div class="language-text highlight"><pre><span></span><code>{&#39;keypoint_list&#39;: [&#39;Fiji is an island country in Melanesia, part of Oceania in the South Pacific Ocean.&#39;, &#39;About 87% of the total population of 924,610 live on the two major islands, Viti Levu and Vanua Levu.&#39;, &quot;The majority of Fiji&#39;s islands were formed by volcanic activity starting around 150 million years ago.&quot;, &#39;Humans have lived in Fiji since the second millennium BC—first Austronesians and later Melanesians, with some Polynesian influences.&#39;, &quot;In 2014, a democratic election took place, with Bainimarama&#39;s FijiFirst party winning 59.2% of the vote.&quot;]}
+<div class="language-text highlight"><pre><span></span><code>{&#39;keypoint_list&#39;: [&#39;Fiji is an island country in Melanesia, part of Oceania in the South Pacific Ocean.&#39;, &quot;About 87% of Fiji&#39;s total population live on the two major islands, Viti Levu and Vanua Levu.&quot;, &quot;The majority of Fiji&#39;s islands were formed by volcanic activity starting around 150 million years ago.&quot;, &#39;Humans have lived in Fiji since the second millennium BC, first Austronesians and later Melanesians, with some Polynesian influences.&#39;, &quot;In 2014, a democratic election took place, with Bainimarama&#39;s FijiFirst party winning 59.2% of the vote.&quot;]}
 </code></pre></div>
 <div class="language-python highlight"><pre><span></span><code><span id="__span-6-1"><a id="__codelineno-6-1" name="__codelineno-6-1" href="#__codelineno-6-1"></a><span class="k">for</span> <span class="n">kpoint</span> <span class="ow">in</span> <span class="n">out</span><span class="p">[</span><span class="s2">&quot;keypoint_list&quot;</span><span class="p">]:</span>
 </span><span id="__span-6-2"><a id="__codelineno-6-2" name="__codelineno-6-2" href="#__codelineno-6-2"></a>    <span class="nb">print</span><span class="p">(</span><span class="n">kpoint</span><span class="p">)</span>
 </span></code></pre></div>
 <div class="language-text highlight"><pre><span></span><code>Fiji is an island country in Melanesia, part of Oceania in the South Pacific Ocean.
-About 87% of the total population of 924,610 live on the two major islands, Viti Levu and Vanua Levu.
+About 87% of Fiji&#39;s total population live on the two major islands, Viti Levu and Vanua Levu.
 The majority of Fiji&#39;s islands were formed by volcanic activity starting around 150 million years ago.
-Humans have lived in Fiji since the second millennium BC—first Austronesians and later Melanesians, with some Polynesian influences.
+Humans have lived in Fiji since the second millennium BC, first Austronesians and later Melanesians, with some Polynesian influences.
 In 2014, a democratic election took place, with Bainimarama&#39;s FijiFirst party winning 59.2% of the vote.
 </code></pre></div>
 <p>It has generated a string list in the "keypoint_list" field, as we specified in the JSON schema.</p>
@@ -2127,15 +2142,15 @@ In 2014, a democratic election took place, with Bainimarama&#39;s FijiFirst part
 </span><span id="__span-7-9"><a id="__codelineno-7-9" name="__codelineno-7-9" href="#__codelineno-7-9"></a>                     <span class="n">inst</span><span class="o">=</span><span class="n">inst_text</span><span class="p">)</span>
 </span><span id="__span-7-10"><a id="__codelineno-7-10" name="__codelineno-7-10" href="#__codelineno-7-10"></a><span class="nb">print</span><span class="p">(</span><span class="n">out</span><span class="p">)</span>
 </span></code></pre></div>
-<div class="language-text highlight"><pre><span></span><code>keypoint_list=[&#39;Fiji is an island country in Melanesia, part of Oceania in the South Pacific Ocean.&#39;, &#39;About 87% of the total population of 924,610 live on the two major islands, Viti Levu and Vanua Levu.&#39;, &quot;The majority of Fiji&#39;s islands were formed by volcanic activity starting around 150 million years ago.&quot;, &#39;Humans have lived in Fiji since the second millennium BC—first Austronesians and later Melanesians, with some Polynesian influences.&#39;, &quot;In 2014, a democratic election took place, with Bainimarama&#39;s FijiFirst party winning 59.2% of the vote.&quot;]
+<div class="language-text highlight"><pre><span></span><code>keypoint_list=[&#39;Fiji is an island country in Melanesia, part of Oceania in the South Pacific Ocean.&#39;, &quot;About 87% of Fiji&#39;s total population live on the two major islands, Viti Levu and Vanua Levu.&quot;, &quot;The majority of Fiji&#39;s islands were formed by volcanic activity starting around 150 million years ago.&quot;, &#39;Humans have lived in Fiji since the second millennium BC, first Austronesians and later Melanesians, with some Polynesian influences.&#39;, &quot;In 2014, a democratic election took place, with Bainimarama&#39;s FijiFirst party winning 59.2% of the vote.&quot;]
 </code></pre></div>
 <div class="language-python highlight"><pre><span></span><code><span id="__span-8-1"><a id="__codelineno-8-1" name="__codelineno-8-1" href="#__codelineno-8-1"></a><span class="k">for</span> <span class="n">kpoint</span> <span class="ow">in</span> <span class="n">out</span><span class="o">.</span><span class="n">keypoint_list</span><span class="p">:</span>
 </span><span id="__span-8-2"><a id="__codelineno-8-2" name="__codelineno-8-2" href="#__codelineno-8-2"></a>    <span class="nb">print</span><span class="p">(</span><span class="n">kpoint</span><span class="p">)</span>
 </span></code></pre></div>
 <div class="language-text highlight"><pre><span></span><code>Fiji is an island country in Melanesia, part of Oceania in the South Pacific Ocean.
-About 87% of the total population of 924,610 live on the two major islands, Viti Levu and Vanua Levu.
+About 87% of Fiji&#39;s total population live on the two major islands, Viti Levu and Vanua Levu.
 The majority of Fiji&#39;s islands were formed by volcanic activity starting around 150 million years ago.
-Humans have lived in Fiji since the second millennium BC—first Austronesians and later Melanesians, with some Polynesian influences.
+Humans have lived in Fiji since the second millennium BC, first Austronesians and later Melanesians, with some Polynesian influences.
 In 2014, a democratic election took place, with Bainimarama&#39;s FijiFirst party winning 59.2% of the vote.
 </code></pre></div>
 <p>The pydantic() method returns an object of class Keypoints, instantiated with the model output.</p>

@@ -341,6 +341,12 @@
       
         
       
+        
+      
+        
+      
+        
+      
     
     
     
@@ -513,6 +519,8 @@
   
     
     
+      
+        
       
         
       
@@ -1024,6 +1032,27 @@
 
               
             
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../models/vision/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Vision models
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
           </ul>
         </nav>
       
@@ -1228,49 +1257,20 @@
   
   
   
-    
-    
-      
+    <li class="md-nav__item">
+      <a href="../../thread/" class="md-nav__link">
         
-      
-        
-      
-        
-      
-    
-    
-    
-    
-      
-      
-    
-    <li class="md-nav__item md-nav__item--section md-nav__item--nested">
-      
-        
-        
-        
-          
-        
-        <input class="md-nav__toggle md-toggle md-toggle--indeterminate" type="checkbox" id="__nav_1_6" >
-        
-          
-          <label class="md-nav__link" for="__nav_1_6" id="__nav_1_6_label" tabindex="">
-            
   
   <span class="md-ellipsis">
-    Other Stuff
+    Threads and messages
   </span>
   
 
-            <span class="md-nav__icon md-icon"></span>
-          </label>
-        
-        <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_1_6_label" aria-expanded="false">
-          <label class="md-nav__title" for="__nav_1_6">
-            <span class="md-nav__icon md-icon"></span>
-            Other Stuff
-          </label>
-          <ul class="md-nav__list" data-md-scrollfix>
+      </a>
+    </li>
+  
+
+              
             
               
                 
@@ -1341,14 +1341,6 @@
     </li>
   
 
-              
-            
-          </ul>
-        </nav>
-      
-    </li>
-  
-
     
       
       
@@ -1363,6 +1355,8 @@
       
         
           
+        
+      
         
       
         
@@ -1634,6 +1628,27 @@
   
   
     <li class="md-nav__item">
+      <a href="../receipt/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Receipt
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
       <a href="../async/" class="md-nav__link">
         
   
@@ -1833,7 +1848,7 @@
         
   
   <span class="md-ellipsis">
-    Threads, messages, context
+    Threads and messages
   </span>
   
 
@@ -2057,10 +2072,10 @@ first_name=&#39;Isabella&#39; last_name=&#39;Santos&#39; age=32 occupation=&#39;
 </span><span id="__span-3-15"><a id="__codelineno-3-15" name="__codelineno-3-15" href="#__codelineno-3-15"></a>    <span class="nb">print</span><span class="p">(</span><span class="n">person</span><span class="p">)</span>
 </span></code></pre></div>
 <div class="language-text highlight"><pre><span></span><code>first_name=&#39;Lucy&#39; last_name=&#39;Bennett&#39; age=28 occupation=&#39;journalist&#39; details_about_person=&#39;her pen poised to capture the essence of the world around her&#39; source_location=&#39;London&#39; source_country=&#39;United Kingdom&#39;
-first_name=&#39;Carlos&#39; last_name=&#39;Ramirez&#39; age=35 occupation=&#39;architect&#39; details_about_person=&#39;exuded creativity, passion for design evident&#39; source_location=&#39;Barcelona&#39; source_country=&#39;Spain&#39;
-first_name=&#39;Mia&#39; last_name=&#39;Chang&#39; age=23 occupation=&#39;musician&#39; details_about_person=&#39;fingers danced across the strings, weaving stories&#39; source_location=&#39;Tokyo&#39; source_country=&#39;Japan&#39;
-first_name=&#39;Ahmed&#39; last_name=&#39;Khan&#39; age=40 occupation=&#39;engineer&#39; details_about_person=&#39;navigated the complexities of technology&#39; source_location=&#39;Mumbai&#39; source_country=&#39;India&#39;
-first_name=&#39;Isabella&#39; last_name=&#39;Santos&#39; age=32 occupation=&#39;fashion designer&#39; details_about_person=&#39;impeccable style and effortless grace&#39; source_location=&#39;Paris&#39; source_country=&#39;France&#39;
+first_name=&#39;Carlos&#39; last_name=&#39;Ramirez&#39; age=35 occupation=&#39;architect&#39; details_about_person=&#39;exuded creativity, passion for design evident in the thoughtful lines that adorned his face&#39; source_location=&#39;Barcelona&#39; source_country=&#39;Spain&#39;
+first_name=&#39;Mia&#39; last_name=&#39;Chang&#39; age=23 occupation=&#39;musician&#39; details_about_person=&#39;fingers danced across the strings, weaving stories of love and longing&#39; source_location=&#39;Tokyo&#39; source_country=&#39;Japan&#39;
+first_name=&#39;Ahmed&#39; last_name=&#39;Khan&#39; age=40 occupation=&#39;engineer&#39; details_about_person=&#39;navigated the complexities of technology with ease, intellect shining through the chaos of urban life&#39; source_location=&#39;Mumbai&#39; source_country=&#39;India&#39;
+first_name=&#39;Isabella&#39; last_name=&#39;Santos&#39; age=32 occupation=&#39;fashion designer&#39; details_about_person=&#39;impeccable style and effortless grace reflected the timeless elegance of her beloved city&#39; source_location=&#39;Paris&#39; source_country=&#39;France&#39;
 </code></pre></div>
 <p>Quite reasonable: the model is doing a good job and we didn't even add descriptions to the fields - it's inferring what we want from the field names only.</p>
 <p>Let's now query an attribute that only one of the person have: being married. Adding the "is_married: bool" field to the Person class.</p>
@@ -2081,11 +2096,11 @@ first_name=&#39;Isabella&#39; last_name=&#39;Santos&#39; age=32 occupation=&#39;
 </span><span id="__span-4-15"><a id="__codelineno-4-15" name="__codelineno-4-15" href="#__codelineno-4-15"></a><span class="k">for</span> <span class="n">person</span> <span class="ow">in</span> <span class="n">out</span><span class="p">:</span>
 </span><span id="__span-4-16"><a id="__codelineno-4-16" name="__codelineno-4-16" href="#__codelineno-4-16"></a>    <span class="nb">print</span><span class="p">(</span><span class="n">person</span><span class="p">)</span>
 </span></code></pre></div>
-<div class="language-text highlight"><pre><span></span><code>first_name=&#39;Lucy&#39; last_name=&#39;Bennett&#39; age=28 occupation=&#39;journalist&#39; details_about_person=&#39;her pen poised to capture the essence of the world around her&#39; source_location=&#39;London&#39; source_country=&#39;United Kingdom&#39; is_married=False
-first_name=&#39;Carlos&#39; last_name=&#39;Ramirez&#39; age=35 occupation=&#39;architect&#39; details_about_person=&#39;exuded creativity, passion for design evident&#39; source_location=&#39;Barcelona&#39; source_country=&#39;Spain&#39; is_married=False
-first_name=&#39;Mia&#39; last_name=&#39;Chang&#39; age=23 occupation=&#39;musician&#39; details_about_person=&#39;fingers danced across the strings, weaving stories&#39; source_location=&#39;Tokyo&#39; source_country=&#39;Japan&#39; is_married=False
-first_name=&#39;Ahmed&#39; last_name=&#39;Khan&#39; age=40 occupation=&#39;engineer&#39; details_about_person=&#39;navigated the complexities of technology&#39; source_location=&#39;Mumbai&#39; source_country=&#39;India&#39; is_married=True
-first_name=&#39;Isabella&#39; last_name=&#39;Santos&#39; age=32 occupation=&#39;fashion designer&#39; details_about_person=&#39;impeccable style and effortless grace&#39; source_location=&#39;Paris&#39; source_country=&#39;France&#39; is_married=False
+<div class="language-text highlight"><pre><span></span><code>first_name=&#39;Lucy&#39; last_name=&#39;Bennett&#39; age=28 occupation=&#39;journalist&#39; details_about_person=&#39;her pen poised to capture the essence of the world around her. Her eyes sparkled with curiosity, mirroring the dynamic energy of her beloved city.&#39; source_location=&#39;London&#39; source_country=&#39;United Kingdom&#39; is_married=False
+first_name=&#39;Carlos&#39; last_name=&#39;Ramirez&#39; age=35 occupation=&#39;architect&#39; details_about_person=&#39;exuded creativity, his passion for design evident in the thoughtful lines that adorned his face.&#39; source_location=&#39;Barcelona&#39; source_country=&#39;Spain&#39; is_married=False
+first_name=&#39;Mia&#39; last_name=&#39;Chang&#39; age=23 occupation=&#39;musician&#39; details_about_person=&#39;her fingers danced across the strings, weaving stories of love and longing, echoing the rhythm of her vibrant city.&#39; source_location=&#39;Tokyo&#39; source_country=&#39;Japan&#39; is_married=False
+first_name=&#39;Ahmed&#39; last_name=&#39;Khan&#39; age=40 occupation=&#39;engineer&#39; details_about_person=&#39;navigated the complexities of technology with ease, his intellect shining through the chaos of urban life.&#39; source_location=&#39;Mumbai&#39; source_country=&#39;India&#39; is_married=True
+first_name=&#39;Isabella&#39; last_name=&#39;Santos&#39; age=32 occupation=&#39;fashion designer&#39; details_about_person=&#39;her impeccable style and effortless grace reflected the timeless elegance of her beloved city.&#39; source_location=&#39;Paris&#39; source_country=&#39;France&#39; is_married=False
 </code></pre></div>
 <p>From the five characters only Ahmed is mentioned to be married, and it is the one that the model marked with the is_married=True attribute.</p>
 <p><a href="https://github.com/jndiogo/sibila/tree/main/examples/extract">Example's assets at GitHub</a>.</p>

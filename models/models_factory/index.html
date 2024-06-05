@@ -343,6 +343,12 @@
       
         
       
+        
+      
+        
+      
+        
+      
     
     
     
@@ -515,6 +521,8 @@
   
     
     
+      
+        
       
         
       
@@ -1032,6 +1040,27 @@
 
               
             
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../vision/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Vision models
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
           </ul>
         </nav>
       
@@ -1236,49 +1265,20 @@
   
   
   
-    
-    
-      
+    <li class="md-nav__item">
+      <a href="../../thread/" class="md-nav__link">
         
-      
-        
-      
-        
-      
-    
-    
-    
-    
-      
-      
-    
-    <li class="md-nav__item md-nav__item--section md-nav__item--nested">
-      
-        
-        
-        
-          
-        
-        <input class="md-nav__toggle md-toggle md-toggle--indeterminate" type="checkbox" id="__nav_1_6" >
-        
-          
-          <label class="md-nav__link" for="__nav_1_6" id="__nav_1_6_label" tabindex="">
-            
   
   <span class="md-ellipsis">
-    Other Stuff
+    Threads and messages
   </span>
   
 
-            <span class="md-nav__icon md-icon"></span>
-          </label>
-        
-        <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_1_6_label" aria-expanded="false">
-          <label class="md-nav__title" for="__nav_1_6">
-            <span class="md-nav__icon md-icon"></span>
-            Other Stuff
-          </label>
-          <ul class="md-nav__list" data-md-scrollfix>
+      </a>
+    </li>
+  
+
+              
             
               
                 
@@ -1349,14 +1349,6 @@
     </li>
   
 
-              
-            
-          </ul>
-        </nav>
-      
-    </li>
-  
-
     
       
       
@@ -1369,6 +1361,8 @@
       
         
           
+        
+      
         
       
         
@@ -1634,6 +1628,27 @@
   
   
     <li class="md-nav__item">
+      <a href="../../examples/receipt/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Receipt
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
       <a href="../../examples/async/" class="md-nav__link">
         
   
@@ -1833,7 +1848,7 @@
         
   
   <span class="md-ellipsis">
-    Threads, messages, context
+    Threads and messages
   </span>
   
 
@@ -1972,15 +1987,15 @@
 
   <h1>Models factory</h1>
 
-<p>The Models factory is based in a "models" folder that contains two configuration files: "models.json" and "formats.json" and the actual files for local models. </p>
-<p>The <a href="../../api-reference/models/">Models factory class</a> is a more flexible way to create models, for example:</p>
+<p>The <a href="../../api-reference/models/">Models factory class</a> is a flexible way to create and manage a model configuration with its initialization settings.</p>
+<p>After defining it in a JSON file named 'models.json', you can create the model by simply referring to its name, for example:</p>
 <div class="language-python highlight"><pre><span></span><code><span id="__span-0-1"><a id="__codelineno-0-1" name="__codelineno-0-1" href="#__codelineno-0-1"></a><span class="n">Models</span><span class="o">.</span><span class="n">setup</span><span class="p">(</span><span class="s2">&quot;../../models&quot;</span><span class="p">)</span>
 </span><span id="__span-0-2"><a id="__codelineno-0-2" name="__codelineno-0-2" href="#__codelineno-0-2"></a>
-</span><span id="__span-0-3"><a id="__codelineno-0-3" name="__codelineno-0-3" href="#__codelineno-0-3"></a><span class="n">model</span> <span class="o">=</span> <span class="n">Models</span><span class="o">.</span><span class="n">create</span><span class="p">(</span><span class="s2">&quot;openai:gpt-4&quot;</span><span class="p">)</span>
+</span><span id="__span-0-3"><a id="__codelineno-0-3" name="__codelineno-0-3" href="#__codelineno-0-3"></a><span class="n">model</span> <span class="o">=</span> <span class="n">Models</span><span class="o">.</span><span class="n">create</span><span class="p">(</span><span class="s2">&quot;openai:gpt-4-development&quot;</span><span class="p">)</span>
 </span></code></pre></div>
-<p>The first line calls <a href="../../api-reference/models/#sibila.Models.setup">Models.setup()</a> to initialize the factory with the folder where model files and configs ("models.json" and "formats.json") are located.</p>
-<p>The second line calls <a href="../../api-reference/models/#sibila.Models.create">Models.create()</a> to create a model from the name "openai:gpt-4". In this case we created a remote model, but we could as well create a local model based in a GGUF file.</p>
-<p>The names should be in the format "provider:model_name" and Sibila currently supports these providers:</p>
+<p>The first line calls <a href="../../api-reference/models/#sibila.Models.setup">Models.setup()</a> to initialize the Models factory with the folder where model files and configs ("models.json" and "formats.json") are located.</p>
+<p>The second line calls <a href="../../api-reference/models/#sibila.Models.create">Models.create()</a> to create a model from the name "openai:gpt-4-development". In this case we created a remote model, but we could as well create a local model based in a GGUF file.</p>
+<p>The names should be in the format "provider:model_name" and Sibila currently supports the following providers:</p>
 <table>
 <thead>
 <tr>

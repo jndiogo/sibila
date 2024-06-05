@@ -11,7 +11,7 @@
         <link rel="canonical" href="https://jndiogo.github.io/sibila/examples/async/">
       
       
-        <link rel="prev" href="../interact/">
+        <link rel="prev" href="../receipt/">
       
       
         <link rel="next" href="../cli/">
@@ -341,6 +341,12 @@
       
         
       
+        
+      
+        
+      
+        
+      
     
     
     
@@ -513,6 +519,8 @@
   
     
     
+      
+        
       
         
       
@@ -1024,6 +1032,27 @@
 
               
             
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../models/vision/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Vision models
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
           </ul>
         </nav>
       
@@ -1228,49 +1257,20 @@
   
   
   
-    
-    
-      
+    <li class="md-nav__item">
+      <a href="../../thread/" class="md-nav__link">
         
-      
-        
-      
-        
-      
-    
-    
-    
-    
-      
-      
-    
-    <li class="md-nav__item md-nav__item--section md-nav__item--nested">
-      
-        
-        
-        
-          
-        
-        <input class="md-nav__toggle md-toggle md-toggle--indeterminate" type="checkbox" id="__nav_1_6" >
-        
-          
-          <label class="md-nav__link" for="__nav_1_6" id="__nav_1_6_label" tabindex="">
-            
   
   <span class="md-ellipsis">
-    Other Stuff
+    Threads and messages
   </span>
   
 
-            <span class="md-nav__icon md-icon"></span>
-          </label>
-        
-        <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_1_6_label" aria-expanded="false">
-          <label class="md-nav__title" for="__nav_1_6">
-            <span class="md-nav__icon md-icon"></span>
-            Other Stuff
-          </label>
-          <ul class="md-nav__list" data-md-scrollfix>
+      </a>
+    </li>
+  
+
+              
             
               
                 
@@ -1341,14 +1341,6 @@
     </li>
   
 
-              
-            
-          </ul>
-        </nav>
-      
-    </li>
-  
-
     
       
       
@@ -1363,6 +1355,8 @@
       
         
           
+        
+      
         
       
         
@@ -1623,6 +1617,27 @@
                 
   
   
+  
+  
+    <li class="md-nav__item">
+      <a href="../receipt/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Receipt
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
     
   
   
@@ -1833,7 +1848,7 @@
         
   
   <span class="md-ellipsis">
-    Threads, messages, context
+    Threads and messages
   </span>
   
 
@@ -2025,32 +2040,32 @@
 </span><span id="__span-1-12"><a id="__codelineno-1-12" name="__codelineno-1-12" href="#__codelineno-1-12"></a><span class="k">await</span> <span class="n">extract_names</span><span class="p">()</span>
 </span></code></pre></div>
 <div class="language-text highlight"><pre><span></span><code>extract_names begin... 0.0
-...extract_names done 4.1
+...extract_names done 4.4
 
 
 
 
 
-[&#39;John Smith&#39;,
- &#39;Emily Johnson&#39;,
- &#39;Michael Brown&#39;,
- &#39;Jessica Williams&#39;,
+[&#39;James Smith&#39;,
+ &#39;Michael Johnson&#39;,
+ &#39;Robert Williams&#39;,
+ &#39;Maria Garcia&#39;,
  &#39;David Jones&#39;,
- &#39;Sarah Davis&#39;,
- &#39;Daniel Miller&#39;,
- &#39;Laura Wilson&#39;,
- &#39;James Taylor&#39;,
- &#39;Sophia Anderson&#39;,
- &#39;Christopher Thomas&#39;,
- &#39;Emma Moore&#39;,
- &#39;Joseph Jackson&#39;,
- &#39;Olivia Martin&#39;,
- &#39;Andrew White&#39;,
- &#39;Isabella Thompson&#39;,
- &#39;Matthew Harris&#39;,
- &#39;Ava Garcia&#39;,
- &#39;Ethan Martin&#39;,
- &#39;Mia Clark&#39;]
+ &#39;Jennifer Miller&#39;,
+ &#39;John Davis&#39;,
+ &#39;Patricia Wilson&#39;,
+ &#39;Daniel Anderson&#39;,
+ &#39;Elizabeth Taylor&#39;,
+ &#39;William Brown&#39;,
+ &#39;Barbara Moore&#39;,
+ &#39;Joseph Thompson&#39;,
+ &#39;Susan Martinez&#39;,
+ &#39;Charles Jackson&#39;,
+ &#39;Linda Harris&#39;,
+ &#39;Thomas Clark&#39;,
+ &#39;Jessica Lewis&#39;,
+ &#39;Christopher Walker&#39;,
+ &#39;Sarah Robinson&#39;]
 </code></pre></div>
 <p>The second task will classify a phrase as "spam"/"not spam":</p>
 <div class="language-python highlight"><pre><span></span><code><span id="__span-2-1"><a id="__codelineno-2-1" name="__codelineno-2-1" href="#__codelineno-2-1"></a><span class="k">async</span> <span class="k">def</span> <span class="nf">classify_spam</span><span class="p">():</span>
@@ -2067,7 +2082,7 @@
 </span><span id="__span-2-12"><a id="__codelineno-2-12" name="__codelineno-2-12" href="#__codelineno-2-12"></a><span class="k">await</span> <span class="n">classify_spam</span><span class="p">()</span>
 </span></code></pre></div>
 <div class="language-text highlight"><pre><span></span><code>classify_spam begin... 0.0
-...classify_spam done 1.5
+...classify_spam done 1.4
 
 
 
@@ -2094,9 +2109,9 @@ extract_names begin... 0.0
 classify_spam begin... 0.0
 ...classify_spam done 1.0
 Result: spam
-...extract_names done 4.8
-Result: [&#39;John Smith&#39;, &#39;Emily Johnson&#39;, &#39;Michael Brown&#39;, &#39;Jessica Williams&#39;, &#39;David Jones&#39;, &#39;Sarah Davis&#39;, &#39;Daniel Miller&#39;, &#39;Laura Wilson&#39;, &#39;James Taylor&#39;, &#39;Sophia Anderson&#39;, &#39;Christopher Thomas&#39;, &#39;Emma Moore&#39;, &#39;Joseph Jackson&#39;, &#39;Olivia Martin&#39;, &#39;Andrew White&#39;, &#39;Isabella Thompson&#39;, &#39;Matthew Harris&#39;, &#39;Ava Garcia&#39;, &#39;Ethan Martin&#39;, &#39;Mia Clark&#39;]
----as_complete done 4.8
+...extract_names done 5.8
+Result: [&#39;James Smith&#39;, &#39;Emma Johnson&#39;, &#39;Olivia Williams&#39;, &#39;Liam Brown&#39;, &#39;Ava Jones&#39;, &#39;Noah Garcia&#39;, &#39;Sophia Miller&#39;, &#39;Mason Davis&#39;, &#39;Isabella Rodriguez&#39;, &#39;Ethan Martinez&#39;, &#39;Mia Hernandez&#39;, &#39;Logan Wilson&#39;, &#39;Charlotte Anderson&#39;, &#39;Aiden Moore&#39;, &#39;Harper Thomas&#39;, &#39;Lucas Jackson&#39;, &#39;Ella White&#39;, &#39;Benjamin Taylor&#39;, &#39;Amelia Harris&#39;, &#39;Alexander Clark&#39;]
+---as_complete done 5.8
 </code></pre></div>
 <p>Follow the above begin/done print statements and the listed time in seconds, as they are printed.</p>
 <p>Both tasks were started at the same time and classify_spam() terminated first (at the 1.0s mark), because it's a shorter task that simply outputs "spam"/"not spam".</p>
