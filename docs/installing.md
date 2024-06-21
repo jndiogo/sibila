@@ -9,7 +9,7 @@ Sibila requires Python 3.9+ and uses the llama-cpp-python package for local mode
 Install Sibila from PyPI by running:
 
 ```
-pip install --upgrade sibila
+pip install -U sibila
 ```
 
 If you only plan to use remote models (OpenAI), there's nothing else you need to do. See [First Run](first_run.md) to get it going.

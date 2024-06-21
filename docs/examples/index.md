@@ -13,6 +13,7 @@ title: "Examples"
 | [Compare model output](compare.md) | Compare sentiment analyses of customer reviews done by two models. |
 | [Chat interaction](interact.md) | Interact with the model as in a back-and-forth chat session. |
 | [Receipt](receipt.md) | Extract structured data from a photo of a receipt. |
+| [Simple tools](simple_tools.md) | Have the model decide and use tools. |
 | [Async](async.md) | Run tasks in parallel with the *_async methods. |
 | [Model management with CLI](cli.md) | Download and manage models with the command-line sibila. |
 

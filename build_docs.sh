@@ -21,6 +21,8 @@ jupyter nbconvert --to markdown --output=readme examples/async/async.ipynb
 
 jupyter nbconvert --to markdown --output=readme examples/receipt/receipt.ipynb
 
+jupyter nbconvert --to markdown --output=readme examples/simple_tools/simple_tools.ipynb
+
 
 if [[ "$1" -ne "nb" ]]; then
     mkdocs build

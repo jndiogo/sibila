@@ -10,6 +10,11 @@ Given its evolving nature, the project does not yet adhere to [Semantic Versioni
 - feat: Add seed setting to GenConf. Commented-out because of lack of support in OpenAI models and some llama.cpp hardware accelerations. To be enabled when wider support becomes available.
 
 
+## [0.4.5]
+- fix: Remove NoneType reference which was causing an error in Python 3.9.
+- docs: Add simple tools example.
+- docs: Update readme and other docs.
+
 ## [0.4.4]
 - feat: Support vision models from OpenAI, Anthropic and Llava-based local models.
 - feat: Add Msg class for better handling of other data types besides text, for now only images.

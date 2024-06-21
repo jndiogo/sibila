@@ -90,6 +90,31 @@ Receipt(total=5.88,
                ReceiptLine(description='GHIACCIO 2X400 G', cost=0.99)])
 ```
 
+
+
+
+Another example - extracting the most import elements in a photo:
+
+![Image](https://upload.wikimedia.org/wikipedia/commons/thumb/3/32/Hohenloher_Freilandmuseum_-_Baugruppe_Hohenloher_Dorf_-_Bauerngarten_-_Ansicht_von_Osten_im_Juni.jpg/640px-Hohenloher_Freilandmuseum_-_Baugruppe_Hohenloher_Dorf_-_Bauerngarten_-_Ansicht_von_Osten_im_Juni.jpg)
+
+``` python
+photo = "https://upload.wikimedia.org/wikipedia/commons/thumb/3/32/Hohenloher_Freilandmuseum_-_Baugruppe_Hohenloher_Dorf_-_Bauerngarten_-_Ansicht_von_Osten_im_Juni.jpg/640px-Hohenloher_Freilandmuseum_-_Baugruppe_Hohenloher_Dorf_-_Bauerngarten_-_Ansicht_von_Osten_im_Juni.jpg"
+
+model.extract(list[str],
+              ("Extract up to five of the most important elements in this photo.",
+              photo))
+```
+
+Returns a list with this five strings:
+
+```
+['House with red roof and beige walls',
+ 'Large tree with green leaves',
+ 'Garden with various plants and flowers',
+ 'Clear blue sky',
+ 'Wooden fence']
+```
+
 Local vision models based on llama.cpp/llava can also be used.
 
 ⭐ Like our work? [Give us a star!](https://github.com/jndiogo/sibila)

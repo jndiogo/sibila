@@ -60,6 +60,7 @@ nav:
     - examples/compare.md
     - examples/interact.md
     - examples/receipt.md
+    - examples/simple_tools.md
     - examples/async.md
     - "Sibila CLI": examples/cli.md
 

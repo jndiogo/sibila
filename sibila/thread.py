@@ -555,6 +555,7 @@ class Thread(Sequence):
 
         Args:
             path: Path of file to load.
+            clear: Should thread be cleared of messages, including INST? If not will concatenate with existing ones.
         """
 
         with open(path, 'r', encoding='utf-8') as f:
@@ -570,7 +571,7 @@ class Thread(Sequence):
     
     def save(self,
              path: str):
-        """Serialize this Thread to JSON.
+        """Serialize this Thread to a JSON file.
 
         Args:
             path: Path of file to save into.

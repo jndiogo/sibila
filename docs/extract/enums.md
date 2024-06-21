@@ -12,7 +12,7 @@ Enumerations are important for classification tasks or in any situation where yo
     model = Models.create("llamacpp:openchat")
 
     model.extract(["red", "blue", "green", "yellow"], 
-                  "The car color was a shade of indigo")
+                   "The car color was a shade of indigo")
     ```
 
     !!! success "Result"
@@ -31,8 +31,8 @@ We can also use Literals:
     from typing import Literal
 
     model.extract(Literal["SPAM", "NOT_SPAM", "UNSURE"], 
-                 "Hello my dear friend, I'm contacting you because I want to give you a million dollars",
-                 inst="Classify this text on the likelihood of being spam")
+                  "Hello my dear friend, I'm contacting you because I want to give you a million dollars",
+                  inst="Classify this text on the likelihood of being spam")
     ```
 
     !!! success "Result"

@@ -1,7 +1,6 @@
 """JSON Schema generator functions"""
 
 from typing import Any, Optional, Union, Literal, Annotated, get_origin, get_args
-from types import NoneType
 from enum import Enum
 
 from copy import copy, deepcopy
@@ -373,8 +372,8 @@ def get_type(type_: Any) -> tuple:
         get_origin(type_) is Union):
         ...
 
-    elif type_ is NoneType:
-        type_ = NoneType
+    elif type_ is type(None):
+        ...
 
     elif is_subclass_of(type_, datetime):
         type_ = str
@@ -530,7 +529,7 @@ def build_type_json_schema(type_: Any,
         out_json = [build_type_json_schema(t) for t in args]
         out = {"anyOf": out_json} 
 
-    else: # prim_type or enum or NoneType
+    else: # prim_type or enum or type(None)
         out = {}
 
         enum_list = options.get("enum_list")
@@ -877,7 +876,7 @@ def get_json_type(t: Any) -> str:
         float: "number",            
         int: "integer",            
         bool: "boolean",
-        NoneType: "null",
+        type(None): "null",
     }
     if t not in JSON_TYPE_FROM_PY_TYPE:
         raise TypeError(f"Unknown type '{t}'")
